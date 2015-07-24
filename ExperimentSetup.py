@@ -1,5 +1,5 @@
-from sklearn import gaussian_process
-import numpy as np
+import math
+
 __author__ = 'Dmitrii'
 
 
@@ -24,34 +24,27 @@ def A(s):
 H = 4
 
 # Lipshitzh const
-L_1 = 0
+L_1 = 1
 L_2 = 0
 
 
 #GP parameters
-l_1 = 1
-l_2 = 1
+l_1 = math.sqrt(0.05)
+l_2 = math.sqrt(0.05)
 sigma_y = 1
-sigma_n = 1
+sigma_n = 10 ** (-5)
 
 # Reward
 def R_1(z_t):
-    return
+    return math.log(z_t) if z_t > 1 else 0
 
 def R_2(z_t):
-    return
+    return 0
 
 def R_3(s_t):
-    return
+    return 0
 
-def R(z_t):
-    return R_1(z_t) + R_2(z_t[0]) + R_3(z_t[0])
 
-def f(x):
-    return x * np.sin(x)
-X = np.atleast_2d([1., 3., 5., 6., 7., 8.]).T
-y = f(X).ravel()
-x = np.atleast_2d(np.linspace(0, 10, 1000)).T
-gp = gaussian_process.GaussianProcess()
-gp.fit(X, y)
-print gp.get_params()
+def R(z_t, s_t):
+    return R_1(z_t) + R_2(z_t) + R_3(s_t)
+
