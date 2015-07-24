@@ -1,8 +1,10 @@
 import math
-import ExperimentSetup as esetup
+
 from numpy import random, inf
 from scipy.integrate import quad
-from GP_calculation import CalculateAlpha
+
+import ExperimentSetup as esetup
+from GP_calculation import CalculateAlpha, Calculate_GP_Posterior
 
 
 def _calculateKernelForConvolution(f, nu, sigma, x):
@@ -59,8 +61,11 @@ def GenerateDeterministicSamplesAndWeights(n, nu, sigma):
 
 
 # return z
-def GetMeasurement(s):
-    return 0
+def GetMeasurement(s_next, d_t):
+    nu, sigma = Calculate_GP_Posterior(s_next, d_t)
+    return nu
+
+
 
 
 # test

@@ -1,7 +1,10 @@
-import ExperimentSetup as esetup
 import math
+
 import numpy as np
 from scipy import linalg
+
+import ExperimentSetup as esetup
+
 
 __author__ = 'Dmitrii'
 
@@ -61,6 +64,8 @@ def CalculateAlpha(s_next, S_t):
     temp = linalg.solve_triangular(L, K_s, lower=True)
     alpha_vector = linalg.solve_triangular(L.T, temp)
     return np.linalg.norm(alpha_vector)
+
+
 
 
     #print Calculate_GP_Posterior(x_test, [inputs, y_noise])

@@ -20,7 +20,7 @@ rewards = []
 
 for i in range(t):
     s_next = DeterministicEpsGPP(d, eps, numberOfSamples)
-    z_next = GetMeasurement(s)
+    z_next = GetMeasurement(s, d)
     d_next = [s_next, z_next]
     rewards.append(R(z_next, s_next))
     d.append(d_next)
