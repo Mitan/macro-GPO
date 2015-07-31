@@ -254,20 +254,20 @@ class TreePlan:
         # print "Q: p", p
         # Initialize variables
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
-
         sd = math.sqrt(new_st.variance)
 
+        # idk wtf is pewpew but let it just stay
         n = math.ceil(
             2 * math.log(0.5 - 0.5 * (p ** self.PEWPEW)) * ((self.l1 + new_st.lipchitz) ** 2) * new_st.variance / (
             -(l ** 2)))
         n = max(n, 1)
         if n > 1: print n
 
-        sams = np.random.normal(mu, sd, n)
+        samples = np.random.normal(mu, sd, n)
 
-        rrr = [self.ComputeVRandom(T - 1, l, self.TransitionH(x, sam), p ** ((1 - self.PEWPEW) / n),
-                                   new_st) + self.reward_sampled(sam) for sam in sams]
-        avg = np.mean(rrr)
+        values_list = [self.ComputeVRandom(T - 1, l, self.TransitionH(x, sam), p ** ((1 - self.PEWPEW) / n),
+                                   new_st)[0] + self.reward_sampled(sam) for sam in samples]
+        avg = np.mean(values_list)
 
         return avg
 
