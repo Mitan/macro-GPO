@@ -291,7 +291,7 @@ def Transect(grid_gap_=0.04, length_scale=(0.1, 0.1), epsilon_ = 5.0, depth=3, s
 	TPT=TreePlanTester()
 	TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=0.00001)
 	TPT.InitEnvironment(environment_noise=0.00001, model=m)
-	TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=d300epth)
+	TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth)
 	TPT.InitTestParameters(initial_physical_state=np.array([0.0, 0.48]), past_locations=np.array([[0.0, 0.48]]))
 	TPT.Test(num_timesteps_test=17, debug=True, visualize=False, action_set=[(grid_gap_, -grid_gap_), (grid_gap_, grid_gap_)], save_folder=save_folder)
 

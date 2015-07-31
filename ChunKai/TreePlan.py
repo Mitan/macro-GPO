@@ -172,7 +172,6 @@ class TreePlan:
         # Obtain Lipchitz lookup tree
         st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,
                                                              epsilon)
-
         print "Performing search..."
         # Get answer
         Vapprox, Aapprox = self.EstimateV(H, l, x_0, st)
@@ -182,52 +181,44 @@ class TreePlan:
     def RandomSampling(self, epsilon, x_0, H):
         print "gururu"
 
+        st, _, __, ___ = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H, epsilon)
         beta = epsilon / H
         e_s = beta / 4
 
-        # max_err = self.FindMLEError(st)
-        max_err = 1.0
-        lamb_d = max_err / H
+        for T in range(H):
+            max_err = self.FindMLEError(st)
+            delta = min(beta / 8 / max_err, 1)
+            lamb = e_s / H
 
-        delta = min(beta / 8 / max_err, 1)
-        lamb = e_s / H
+            x = x_0
 
-        st, _, __, ___ = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H, max_err)
+            # set of valid actions
+            valid_actions = self.GetValidActionSet(x.physical_state)
+            vBest = -self.INF
+            aBest = valid_actions[0]
 
-        print "max error", max_err
-        print "delta", delta
+            for a in valid_actions:
+                x_next = self.TransitionP(x, a)
+                # go down the semitree node
+                new_st = st.children[a]
 
-        x = x_0
-        valid_actions = self.GetValidActionSet(x.physical_state)
-        vBest = -self.INF
-        aBest = valid_actions[0]
-
-        for a in valid_actions:
-
-            x_next = self.TransitionP(x, a)
-
-            # go down the semitree node
-            new_st = st.children[a]
-
-            # Reward is just the mean added to a multiple of the variance at that point
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
+                # Reward is just the mean added to a multiple of the variance at that point
+                mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
                                   weights=new_st.weights)
-            var = new_st.variance
-            r = self.reward_analytical(mean, math.sqrt(var))
+                var = new_st.variance
+                r = self.reward_analytical(mean, math.sqrt(var))
+                # Future reward
+                future_reward = self.EstimateQ(T, lamb, 1, x_next, new_st) + r  # using MLE
+                future_reward_random = self.ComputeQRandom(T, lamb, x_next, 1.0 - delta, new_st) + r
 
-            # Future reward
-            f = self.EstimateQ(H, lamb_d, 1, x_next, new_st) + r  # using MLE
-            frandom = self.ComputeQRandom(H, lamb, x_next, 1.0 - delta, new_st) + r
+                # Correction step
+                qmod = future_reward_random
+                if abs(future_reward_random - future_reward) > e_s + max_err:
+                    qmod = future_reward
 
-            # Correction step
-            qmod = frandom
-            if abs(frandom - f) > e_s + max_err:
-                qmod = f
-
-            if (qmod > vBest):
-                aBest = a
-                vBest = qmod
-
+                if (qmod > vBest):
+                    aBest = a
+                    vBest = qmod
         return vBest, aBest
 
     def ComputeVRandom(self, T, l, x, p, st):
@@ -257,7 +248,7 @@ class TreePlan:
                 aBest = a
                 vBest = f
 
-        return vBest
+        return vBest, aBest
 
     def ComputeQRandom(self, T, l, x, p, new_st):
         # print "Q: p", p
