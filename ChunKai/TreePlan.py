@@ -185,7 +185,7 @@ class TreePlan:
         beta = epsilon / H
         e_s = beta / 4
 
-        for T in range(H):
+        for T in reversed(range(H)):
             max_err = self.FindMLEError(st)
             delta = min(beta / 8 / max_err, 1)
             lamb = e_s / H
@@ -224,7 +224,7 @@ class TreePlan:
     def ComputeVRandom(self, T, l, x, p, st):
 
         valid_actions = self.GetValidActionSet(x.physical_state)
-        if T == 0: return 0
+        if T == 0: return 0, None
 
         vBest = -self.INF
         aBest = valid_actions[0]
