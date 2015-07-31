@@ -158,7 +158,7 @@ class TreePlan:
 
         return best_improv_prob, best_action, len(valid_actions)
 
-    def Algorithm1(self, epsilon, gamma, x_0, H):
+    def Algorithm1(self, epsilon, x_0, H):
         """
 		@param x_0 - augmented state
 		@return approximately optimal value, answer, and number of node expansions
@@ -175,7 +175,7 @@ class TreePlan:
 
         print "Performing search..."
         # Get answer
-        Vapprox, Aapprox = self.EstimateV(H, l, gamma, x_0, st)
+        Vapprox, Aapprox = self.EstimateV(H, l, x_0, st)
 
         return Vapprox, Aapprox, nodes_expanded
 
@@ -433,7 +433,7 @@ class TreePlan:
         else:
             return t * translated + translated
 
-    def EstimateV(self, T, l, gamma, x, st):
+    def EstimateV(self, T, l, x, st):
         """
 		@return vBest - approximate value function computed
 		@return aBest - action at the root for the policy defined by alg1
@@ -459,7 +459,7 @@ class TreePlan:
             r = self.reward_analytical(mean, math.sqrt(var))
 
             # Future reward
-            f = self.EstimateQ(T, l, gamma, x_next, new_st) + r
+            f = self.EstimateQ(T, l, x_next, new_st) + r
 
             if (f > vBest):
                 aBest = a
@@ -467,7 +467,7 @@ class TreePlan:
 
         return vBest, aBest
 
-    def EstimateQ(self, T, l, gamma, x, new_st):
+    def EstimateQ(self, T, l, x, new_st):
         """
 		Approximates the integration step derived from alg1
 		@param new_st - semi-tree at this stage
@@ -494,7 +494,7 @@ class TreePlan:
 
             # Compute evaluation points
             zPoints = 0.5 * (zLower + zUpper)
-            v, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, zPoints), new_st)
+            v, _ = self.EstimateV(T - 1, l, self.TransitionH(x, zPoints), new_st)
             v += self.reward_sampled(zPoints)
 
             # Recursively compute values
@@ -504,12 +504,12 @@ class TreePlan:
         # Weight values
         rightLimit = mu + k * sd
         leftLimit = mu - k * sd
-        vRightTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, rightLimit), new_st)
+        vRightTailVal, _ = self.EstimateV(T - 1, l, self.TransitionH(x, rightLimit), new_st)
         vRightTailVal += self.reward_sampled(rightLimit)
         if num_partitions == 2:
             vLeftTailVal = vRightTailVal  # Quick hack for cases where the algo only requires us to us MLE (don't need to repeat measurement at mean of gaussian pdf)
         else:
-            vLeftTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, leftLimit), new_st)  # usual case
+            vLeftTailVal, _ = self.EstimateV(T - 1, l, self.TransitionH(x, leftLimit), new_st)  # usual case
             vLeftTailVal += self.reward_sampled(leftLimit)
         vAccum += vRightTailVal * (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + \
                   vLeftTailVal * norm.cdf(x=leftLimit, loc=mu, scale=sd)
@@ -643,7 +643,7 @@ if __name__ == "__main__":
 
     # Planning parameters:
     epsilon = 0.175  # Tolerance for policy loss
-    gamma = 1.0  # Discount factor
+    #gamma = 1.0  # Discount factor
     H = 3  # Search horizon
 
     # TreePlan tester
@@ -661,7 +661,7 @@ if __name__ == "__main__":
 
         # print tp.MCTSExpand(epsilon, gamma, x_0, H)
 
-        _, a, _ = tp.Algorithm1(epsilon, gamma, x_0, H)
+        _, a, _ = tp.Algorithm1(epsilon, x_0, H)
 
         # Take action a
         x_temp = tp.TransitionP(x_0, a)
