@@ -184,6 +184,9 @@ class TreePlan:
         beta = epsilon / H
         e_s = beta / 4
 
+        r_counter = 0
+        d_counter = 0
+
         for T in reversed(range(H)):
             max_err = self.FindMLEError(st)
             delta = min(beta / 8 / max_err, 1)
@@ -214,6 +217,9 @@ class TreePlan:
                 qmod = future_reward_random
                 if abs(future_reward_random - future_reward) > e_s + max_err:
                     qmod = future_reward
+                    d_counter+=1
+                else:
+                    r_counter+=1
 
                 if (qmod > vBest):
                     aBest = a
@@ -261,12 +267,8 @@ class TreePlan:
         sd = math.sqrt(new_st.variance)
 
         # idk wtf is pewpew but let it just stay
-        a = math.log(0.5 - 0.5 * (p ** self.PEWPEW))
-        b = (self.l1 + new_st.lipchitz) ** 2
-        c = (l ** 2)
-        n = math.ceil(
-            2 * a * b * new_st.variance / (
-            - c))
+        a = math.log(0.5 - 0.5 * (p ** self.PEWPEW)) * ((self.l1 + new_st.lipchitz) ** 2) / ( -l**2)
+        n = math.ceil(2 * a  * new_st.variance)
         n = max(n, 1)
         #print new_st.variance, c, n
         samples = np.random.normal(mu, sd, n)
@@ -637,7 +639,6 @@ class History:
 
 
 if __name__ == "__main__":
-    print list(reversed(range(3)))
     # Init GP: Init hyperparameters and covariance function
     length_scale = [1.5, 1.5]
     signal_variance = 1
@@ -687,9 +688,9 @@ if __name__ == "__main__":
         x_0 = x_next
 
         print "A = ", a
-        print "M = ", measurement
-        print "X = "
-        print x_0.to_str()
+        #print "M = ", measurement
+        #print "X = "
+        #print x_0.to_str()
 
         # Add to plot history
         state_history.append(x_0)
