@@ -27,6 +27,7 @@ class mutil:
 		# TODO: use binary search instead
 
 		for num_partitions in xrange(1, len(self.sol)):
+			# looking for somehow calculated error and searching for min value, when it is good
 			if max_error >= self.min_err[num_partitions]: 
 				return num_partitions, self.sol[num_partitions], self.min_err[num_partitions]
 

@@ -179,8 +179,7 @@ class TreePlan:
         return Vapprox, Aapprox, nodes_expanded
 
     def RandomSampling(self, epsilon, x_0, H):
-        print "gururu"
-
+        #print epsilon
         st, _, __, ___ = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H, epsilon)
         beta = epsilon / H
         e_s = beta / 4
@@ -189,7 +188,7 @@ class TreePlan:
             max_err = self.FindMLEError(st)
             delta = min(beta / 8 / max_err, 1)
             lamb = e_s / H
-
+            # print "lambda is " + str( lamb)
             x = x_0
 
             # set of valid actions
@@ -208,7 +207,7 @@ class TreePlan:
                 var = new_st.variance
                 r = self.reward_analytical(mean, math.sqrt(var))
                 # Future reward
-                future_reward = self.EstimateQ(T, lamb, 1, x_next, new_st) + r  # using MLE
+                future_reward = self.EstimateQ(T, lamb, x_next, new_st, True) + r  # using MLE
                 future_reward_random = self.ComputeQRandom(T, lamb, x_next, 1.0 - delta, new_st) + r
 
                 # Correction step
@@ -219,7 +218,7 @@ class TreePlan:
                 if (qmod > vBest):
                     aBest = a
                     vBest = qmod
-        return vBest, aBest
+        return vBest, aBest, 0
 
     def ComputeVRandom(self, T, l, x, p, st):
 
@@ -251,19 +250,27 @@ class TreePlan:
         return vBest, aBest
 
     def ComputeQRandom(self, T, l, x, p, new_st):
+
+        # patological case. perhaps should work like this
+        if T == 0:
+            return 0
+        #print x.physical_state, T
         # print "Q: p", p
         # Initialize variables
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
         sd = math.sqrt(new_st.variance)
 
         # idk wtf is pewpew but let it just stay
+        a = math.log(0.5 - 0.5 * (p ** self.PEWPEW))
+        b = (self.l1 + new_st.lipchitz) ** 2
+        c = (l ** 2)
         n = math.ceil(
-            2 * math.log(0.5 - 0.5 * (p ** self.PEWPEW)) * ((self.l1 + new_st.lipchitz) ** 2) * new_st.variance / (
-            -(l ** 2)))
+            2 * a * b * new_st.variance / (
+            - c))
         n = max(n, 1)
-        if n > 1: print n
-
+        #print new_st.variance, c, n
         samples = np.random.normal(mu, sd, n)
+        #print len(samples)
 
         values_list = [self.ComputeVRandom(T - 1, l, self.TransitionH(x, sam), p ** ((1 - self.PEWPEW) / n),
                                    new_st)[0] + self.reward_sampled(sam) for sam in samples]
@@ -321,12 +328,11 @@ class TreePlan:
 
         if H == 0:
             return
-
+        cur_physical_state = node.ss.physical_state
         # Add in new children for each valid action
         valid_actions = self.GetValidActionSet(node.ss.physical_state)
         for a in valid_actions:
             # Get new semi state
-            cur_physical_state = node.ss.physical_state
             new_physical_state = self.PhysicalTransition(cur_physical_state, a)
             new_locations = np.append(node.ss.locations, np.atleast_2d(cur_physical_state), 0)
             new_ss = SemiState(new_physical_state, new_locations)
@@ -431,6 +437,7 @@ class TreePlan:
 		@param st - root of the semi-tree to be used
 		"""
 
+        #print "from V " + str(T)
         valid_actions = self.GetValidActionSet(x.physical_state)
         if T == 0: return 0, valid_actions[0]
 
@@ -441,8 +448,12 @@ class TreePlan:
             x_next = self.TransitionP(x, a)
 
             # go down the semitree node
-            new_st = st.children[a]
+            new_st = None
+            try:
+                new_st = st.children[a]
+            except:
 
+                print a, st.ss.physical_state, st.children, T
             # Reward is just the mean added to a multiple of the variance at that point
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
                                   weights=new_st.weights)
@@ -458,20 +469,32 @@ class TreePlan:
 
         return vBest, aBest
 
-    def EstimateQ(self, T, l, x, new_st):
+    def EstimateQ(self, T, l, x, new_st, isMLE = False):
+
         """
 		Approximates the integration step derived from alg1
 		@param new_st - semi-tree at this stage
 		@return - approximate value of the integral/expectation
 		"""
 
+        # patological case. perhaps should work like this
+        if T == 0:
+            return 0
+
+        #print "from Q " + str(T)
         # if T > 3: print T
         # Initialize variables
-        kxi = new_st.lipchitz
+
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
+
+        #todo check
+        if isMLE:
+            return self.EstimateV(T - 1, l, self.TransitionH(x, mu), new_st)[0] + self.reward_sampled(mu)
 
         sd = math.sqrt(new_st.variance)
         k = new_st.k
+
+        #  hack
         num_partitions = new_st.n + 2  # number of partitions INCLUDING the tail ends
 
         if new_st.n > 0: width = 2.0 * k * sd / new_st.n
@@ -506,7 +529,7 @@ class TreePlan:
                   vLeftTailVal * norm.cdf(x=leftLimit, loc=mu, scale=sd)
         # test that sum of weight is 1
         testsum += (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + norm.cdf(x=leftLimit, loc=mu, scale=sd)
-        assert abs(testsum - 1.0) < 0.0001, "Area != 1, %f instead" % testsum
+        assert abs(testsum - 1.0) < 0.0001, "Area != 1, %f instead with %f partitions" % (testsum, num_partitions)
 
         return vAccum
 
@@ -614,7 +637,7 @@ class History:
 
 
 if __name__ == "__main__":
-
+    print list(reversed(range(3)))
     # Init GP: Init hyperparameters and covariance function
     length_scale = [1.5, 1.5]
     signal_variance = 1
@@ -633,12 +656,12 @@ if __name__ == "__main__":
     grid_gap = 0.2
 
     # Planning parameters:
-    epsilon = 0.175  # Tolerance for policy loss
+    epsilon = 10.0  # Tolerance for policy loss
     #gamma = 1.0  # Discount factor
     H = 3  # Search horizon
 
     # TreePlan tester
-    num_timesteps_test = 20
+    num_timesteps_test = 10
     # Initial augmented state
     initial_physical_state = np.array([1.0, 1.0])
     initial_locations = np.array([[-1.0, -1.0], [1.0, 1.0]])
@@ -652,7 +675,7 @@ if __name__ == "__main__":
 
         # print tp.MCTSExpand(epsilon, gamma, x_0, H)
 
-        _, a, _ = tp.Algorithm1(epsilon, x_0, H)
+        _, a, _ = tp.RandomSampling(epsilon, x_0, H)
 
         # Take action a
         x_temp = tp.TransitionP(x_0, a)
