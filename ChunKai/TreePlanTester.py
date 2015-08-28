@@ -136,6 +136,10 @@ class TreePlanTester:
         reward_history = []
         nodes_expanded_history = []
         base_measurement_history = []
+
+        total_time = 0
+        time_per_step = 0
+
         for time_step in xrange(num_timesteps_test):
             tp = TreePlan(self.grid_domain, self.grid_gap, self.gp, action_set=action_set,
                           reward_type=self.reward_model, sd_bonus=self.sd_bonus, bad_places=self.bad_places)
@@ -152,7 +156,7 @@ class TreePlanTester:
                 start = time.time()
                 _, a, nodes_expanded = tp.RandomSampling(self.epsilon, x_0, self.H)
                 end = time.time()
-                print "Time for stochastic is " + str(end - start)
+                time_per_step = end - start
 
                 """
                 if not MCTS:
@@ -165,7 +169,7 @@ class TreePlanTester:
                 start = time.time()
                 _, a, nodes_expanded = tp.DeterministicSampling(self.epsilon, x_0, self.H)
                 end = time.time()
-                print "Time for deterministic is " + str(end - start)
+                time_per_step = end - start
             # Take action a
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
@@ -191,6 +195,8 @@ class TreePlanTester:
             total_nodes_expanded += nodes_expanded
             nodes_expanded_history.append(nodes_expanded)
 
+            total_time+=time_per_step
+
             if debug:
                 print "A = ", a
                 print "M = ", percieved_measurement
@@ -207,7 +213,8 @@ class TreePlanTester:
                 # Save to file
                 f = open(save_folder + "step" + str(time_step) + method_marker+ ".txt", "w")
                 f.write(x_0.to_str() + "\n")
-                f.write("Total accumulated reward = " + str(total_reward))
+                f.write("Total accumulated reward = " + str(total_reward) + "\n")
+                f.write("Time for this step = " + str(time_per_step))
                 f.close()
 
         # Save for the whole trial
@@ -223,7 +230,8 @@ class TreePlanTester:
         f.write("Total accumulated reward = " + str(total_reward) + "\n")
         f.write("Nodes Expanded per stage\n")
         f.write(str(nodes_expanded_history) + "\n")
-        f.write("Total nodes expanded = " + str(total_nodes_expanded))
+        f.write("Total nodes expanded = " + str(total_nodes_expanded) + "\n")
+        f.write("Total time = " + str(total_time))
         f.close()
 
         return state_history, reward_history, nodes_expanded_history, base_measurement_history
@@ -372,7 +380,7 @@ if __name__ == "__main__":
     #assert len(sys.argv) == 2, "Wrong number of arguments"
     save_trunk = "./tests/"
     #save_trunk = sys.argv[1]
-    for i in xrange(15, 25):
+    for i in xrange(15, 20):
         DoTesting(length_scale=(0.1, 0.1), epsilon_=100.0, seed=i, depth=4,
                save_folder=save_trunk + "/seed" + str(i) + "/", preset=False)
     # Transect(seed=i)
