@@ -7,19 +7,18 @@ Implements Algorithm I in my CA report
 
 """
 
+import copy
+import math
+
 import numpy as np
-from scipy import linalg
 from scipy.stats import norm
-from matplotlib import pyplot as pl
+from scipy.stats import multivariate_normal
+import time
+
 from GaussianProcess import GaussianProcess
 from GaussianProcess import SquareExponential
 from Vis2d import Vis2d
-from scipy.stats import multivariate_normal
 from mutil import mutil
-
-import copy
-import sys
-import math
 
 
 class TreePlan:
@@ -158,7 +157,7 @@ class TreePlan:
 
         return best_improv_prob, best_action, len(valid_actions)
 
-    def Algorithm1(self, epsilon, x_0, H):
+    def DeterministicSampling(self, epsilon, x_0, H):
         """
 		@param x_0 - augmented state
 		@return approximately optimal value, answer, and number of node expansions
@@ -168,18 +167,20 @@ class TreePlan:
         # l = epsilon / (gamma * H * (H+1))
         # l = epsilon / sum([gamma ** i for i in xrange(1, H+1)])
 
-        print "Preprocessing weight spaces..."
+        #print "Preprocessing weight spaces..."
         # Obtain Lipchitz lookup tree
         st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,
                                                              epsilon)
-        print "Performing search..."
+        #print "Performing search..."
         # Get answer
         Vapprox, Aapprox = self.EstimateV(H, l, x_0, st)
 
         return Vapprox, Aapprox, nodes_expanded
 
     def RandomSampling(self, epsilon, x_0, H):
-        #print epsilon
+        # to ENSURE epsilon is not int and division is for floats
+        epsilon = float(epsilon)
+        #print "epsilon is " + str(epsilon)
         st, _, __, ___ = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H, epsilon)
         beta = epsilon / H
         e_s = beta / 4
@@ -189,7 +190,9 @@ class TreePlan:
 
         for T in reversed(range(H)):
             max_err = self.FindMLEError(st)
-            delta = min(beta / 8 / max_err, 1)
+            #print "max error is " + str(max_err)
+            delta = min(beta / 8 / max_err, 1.0)
+            #print "delta is " + str(delta)
             lamb = e_s / H
             # print "lambda is " + str( lamb)
             x = x_0
@@ -267,10 +270,26 @@ class TreePlan:
         sd = math.sqrt(new_st.variance)
 
         # idk wtf is pewpew but let it just stay
+        """
+        print "p is " + str(p)
         a = math.log(0.5 - 0.5 * (p ** self.PEWPEW)) * ((self.l1 + new_st.lipchitz) ** 2) / ( -l**2)
+        print a
         n = math.ceil(2 * a  * new_st.variance)
         n = max(n, 1)
-        #print new_st.variance, c, n
+        """
+        a = math.log(0.5 - 0.5 * (p ** self.PEWPEW))
+        b = (self.l1 + new_st.lipchitz) ** 2
+        c = (l ** 2)
+        n = math.ceil(
+            2 * a * b * new_st.variance / (
+            - c))
+
+        """
+        if n > 10:
+
+            #print new_st.variance, a, b, c, n
+            print "n is  " + str(n)
+        """
         samples = np.random.normal(mu, sd, n)
         #print len(samples)
 
@@ -318,7 +337,7 @@ class TreePlan:
             else:
                 break
 
-        print "Suggested epsilon=%f, Using epsilon=%f, num_nodes=%f" % (suggested_epsilon, ep, num_nodes)
+        #print "Suggested epsilon=%f, Using epsilon=%f, num_nodes=%f" % (suggested_epsilon, ep, num_nodes)
         return root_node, ep, l, num_nodes
 
     def BuildTree(self, node, H, isRoot=False):
@@ -343,6 +362,7 @@ class TreePlan:
             new_st = SemiTree(new_ss)
             node.AddChild(a, new_st)
             new_st.ComputeWeightsAndVariance(self.gp)
+            #print new_st.variance
             self.BuildTree(new_st, H - 1)
 
     def GetValidActionSet(self, physical_state):
@@ -671,12 +691,16 @@ if __name__ == "__main__":
                          initial_history=History(initial_locations, initial_measurements))
 
     state_history = [x_0]
-    for time in xrange(num_timesteps_test):
+    for timestep in xrange(num_timesteps_test):
         tp = TreePlan(grid_domain, grid_gap, gp)
 
         # print tp.MCTSExpand(epsilon, gamma, x_0, H)
 
-        _, a, _ = tp.RandomSampling(epsilon, x_0, H)
+        start = time.time()
+        _, a, _ = tp.DeterministicSampling(epsilon, x_0, H)
+        end = time.time()
+        print end - start
+
 
         # Take action a
         x_temp = tp.TransitionP(x_0, a)
@@ -687,7 +711,7 @@ if __name__ == "__main__":
         # Update future state
         x_0 = x_next
 
-        print "A = ", a
+        #print "A = ", a
         #print "M = ", measurement
         #print "X = "
         #print x_0.to_str()
@@ -700,7 +724,9 @@ if __name__ == "__main__":
     XGrid, YGrid = np.meshgrid(XGrid, YGrid)
     model_grid = np.vectorize(lambda x, y: model([x, y]))
     # Plot graph of locations
+    """
     vis = Vis2d()
     vis.MapPlot(model_grid(XGrid, YGrid),  # Mesh grid
                 [grid_domain[0][0], grid_domain[0][1], grid_domain[1][0], grid_domain[1][1]],
                 [x.physical_state for x in state_history])
+    """

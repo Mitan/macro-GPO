@@ -1,3 +1,4 @@
+
 from TreePlan import *
 
 import numpy as np
@@ -112,12 +113,15 @@ class TreePlanTester:
         # Compute measurements
         self.past_measurements = np.apply_along_axis(self.model, 1, past_locations)
 
-    def Test(self, num_timesteps_test, debug=True, visualize=False, action_set=None, save_per_step=True,
+    def Test(self, num_timesteps_test, debug=False, visualize=False, action_set=None, save_per_step=True,
              save_folder="default_results/", MCTS=False, MCTSMaxNodes=10 ** 15, cheat=False, cheatnum=0,
              Randomized=False, special=None):
         """ Pipeline for testing
 		@param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
 		"""
+
+        # identifier to differ determisnistic and random
+        method_marker = "rand" if Randomized else "det"
 
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
@@ -132,19 +136,24 @@ class TreePlanTester:
         reward_history = []
         nodes_expanded_history = []
         base_measurement_history = []
-        for time in xrange(num_timesteps_test):
+        for time_step in xrange(num_timesteps_test):
             tp = TreePlan(self.grid_domain, self.grid_gap, self.gp, action_set=action_set,
                           reward_type=self.reward_model, sd_bonus=self.sd_bonus, bad_places=self.bad_places)
 
-            if time == 0 and cheat:
+            if time_step == 0 and cheat:
                 a = (0.0, 0.05)
                 nodes_expanded = cheatnum
             elif special == 'EI':
                 _, a, nodes_expanded = tp.EI(x_0)
             elif special == 'PI':
                 _, a, nodes_expanded = tp.PI(x_0)
-            elif not Randomized:
-                _, a, nodes_expanded = tp.Algorithm1(self.epsilon, x_0, self.H)
+            elif Randomized:
+                # Use random sampling
+                start = time.time()
+                _, a, nodes_expanded = tp.RandomSampling(self.epsilon, x_0, self.H)
+                end = time.time()
+                print "Time for stochastic is " + str(end - start)
+
                 """
                 if not MCTS:
                     _, a, nodes_expanded = tp.Algorithm1(self.epsilon, self.gamma, x_0, self.H)
@@ -153,9 +162,10 @@ class TreePlanTester:
                                                               max_nodes=MCTSMaxNodes)
                 """
             else:
-                # Use random sampling
-                vBest, a = tp.RandomSampling(self.epsilon, x_0, self.H)
-
+                start = time.time()
+                _, a, nodes_expanded = tp.DeterministicSampling(self.epsilon, x_0, self.H)
+                end = time.time()
+                print "Time for deterministic is " + str(end - start)
             # Take action a
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
@@ -193,17 +203,17 @@ class TreePlanTester:
 
             if save_per_step:
                 self.Visualize(state_history=state_history, display=visualize,
-                               save_path=save_folder + "step" + str(time))
+                               save_path=save_folder + "step" + str(time_step) + method_marker)
                 # Save to file
-                f = open(save_folder + "step" + str(time) + ".txt", "w")
+                f = open(save_folder + "step" + str(time_step) + method_marker+ ".txt", "w")
                 f.write(x_0.to_str() + "\n")
                 f.write("Total accumulated reward = " + str(total_reward))
                 f.close()
 
         # Save for the whole trial
-        self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary")
+        self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary" + method_marker)
         # Save to file
-        f = open(save_folder + "summary" + ".txt", "w")
+        f = open(save_folder + "summary" + method_marker+ ".txt", "w")
         f.write(x_0.to_str() + "\n")
         f.write("===============================================")
         f.write("Measurements Collected\n")
@@ -284,11 +294,11 @@ def Exploratory(grid_gap_, epsilon_=100.0):
     TPT.Test(num_timesteps_test=20, debug=True, visualize=True)
 
 
-def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_timesteps_test=20,
+def DoTesting(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_timesteps_test=20,
            signal_variance=1, noise_variance=10 ** -5,
            seed=142857, save_folder=None, save_per_step=True,
            preset=False, action_set=None, MCTS=True, MCTSMaxNodes=10 ** 15, reward_model="Linear", cheat=False,
-           cheatnum=0, Randomized=False, sd_bonus=0.0,
+           cheatnum=0, sd_bonus=0.0,
            special=None):
     """
 	Assume a map size of [0, 1] for both axes
@@ -304,9 +314,14 @@ def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_t
     TPT.InitTestParameters(initial_physical_state=np.array([0.5, 0.5]),
                            past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
                                [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
-    return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, save_folder=save_folder,
-                    action_set=action_set, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
-                    cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special)
+    # deterministic
+    TPT.Test(num_timesteps_test=num_timesteps_test, debug=False, visualize=False, action_set=action_set,
+             save_per_step=save_per_step, save_folder=save_folder, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes, cheat=cheat,
+             cheatnum=cheatnum, Randomized = False, special=special)
+    #stochastic
+    TPT.Test(num_timesteps_test=num_timesteps_test, debug=False, visualize=False, action_set=action_set,
+             save_per_step=save_per_step, save_folder=save_folder, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes, cheat=cheat,
+             cheatnum=cheatnum, Randomized = True, special=special)
 
 
 def Transect(grid_gap_=0.04, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, seed=142857, save_folder=None):
@@ -348,7 +363,7 @@ def TestRealData(locations, values, length_scale, signal_variance, noise_varianc
     # TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, action_set=[(0, grid_gap), (-grid_gap, grid_gap), (grid_gap, grid_gap)], save_folder=save_folder, MCTS = MCTS, MCTSMaxNodes=MCTSMaxNodes)
     # For normal
     return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, action_set=None,
-                    save_folder=save_folder, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
+                    save_per_step=save_per_step, save_folder=save_folder, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
                     Randomized=Randomized, special=special)
 
 
@@ -357,8 +372,8 @@ if __name__ == "__main__":
     #assert len(sys.argv) == 2, "Wrong number of arguments"
     save_trunk = "./tests/"
     #save_trunk = sys.argv[1]
-    for i in xrange(15, 20):
-        Random(length_scale=(0.1, 0.1), epsilon_=10, seed=i, depth=4,
+    for i in xrange(15, 25):
+        DoTesting(length_scale=(0.1, 0.1), epsilon_=100.0, seed=i, depth=4,
                save_folder=save_trunk + "/seed" + str(i) + "/", preset=False)
     # Transect(seed=i)
 
