@@ -69,12 +69,17 @@ class mutil:
         p_best = 0.8
         other_actions = list(valid_actions)
         other_actions.remove(best_action)
-        length = len(valid_actions)
+        #print other_actions, best_action
+
+        length = len(other_actions)
         p_other = (1 - p_best) / length
         probs = [0.8] + [p_other for i in range(length)]
-        values = [best_action] + other_actions
-        custom_distribution = rv_discrete(name='custm', values=(values, probs))
-        return custom_distribution.rvs(size=20)
+        vals = range(length+1)
+        shifted_actions = [best_action] + other_actions
+        custom_distribution = rv_discrete(name='custom_distribution', values=(vals, probs))
+        # looks like distribution doesn't work with tuples for values, have to make such a hack
+        index = custom_distribution.rvs(size=1)[0]
+        return shifted_actions[index]
 
 
 if __name__ == "__main__":

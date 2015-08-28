@@ -702,8 +702,12 @@ if __name__ == "__main__":
         print end - start
 
 
+        # a now contains best action
+        # to make the model more real, we switch to stochastic transition
+        valid_actions = tp.GetValidActionSet(x_0.physical_state)
+        stochastic_a = tp.mathutil.DistributionForTransition(valid_actions, a)
         # Take action a
-        x_temp = tp.TransitionP(x_0, a)
+        x_temp = tp.TransitionP(x_0, stochastic_a)
         # Draw an actual observation from the underlying environment field and add it to the our measurements
         measurement = model(x_temp.physical_state)
         x_next = tp.TransitionH(x_temp, measurement)
