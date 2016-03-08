@@ -11,3 +11,4 @@ ChunKai/.idea/workspace.xml
 *.png
 .idea/modules.xml
 .idea/
+*.pyc
