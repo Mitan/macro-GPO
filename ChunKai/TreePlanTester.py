@@ -144,15 +144,10 @@ class TreePlanTester:
             elif special == 'PI':
                 _, a, nodes_expanded = tp.PI(x_0)
             elif not Randomized:
-                if not MCTS:
-                    _, a, nodes_expanded = tp.Algorithm1(self.epsilon, self.gamma, x_0, self.H)
-                else:
-                    bounds, a, nodes_expanded = tp.MCTSExpand(self.epsilon, self.gamma, x_0, self.H,
-                                                              max_nodes=MCTSMaxNodes)
+                _, a, nodes_expanded = tp.Algorithm1(self.epsilon, self.gamma, x_0, self.H)
             else:
-                # Use random sampling
+            # Use random sampling
                 vBest, a = tp.RandomSampling(self.epsilon, x_0, self.H)
-
             # Take action a
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
@@ -284,7 +279,7 @@ def Exploratory(grid_gap_, epsilon_=100.0):
 def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_timesteps_test=20,
            signal_variance=1, noise_variance=10 ** -5,
            seed=142857, save_folder=None, save_per_step=True,
-           preset=False, action_set=None, MCTS=True, MCTSMaxNodes=10 ** 15, reward_model="Linear", cheat=False,
+           preset=False, action_set=None, reward_model="Linear", cheat=False,
            cheatnum=0, Randomized=False, sd_bonus=0.0,
            special=None):
     """
