@@ -9,3 +9,5 @@ ChunKai/.idea/vcs.xml
 ChunKai/.idea/workspace.xml
 *.txt
 *.png
+.idea/modules.xml
+.idea/
