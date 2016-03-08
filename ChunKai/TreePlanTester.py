@@ -144,7 +144,7 @@ class TreePlanTester:
             elif special == 'PI':
                 _, a, nodes_expanded = tp.PI(x_0)
             elif not Randomized:
-                _, a, nodes_expanded = tp.Algorithm1(self.epsilon, self.gamma, x_0, self.H)
+                _, a, nodes_expanded = tp.DeterministicML(x_0, self.H)
             else:
             # Use random sampling
                 vBest, a = tp.RandomSampling(self.epsilon, x_0, self.H)
@@ -297,7 +297,7 @@ def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_t
                            past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
                                [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
     return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, save_folder=save_folder,
-                    action_set=action_set, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
+                    action_set=action_set, save_per_step=save_per_step,
                     cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special)
 
 
@@ -348,7 +348,7 @@ if __name__ == "__main__":
 
     save_trunk = "./tests/"
     for i in xrange(15, 18):
-        Random(length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth=4, save_folder="seed" + str(i) + "/",
+        Random(length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth=4, save_folder= save_trunk + "seed" + str(i) + "/",
                preset=False)
     # Transect(seed=i)
 
