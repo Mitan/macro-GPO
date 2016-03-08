@@ -147,7 +147,7 @@ class TreePlanTester:
                 _, a, nodes_expanded = tp.DeterministicML(x_0, self.H)
             else:
             # Use random sampling
-                vBest, a = tp.RandomSampling(self.epsilon, x_0, self.H)
+                vBest, a = tp.StochasticAlgorithm(self.epsilon, x_0, self.H)
             # Take action a
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements

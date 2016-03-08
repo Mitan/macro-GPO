@@ -160,7 +160,7 @@ class TreePlan:
 
 
 
-    def RandomSampling(self, epsilon, x_0, H):
+    def StochasticAlgorithm(self, epsilon, x_0, H):
         print "gururu"
 
         beta = epsilon / H
@@ -198,7 +198,7 @@ class TreePlan:
 
             # Future reward
             f = self.Q_ML(H, x_next, new_st) + r  # using MLE
-            frandom = self.ComputeQRandom(H, lamb, x_next, 1.0 - delta, new_st) + r
+            frandom = self.Q_Stochastic(H, lamb, x_next, 1.0 - delta, new_st) + r
 
             # Correction step
             qmod = frandom
@@ -211,13 +211,12 @@ class TreePlan:
 
         return vBest, aBest
 
-    def ComputeVRandom(self, T, l, x, p, st):
+    def V_Stochastic(self, T, l, x, p, st):
 
         valid_actions = self.GetValidActionSet(x.physical_state)
         if T == 0: return 0
 
         vBest = -self.INF
-        aBest = valid_actions[0]
         for a in valid_actions:
 
             x_next = self.TransitionP(x, a)
@@ -232,7 +231,7 @@ class TreePlan:
             r = self.reward_analytical(mean, math.sqrt(var))
 
             # Future reward
-            f = self.ComputeQRandom(T, l, x_next, p ** (1.0 / len(valid_actions)), new_st) + r
+            f = self.Q_Stochastic(T, l, x_next, p ** (1.0 / len(valid_actions)), new_st) + r
 
             if (f > vBest):
                 aBest = a
@@ -240,7 +239,7 @@ class TreePlan:
 
         return vBest
 
-    def ComputeQRandom(self, T, l, x, p, new_st):
+    def Q_Stochastic(self, T, l, x, p, new_st):
         # print "Q: p", p
         # Initialize variables
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
@@ -255,7 +254,7 @@ class TreePlan:
 
         sams = np.random.normal(mu, sd, n)
 
-        rrr = [self.ComputeVRandom(T - 1, l, self.TransitionH(x, sam), p ** ((1 - self.PEWPEW) / n),
+        rrr = [self.V_Stochastic(T - 1, l, self.TransitionH(x, sam), p ** ((1 - self.PEWPEW) / n),
                                    new_st) + self.reward_sampled(sam) for sam in sams]
         avg = np.mean(rrr)
 
@@ -440,6 +439,7 @@ class TreePlan:
 
         if not st.children: return 0;
 
+        # max error among children
         max_err = 0
         for a, semi_child in st.children.iteritems():
             new_err = math.sqrt(2 / math.pi) * (semi_child.lipchitz + self.l1) * math.sqrt(semi_child.variance)
