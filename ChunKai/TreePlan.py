@@ -497,62 +497,7 @@ class TreePlan:
 
 		return vAccum
 
-	def MCTSRollout(self, action_node, st, T, l):
 
-		if T == 0: return (0, 0, 0)
-		assert not action_node.saturated, "Exploring saturated action node"
-
-		# Select action that has the greatest upper bound (TODO: make sure there are still leaves in that branch)
-		highest_upper = -float('inf')
-		best_a = None
-		for a, bounds in action_node.BoundsChildren.iteritems():
-			if action_node.ChanceChildren[a].saturated: continue
-			if highest_upper < bounds[1]: best_a = a
-			highest_upper = max(highest_upper, bounds[1])
-
-		new_semi_tree = st.children[best_a]
-
-		# Select observation that has the greatest WEIGHTED error
-		obs_node = action_node.ChanceChildren[best_a]
-		highest_variance = -0.5
-		most_uncertain_node_index = None
-		for i in xrange(obs_node.num_partitions):
-			if not (obs_node.ActionChildren[i] == None) and obs_node.ActionChildren[i].saturated: continue
-			if (obs_node.BoundsChildren[i][1] - obs_node.BoundsChildren[i][0])*obs_node.IntervalWeights[i] > highest_variance:
-				most_uncertain_node_index = i
-				highest_variance = (obs_node.BoundsChildren[i][1] - obs_node.BoundsChildren[i][0])*obs_node.IntervalWeights[i]
-
-		i = most_uncertain_node_index
-		# If observation is leaf, then we expand:
-		if obs_node.ActionChildren[i] == None:
-
-			new_action_node = MCTSActionNode(TransitionH(obs_node.augmented_state, obs_node.ObservationValue[i]), new_semi_tree, self, l)
-			obs_node.ActionChildren[i] = new_action_node
-
-			num_nodes_expanded = new_action_node.SkeletalExpand()
-			# Update upper and lower bounds on this observation node 
-			lower, upper = new_action_node.Eval()
-			obs_node.BoundsChildren[i] = (max(obs_node.BoundsChildren[i][0], lower), min(obs_node.BoundsChildren[i][1], upper))
-		
-		else: # Observation has already been made, expand further
-
-			lower, upper, num_nodes_expanded = self.MCTSRollout(obs_node.ActionChildren[i], new_semi_tree, T-1, l)
-			obs_node.BoundsChildren[i] = (max(lower, obs_node.BoundsChildren[i][0]), min(upper, obs_node.BoundsChildren[i][1]))
-
-		obs_node.UpdateChildrenBounds(i)
-		lower, upper = obs_node.Eval()
-		assert(lower <= upper)
-		action_node.BoundsChildren[best_a] = (max(action_node.BoundsChildren[best_a][0], lower), min(action_node.BoundsChildren[best_a][1], upper))	
-
-		if obs_node.ActionChildren[i].saturated:
-			obs_node.numchild_unsaturated -= 1
-			if obs_node.numchild_unsaturated == 0: 
-				obs_node.saturated = True
-		
-		#action_node.DetermineDominance()
-		action_node.DetermineSaturation()
-
-		return action_node.Eval() + (num_nodes_expanded, )
 
 	# Hacks to overcome bad design
 	def TransitionP(self, augmented_state, action):
