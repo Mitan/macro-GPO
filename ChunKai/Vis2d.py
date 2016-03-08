@@ -64,6 +64,7 @@ class Vis2d:
 			plt.savefig(save_path+".png")
 		if display: plt.show()
 		plt.clf()
+		plt.close()
 
 if __name__ == "__main__":
 
