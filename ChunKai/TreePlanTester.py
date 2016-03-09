@@ -14,16 +14,17 @@ import sys
 
 
 class TreePlanTester:
-    def __init__(self, simulate_noise_in_trials=True, reward_model="Linear", sd_bonus=0.0, bad_places=None):
+    def __init__(self, simulate_noise_in_trials=True, reward_model="Linear", sd_bonus=0.0, bad_places=None, batch_size = 1):
         """
         @param simulate_noise_in_trials: True if we want to add in noise artificially into measurements
         False if noise is already presumed to be present in the data model
         """
         self.simulate_noise_in_trials = simulate_noise_in_trials
-
+        self.batch_size = batch_size
         self.reward_model = reward_model
         if reward_model == "Linear":
-            self.reward_function = lambda z: z
+            # for batch case z is a list of k measurements
+            self.reward_function = lambda z: sum(z)
         elif reward_model == "Positive_log":
             self.reward_function = lambda z: math.log(z) if z > 1 else 0.0
         elif reward_model == "Step1mean":  # Step function with mean 0
@@ -146,38 +147,43 @@ class TreePlanTester:
             elif not Randomized:
                 _, a, nodes_expanded = tp.DeterministicML(x_0, self.H)
             else:
+            # todo return mcts search
             # Use random sampling
                 vBest, a = tp.StochasticAlgorithm(self.epsilon, x_0, self.H)
             # Take action a
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
-            baseline_measurement = self.model(x_temp.physical_state)
-            if self.simulate_noise_in_trials:
-                noise_component = np.random.normal(0, math.sqrt(self.noise_variance))
-            else:
-                noise_component = 0
-            percieved_measurement = baseline_measurement + noise_component
 
-            x_next = tp.TransitionH(x_temp, percieved_measurement)
+            # for batch case x_temp.physical_states is a list
+            # single_agent_state is a position of one agent in a batch
+            baseline_measurements = [self.model(single_agent_state) for single_agent_state in x_temp.physical_state]
+            # noise components is a set of noises for k agents
+            if self.simulate_noise_in_trials:
+                noise_components = np.random.normal(0, math.sqrt(self.noise_variance),self.batch_size)
+            else:
+                noise_components = [0 for i in range(self.batch_size)]
+            percieved_measurements = baseline_measurements + noise_components
+
+            x_next = tp.TransitionH(x_temp, percieved_measurements)
 
             # Update future state
             x_0 = x_next
 
-            reward_obtained = self.reward_function(percieved_measurement)
+            reward_obtained = self.reward_function(percieved_measurements)
 
             # Accumulated measurements
             reward_history.append(reward_obtained)
             total_reward += reward_obtained
-            measurement_history.append(percieved_measurement)
-            base_measurement_history.append(baseline_measurement)
-            total_nodes_expanded += nodes_expanded
-            nodes_expanded_history.append(nodes_expanded)
+            measurement_history.append(percieved_measurements)
+            base_measurement_history.append(baseline_measurements)
+            #total_nodes_expanded += nodes_expanded
+            #nodes_expanded_history.append(nodes_expanded)
 
             if debug:
                 print "A = ", a
-                print "M = ", percieved_measurement
+                print "M = ", percieved_measurements
                 print "X = "
-                print "Noise = ", noise_component
+                print "Noise = ", noise_components
                 print x_0.to_str()
 
             # Add to plot history
@@ -204,8 +210,8 @@ class TreePlanTester:
         f.write(str(base_measurement_history) + "\n")
         f.write("Total accumulated reward = " + str(total_reward) + "\n")
         f.write("Nodes Expanded per stage\n")
-        f.write(str(nodes_expanded_history) + "\n")
-        f.write("Total nodes expanded = " + str(total_nodes_expanded))
+        #f.write(str(nodes_expanded_history) + "\n")
+        #f.write("Total nodes expanded = " + str(total_nodes_expanded))
         f.close()
 
         return state_history, reward_history, nodes_expanded_history, base_measurement_history
@@ -242,8 +248,6 @@ class TreePlanTester:
                     path_points=[x.physical_state for x in state_history],
                     display=display,
                     save_path=save_path)
-
-
 # Test lists
 def SanityCheck():
     """
@@ -347,9 +351,9 @@ if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
 
     save_trunk = "./tests/"
-    for i in xrange(15, 18):
+    for i in xrange(19, 22):
         Random(length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth=4, save_folder= save_trunk + "seed" + str(i) + "/",
-               preset=False)
+               preset=False, Randomized= True)
     # Transect(seed=i)
 
     # print "Performing sanity checks"
