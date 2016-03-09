@@ -34,12 +34,14 @@ class TreePlan:
     # static_mathutil.Init(25000)
 
     def __init__(self, grid_domain, grid_gap, gaussian_process, action_set=None, max_nodes=None, reward_type="Linear",
-                 sd_bonus=0.0, bad_places=None, number_of_nodes_function  = None):
+                 sd_bonus=0.0, bad_places=None, number_of_nodes_function  = None, batch_size = 1):
         """
         - Gradularity given by grid_gap
         - Squared exponential covariance function
         - Characteristic length scale the same for both directions
         """
+        # size of the team
+        self.batch_size = batch_size
 
         # Preset constants
         self.INF = 10 ** 15
@@ -266,6 +268,8 @@ class TreePlan:
 
 
     def Preprocess(self, physical_state, locations, H):
+
+        # physical state is a list of k points
         """
         Builds the preprocessing tree and performs the necessary precalculations
         @return root node, epsilon, lambda and number of nodes expanded required of the semi-tree built
@@ -372,7 +376,7 @@ class TreePlan:
         @param x_0 - augmented state
         @return approximately optimal value, answer, and number of node expansions
         """
-
+        #x_0 stores a list of k points
         print "Preprocessing weight spaces..."
         # Obtain Lipchitz lookup tree
         st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
@@ -510,11 +514,13 @@ class SemiTree:
 
     def ComputeWeightsAndVariance(self, gp):
         """ Compute the weights for this semi_state ONLY"""
+        """
         chol = gp.GPCholTraining(self.ss.locations)
         cov_query = gp.GPCovQuery(self.ss.locations, self.ss.physical_state)
         self.weights = gp.GPWeights(self.ss.locations, self.ss.physical_state, chol, cov_query)
         self.variance = gp.GPVariance2(self.ss.locations, self.ss.physical_state, chol, cov_query)
-
+        """
+        self.weights, self.variance = gp.GetWeightsAndVariance(self.ss.locations, self.ss.physical_state)
 
 class SemiState:
     """ State which only contains locations visited and its current location
