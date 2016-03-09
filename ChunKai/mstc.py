@@ -263,7 +263,7 @@ class MCTSChanceNode:
 
 def MCTSExpand(self, epsilon, gamma, x_0, H, max_nodes = 10**15):
 		print "Preprocessing weight spaces..."
-		st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H, epsilon)
+		st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H, epsilon)
 
 		root_action_node = MCTSActionNode(x_0, st, self, l)
 		print "MCTS max nodes:", max_nodes, "Skeletal Expansion"

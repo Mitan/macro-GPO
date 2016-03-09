@@ -34,7 +34,7 @@ class TreePlan:
     # static_mathutil.Init(25000)
 
     def __init__(self, grid_domain, grid_gap, gaussian_process, action_set=None, max_nodes=None, reward_type="Linear",
-                 sd_bonus=0.0, bad_places=None):
+                 sd_bonus=0.0, bad_places=None, number_of_nodes_function  = None):
         """
         - Gradularity given by grid_gap
         - Squared exponential covariance function
@@ -60,6 +60,11 @@ class TreePlan:
 
         # Obstacles
         self.bad_places = bad_places
+
+        # user defined function for number of nodes at every level
+        # in the form
+        # lambda t: f(t)
+        self.nodes_function = number_of_nodes_function
 
         # Precomputed algo stuff
         # TODO: factor this outside, or pass as a parameter to TreePlan. We don't need to keep recomputing!
@@ -161,7 +166,6 @@ class TreePlan:
 
 
     def StochasticAlgorithm(self, epsilon, x_0, H):
-        print "gururu"
 
         beta = epsilon / H
         e_s = beta / 4
@@ -173,7 +177,7 @@ class TreePlan:
         delta = min(beta / 8 / max_err, 1)
         lamb = e_s / H
 
-        st, _, __, ___ = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
+        st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
 
         print "max error", max_err
         print "delta", delta
@@ -276,9 +280,7 @@ class TreePlan:
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
         self.PreprocessLipchitz(root_node, isRoot=True)
-
-
-        return root_node, -1.0, -1.0, -1
+        return root_node
 
     def BuildTree(self, node, H, isRoot=False):
         """
@@ -371,19 +373,15 @@ class TreePlan:
         @return approximately optimal value, answer, and number of node expansions
         """
 
-        # Obtain lambda
-        # l = epsilon / (gamma * H * (H+1))
-        # l = epsilon / sum([gamma ** i for i in xrange(1, H+1)])
-
         print "Preprocessing weight spaces..."
         # Obtain Lipchitz lookup tree
-        st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
+        st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
 
         print "Performing search..."
         # Get answer
         Vapprox, Aapprox = self.V_ML(H, x_0, st)
 
-        return Vapprox, Aapprox, nodes_expanded
+        return Vapprox, Aapprox, -1
 
     def V_ML(self, T, x, st):
         """
@@ -442,7 +440,7 @@ class TreePlan:
         # max error among children
         max_err = 0
         for a, semi_child in st.children.iteritems():
-            new_err = math.sqrt(2 / math.pi) * (semi_child.lipchitz + self.l1) * math.sqrt(semi_child.variance)
+            new_err =  (semi_child.lipchitz + self.l1) * math.sqrt(semi_child.variance)
             rec_err = self.FindMLEError(semi_child)
             max_err = max(max_err, new_err + rec_err)
 
