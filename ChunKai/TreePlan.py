@@ -402,17 +402,17 @@ class TreePlan:
         return vBest, aBest
 
     def Q_ML(self, T, x, new_st):
-        """
-        Approximates the integration step derived from alg1
-        @param new_st - semi-tree at this stage
-        @return - approximate value of the integral/expectation
-        """
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
-        v, _ = self.V_ML(T - 1, self.TransitionH(x, mu), new_st)
-        # R_1 which is also sampled
-        r_1 = self.reward_sampled(mu)
 
-        return v + r_1
+        sd = math.sqrt(new_st.variance)
+
+        # the number of samples is given by user-defined function
+        samples = np.random.normal(mu, sd, self.nodes_function(T))
+
+        sample_v_values = [self.V_Stochastic(T - 1, self.TransitionH(x, sam), new_st) + self.reward_sampled(sam) for sam
+                           in samples]
+        avg = np.mean(sample_v_values)
+        return avg
 
     def FindMLEError(self, st):
 
