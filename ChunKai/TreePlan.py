@@ -34,7 +34,7 @@ class TreePlan:
     # static_mathutil.Init(25000)
 
     def __init__(self, grid_domain, grid_gap, gaussian_process, action_set=None, max_nodes=None, reward_type="Linear",
-                 sd_bonus=0.0, bad_places=None, number_of_nodes_function  = None, batch_size = 1):
+                 sd_bonus=0.0, bad_places=None, number_of_nodes_function=None, batch_size=1):
         """
         - Gradularity given by grid_gap
         - Squared exponential covariance function
@@ -66,6 +66,9 @@ class TreePlan:
         # user defined function for number of nodes at every level
         # in the form
         # lambda t: f(t)
+        # set default value
+        if number_of_nodes_function is None:
+            number_of_nodes_function = lambda t: 10
         self.nodes_function = number_of_nodes_function
 
         # Precomputed algo stuff
@@ -165,24 +168,12 @@ class TreePlan:
 
         return best_improv_prob, best_action, len(valid_actions)
 
-
-
-    def StochasticAlgorithm(self, epsilon, x_0, H):
-
-        beta = epsilon / H
-        e_s = beta / 4
-
-        # max_err = self.FindMLEError(st)
-        max_err = 1.0
-        lamb_d = max_err / H
-
-        delta = min(beta / 8 / max_err, 1)
-        lamb = e_s / H
-
+    def StochasticAlgorithm(self, x_0, H):
+        """
+         NOTE
+         This implementation doesn't perform correction by introducing deterministic component
+        """
         st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
-
-        print "max error", max_err
-        print "delta", delta
 
         x = x_0
         valid_actions = self.GetValidActionSet(x.physical_state)
@@ -203,21 +194,15 @@ class TreePlan:
             r = self.reward_analytical(mean, math.sqrt(var))
 
             # Future reward
-            f = self.Q_ML(H, x_next, new_st) + r  # using MLE
-            frandom = self.Q_Stochastic(H, lamb, x_next, 1.0 - delta, new_st) + r
+            q_value = self.Q_Stochastic(H, x_next, new_st) + r
 
-            # Correction step
-            qmod = frandom
-            if abs(frandom - f) > e_s + max_err:
-                qmod = f
-
-            if (qmod > vBest):
+            if (q_value > vBest):
                 aBest = a
-                vBest = qmod
+                vBest = q_value
 
         return vBest, aBest
 
-    def V_Stochastic(self, T, l, x, p, st):
+    def V_Stochastic(self, T, x, st):
 
         valid_actions = self.GetValidActionSet(x.physical_state)
         if T == 0: return 0
@@ -237,35 +222,28 @@ class TreePlan:
             r = self.reward_analytical(mean, math.sqrt(var))
 
             # Future reward
-            f = self.Q_Stochastic(T, l, x_next, p ** (1.0 / len(valid_actions)), new_st) + r
+            f = self.Q_Stochastic(T, new_st) + r
 
             if (f > vBest):
-                aBest = a
                 vBest = f
 
         return vBest
 
-    def Q_Stochastic(self, T, l, x, p, new_st):
+    def Q_Stochastic(self, T, x, new_st):
         # print "Q: p", p
         # Initialize variables
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
         sd = math.sqrt(new_st.variance)
 
-        n = math.ceil(
-            2 * math.log(0.5 - 0.5 * (p ** self.PEWPEW)) * ((self.l1 + new_st.lipchitz) ** 2) * new_st.variance / (
-            -(l ** 2)))
-        n = max(n, 1)
-        if n > 1: print n
+        # the number of samples is given by user-defined function
+        samples = np.random.normal(mu, sd, self.nodes_function(T))
 
-        sams = np.random.normal(mu, sd, n)
-
-        rrr = [self.V_Stochastic(T - 1, l, self.TransitionH(x, sam), p ** ((1 - self.PEWPEW) / n),
-                                   new_st) + self.reward_sampled(sam) for sam in sams]
-        avg = np.mean(rrr)
+        sample_v_values = [self.V_Stochastic(T - 1, self.TransitionH(x, sam), new_st) + self.reward_sampled(sam) for sam
+                           in samples]
+        avg = np.mean(sample_v_values)
 
         return avg
-
 
     def Preprocess(self, physical_state, locations, H):
 
@@ -351,13 +329,12 @@ class TreePlan:
             for a, c in node.children.iteritems():
                 self.PreprocessLipchitz(c)
                 av = (
-                c.L_upper[0:nl + 1] + ((c.L_upper[-1] + self.l1 + self.l2(math.sqrt(c.variance))) * (c.weights.T)))
+                    c.L_upper[0:nl + 1] + ((c.L_upper[-1] + self.l1 + self.l2(math.sqrt(c.variance))) * (c.weights.T)))
                 vmax = np.maximum(vmax, av)
 
             node.L_upper = vmax
 
         node.lipchitz = node.L_upper[-1]
-
 
     # Hacks to overcome bad design
     def TransitionP(self, augmented_state, action):
@@ -376,7 +353,7 @@ class TreePlan:
         @param x_0 - augmented state
         @return approximately optimal value, answer, and number of node expansions
         """
-        #x_0 stores a list of k points
+        # x_0 stores a list of k points
         print "Preprocessing weight spaces..."
         # Obtain Lipchitz lookup tree
         st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
@@ -435,7 +412,7 @@ class TreePlan:
         # R_1 which is also sampled
         r_1 = self.reward_sampled(mu)
 
-        return v+ r_1
+        return v + r_1
 
     def FindMLEError(self, st):
 
@@ -444,7 +421,7 @@ class TreePlan:
         # max error among children
         max_err = 0
         for a, semi_child in st.children.iteritems():
-            new_err =  (semi_child.lipchitz + self.l1) * math.sqrt(semi_child.variance)
+            new_err = (semi_child.lipchitz + self.l1) * math.sqrt(semi_child.variance)
             rec_err = self.FindMLEError(semi_child)
             max_err = max(max_err, new_err + rec_err)
 
@@ -521,6 +498,7 @@ class SemiTree:
         self.variance = gp.GPVariance2(self.ss.locations, self.ss.physical_state, chol, cov_query)
         """
         self.weights, self.variance = gp.GetWeightsAndVariance(self.ss.locations, self.ss.physical_state)
+
 
 class SemiState:
     """ State which only contains locations visited and its current location
