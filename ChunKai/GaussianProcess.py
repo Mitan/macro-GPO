@@ -63,19 +63,6 @@ class GaussianProcess:
         return variance + self.noise_variance
 
 
-    def GPBatchVariance(self, history_current, current_prior, cholesky):
-        """
-         history_locations - (n,n) matix - prio
-        history_current - (n,k) matrix
-        current_prior - (k,k) matrix
-        cholesky - Cholesky decomposition of history_locations
-        @ return (k,k) covariance
-        """
-        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
-        v = linalg.solve_triangular(cholesky, history_current, lower = True)
-        #should be (k,k) matrix
-        return current_prior + np.dot(v.T, v)
-
     def GPVariance2(self, locations, current_location, cholesky=None, cov_query=None):
         """
         Return the posterior variance for measurements while the robot is in a particular augmented state
@@ -109,18 +96,7 @@ class GaussianProcess:
         return weights
 
 
-    def GPBatchWeights(self, history_current, cholesky):
-        """
-        history_current - (n,k) matrix - covariances between history values and new points
-        current_prior - (k,k) matrix
-        cholesky - Cholesky decomposition of history_locations
-        @ return (k, n) matrix
-        """
-        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
-        # todo avoid computation of v twice
-        v = linalg.solve_triangular(cholesky, history_current, lower = True)
-        weights_transposed = linalg.solve_triangular(cholesky.T, v, lower = False)
-        return weights_transposed.T
+
 
     def GPCholTraining(self, locations):
         # Covariance matrix between existing data points
@@ -140,29 +116,45 @@ class GaussianProcess:
 
         return cov_query
 
-    def GetWeightsAndVariance(self, history_locations, current_physical_state):
+    def GetWeightsAndVariance(self, history, current_physical_state):
         # assume that both inputs are np 2D-arrays
-        n = history_locations.shape[0]
-        k = current_physical_state.shape[0]
-        # assume that both inputs are 2-d np arrays
-        cholesky = self.GPCholTraining(history_locations)
-        # Sigma_n_k
-        # n rows, k columns
-        new_points_covariance = self.CovarianceMesh(current_physical_state, history_locations)
-        weights_transposed = np.zeros((n,k ))
-        # now we need to solve a linear system for every new point
-        for i in range(k):
-            current_covariances = new_points_covariance[:, i]
-            current_solutions = linalg.cho_solve((cholesky, True), current_covariances)
-            weights_transposed[:, i] = current_solutions
-        # should be (k, n)
-        weights = weights_transposed.T
-        variance = self.CovarianceMesh(current_physical_state, current_physical_state) - np.dot(weights, new_points_covariance)
+
+        history_prior = self.CovarianceMesh(history, history)
+        current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
+        cholesky = self.GPCholTraining(history_prior)
+        history_current = self.CovarianceMesh(history, current_physical_state)
+
+        variance = self.GPBatchVariance(history_current, current_prior, cholesky)
+        weights = self.GPBatchWeights(history_current, cholesky)
+
         return weights, variance
 
+    def GPBatchWeights(self, history_current, cholesky):
+        """
+        history_current - (n,k) matrix - covariances between history values and new points
+        current_prior - (k,k) matrix
+        cholesky - Cholesky decomposition of history_locations
+        @ return (k, n) matrix
+        """
+        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
+        # todo avoid computation of v twice
+        v = linalg.solve_triangular(cholesky, history_current, lower = True)
+        weights_transposed = linalg.solve_triangular(cholesky.T, v, lower = False)
+        return weights_transposed.T
 
 
-
+    def GPBatchVariance(self, history_current, current_prior, cholesky):
+        """
+         history_locations - (n,n) matix - prio
+        history_current - (n,k) matrix
+        current_prior - (k,k) matrix
+        cholesky - Cholesky decomposition of history_locations
+        @ return (k,k) covariance
+        """
+        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
+        v = linalg.solve_triangular(cholesky, history_current, lower = True)
+        #should be (k,k) matrix
+        return current_prior + np.dot(v.T, v)
 
     def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857):
         """

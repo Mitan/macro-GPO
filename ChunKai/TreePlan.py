@@ -1,25 +1,14 @@
-"""
-
-Implements Algorithm I in my CA report
-
-- iterative Deepening
-- epsilon optimal
-
-"""
+import copy
+import math
 
 import numpy as np
-from scipy import linalg
 from scipy.stats import norm
-from matplotlib import pyplot as pl
+from scipy.stats import multivariate_normal
+
 from GaussianProcess import GaussianProcess
 from GaussianProcess import SquareExponential
 from Vis2d import Vis2d
-from scipy.stats import multivariate_normal
 from mutil import mutil
-
-import copy
-import sys
-import math
 
 
 class TreePlan:
@@ -28,10 +17,6 @@ class TreePlan:
     def __init__(self, states, actions, transition, reward, GP):
         pass
     """
-
-    static_mathutil = mutil()
-    static_mathutil.Init(200)
-    # static_mathutil.Init(25000)
 
     def __init__(self, grid_domain, grid_gap, gaussian_process, action_set=None, max_nodes=None, reward_type="Linear",
                  sd_bonus=0.0, bad_places=None, number_of_nodes_function=None, batch_size=1):
@@ -45,7 +30,6 @@ class TreePlan:
 
         # Preset constants
         self.INF = 10 ** 15
-        self.PEWPEW = 0.5  # 1.0-1.0/10000.0
 
         # Problem parameters
         self.grid_gap = grid_gap
@@ -56,12 +40,8 @@ class TreePlan:
         elif action_set == 'GridWithStay':
             self.action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0), (-grid_gap, 0), (0.0, 0.0))
         self.grid_domain = grid_domain
-        self.gp = gaussian_process
-        self.max_nodes = self.INF if max_nodes == None else max_nodes
-        self.sd_bonus = sd_bonus
 
-        # Obstacles
-        self.bad_places = bad_places
+        self.gp = gaussian_process
 
         # user defined function for number of nodes at every level
         # in the form
@@ -71,10 +51,7 @@ class TreePlan:
             number_of_nodes_function = lambda t: 10
         self.nodes_function = number_of_nodes_function
 
-        # Precomputed algo stuff
-        # TODO: factor this outside, or pass as a parameter to TreePlan. We don't need to keep recomputing!
-        self.mathutil = TreePlan.static_mathutil
-
+        #TODO change into fixed reward
         if reward_type == "Linear":
             self.reward_analytical = lambda mu, sigma: mu + sd_bonus * (sigma)
             self.reward_sampled = lambda f: 0
@@ -102,71 +79,6 @@ class TreePlan:
         else:
             assert False, "Unknown reward type"
 
-    def EI(self, x_0):
-
-        """
-        *Myopic* implementation of EI (Expected improvement)
-        """
-
-        best_observation = max(x_0.history.measurements)
-        best_action = None
-        best_expected_improv = 0.0
-
-        valid_actions = self.GetValidActionSet(x_0.physical_state)
-
-        for a in valid_actions:
-            x_next = self.TransitionP(x_0, a)
-
-            chol = self.gp.GPCholTraining(x_0.history.locations)
-            cov_query = self.gp.GPCovQuery(x_0.history.locations, x_next.physical_state)
-            weights = self.gp.GPWeights(x_0.history.locations, x_next.physical_state, chol, cov_query)
-            var = self.gp.GPVariance2(x_0.history.locations, x_next.physical_state, chol, cov_query)
-
-            sigma = math.sqrt(var)
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=weights)
-
-            Z = (mean - best_observation) / sigma
-            expectedImprov = (mean - best_observation) * norm.cdf(x=Z, loc=0, scale=1.0) + sigma * norm.pdf(x=Z, loc=0,
-                                                                                                            scale=1.0)
-
-            if expectedImprov >= best_expected_improv:
-                best_expected_improv = expectedImprov
-                best_action = a
-
-        return best_expected_improv, best_action, len(valid_actions)
-
-    def PI(self, x_0):
-
-        """
-        *Myopic implementation of PI (probability of improvement)*
-        """
-
-        best_observation = max(x_0.history.measurements)
-        best_action = None
-        best_improv_prob = 0.0
-
-        valid_actions = self.GetValidActionSet(x_0.physical_state)
-
-        for a in valid_actions:
-            x_next = self.TransitionP(x_0, a)
-
-            chol = self.gp.GPCholTraining(x_0.history.locations)
-            cov_query = self.gp.GPCovQuery(x_0.history.locations, x_next.physical_state)
-            weights = self.gp.GPWeights(x_0.history.locations, x_next.physical_state, chol, cov_query)
-            var = self.gp.GPVariance2(x_0.history.locations, x_next.physical_state, chol, cov_query)
-
-            sigma = math.sqrt(var)
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=weights)
-
-            improv_prob = 1.0 - norm.cdf(x=best_observation, loc=mean, scale=sigma)
-
-            if improv_prob >= best_improv_prob:
-                best_improv_prob = improv_prob
-                best_action = a
-
-        return best_improv_prob, best_action, len(valid_actions)
 
     def StochasticAlgorithm(self, x_0, H):
         """
@@ -261,7 +173,6 @@ class TreePlan:
         # tree
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
-        self.PreprocessLipchitz(root_node, isRoot=True)
         return root_node
 
     def BuildTree(self, node, H, isRoot=False):
@@ -301,40 +212,8 @@ class TreePlan:
         for dim in xrange(ndims):
             if new_state[dim] < self.grid_domain[dim][0] or new_state[dim] >= self.grid_domain[dim][1]: return False
 
-        # Check for obstacles
-        if self.bad_places:
-            for i in xrange(len(self.bad_places)):
-                if abs(new_state[0] - self.bad_places[i][0]) < 0.001 and abs(
-                                new_state[1] - self.bad_places[i][1]) < 0.001:
-                    return False
-
         return True
 
-    def PreprocessLipchitz(self, node, isRoot=False):
-        """
-        Obtain Lipchitz vector and Lipchitz constant for each node.
-        @param node - root node of the semi-tree (assumed to be already constructed)
-        """
-
-        nl = node.ss.locations.shape[
-            0]  # number of elements PRIOR to adding current location. Ie. the size of the weight space
-
-        # Base case
-        if len(node.children) == 0:
-            node.L_upper = np.zeros((nl + 1, 1))
-
-        else:
-            # Recursive case
-            vmax = np.zeros((nl + 1, 1))
-            for a, c in node.children.iteritems():
-                self.PreprocessLipchitz(c)
-                av = (
-                    c.L_upper[0:nl + 1] + ((c.L_upper[-1] + self.l1 + self.l2(math.sqrt(c.variance))) * (c.weights.T)))
-                vmax = np.maximum(vmax, av)
-
-            node.L_upper = vmax
-
-        node.lipchitz = node.L_upper[-1]
 
     # Hacks to overcome bad design
     def TransitionP(self, augmented_state, action):
@@ -426,20 +305,6 @@ class TreePlan:
 
         return avg
 
-    def FindMLEError(self, st):
-
-        if not st.children: return 0;
-
-        # max error among children
-        max_err = 0
-        for a, semi_child in st.children.iteritems():
-            new_err = (semi_child.lipchitz + self.l1) * math.sqrt(semi_child.variance)
-            rec_err = self.FindMLEError(semi_child)
-            max_err = max(max_err, new_err + rec_err)
-
-        return max_err
-
-
 ### TRANSITION AND MEASUREMENTS ###
 
 def TransitionP(augmented_state, action):
@@ -495,20 +360,11 @@ class SemiTree:
         self.children = dict()
         self.weights = None  # Weight space vector
         self.variance = None  # Precomputed posterior variance
-        self.L_upper = None  # Upper bound for the lipchitz VECTOR L
-        self.lipchitz = None  # Lipchitz constant for the next observation
 
     def AddChild(self, action, semi_tree):
         self.children[action] = semi_tree
 
     def ComputeWeightsAndVariance(self, gp):
-        """ Compute the weights for this semi_state ONLY"""
-        """
-        chol = gp.GPCholTraining(self.ss.locations)
-        cov_query = gp.GPCovQuery(self.ss.locations, self.ss.physical_state)
-        self.weights = gp.GPWeights(self.ss.locations, self.ss.physical_state, chol, cov_query)
-        self.variance = gp.GPVariance2(self.ss.locations, self.ss.physical_state, chol, cov_query)
-        """
         self.weights, self.variance = gp.GetWeightsAndVariance(self.ss.locations, self.ss.physical_state)
 
 
