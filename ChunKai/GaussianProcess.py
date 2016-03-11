@@ -62,6 +62,19 @@ class GaussianProcess:
 
         return variance + self.noise_variance
 
+
+    def GPBatchVariance(self, history_current, current_prior, cholesky):
+        """
+         history_locations - (n,n) matix - prio
+        history_current - (n,k) matrix
+        current_prior - (k,k) matrix
+        cholesky - Cholesky decomposition of history_locations
+        """
+        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
+        v = linalg.solve_triangular(cholesky, history_current, lower = True)
+        #should be (k,k) matrix
+        return current_prior + np.dot(v.T, v)
+
     def GPVariance2(self, locations, current_location, cholesky=None, cov_query=None):
         """
         Return the posterior variance for measurements while the robot is in a particular augmented state
