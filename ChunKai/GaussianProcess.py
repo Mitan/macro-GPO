@@ -69,6 +69,7 @@ class GaussianProcess:
         history_current - (n,k) matrix
         current_prior - (k,k) matrix
         cholesky - Cholesky decomposition of history_locations
+        @ return (k,k) covariance
         """
         # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
         v = linalg.solve_triangular(cholesky, history_current, lower = True)
@@ -106,6 +107,20 @@ class GaussianProcess:
         weights = linalg.cho_solve((cholesky, True), cov_query.T).T
 
         return weights
+
+
+    def GPBatchWeights(self, history_current, cholesky):
+        """
+        history_current - (n,k) matrix - covariances between history values and new points
+        current_prior - (k,k) matrix
+        cholesky - Cholesky decomposition of history_locations
+        @ return (k, n) matrix
+        """
+        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
+        # todo avoid computation of v twice
+        v = linalg.solve_triangular(cholesky, history_current, lower = True)
+        weights_transposed = linalg.solve_triangular(cholesky.T, v, lower = False)
+        return weights_transposed.T
 
     def GPCholTraining(self, locations):
         # Covariance matrix between existing data points
