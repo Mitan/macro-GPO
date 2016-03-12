@@ -230,6 +230,7 @@ class TreePlanTester:
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
         ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
+        """
         posterior_mean_before = np.vectorize(
             lambda x, y: self.gp.GPMean(state_history[-2].history.locations, state_history[-2].history.measurements,
                                         [x, y]))
@@ -240,16 +241,12 @@ class TreePlanTester:
             lambda x, y: self.gp.GPVariance2(state_history[-2].history.locations, [x, y]))
         posterior_variance_after = np.vectorize(
             lambda x, y: self.gp.GPVariance2(state_history[-1].history.locations, [x, y]))
-
+        """
         # Plot graph of locations
         vis = Vis2d()
         vis.MapPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
                                  self.grid_domain[1][1]],
                     ground_truth=ground_truth(XGrid, YGrid),
-                    posterior_mean_before=posterior_mean_before(XGrid, YGrid),
-                    posterior_mean_after=posterior_mean_after(XGrid, YGrid),
-                    posterior_variance_before=posterior_variance_before(XGrid, YGrid),
-                    posterior_variance_after=posterior_mean_after(XGrid, YGrid),
                     path_points=[x.physical_state for x in state_history],
                     display=display,
                     save_path=save_path)
