@@ -214,10 +214,12 @@ class TreePlan:
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
         assert physical_state.shape == a.shape
         new_state = np.add(physical_state, a)
-        values = new_state.tolist()
+        ndims = 2
 
-        for i in xrange(len(values)):
-            if values[i] < self.grid_domain[dim][0] or new_state[dim] >= self.grid_domain[dim][1]: return False
+        for i in range(a.shape[0]):
+            current_agent_postion = new_state[i : 0]
+            for dim in xrange(ndims):
+                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= self.grid_domain[dim][1]: return False
 
         return True
 
