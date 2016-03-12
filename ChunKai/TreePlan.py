@@ -33,6 +33,7 @@ class TreePlan:
 
         # Problem parameters
         self.grid_gap = grid_gap
+        # actions available for one agent
         self.action_set = action_set
         if action_set == None:
             self.action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0),
@@ -179,7 +180,7 @@ class TreePlan:
         """
         Builds the preprocessing (semi) tree recursively
         """
-
+        # history for root possibly empty
         if not isRoot: node.ComputeWeightsAndVariance(self.gp)
 
         if H == 0:
@@ -191,13 +192,15 @@ class TreePlan:
             # Get new semi state
             cur_physical_state = node.ss.physical_state
             new_physical_state = self.PhysicalTransition(cur_physical_state, a)
-            new_locations = np.append(node.ss.locations, np.atleast_2d(cur_physical_state), 0)
-            new_ss = SemiState(new_physical_state, new_locations)
+            new_history_locations = np.append(node.ss.locations, cur_physical_state, 0)
+            new_ss = SemiState(new_physical_state, new_history_locations)
 
             # Build child subtree
             new_st = SemiTree(new_ss)
+            # add child to old state
             node.AddChild(a, new_st)
-            new_st.ComputeWeightsAndVariance(self.gp)
+            # why calculate twice?
+            #new_st.ComputeWeightsAndVariance(self.gp)
             self.BuildTree(new_st, H - 1)
 
     def GetValidActionSet(self, physical_state):
@@ -225,17 +228,18 @@ class TreePlan:
     def PhysicalTransition(self, physical_state, action):
         return PhysicalTransition(physical_state, action)
 
-    ######## Maximum likelihood
+
 
     def DeterministicML(self, x_0, H):
         """
         @param x_0 - augmented state
         @return approximately optimal value, answer, and number of node expansions
         """
-        # x_0 stores a list of k points
+        # x_0 stores a 2D np array of k points with history
         print "Preprocessing weight spaces..."
-        # Obtain Lipchitz lookup tree
-        st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
+        # We take current position and past locations separately
+        #st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
+        st = self.Preprocess(x_0.physical_state, x_0.history.locations, H)
 
         print "Performing search..."
         # Get answer
@@ -330,18 +334,21 @@ def PhysicalTransition(physical_state, action):
     @param - physical_state: numpy array with same size as action
     @return - new physical state after taking the action
     """
-
-    new_physical_state = physical_state + action
+    # action should be joint
+    new_physical_state = np.add(physical_state, action)
 
     return new_physical_state
 
 
+# just state and history
 class AugmentedState:
     def __init__(self, physical_state, initial_history):
         """
         Initialize augmented state with initial position and history
         """
+        #2D array
         self.physical_state = physical_state
+        #2D array
         self.history = initial_history
 
     def to_str(self):
@@ -382,12 +389,15 @@ class History:
         self.locations = initial_locations
         self.measurements = initial_measurements
 
-    def append(self, new_location, new_measurement):
+    def append(self, new_locations, new_measurements):
         """
+        new_measurements - 1D array
+        new_locations - 2D array
         @modifies - self.locations, self.measurements
         """
-        self.locations = np.append(self.locations, np.atleast_2d(new_location), axis=0)
-        self.measurements = np.append(self.measurements, new_measurement)
+        self.locations = np.append(self.locations, new_locations, axis=0)
+        #1D array
+        self.measurements = np.append(self.measurements, new_measurements)
 
 
 if __name__ == "__main__":
