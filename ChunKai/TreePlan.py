@@ -1,5 +1,6 @@
 import copy
 import math
+import itertools
 
 import numpy as np
 from scipy.stats import norm
@@ -34,14 +35,16 @@ class TreePlan:
         # Problem parameters
         self.grid_gap = grid_gap
         # actions available for one agent
-        self.action_set = action_set
+        self.single_agent_action_set = action_set
         if action_set == None:
-            self.action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0),
+            self.single_agent_action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0),
                                (-grid_gap, 0))  # TODO: ensure that we can handle > 2 dimensions
         elif action_set == 'GridWithStay':
-            self.action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0), (-grid_gap, 0), (0.0, 0.0))
+            self.single_agent_action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0), (-grid_gap, 0), (0.0, 0.0))
         self.grid_domain = grid_domain
 
+        # an ugly way to create joint actions
+        self.joint_action_set = np.asarray(list(itertools.product(self.single_agent_action_set, repeat = self.batch_size)))
         self.gp = gaussian_process
 
         # user defined function for number of nodes at every level
@@ -204,16 +207,17 @@ class TreePlan:
             self.BuildTree(new_st, H - 1)
 
     def GetValidActionSet(self, physical_state):
-        return [a for a in self.action_set if self.IsValidAction(physical_state, a)]
+        return [a for a in self.joint_action_set if self.IsValidAction(physical_state, a)]
 
     def IsValidAction(self, physical_state, a):
         # TODO: ensure scalability to multiple dimensions
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
+        assert physical_state.shape == a.shape
+        new_state = np.add(physical_state, a)
+        values = new_state.tolist()
 
-        new_state = physical_state + a
-        ndims = 2
-        for dim in xrange(ndims):
-            if new_state[dim] < self.grid_domain[dim][0] or new_state[dim] >= self.grid_domain[dim][1]: return False
+        for i in xrange(len(values)):
+            if values[i] < self.grid_domain[dim][0] or new_state[dim] >= self.grid_domain[dim][1]: return False
 
         return True
 
