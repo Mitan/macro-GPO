@@ -52,12 +52,13 @@ class TreePlan:
         # lambda t: f(t)
         # set default value
         if number_of_nodes_function is None:
-            number_of_nodes_function = lambda t: 10
+            number_of_nodes_function = lambda t: 5
         self.nodes_function = number_of_nodes_function
 
-        #TODO change into fixed reward
         if reward_type == "Linear":
-            self.reward_analytical = lambda mu, sigma: mu + sd_bonus * (sigma)
+            #TODO add Erik's
+            self.reward_analytical = lambda mu, sigma: mu
+            #self.reward_analytical = lambda mu, sigma: mu + sd_bonus * (sigma)
             self.reward_sampled = lambda f: 0
 
             self.l1 = 0
@@ -161,8 +162,9 @@ class TreePlan:
 
         return avg
 
-    def Preprocess(self, physical_state, locations, H):
+    def Preprocess(self, physical_state, history_locations, H):
 
+        # history locations include physical state
         # physical state is a list of k points
         """
         Builds the preprocessing tree and performs the necessary precalculations
@@ -173,7 +175,7 @@ class TreePlan:
         lambda: amount of error allowed per level
         """
         # just wrapper
-        root_ss = SemiState(physical_state, locations)
+        root_ss = SemiState(physical_state, history_locations)
         # tree
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
@@ -243,8 +245,9 @@ class TreePlan:
         # x_0 stores a 2D np array of k points with history
         print "Preprocessing weight spaces..."
         # We take current position and past locations separately
-        #st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
-        st = self.Preprocess(x_0.physical_state, x_0.history.locations, H)
+
+        #now history locations do not include current
+        st = self.Preprocess(x_0.physical_state, x_0.history.locations[: -self.batch_size, :], H)
 
         print "Performing search..."
         # Get answer
@@ -274,21 +277,18 @@ class TreePlan:
             # select new state obtained by transition
             new_st = st.children[ToTuple(a)]
 
-            # Reward is just the mean added to a multiple of the variance at that point
-            print x_next.history.locations
-            print x_next.history.measurements
-            print x_next.physical_state
-            print new_st.weights
-            print type(new_st)
-            print type(x_next)
 
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
                                   weights=new_st.weights)
             var = new_st.variance
-            r = self.reward_analytical(mean, math.sqrt(var))
+            #r = self.reward_analytical(mean, math.sqrt(var))
+            r = self.reward_analytical(mean, var)
 
             # Future reward
             f = self.Q_ML(T, x_next, new_st) + r
+            print "f = "
+            print f
+            print vBest
 
             if (f > vBest):
                 aBest = a
@@ -309,13 +309,13 @@ class TreePlan:
         return v + r_1
         """
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
-
-        sd = math.sqrt(new_st.variance)
+        #print mu.shape, new_st.variance.shape
+        assert mu.shape[0] == new_st.variance.shape[0]
 
         # the number of samples is given by user-defined function
-        samples = np.random.normal(mu, sd, self.nodes_function(T))
+        samples = np.random.multivariate_normal(mu, new_st.variance, self.nodes_function(T))
 
-        sample_v_values = [self.V_Stochastic(T - 1, self.TransitionH(x, sam), new_st) + self.reward_sampled(sam) for sam
+        sample_v_values = [self.V_ML(T - 1, self.TransitionH(x, sam), new_st)[0] + self.reward_sampled(sam) for sam
                            in samples]
         avg = np.mean(sample_v_values)
 

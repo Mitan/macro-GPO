@@ -122,6 +122,7 @@ class TreePlanTester:
         @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
         """
 
+        # s_0, d_0
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
         state_history = [x_0]
@@ -299,8 +300,10 @@ def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_t
     TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
     TPT.InitEnvironment(environment_noise=noise_variance, model=m)
     TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth, batch_size = batch_size)
-    TPT.InitTestParameters(initial_physical_state=np.array([[0.2, 0.2], [0.8, 0.8]]),
-                           past_locations= None)
+    # state of k agents
+    initial_state = np.array([[0.2, 0.2], [0.8, 0.8]])
+    TPT.InitTestParameters(initial_physical_state= initial_state,
+                           past_locations= initial_state)
     return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step,
                     cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special)
@@ -319,7 +322,7 @@ def Transect(grid_gap_=0.04, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, see
     TPT.InitEnvironment(environment_noise=0.00001, model=m)
     TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth)
     TPT.InitTestParameters(initial_physical_state=np.array([0.0, 0.48]), past_locations=np.array([[0.0, 0.48]]))
-    TPT.Test(num_timesteps_test=17, debug=True, visualize=False,
+    TPT.Test(num_timesteps_test=6, debug=True, visualize=False,
              action_set=[(grid_gap_, -grid_gap_), (grid_gap_, grid_gap_)], save_folder=save_folder)
 
 
