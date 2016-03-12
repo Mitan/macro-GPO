@@ -113,7 +113,7 @@ class TreePlanTester:
         self.past_locations = past_locations
 
         # Compute measurements
-        self.past_measurements = np.apply_along_axis(self.model, 1, past_locations)
+        self.past_measurements = None if self.past_locations is None else np.apply_along_axis(self.model, 1, past_locations)
 
     def Test(self, num_timesteps_test, debug=True, visualize=False, action_set=None, save_per_step=True,
              save_folder="default_results/", MCTS=True, MCTSMaxNodes=10 ** 15, cheat=False, cheatnum=0,
@@ -299,9 +299,8 @@ def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_t
     TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
     TPT.InitEnvironment(environment_noise=noise_variance, model=m)
     TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth, batch_size = batch_size)
-    TPT.InitTestParameters(initial_physical_state=np.array([0.5, 0.5]),
-                           past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
-                               [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
+    TPT.InitTestParameters(initial_physical_state=np.array([[0.2, 0.2], [0.8, 0.8]]),
+                           past_locations= None)
     return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step,
                     cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special)

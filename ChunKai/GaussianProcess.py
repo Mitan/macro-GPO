@@ -121,7 +121,9 @@ class GaussianProcess:
 
         history_prior = self.CovarianceMesh(history, history)
         current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
-        cholesky = self.GPCholTraining(history_prior)
+        #cholesky = self.GPCholTraining(history_prior)
+        cholesky = np.linalg.cholesky(history_prior + self.noise_variance * np.identity(history_prior.shape[0]))
+
         history_current = self.CovarianceMesh(history, current_physical_state)
 
         variance = self.GPBatchVariance(history_current, current_prior, cholesky)

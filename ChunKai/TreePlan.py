@@ -101,7 +101,7 @@ class TreePlan:
             x_next = self.TransitionP(x, a)
 
             # go down the semitree node
-            new_st = st.children[a]
+            new_st = st.children[ToTuple(a)]
 
             # Reward is just the mean added to a multiple of the variance at that point
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
@@ -129,7 +129,7 @@ class TreePlan:
             x_next = self.TransitionP(x, a)
 
             # go down the semitree node
-            new_st = st.children[a]
+            new_st = st.children[ToTuple(a)]
 
             # Reward is just the mean added to a multiple of the variance at that point
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
@@ -195,7 +195,7 @@ class TreePlan:
             # Get new semi state
             cur_physical_state = node.ss.physical_state
             new_physical_state = self.PhysicalTransition(cur_physical_state, a)
-            new_history_locations = np.append(node.ss.locations, cur_physical_state, 0)
+            new_history_locations = cur_physical_state if node.ss.locations is None else np.append(node.ss.locations, cur_physical_state, 0)
             new_ss = SemiState(new_physical_state, new_history_locations)
 
             # Build child subtree
@@ -215,9 +215,8 @@ class TreePlan:
         assert physical_state.shape == a.shape
         new_state = np.add(physical_state, a)
         ndims = 2
-
         for i in range(a.shape[0]):
-            current_agent_postion = new_state[i : 0]
+            current_agent_postion = new_state[i, : ]
             for dim in xrange(ndims):
                 if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= self.grid_domain[dim][1]: return False
 
@@ -273,9 +272,16 @@ class TreePlan:
 
             # go down the semitree node
             # select new state obtained by transition
-            new_st = st.children[a]
+            new_st = st.children[ToTuple(a)]
 
             # Reward is just the mean added to a multiple of the variance at that point
+            print x_next.history.locations
+            print x_next.history.measurements
+            print x_next.physical_state
+            print new_st.weights
+            print type(new_st)
+            print type(x_next)
+
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
                                   weights=new_st.weights)
             var = new_st.variance
@@ -314,6 +320,14 @@ class TreePlan:
         avg = np.mean(sample_v_values)
 
         return avg
+
+###UTIL
+# converts ndarray to tuple
+# can't pass ndarray as a key for dict
+def ToTuple(arr):
+    return tuple(map(tuple, arr))
+
+
 
 ### TRANSITION AND MEASUREMENTS ###
 
@@ -375,7 +389,8 @@ class SemiTree:
         self.variance = None  # Precomputed posterior variance
 
     def AddChild(self, action, semi_tree):
-        self.children[action] = semi_tree
+        key = ToTuple(action)
+        self.children[key] = semi_tree
 
     def ComputeWeightsAndVariance(self, gp):
         self.weights, self.variance = gp.GetWeightsAndVariance(self.ss.locations, self.ss.physical_state)
