@@ -61,7 +61,7 @@ class TreePlanTester:
         self.environment_noise = environment_noise
         self.model = model
 
-    def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, H):
+    def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, H, batch_size):
         """
         Creates a planner. For now, we only allow gridded/latticed domains.
 
@@ -70,6 +70,7 @@ class TreePlanTester:
         @param epsilon - maximum allowed policy loss
         @param gamma - discount factor
         @param H - int, horizon
+        @param batch_size - int, number of points in a batch (k)
 
         Example usage:
         InitPlanner(((-10, 10), (-10, 10)), 0.2, 100.0, 1.0, 5)
@@ -89,6 +90,7 @@ class TreePlanTester:
         self.epsilon = epsilon
         self.gamma = gamma
         self.H = H
+        self.batch_size = batch_size
 
     def InitTestParameters(self, initial_physical_state, past_locations):
         """
@@ -135,8 +137,10 @@ class TreePlanTester:
         base_measurement_history = []
         for time in xrange(num_timesteps_test):
             tp = TreePlan(self.grid_domain, self.grid_gap, self.gp, action_set=action_set,
-                          reward_type=self.reward_model, sd_bonus=self.sd_bonus, bad_places=self.bad_places)
+                          reward_type=self.reward_model, sd_bonus=self.sd_bonus, bad_places=self.bad_places, batch_size= self.batch_size)
 
+            _, a, nodes_expanded = tp.DeterministicML(x_0, self.H)
+            """
             if time == 0 and cheat:
                 a = (0.0, 0.05)
                 nodes_expanded = cheatnum
@@ -151,6 +155,7 @@ class TreePlanTester:
             # Use random sampling
                 vBest, a = tp.StochasticAlgorithm(self.epsilon, x_0, self.H)
             # Take action a
+            """
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
 
@@ -285,7 +290,7 @@ def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_t
            seed=142857, save_folder=None, save_per_step=True,
            preset=False, action_set=None, reward_model="Linear", cheat=False,
            cheatnum=0, Randomized=False, sd_bonus=0.0,
-           special=None):
+           special=None, batch_size = 1):
     """
     Assume a map size of [0, 1] for both axes
     """
@@ -296,7 +301,7 @@ def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_t
     TPT = TreePlanTester(simulate_noise_in_trials=True, reward_model=reward_model, sd_bonus=sd_bonus)
     TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
     TPT.InitEnvironment(environment_noise=noise_variance, model=m)
-    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth)
+    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth, batch_size = batch_size)
     TPT.InitTestParameters(initial_physical_state=np.array([0.5, 0.5]),
                            past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
                                [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
@@ -353,7 +358,7 @@ if __name__ == "__main__":
     save_trunk = "./tests/"
     for i in xrange(19, 22):
         Random(length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth=4, save_folder= save_trunk + "seed" + str(i) + "/",
-               preset=False, Randomized= True)
+               preset=False, Randomized= True, batch_size = 2)
     # Transect(seed=i)
 
     # print "Performing sanity checks"
