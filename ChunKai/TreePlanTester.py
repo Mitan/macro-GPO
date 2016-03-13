@@ -356,7 +356,7 @@ if __name__ == "__main__":
 
     save_trunk = "./tests/"
     for i in xrange(19, 22):
-        Random(length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth=4, save_folder= save_trunk + "seed" + str(i) + "/",
+        Random(length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth=2, save_folder= save_trunk + "seed" + str(i) + "/",
                preset=False, Randomized= True, batch_size = 2)
     # Transect(seed=i)
 

@@ -57,7 +57,7 @@ class TreePlan:
 
         if reward_type == "Linear":
             #TODO add Erik's
-            self.reward_analytical = lambda mu, sigma: mu
+            self.reward_analytical = lambda mu, sigma: np.sum(mu)
             #self.reward_analytical = lambda mu, sigma: mu + sd_bonus * (sigma)
             self.reward_sampled = lambda f: 0
 
@@ -315,8 +315,10 @@ class TreePlan:
         # the number of samples is given by user-defined function
         samples = np.random.multivariate_normal(mu, new_st.variance, self.nodes_function(T))
 
-        sample_v_values = [self.V_ML(T - 1, self.TransitionH(x, sam), new_st)[0] + self.reward_sampled(sam) for sam
+        sample_v_values = [(self.V_ML(T - 1, self.TransitionH(x, sam), new_st))[0] + self.reward_sampled(sam) for sam
                            in samples]
+        print "sample values = "
+        print sample_v_values
         avg = np.mean(sample_v_values)
 
         return avg

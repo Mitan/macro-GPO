@@ -38,9 +38,10 @@ class Vis2d:
             if not q == None:
                 mmax = max(np.amax(np.amax(q)), mmax)
                 mmin = min(np.amin(np.amin(q)), mmin)
-        fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
+        axes = plt.axes()
+        #fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
         if not ground_truth == None:
-            im = axes.flat[0].imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
+            im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
                                      cmap='Greys', vmin=mmin, vmax=mmax)
             if not path_points == None and path_points:
                 # batch size
@@ -53,9 +54,9 @@ class Vis2d:
                     for j in xrange(k):
                         prev = path_points[i - 1]
                         current = path_points[i]
-                        axes.flat[0].arrow(prev[j,0], prev[j,1],
-                                       current[0] - prev[j,0],
-                                       current[1] - prev[j,1], edgecolor='red')
+                        axes.arrow(prev[j,0], prev[j,1],
+                                       current[j,0] - prev[j,0],
+                                       current[j,1] - prev[j,1], edgecolor='red')
         """
         if not posterior_mean_before == None:
             im = axes.flat[2].imshow(posterior_mean_before, interpolation='nearest', aspect='auto', extent=grid_extent2,
