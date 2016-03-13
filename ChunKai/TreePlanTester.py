@@ -283,7 +283,7 @@ def Exploratory(grid_gap_, epsilon_=100.0):
     TPT.Test(num_timesteps_test=20, debug=True, visualize=True)
 
 
-def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_timesteps_test=20,
+def Random(initial_state, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_timesteps_test=20,
            signal_variance=1, noise_variance=10 ** -5,
            seed=142857, save_folder=None, save_per_step=True,
            preset=False, action_set=None, reward_model="Linear", cheat=False,
@@ -301,7 +301,7 @@ def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_t
     TPT.InitEnvironment(environment_noise=noise_variance, model=m)
     TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth, batch_size = batch_size)
     # state of k agents
-    initial_state = np.array([[0.2, 0.2], [0.8, 0.8]])
+    #initial_state = np.array([[0.2, 0.2], [0.8, 0.8]])
     TPT.InitTestParameters(initial_physical_state= initial_state,
                            past_locations= initial_state)
     return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, save_folder=save_folder,
@@ -354,10 +354,16 @@ def TestRealData(locations, values, length_scale, signal_variance, noise_varianc
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
 
+    initial_state = np.array([[0.3, 0.3], [0.7, 0.7]])
+    #initial_state = np.array([[0.2, 0.2]])
     save_trunk = "./tests/"
-    for i in xrange(19, 22):
-        Random(length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth=2, save_folder= save_trunk + "seed" + str(i) + "/",
-               preset=False, Randomized= True, batch_size = 2)
+    my_batch_size = 2
+    H = 3
+    for h in range(1,3):
+        for i in xrange(31, 34):
+            my_save_folder = save_trunk + "seed" + str(i) + "_b" +str(my_batch_size) + "_h"+ str(h) +  "/"
+            Random(initial_state, length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth= h, save_folder= my_save_folder,
+                   preset=False, Randomized= True, batch_size = my_batch_size, num_timesteps_test=7)
     # Transect(seed=i)
 
     # print "Performing sanity checks"

@@ -52,7 +52,7 @@ class TreePlan:
         # lambda t: f(t)
         # set default value
         if number_of_nodes_function is None:
-            number_of_nodes_function = lambda t: 5
+            number_of_nodes_function = lambda t: 20
         self.nodes_function = number_of_nodes_function
 
         if reward_type == "Linear":
@@ -186,7 +186,9 @@ class TreePlan:
         Builds the preprocessing (semi) tree recursively
         """
         # history for root possibly empty
-        if not isRoot: node.ComputeWeightsAndVariance(self.gp)
+        if not isRoot:
+            node.ComputeWeightsAndVariance(self.gp)
+            #print H, node.variance
 
         if H == 0:
             return
@@ -205,7 +207,7 @@ class TreePlan:
             # add child to old state
             node.AddChild(a, new_st)
             # why calculate twice?
-            #new_st.ComputeWeightsAndVariance(self.gp)
+            new_st.ComputeWeightsAndVariance(self.gp)
             self.BuildTree(new_st, H - 1)
 
     def GetValidActionSet(self, physical_state):
@@ -286,10 +288,6 @@ class TreePlan:
 
             # Future reward
             f = self.Q_ML(T, x_next, new_st) + r
-            print "f = "
-            print f
-            print vBest
-
             if (f > vBest):
                 aBest = a
                 vBest = f
@@ -317,10 +315,7 @@ class TreePlan:
 
         sample_v_values = [(self.V_ML(T - 1, self.TransitionH(x, sam), new_st))[0] + self.reward_sampled(sam) for sam
                            in samples]
-        print "sample values = "
-        print sample_v_values
         avg = np.mean(sample_v_values)
-
         return avg
 
 ###UTIL

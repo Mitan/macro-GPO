@@ -156,7 +156,7 @@ class GaussianProcess:
         # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
         v = linalg.solve_triangular(cholesky, history_current, lower = True)
         #should be (k,k) matrix
-        return current_prior + np.dot(v.T, v)
+        return current_prior - np.dot(v.T, v)
 
     def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857):
         """

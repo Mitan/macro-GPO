@@ -9,3 +9,6 @@ tup = tuple(map(tuple, a))
 #print tup
 
 print a[:-1, :]
+
+c = np.empty((2,2))
+print c
