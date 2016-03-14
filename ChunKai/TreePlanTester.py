@@ -231,18 +231,7 @@ class TreePlanTester:
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
         ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
-        """
-        posterior_mean_before = np.vectorize(
-            lambda x, y: self.gp.GPMean(state_history[-2].history.locations, state_history[-2].history.measurements,
-                                        [x, y]))
-        posterior_mean_after = np.vectorize(
-            lambda x, y: self.gp.GPMean(state_history[-1].history.locations, state_history[-1].history.measurements,
-                                        [x, y]))
-        posterior_variance_before = np.vectorize(
-            lambda x, y: self.gp.GPVariance2(state_history[-2].history.locations, [x, y]))
-        posterior_variance_after = np.vectorize(
-            lambda x, y: self.gp.GPVariance2(state_history[-1].history.locations, [x, y]))
-        """
+
         # Plot graph of locations
         vis = Vis2d()
         vis.MapPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
@@ -251,36 +240,6 @@ class TreePlanTester:
                     path_points=[x.physical_state for x in state_history],
                     display=display,
                     save_path=save_path)
-# Test lists
-def SanityCheck():
-    """
-    The default test using a single standard normal distribution shape
-    Should start walking towards the center?
-
-    Huge upper bound for our policy loss.
-    """
-    TPT = TreePlanTester()
-    TPT.InitGP(length_scale=[1.5, 1.5], signal_variance=1, noise_variance=0.1)
-    TPT.InitEnvironment(environment_noise=0.1,
-                        model=lambda xy: multivariate_normal(mean=[0, 0], cov=[[1, 0], [0, 1]]).pdf(xy))
-    TPT.InitPlanner(grid_domain=((-10, 10), (-10, 10)), grid_gap=0.2, gamma=1, epsilon=100.0, H=5)
-    TPT.InitTestParameters(initial_physical_state=np.array([1.0, 1.0]),
-                           past_locations=np.array([[-1.0, -1.0], [1.0, 1.0]]))
-    TPT.Test(num_timesteps_test=20, debug=True, visualize=True)
-
-
-def Exploratory(grid_gap_, epsilon_=100.0):
-    """
-    Features a higher covariance and a higher grid gap
-    """
-    TPT = TreePlanTester()
-    TPT.InitGP(length_scale=[1.5, 1.5], signal_variance=1, noise_variance=0.1)
-    TPT.InitEnvironment(environment_noise=0.1,
-                        model=lambda xy: multivariate_normal(mean=[0, 0], cov=[[64, 0], [0, 16]]).pdf(xy))
-    TPT.InitPlanner(grid_domain=((-10, 10), (-10, 10)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=5)
-    TPT.InitTestParameters(initial_physical_state=np.array([1.0, 1.0]),
-                           past_locations=np.array([[-1.0, -1.0], [1.0, 1.0]]))
-    TPT.Test(num_timesteps_test=20, debug=True, visualize=True)
 
 
 def Random(initial_state, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_timesteps_test=20,
@@ -308,48 +267,6 @@ def Random(initial_state, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0,
                     action_set=action_set, save_per_step=save_per_step,
                     cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special, my_func = my_func)
 
-"""
-def Transect(grid_gap_=0.04, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, seed=142857, save_folder=None):
-
-    #Assume a map size of [0, 1] for both axes
-    covariance_function = SquareExponential(length_scale, 1)
-    gpgen = GaussianProcess(covariance_function)
-    m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(25, 25), seed=seed)
-
-    TPT = TreePlanTester()
-    TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=0.00001)
-    TPT.InitEnvironment(environment_noise=0.00001, model=m)
-    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth)
-    TPT.InitTestParameters(initial_physical_state=np.array([0.0, 0.48]), past_locations=np.array([[0.0, 0.48]]))
-    TPT.Test(num_timesteps_test=6, debug=True, visualize=False,
-             action_set=[(grid_gap_, -grid_gap_), (grid_gap_, grid_gap_)], save_folder=save_folder)
-
-
-def TestRealData(locations, values, length_scale, signal_variance, noise_variance, mean_function, grid_domain,
-                 start_location,
-                 grid_gap=1.0, epsilon=1.0, depth=5, num_timesteps_test=20, save_folder=None, save_per_step=True,
-                 MCTS=True, MCTSMaxNodes=10 ** 15, Randomized=False,
-                 reward_model="Linear", sd_bonus=0.0, special=None, bad_places=[]):
-
-
-
-    m = MapValueDict(locations, values)
-
-    TPT = TreePlanTester(simulate_noise_in_trials=False, reward_model=reward_model, sd_bonus=sd_bonus,
-                         bad_places=bad_places)
-    TPT.InitGP(length_scale=length_scale, signal_variance=signal_variance, noise_variance=noise_variance,
-               mean_function=mean_function)
-    TPT.InitEnvironment(environment_noise=noise_variance, model=m)
-    TPT.InitPlanner(grid_domain=grid_domain, grid_gap=grid_gap, gamma=1, epsilon=epsilon, H=depth)
-    TPT.InitTestParameters(initial_physical_state=np.array(start_location), past_locations=np.array([start_location]))
-
-    # For transect-type sampling
-    # TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, action_set=[(0, grid_gap), (-grid_gap, grid_gap), (grid_gap, grid_gap)], save_folder=save_folder, MCTS = MCTS, MCTSMaxNodes=MCTSMaxNodes)
-    # For normal
-    return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, action_set=None,
-                    save_folder=save_folder, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
-                    Randomized=Randomized, special=special)
-"""
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
 
@@ -360,7 +277,7 @@ if __name__ == "__main__":
     f = lambda t: 7
     H = 3
     for h in range(1,3):
-        for i in xrange(27, 29):
+        for i in xrange(41, 48):
             my_save_folder = save_trunk + "seed" + str(i) + "_b" +str(my_batch_size) + "_h"+ str(h) +  "/"
             Random(initial_state, length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth= h, save_folder= my_save_folder,
                    preset=False, Randomized= True, batch_size = my_batch_size, num_timesteps_test=7 , my_func= f)

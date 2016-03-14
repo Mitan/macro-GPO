@@ -57,30 +57,7 @@ class Vis2d:
                         axes.arrow(prev[j,0], prev[j,1],
                                        current[j,0] - prev[j,0],
                                        current[j,1] - prev[j,1], edgecolor='red')
-        """
-        if not posterior_mean_before == None:
-            im = axes.flat[2].imshow(posterior_mean_before, interpolation='nearest', aspect='auto', extent=grid_extent2,
-                                     cmap='Greys', vmin=mmin, vmax=mmax)
 
-        if not posterior_mean_after == None:
-            im = axes.flat[3].imshow(posterior_mean_after, interpolation='nearest', aspect='auto', extent=grid_extent2,
-                                     cmap='Greys', vmin=mmin, vmax=mmax)
-
-        im2 = None
-        if not posterior_variance_before == None:
-            im2 = axes.flat[4].imshow(posterior_variance_before, interpolation='nearest', aspect='auto',
-                                      extent=grid_extent2)
-
-        if not posterior_variance_after == None:
-            im2 = axes.flat[5].imshow(posterior_variance_before, interpolation='nearest', aspect='auto',
-                                      extent=grid_extent2)
-        cax, kw = mpl.colorbar.make_axes([axes.flat[i] for i in xrange(4)])
-        plt.colorbar(im, cax=cax, **kw)
-
-        if not im2 == None:
-            cax2, kw2 = mpl.colorbar.make_axes([axes.flat[4], axes.flat[5]])
-            plt.colorbar(im2, cax=cax2, **kw2)
-        """
         if not save_path == None:
             plt.savefig(save_path + ".png")
         if display: plt.show()
