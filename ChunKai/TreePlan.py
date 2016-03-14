@@ -181,8 +181,7 @@ class TreePlan:
             new_st = st.children[ToTuple(a)]
 
 
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=new_st.weights)
+            mean = self.gp.GPBatchMean(x_next.history.measurements,new_st.weights)
             var = new_st.variance
             #r = self.reward_analytical(mean, math.sqrt(var))
             r = self.reward_analytical(mean, var)
@@ -207,7 +206,7 @@ class TreePlan:
 
         return v + r_1
         """
-        mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
+        mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
         #print mu.shape, new_st.variance.shape
         assert mu.shape[0] == new_st.variance.shape[0]
 

@@ -270,14 +270,14 @@ def Random(initial_state, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0,
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
 
-    initial_state = np.array([[0.3, 0.3], [0.7, 0.7]])
+    initial_state = np.array([[0.2, 0.2], [0.8, 0.8], [0.5, 0.5]])
     #initial_state = np.array([[0.2, 0.2]])
     save_trunk = "./tests/"
-    my_batch_size = 2
+    my_batch_size = 3
     f = lambda t: 7
-    H = 3
+
     for h in range(1,3):
-        for i in xrange(41, 48):
+        for i in xrange(41, 44):
             my_save_folder = save_trunk + "seed" + str(i) + "_b" +str(my_batch_size) + "_h"+ str(h) +  "/"
             Random(initial_state, length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth= h, save_folder= my_save_folder,
                    preset=False, Randomized= True, batch_size = my_batch_size, num_timesteps_test=7 , my_func= f)
