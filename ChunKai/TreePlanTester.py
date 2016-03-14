@@ -117,7 +117,7 @@ class TreePlanTester:
 
     def Test(self, num_timesteps_test, debug=True, visualize=False, action_set=None, save_per_step=True,
              save_folder="default_results/", MCTS=True, MCTSMaxNodes=10 ** 15, cheat=False, cheatnum=0,
-             Randomized=False, special=None):
+             Randomized=False, special=None, my_func = None):
         """ Pipeline for testing
         @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
         """
@@ -138,9 +138,9 @@ class TreePlanTester:
         base_measurement_history = []
         for time in xrange(num_timesteps_test):
             tp = TreePlan(self.grid_domain, self.grid_gap, self.gp, action_set=action_set,
-                          reward_type=self.reward_model, sd_bonus=self.sd_bonus, bad_places=self.bad_places, batch_size= self.batch_size)
+                          reward_type=self.reward_model, sd_bonus=self.sd_bonus, bad_places=self.bad_places, batch_size= self.batch_size, number_of_nodes_function= my_func)
 
-            _, a, nodes_expanded = tp.DeterministicML(x_0, self.H)
+            _, a, nodes_expanded = tp.StochasticFull(x_0, self.H)
             """
             if time == 0 and cheat:
                 a = (0.0, 0.05)
@@ -285,10 +285,10 @@ def Exploratory(grid_gap_, epsilon_=100.0):
 
 def Random(initial_state, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_timesteps_test=20,
            signal_variance=1, noise_variance=10 ** -5,
-           seed=142857, save_folder=None, save_per_step=True,
+           seed=142857, save_folder=None, save_per_step=False,
            preset=False, action_set=None, reward_model="Linear", cheat=False,
            cheatnum=0, Randomized=False, sd_bonus=0.0,
-           special=None, batch_size = 1):
+           special=None, batch_size = 1, my_func = None):
     """
     Assume a map size of [0, 1] for both axes
     """
@@ -306,13 +306,12 @@ def Random(initial_state, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0,
                            past_locations= initial_state)
     return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step,
-                    cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special)
+                    cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special, my_func = my_func)
 
-
+"""
 def Transect(grid_gap_=0.04, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, seed=142857, save_folder=None):
-    """
-    Assume a map size of [0, 1] for both axes
-    """
+
+    #Assume a map size of [0, 1] for both axes
     covariance_function = SquareExponential(length_scale, 1)
     gpgen = GaussianProcess(covariance_function)
     m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(25, 25), seed=seed)
@@ -331,8 +330,8 @@ def TestRealData(locations, values, length_scale, signal_variance, noise_varianc
                  grid_gap=1.0, epsilon=1.0, depth=5, num_timesteps_test=20, save_folder=None, save_per_step=True,
                  MCTS=True, MCTSMaxNodes=10 ** 15, Randomized=False,
                  reward_model="Linear", sd_bonus=0.0, special=None, bad_places=[]):
-    """
-    """
+
+
 
     m = MapValueDict(locations, values)
 
@@ -350,7 +349,7 @@ def TestRealData(locations, values, length_scale, signal_variance, noise_varianc
     return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, action_set=None,
                     save_folder=save_folder, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
                     Randomized=Randomized, special=special)
-
+"""
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
 
@@ -358,12 +357,13 @@ if __name__ == "__main__":
     #initial_state = np.array([[0.2, 0.2]])
     save_trunk = "./tests/"
     my_batch_size = 2
+    f = lambda t: 7
     H = 3
     for h in range(1,3):
-        for i in xrange(31, 34):
+        for i in xrange(27, 29):
             my_save_folder = save_trunk + "seed" + str(i) + "_b" +str(my_batch_size) + "_h"+ str(h) +  "/"
             Random(initial_state, length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth= h, save_folder= my_save_folder,
-                   preset=False, Randomized= True, batch_size = my_batch_size, num_timesteps_test=7)
+                   preset=False, Randomized= True, batch_size = my_batch_size, num_timesteps_test=7 , my_func= f)
     # Transect(seed=i)
 
     # print "Performing sanity checks"

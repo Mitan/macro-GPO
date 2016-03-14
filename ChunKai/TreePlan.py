@@ -52,7 +52,7 @@ class TreePlan:
         # lambda t: f(t)
         # set default value
         if number_of_nodes_function is None:
-            number_of_nodes_function = lambda t: 20
+            number_of_nodes_function = lambda t: 10
         self.nodes_function = number_of_nodes_function
 
         if reward_type == "Linear":
@@ -118,7 +118,7 @@ class TreePlan:
                 vBest = q_value
 
         return vBest, aBest
-
+    """
     def V_Stochastic(self, T, x, st):
 
         valid_actions = self.GetValidActionSet(x.physical_state)
@@ -161,7 +161,7 @@ class TreePlan:
         avg = np.mean(sample_v_values)
 
         return avg
-
+    """
     def Preprocess(self, physical_state, history_locations, H):
 
         # history locations include physical state
@@ -239,7 +239,7 @@ class TreePlan:
 
 
 
-    def DeterministicML(self, x_0, H):
+    def StochasticFull(self, x_0, H):
         """
         @param x_0 - augmented state
         @return approximately optimal value, answer, and number of node expansions
@@ -253,11 +253,11 @@ class TreePlan:
 
         print "Performing search..."
         # Get answer
-        Vapprox, Aapprox = self.V_ML(H, x_0, st)
+        Vapprox, Aapprox = self.Calculate_V(H, x_0, st)
 
         return Vapprox, Aapprox, -1
 
-    def V_ML(self, T, x, st):
+    def Calculate_V(self, T, x, st):
         """
         @return vBest - approximate value function computed
         @return aBest - action at the root for the policy defined by alg1
@@ -287,14 +287,14 @@ class TreePlan:
             r = self.reward_analytical(mean, var)
 
             # Future reward
-            f = self.Q_ML(T, x_next, new_st) + r
+            f = self.Calculate_Q(T, x_next, new_st) + r
             if (f > vBest):
                 aBest = a
                 vBest = f
 
         return vBest, aBest
 
-    def Q_ML(self, T, x, new_st):
+    def Calculate_Q(self, T, x, new_st):
         """
         Approximates the integration step derived from alg1
         @param new_st - semi-tree at this stage
@@ -313,7 +313,7 @@ class TreePlan:
         # the number of samples is given by user-defined function
         samples = np.random.multivariate_normal(mu, new_st.variance, self.nodes_function(T))
 
-        sample_v_values = [(self.V_ML(T - 1, self.TransitionH(x, sam), new_st))[0] + self.reward_sampled(sam) for sam
+        sample_v_values = [(self.Calculate_V(T - 1, self.TransitionH(x, sam), new_st))[0] + self.reward_sampled(sam) for sam
                            in samples]
         avg = np.mean(sample_v_values)
         return avg
@@ -457,7 +457,7 @@ if __name__ == "__main__":
 
         print tp.MCTSExpand(epsilon, gamma, x_0, H)
 
-        _, a, _ = tp.DeterministicML(x_0, H)
+        _, a, _ = tp.StochasticFull(x_0, H)
 
         # Take action a
         x_temp = tp.TransitionP(x_0, a)
