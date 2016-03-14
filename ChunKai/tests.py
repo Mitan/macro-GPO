@@ -10,5 +10,13 @@ tup = tuple(map(tuple, a))
 
 print a[:-1, :]
 
-c = np.empty((2,2))
-print c
+c = np.array([1,2,3]) - 1
+d = c.reshape((3,1))
+print d
+
+print np.ones((5,1)) * 4
+
+a = np.array([[1,2], [3,4]])
+b = np.array([6,1])
+print a.shape, b.shape
+print np.dot(a,b)

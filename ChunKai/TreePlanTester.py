@@ -271,9 +271,9 @@ if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
 
     initial_state = np.array([[0.2, 0.2], [0.8, 0.8], [0.5, 0.5]])
-    #initial_state = np.array([[0.2, 0.2]])
+    initial_state = np.array([[0.2, 0.2], [0.8, 0.8]])
     save_trunk = "./tests/"
-    my_batch_size = 3
+    my_batch_size = 2
     f = lambda t: 7
 
     for h in range(1,3):

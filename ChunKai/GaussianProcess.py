@@ -125,8 +125,14 @@ class GaussianProcess:
 
 
     def GPBatchMean(self, measurements, weights):
-        k, n = weights.shape
-        mean = np.dot(weights, measurements - np.ones((n,1)) * self.mean_function) + np.ones((k,1))* self.mean_function
+        # surprisingly works
+        shifted_measurements = measurements - self.mean_function
+        # todo
+        #
+        # does (n, k) * (k,) produce matrix  product?
+        # Perhaps it does since the result is (n,)
+        # but not sure
+        mean = np.dot(weights, shifted_measurements) + self.mean_function
         return mean
 
     def GPBatchWeights(self, history_current, cholesky):
