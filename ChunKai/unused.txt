@@ -1,0 +1,411 @@
+__author__ = 'a0134673'
+
+
+#GP
+def __GPVariance(self, locations, current_location, weights=None, cov_query=None):
+        """
+        Return the posterior variance for measurements while the robot is in a particular augmented state
+        Warning: This method of computing the posterior variance is numerically unstable.
+
+        @param weights - row vector of weight space interpretation of GP regression
+        """
+        if weights == None: weights = self.GPWeights(locations, current_location)
+        if cov_query == None: cov_query = self.GPCovQuery(locations, current_location)
+
+        # Obtain predictive variance by direct multiplication of
+        prior_variance = self.CovarianceFunction(np.atleast_2d(current_location), np.atleast_2d(current_location))
+        variance = prior_variance - np.dot(weights, cov_query.T)  # Numerically unstable component.
+
+        return variance + self.noise_variance
+
+
+
+    ### Test Suites: Inefficient Visualizers
+    ###
+    def GPVisualize1D(self, locations, measurements, predict_range=(0, 1), num_samples=1000):
+        """
+        Visualize posterior in graphical form
+        NOTE: very ineffecient since we are using the weight space view to vizualize this
+        """
+
+        # Grid points
+        x = np.atleast_2d(np.linspace(predict_range[0], predict_range[1], num_samples, endpoint=False)).T
+
+        # Compute predictions - very inefficient because we are using the weight space view
+        predicted_mean = [0.0] * num_samples
+        predicted_variance = [0.0] * num_samples
+        for i in xrange(num_samples):
+            predicted_mean[i] = self.GPMean(locations, measurements, x[i])[0]
+            predicted_variance[i] = self.GPVariance2(locations, x[i])[0]
+
+        # Plot posterior mean and variances
+        pl.plot(x, self.GPRegressionTestEnvironment(x), 'r:', label=u'$f(x)$')
+        pl.plot(locations, measurements, 'r.', markersize=10, label=u'Observations')
+        pl.plot(x, predicted_mean, 'b-', label=u'Prediction')
+        pl.fill(np.concatenate([x, x[::-1]]),
+                np.concatenate([predicted_mean - 1.9600 * np.sqrt(predicted_variance),
+                                (predicted_mean + 1.9600 * np.sqrt(predicted_variance))[::-1]]),
+                alpha=.5, fc='b', ec='None', label='95% confidence interval')
+        pl.xlabel('$x$')
+        pl.ylabel('$f(x)$')
+        pl.legend(loc='upper left')
+
+        pl.show()
+
+    def GPVisualize2D(self, locations, measurements, predict_range=((0, 1), (0, 1)), num_samples=(100, 100)):
+        """
+        """
+
+        grid_res = [float(predict_range[x][1] - predict_range[x][0]) / float(num_samples[x]) for x in xrange(2)]
+
+        # Meshed grid points
+        col = np.arange(predict_range[0][0], predict_range[0][1], grid_res[0])
+        row = np.arange(predict_range[1][0], predict_range[1][1], grid_res[1])
+        gridc, gridr = np.meshgrid(row, col)
+
+        # Compute predictions
+        predicted_mean = np.zeros(gridc.shape)
+        predicted_variance = np.zeros(gridc.shape)
+
+        for c in xrange(col.size):
+            for r in xrange(row.size):
+                predicted_mean[c, r] = self.GPMean(locations, measurements, np.array([col[c], row[r]]))[0]
+                predicted_variance[c, r] = self.GPVariance2(locations, np.array([col[c], row[r]]))[0]
+
+        # Plot posterior means and variances
+        fig = pl.figure(figsize=pl.figaspect(0.5))
+
+        ax = fig.add_subplot(1, 2, 1, projection='3d')
+        surf = ax.plot_surface(gridr, gridc, predicted_mean, rstride=1, cstride=1, cmap=cm.coolwarm,
+                               linewidth=0, antialiased=False)
+
+        ax.scatter(locations[:, 0], locations[:, 1], measurements, c='r', marker='o')
+
+        ax.set_xlabel('X Axis')
+        ax.set_ylabel('Y Axis')
+        ax.set_zlabel('Z Axis')
+
+        fig.colorbar(surf, shrink=0.5, aspect=10)
+
+        pl.show()
+
+    def GPRegressionTest(self, test="1d"):
+        """
+        Test GPR and displays results on screen
+        """
+
+        if test == "1d":
+            # Generate history
+            locations = np.atleast_2d([1., 3., 5., 6., 7., 8.]).T
+            measurements = self.GPRegressionTestEnvironment(locations, "1d")
+
+            self.GPVisualize1D(locations, measurements, (0, 10))
+
+        elif test == "2dgaussian":
+            # Generate history
+            locations = np.atleast_2d([[0, 0], [0, 1], [1, 0]])
+            measurements = self.GPRegressionTestEnvironment(locations, "2dgaussian")
+
+            self.GPVisualize2D(locations, measurements, ((-10, 10), (-10, 10)), (50, 50))
+
+        elif test == "2dmix2gaussian":
+            # Generate history
+
+            mesh = np.mgrid[-10:10.01:4, -10:10.01:4]
+            mesh = mesh.reshape(2, -1).T
+
+            locations = np.atleast_2d(mesh)
+            measurements = self.GPRegressionTestEnvironment(locations, "2dmix2gaussian")
+
+            self.GPVisualize2D(locations, measurements, ((-10, 10), (-10, 10)), (20, 20))
+
+        elif test == "2dmixed":
+
+            mesh = np.mgrid[-10:10.01:4, -10:10.01:4]
+            mesh = mesh.reshape(2, -1).T
+
+            locations = np.atleast_2d(mesh)
+            measurements = self.GPRegressionTestEnvironment(locations, "2dmixed")
+
+            self.GPVisualize2D(locations, measurements, ((-10, 10), (-10, 10)), (20, 20))
+
+    def GPRegressionTestEnvironment(self, loc, test="1d"):
+        if test == "1d":
+            # Environment field of xsin(x)
+            return loc * np.sin(loc)
+        elif test == "2dgaussian":
+            # 2d multivariate distribution centered at (0)
+            var = multivariate_normal(mean=[0, 0], cov=[[1, 0], [0, 1]])
+            return np.apply_along_axis(lambda xy: var.pdf(xy), 1, loc)
+        elif test == "2dmix2gaussian":
+            var1 = multivariate_normal(mean=[2, 5], cov=[[4, 0], [0, 1]])
+            var2 = multivariate_normal(mean=[-3, -5], cov=[[1, 0], [0, 1]])
+
+            return np.apply_along_axis(lambda xy: var1.pdf(xy) + var2.pdf(xy), 1, loc)
+
+        elif test == "2dmixed":
+            var1 = multivariate_normal(mean=[-3, 3], cov=[[4, 0], [0, 4]])
+            var2 = lambda xy: 0.01 * xy[0] * np.sin(0.05 * xy[0])
+
+            return np.apply_along_axis(lambda xy: var1.pdf(xy) + var2(xy), 1, loc)
+
+    def GPGenerateTest(self, predict_range=((-1, 1),), num_samples=(30,)):
+        assert (len(predict_range) == len(num_samples))
+        ndims = len(predict_range)
+
+        mapping = self.GPGenerate(predict_range, num_samples)
+
+        if ndims > 2:
+            print "Dimensions > 2. Unable to display function"
+            return
+
+        if ndims == 1:
+
+            # Grid points
+            x = np.atleast_2d(np.linspace(predict_range[0][0], predict_range[0][1], num_samples[0], endpoint=False)).T
+            mapping_v = np.vectorize(mapping)
+            y = mapping_v(x)
+
+            # Plot posterior mean and variances
+            pl.plot(x, y, 'r:', label=u'$f(x)$')
+            pl.xlabel('$x$')
+            pl.ylabel('$f(x)$')
+            pl.legend(loc='upper left')
+
+            pl.show()
+        else:
+
+            grid_res = [float(predict_range[x][1] - predict_range[x][0]) / float(num_samples[x]) for x in xrange(2)]
+            # Meshed grid points
+            col = np.arange(predict_range[0][0], predict_range[0][1], grid_res[0])
+            row = np.arange(predict_range[1][0], predict_range[1][1], grid_res[1])
+
+            ground_truth = np.zeros(num_samples)
+            for a in xrange(num_samples[0]):
+                for b in xrange(num_samples[1]):
+                    ground_truth[a][b] = mapping((col[a], row[b]))
+
+            vis2d = Vis2d()
+            vis2d.MapPlot(predict_range[0] + predict_range[1], ground_truth=ground_truth)
+
+#Vis2D
+
+        """
+        if not posterior_mean_before == None:
+            im = axes.flat[2].imshow(posterior_mean_before, interpolation='nearest', aspect='auto', extent=grid_extent2,
+                                     cmap='Greys', vmin=mmin, vmax=mmax)
+
+        if not posterior_mean_after == None:
+            im = axes.flat[3].imshow(posterior_mean_after, interpolation='nearest', aspect='auto', extent=grid_extent2,
+                                     cmap='Greys', vmin=mmin, vmax=mmax)
+
+        im2 = None
+        if not posterior_variance_before == None:
+            im2 = axes.flat[4].imshow(posterior_variance_before, interpolation='nearest', aspect='auto',
+                                      extent=grid_extent2)
+
+        if not posterior_variance_after == None:
+            im2 = axes.flat[5].imshow(posterior_variance_before, interpolation='nearest', aspect='auto',
+                                      extent=grid_extent2)
+        cax, kw = mpl.colorbar.make_axes([axes.flat[i] for i in xrange(4)])
+        plt.colorbar(im, cax=cax, **kw)
+
+        if not im2 == None:
+            cax2, kw2 = mpl.colorbar.make_axes([axes.flat[4], axes.flat[5]])
+            plt.colorbar(im2, cax=cax2, **kw2)
+        """
+
+
+
+def Transect(grid_gap_=0.04, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, seed=142857, save_folder=None):
+
+    #Assume a map size of [0, 1] for both axes
+    covariance_function = SquareExponential(length_scale, 1)
+    gpgen = GaussianProcess(covariance_function)
+    m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(25, 25), seed=seed)
+
+    TPT = TreePlanTester()
+    TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=0.00001)
+    TPT.InitEnvironment(environment_noise=0.00001, model=m)
+    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth)
+    TPT.InitTestParameters(initial_physical_state=np.array([0.0, 0.48]), past_locations=np.array([[0.0, 0.48]]))
+    TPT.Test(num_timesteps_test=6, debug=True, visualize=False,
+             action_set=[(grid_gap_, -grid_gap_), (grid_gap_, grid_gap_)], save_folder=save_folder)
+
+
+def TestRealData(locations, values, length_scale, signal_variance, noise_variance, mean_function, grid_domain,
+                 start_location,
+                 grid_gap=1.0, epsilon=1.0, depth=5, num_timesteps_test=20, save_folder=None, save_per_step=True,
+                 MCTS=True, MCTSMaxNodes=10 ** 15, Randomized=False,
+                 reward_model="Linear", sd_bonus=0.0, special=None, bad_places=[]):
+
+
+
+    m = MapValueDict(locations, values)
+
+    TPT = TreePlanTester(simulate_noise_in_trials=False, reward_model=reward_model, sd_bonus=sd_bonus,
+                         bad_places=bad_places)
+    TPT.InitGP(length_scale=length_scale, signal_variance=signal_variance, noise_variance=noise_variance,
+               mean_function=mean_function)
+    TPT.InitEnvironment(environment_noise=noise_variance, model=m)
+    TPT.InitPlanner(grid_domain=grid_domain, grid_gap=grid_gap, gamma=1, epsilon=epsilon, H=depth)
+    TPT.InitTestParameters(initial_physical_state=np.array(start_location), past_locations=np.array([start_location]))
+
+    # For transect-type sampling
+    # TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, action_set=[(0, grid_gap), (-grid_gap, grid_gap), (grid_gap, grid_gap)], save_folder=save_folder, MCTS = MCTS, MCTSMaxNodes=MCTSMaxNodes)
+    # For normal
+    return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, action_set=None,
+                    save_folder=save_folder, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
+                    Randomized=Randomized, special=special)
+
+
+
+# Test lists
+def SanityCheck():
+    """
+    The default test using a single standard normal distribution shape
+    Should start walking towards the center?
+
+    Huge upper bound for our policy loss.
+    """
+    TPT = TreePlanTester()
+    TPT.InitGP(length_scale=[1.5, 1.5], signal_variance=1, noise_variance=0.1)
+    TPT.InitEnvironment(environment_noise=0.1,
+                        model=lambda xy: multivariate_normal(mean=[0, 0], cov=[[1, 0], [0, 1]]).pdf(xy))
+    TPT.InitPlanner(grid_domain=((-10, 10), (-10, 10)), grid_gap=0.2, gamma=1, epsilon=100.0, H=5)
+    TPT.InitTestParameters(initial_physical_state=np.array([1.0, 1.0]),
+                           past_locations=np.array([[-1.0, -1.0], [1.0, 1.0]]))
+    TPT.Test(num_timesteps_test=20, debug=True, visualize=True)
+
+
+def Exploratory(grid_gap_, epsilon_=100.0):
+    """
+    Features a higher covariance and a higher grid gap
+    """
+    TPT = TreePlanTester()
+    TPT.InitGP(length_scale=[1.5, 1.5], signal_variance=1, noise_variance=0.1)
+    TPT.InitEnvironment(environment_noise=0.1,
+                        model=lambda xy: multivariate_normal(mean=[0, 0], cov=[[64, 0], [0, 16]]).pdf(xy))
+    TPT.InitPlanner(grid_domain=((-10, 10), (-10, 10)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=5)
+    TPT.InitTestParameters(initial_physical_state=np.array([1.0, 1.0]),
+                           past_locations=np.array([[-1.0, -1.0], [1.0, 1.0]]))
+    TPT.Test(num_timesteps_test=20, debug=True, visualize=True)
+
+
+
+
+        """
+        posterior_mean_before = np.vectorize(
+            lambda x, y: self.gp.GPMean(state_history[-2].history.locations, state_history[-2].history.measurements,
+                                        [x, y]))
+        posterior_mean_after = np.vectorize(
+            lambda x, y: self.gp.GPMean(state_history[-1].history.locations, state_history[-1].history.measurements,
+                                        [x, y]))
+        posterior_variance_before = np.vectorize(
+            lambda x, y: self.gp.GPVariance2(state_history[-2].history.locations, [x, y]))
+        posterior_variance_after = np.vectorize(
+            lambda x, y: self.gp.GPVariance2(state_history[-1].history.locations, [x, y]))
+        """
+
+
+#tree plan
+
+def StochasticAlgorithm(self, x_0, H):
+        """
+         NOTE
+         This implementation doesn't perform correction by introducing deterministic component
+        """
+        st = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H)
+
+        x = x_0
+        valid_actions = self.GetValidActionSet(x.physical_state)
+        vBest = -self.INF
+        aBest = valid_actions[0]
+
+        for a in valid_actions:
+
+            x_next = self.TransitionP(x, a)
+
+            # go down the semitree node
+            new_st = st.children[ToTuple(a)]
+
+            # Reward is just the mean added to a multiple of the variance at that point
+            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
+                                  weights=new_st.weights)
+            var = new_st.variance
+            r = self.reward_analytical(mean, math.sqrt(var))
+
+            # Future reward
+            q_value = self.Q_Stochastic(H, x_next, new_st) + r
+
+            if (q_value > vBest):
+                aBest = a
+                vBest = q_value
+
+        return vBest, aBest
+
+def V_Stochastic(self, T, x, st):
+
+        valid_actions = self.GetValidActionSet(x.physical_state)
+        if T == 0: return 0
+
+        vBest = -self.INF
+        for a in valid_actions:
+
+            x_next = self.TransitionP(x, a)
+
+            # go down the semitree node
+            new_st = st.children[ToTuple(a)]
+
+            # Reward is just the mean added to a multiple of the variance at that point
+            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
+                                  weights=new_st.weights)
+            var = new_st.variance
+            r = self.reward_analytical(mean, math.sqrt(var))
+
+            # Future reward
+            f = self.Q_Stochastic(T, new_st) + r
+
+            if (f > vBest):
+                vBest = f
+
+        return vBest
+
+def Q_Stochastic(self, T, x, new_st):
+        # print "Q: p", p
+        # Initialize variables
+        mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
+
+        sd = math.sqrt(new_st.variance)
+
+        # the number of samples is given by user-defined function
+        samples = np.random.normal(mu, sd, self.nodes_function(T))
+
+        sample_v_values = [self.V_Stochastic(T - 1, self.TransitionH(x, sam), new_st) + self.reward_sampled(sam) for sam
+                           in samples]
+        avg = np.mean(sample_v_values)
+
+        return avg
+
+# from tree plan init
+
+            self.l1 = 0
+            self.l2 = lambda sigma: 1
+        elif reward_type == "Positive_log":
+            self.reward_analytical = lambda mu, sigma: sd_bonus * (sigma)
+            self.reward_sampled = lambda f: math.log(f) if f > 1 else 0.0
+
+            self.l1 = 1
+            self.l2 = lambda sigma: 0
+        elif reward_type == "Step1mean":  # Step function with cutoff at 1
+            self.reward_analytical = lambda mu, sigma: 1 - norm.cdf(x=1, loc=mu, scale=sigma) + sd_bonus * (sigma)
+            self.reward_sampled = lambda f: 0
+
+            self.l1 = 0
+            self.l2 = lambda sigma: 1 / (math.sqrt(2 * math.pi) * sigma)
+        elif reward_type == "Step15mean":  # Step function with cutoff at 1.5
+            self.reward_analytical = lambda mu, sigma: 1 - norm.cdf(x=1.5, loc=mu, scale=sigma) + sd_bonus * (sigma)
+            self.reward_sampled = lambda f: 0
+
+            self.l1 = 0
+            self.l2 = lambda sigma: 1 / (math.sqrt(2 * math.pi) * sigma)

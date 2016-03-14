@@ -7,7 +7,7 @@ ChunKai/.idea/misc.xml
 ChunKai/.idea/modules.xml
 ChunKai/.idea/vcs.xml
 ChunKai/.idea/workspace.xml
-*.txt
+ChunKai/tests/
 *.png
 .idea/modules.xml
 .idea/
