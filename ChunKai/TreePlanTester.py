@@ -1,16 +1,13 @@
-from TreePlan import *
+from datetime import datetime
+import os
 
 import numpy as np
-from matplotlib import pyplot as pl
-from scipy.stats import multivariate_normal
 
+from SampleFunctionBuilder import GetSampleFunction
+from TreePlan import *
 from GaussianProcess import GaussianProcess
 from GaussianProcess import SquareExponential
-from GaussianProcess import MapValueDict
 from Vis2d import Vis2d
-
-import os
-import sys
 
 
 class TreePlanTester:
@@ -138,7 +135,7 @@ class TreePlanTester:
         base_measurement_history = []
         for time in xrange(num_timesteps_test):
             tp = TreePlan(self.grid_domain, self.grid_gap, self.gp, action_set=action_set,
-                          reward_type=self.reward_model, sd_bonus=self.sd_bonus, bad_places=self.bad_places, batch_size= self.batch_size, number_of_nodes_function= my_func)
+                          reward_type=self.reward_model, batch_size= self.batch_size, number_of_nodes_function= my_func, horizon=self.H)
 
             _, a, nodes_expanded = tp.StochasticFull(x_0, self.H)
             """
@@ -263,25 +260,47 @@ def Random(initial_state, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0,
     #initial_state = np.array([[0.2, 0.2], [0.8, 0.8]])
     TPT.InitTestParameters(initial_physical_state= initial_state,
                            past_locations= initial_state)
-    return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, save_folder=save_folder,
+    return TPT.Test(num_timesteps_test=num_timesteps_test, debug=False, visualize=False, save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step,
                     cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special, my_func = my_func)
+
+
+def initial_state(batch_size):
+    if batch_size == 2:
+        return  np.array([[0.2, 0.2], [0.8, 0.8]])
+    elif batch_size == 3:
+        return np.array([[0.2, 0.2], [0.8, 0.8], [0.5, 0.5]])
+    elif batch_size == 4:
+        return np.array([[0.2, 0.2], [0.8, 0.8], [0.2, 0.8], [0.8, 0.2]])
+    else:
+        raise Exception("wrong batch size")
 
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
 
-    initial_state = np.array([[0.2, 0.2], [0.8, 0.8], [0.5, 0.5]])
-    initial_state = np.array([[0.2, 0.2], [0.8, 0.8]])
+    #initial_state = np.array([[0.2, 0.2], [0.8, 0.8], [0.5, 0.5]])
+    #initial_state = np.array([[0.2, 0.2], [0.8, 0.8]])
     save_trunk = "./tests/"
-    my_batch_size = 2
-    f = lambda t: 7
+    #my_batch_size = 2
 
-    for h in range(1,3):
-        for i in xrange(41, 44):
-            my_save_folder = save_trunk + "seed" + str(i) + "_b" +str(my_batch_size) + "_h"+ str(h) +  "/"
-            Random(initial_state, length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth= h, save_folder= my_save_folder,
-                   preset=False, Randomized= True, batch_size = my_batch_size, num_timesteps_test=7 , my_func= f)
-    # Transect(seed=i)
+
+
+    horizons = [1,2,3,4]
+    for h in horizons:
+        for b in range(2, 5):
+            print b, h
+            print datetime.now()
+            for i in xrange(110, 111):
+                f = lambda t: GetSampleFunction(h, t)
+                my_save_folder = save_trunk + "seed" + str(i) + "_b" +str(b) + "_h"+ str(h) +  "/"
+                my_initial_state = initial_state(b)
+
+                Random(my_initial_state, length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth= h, save_folder= my_save_folder,
+                       preset=False,save_per_step= True, Randomized= True, batch_size = b, num_timesteps_test=7 , my_func= f)
+
+            print datetime.now()
+            print
+       # Transect(seed=i)
 
     # print "Performing sanity checks"
     # SanityCheck()
