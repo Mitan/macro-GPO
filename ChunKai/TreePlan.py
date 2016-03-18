@@ -20,7 +20,7 @@ class TreePlan:
     """
 
     def __init__(self, grid_domain, grid_gap, gaussian_process, action_set=None, max_nodes=None, reward_type="Linear",
-                 sd_bonus=0.0, bad_places=None, number_of_nodes_function=None, batch_size=1):
+                 number_of_nodes_function=None, batch_size=1, horizon = 1):
         """
         - Gradularity given by grid_gap
         - Squared exponential covariance function
@@ -28,6 +28,8 @@ class TreePlan:
         """
         # size of the team
         self.batch_size = batch_size
+        # planning horizon
+        self.H = horizon
 
         # Preset constants
         self.INF = 10 ** 15
@@ -138,7 +140,39 @@ class TreePlan:
     def PhysicalTransition(self, physical_state, action):
         return PhysicalTransition(physical_state, action)
 
+    """
+    def EI(self, x_0):
+        *Myopic* implementation of EI (Expected improvement)
 
+
+        best_observation = max(x_0.history.measurements)
+        best_action = None
+        best_expected_improv = 0.0
+
+        valid_actions = self.GetValidActionSet(x_0.physical_state)
+
+        for a in valid_actions:
+            x_next = self.TransitionP(x_0, a)
+
+            chol = self.gp.GPCholTraining(x_0.history.locations)
+            cov_query = self.gp.GPCovQuery(x_0.history.locations, x_next.physical_state)
+            weights = self.gp.GPWeights(x_0.history.locations, x_next.physical_state, chol, cov_query)
+            var = self.gp.GPVariance2(x_0.history.locations, x_next.physical_state, chol, cov_query)
+
+            sigma = math.sqrt(var)
+            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
+                                  weights=weights)
+
+            Z = (mean - best_observation) / sigma
+            expectedImprov = (mean - best_observation) * norm.cdf(x=Z, loc=0, scale=1.0) + sigma * norm.pdf(x=Z, loc=0,
+                                                                                                            scale=1.0)
+
+            if expectedImprov >= best_expected_improv:
+                best_expected_improv = expectedImprov
+                best_action = a
+
+        return best_expected_improv, best_action, len(valid_actions)
+    """
 
     def StochasticFull(self, x_0, H):
         """
@@ -146,13 +180,13 @@ class TreePlan:
         @return approximately optimal value, answer, and number of node expansions
         """
         # x_0 stores a 2D np array of k points with history
-        print "Preprocessing weight spaces..."
+        #print "Preprocessing weight spaces..."
         # We take current position and past locations separately
 
         #now history locations do not include current
         st = self.Preprocess(x_0.physical_state, x_0.history.locations[: -self.batch_size, :], H)
 
-        print "Performing search..."
+        #print "Performing search..."
         # Get answer
         Vapprox, Aapprox = self.Calculate_V(H, x_0, st)
 
@@ -179,7 +213,6 @@ class TreePlan:
             # go down the semitree node
             # select new state obtained by transition
             new_st = st.children[ToTuple(a)]
-
 
             mean = self.gp.GPBatchMean(x_next.history.measurements,new_st.weights)
             var = new_st.variance
@@ -211,12 +244,21 @@ class TreePlan:
         assert mu.shape[0] == new_st.variance.shape[0]
 
         # the number of samples is given by user-defined function
-        samples = np.random.multivariate_normal(mu, new_st.variance, self.nodes_function(T))
 
+        samples = self.GenerateStochasticSamples(mu, new_st.variance, T)
         sample_v_values = [(self.Calculate_V(T - 1, self.TransitionH(x, sam), new_st))[0] + self.reward_sampled(sam) for sam
                            in samples]
         avg = np.mean(sample_v_values)
         return avg
+
+    def GenerateStochasticSamples(self, mu, sigma, t):
+        number_of_samples = self.nodes_function(t)
+        if t == 1:
+            return [0.0]
+        elif t == 2:
+            return [mu]
+        else:
+            return np.random.multivariate_normal(mu, sigma, number_of_samples)
 
 ###UTIL
 # converts ndarray to tuple
