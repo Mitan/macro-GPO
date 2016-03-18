@@ -31,7 +31,7 @@ class GaussianProcess:
                 covMat[y, x] = self.CovarianceFunction(row_array[x, :], col_array[y, :])
         return covMat
 
-    #old
+    # old
     def GPMean(self, locations, measurements, current_location, weights=None):
         """
         Return the posterior mean for measurements while the robot is in a particular augmented state
@@ -48,33 +48,33 @@ class GaussianProcess:
 
     def GPVariance2(self, locations, current_location, cholesky=None, cov_query=None):
 
-        #Return the posterior variance for measurements while the robot is in a particular augmented state
+        # Return the posterior variance for measurements while the robot is in a particular augmented state
 
-        #@param cholesky - lower triangular matrix of chol decomposition of covariance matrix for training points
-        #@param cov_query - matrix of covariancs
+        # @param cholesky - lower triangular matrix of chol decomposition of covariance matrix for training points
+        # @param cov_query - matrix of covariancs
 
         if cholesky == None: cholesky = self.GPCholTraining(locations)
-        #print cholesky
+        # print cholesky
         if cov_query == None: cov_query = self.GPCovQuery(locations, current_location)
-        #print cov_query
+        # print cov_query
 
         prior_variance = self.CovarianceMesh(np.atleast_2d(current_location), np.atleast_2d(current_location))
-        #print prior_variance
+        # print prior_variance
         tv = linalg.solve_triangular(cholesky, cov_query.T, lower=True)
-        #print tv
+        # print tv
         variance = prior_variance - np.dot(tv.T, tv)
-        #variance =  np.dot(tv.T, tv)
+        # variance =  np.dot(tv.T, tv)
 
-        #return variance + self.noise_variance
-        return variance  + self.noise_variance * np.identity(variance.shape[0])
-        #return variance
+        # return variance + self.noise_variance
+        return variance + self.noise_variance * np.identity(variance.shape[0])
+        # return variance
 
     def GPWeights(self, locations, current_location, cholesky=None, cov_query=None):
 
-        #Get a row vector of weights assuming a weight space view
+        # Get a row vector of weights assuming a weight space view
 
-        #@param cholesky - lower triangular matrix of chol decomposition of covariance matrix for training points
-        #@param cov_query - matrix of covariancs
+        # @param cholesky - lower triangular matrix of chol decomposition of covariance matrix for training points
+        # @param cov_query - matrix of covariancs
 
         if cholesky == None: cholesky = self.GPCholTraining(locations)
         if cov_query == None: cov_query = self.GPCovQuery(locations, current_location)
@@ -83,7 +83,6 @@ class GaussianProcess:
         weights = linalg.cho_solve((cholesky, True), cov_query.T).T
 
         return weights
-
 
     def GPCholTraining(self, locations):
         # Covariance matrix between existing data points
@@ -103,26 +102,26 @@ class GaussianProcess:
 
         return cov_query
 
-    def GetWeightsAndVariance(self, history, current_physical_state):
+    def GetBatchWeightsAndVariance(self, history, current_physical_state, cholesky):
         # assume that both inputs are np 2D-arrays
-
         history_prior = self.CovarianceMesh(history, history)
         current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
-        #cholesky = self.GPCholTraining(history_prior)
-        cholesky = np.linalg.cholesky(history_prior + self.noise_variance * np.identity(history_prior.shape[0]))
+        # cholesky = self.GPCholTraining(history_prior)
+        # cholesky = np.linalg.cholesky(history_prior + self.noise_variance * np.identity(history_prior.shape[0]))
+        assert  cholesky is not None
+        assert cholesky.shape == history_prior.shape
 
         history_current = self.CovarianceMesh(history, current_physical_state)
 
-        #n
+        # n
         assert history_current.shape[0] == history_prior.shape[0]
-        #k
+        # k
         assert history_current.shape[1] == current_prior.shape[1]
 
         variance = self.GPBatchVariance(history_current, current_prior, cholesky)
         weights = self.GPBatchWeights(history_current, cholesky)
 
         return weights, variance
-
 
     def GPBatchMean(self, measurements, weights):
         # surprisingly works
@@ -144,19 +143,18 @@ class GaussianProcess:
         """
         # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
         # todo avoid computation of v twice
-        #print cholesky.shape
-        #print history_current.shape
-        v = linalg.solve_triangular(cholesky, history_current, lower = True)
-        #print v.shape
-        weights_transposed = linalg.solve_triangular(cholesky.T, v, lower = False)
-        #print weights_transposed.shape
-        #print weights_transposed.shape, history_current.shape
+        # print cholesky.shape
+        # print history_current.shape
+        v = linalg.solve_triangular(cholesky, history_current, lower=True)
+        # print v.shape
+        weights_transposed = linalg.solve_triangular(cholesky.T, v, lower=False)
+        # print weights_transposed.shape
+        # print weights_transposed.shape, history_current.shape
 
         assert (weights_transposed).shape == history_current.shape
         assert np.any(weights_transposed)
-        #print weights_transposed
+        # print weights_transposed
         return weights_transposed.T
-
 
     def GPBatchVariance(self, history_current, current_prior, cholesky):
         """
@@ -167,16 +165,16 @@ class GaussianProcess:
         @ return (k,k) covariance
         """
         # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
-        v = linalg.solve_triangular(cholesky, history_current, lower = True)
-        #should be (k,k) matrix
+        v = linalg.solve_triangular(cholesky, history_current, lower=True)
+        # should be (k,k) matrix
         assert history_current.shape[0] == v.shape[0]
         assert current_prior.shape[0] == current_prior.shape[1]
         assert current_prior.shape[1] == v.shape[1]
 
         change = np.dot(v.T, v)
-        #assert np.any(change)
+        # assert np.any(change)
         return current_prior + self.noise_variance * np.identity(current_prior.shape[0]) - change
-        #return change
+        # return change
 
     def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857):
         """
@@ -324,19 +322,19 @@ if __name__ == "__main__":
 
     locations = np.atleast_2d(l).T
     measuremts = locations * np.sin(locations)
-    #print measuremts, locations
+    # print measuremts, locations
     covariance_function = SquareExponential(1.5, 1.0)
-    gp1d = GaussianProcess(covariance_function, noise_variance=0.05 )
+    gp1d = GaussianProcess(covariance_function, noise_variance=0.05)
 
     batch = 1
-    for i in range(1, locations.shape[0] - 10 ):
-        var_c = gp1d.GPVariance2(locations[:i, :], locations[i : i+batch, :])
-        mean_c = gp1d.GPMean(locations[:i, :], measuremts[:i, :],locations[i: i+batch, :])
-        #print locations[i: i+1, :].shape
-        weights_me, var_me =  gp1d.GetWeightsAndVariance(locations[:i, :], locations[i: i+batch, :])
-        #print measuremts[:i,:].shape
-        mean_me = gp1d.GPBatchMean(measuremts[:i,:], weights_me)
-        #var_dif = np.linalg.norm(var_me) - np.linalg.norm(var_c)
+    for i in range(1, locations.shape[0] - 10):
+        var_c = gp1d.GPVariance2(locations[:i, :], locations[i: i + batch, :])
+        mean_c = gp1d.GPMean(locations[:i, :], measuremts[:i, :], locations[i: i + batch, :])
+        # print locations[i: i+1, :].shape
+        weights_me, var_me = gp1d.GetBatchWeightsAndVariance(locations[:i, :], locations[i: i + batch, :])
+        # print measuremts[:i,:].shape
+        mean_me = gp1d.GPBatchMean(measuremts[:i, :], weights_me)
+        # var_dif = np.linalg.norm(var_me) - np.linalg.norm(var_c)
         var_dif = np.linalg.norm(var_me - var_c)
         mean_dif = np.linalg.norm(mean_me - mean_c)
         print var_dif, mean_dif

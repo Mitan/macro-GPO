@@ -96,21 +96,26 @@ class TreePlan:
         if H == 0:
             return
 
+        cur_physical_state = node.ss.physical_state
+        # history locations for all child nodes
+        new_history_locations = cur_physical_state if node.ss.locations is None else np.append(node.ss.locations, cur_physical_state, 0)
+        # can clculate cholesky since it is the same for all children
+        cholesky = self.gp.GPCholTraining(new_history_locations)
+
         # Add in new children for each valid action
         valid_actions = self.GetValidActionSet(node.ss.physical_state)
         for a in valid_actions:
             # Get new semi state
-            cur_physical_state = node.ss.physical_state
+
             new_physical_state = self.PhysicalTransition(cur_physical_state, a)
-            new_history_locations = cur_physical_state if node.ss.locations is None else np.append(node.ss.locations, cur_physical_state, 0)
             new_ss = SemiState(new_physical_state, new_history_locations)
 
             # Build child subtree
-            new_st = SemiTree(new_ss)
+            new_st = SemiTree(new_ss, chol=cholesky)
             # add child to old state
             node.AddChild(a, new_st)
             # why calculate twice?
-            new_st.ComputeWeightsAndVariance(self.gp)
+            #new_st.ComputeWeightsAndVariance(self.gp)
             self.BuildTree(new_st, H - 1)
 
     def GetValidActionSet(self, physical_state):
@@ -321,18 +326,19 @@ class AugmentedState:
 
 
 class SemiTree:
-    def __init__(self, semi_state):
+    def __init__(self, semi_state, chol = None):
         self.ss = semi_state
         self.children = dict()
         self.weights = None  # Weight space vector
         self.variance = None  # Precomputed posterior variance
+        self.cholesky = chol
 
     def AddChild(self, action, semi_tree):
         key = ToTuple(action)
         self.children[key] = semi_tree
 
     def ComputeWeightsAndVariance(self, gp):
-        self.weights, self.variance = gp.GetWeightsAndVariance(self.ss.locations, self.ss.physical_state)
+        self.weights, self.variance = gp.GetBatchWeightsAndVariance(self.ss.locations, self.ss.physical_state, self.cholesky)
 
 
 class SemiState:
