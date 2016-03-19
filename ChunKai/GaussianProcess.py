@@ -105,21 +105,21 @@ class GaussianProcess:
     def GetBatchWeightsAndVariance(self, history, current_physical_state, cholesky):
         # assume that both inputs are np 2D-arrays
         history_prior = self.CovarianceMesh(history, history)
-        current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
+        #current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
         # cholesky = self.GPCholTraining(history_prior)
         # cholesky = np.linalg.cholesky(history_prior + self.noise_variance * np.identity(history_prior.shape[0]))
         assert  cholesky is not None
         assert cholesky.shape == history_prior.shape
 
-        history_current = self.CovarianceMesh(history, current_physical_state)
+        #history_current = self.CovarianceMesh(history, current_physical_state)
 
         # n
-        assert history_current.shape[0] == history_prior.shape[0]
+        #assert history_current.shape[0] == history_prior.shape[0]
         # k
-        assert history_current.shape[1] == current_prior.shape[1]
+        #assert history_current.shape[1] == current_prior.shape[1]
 
-        variance = self.GPBatchVariance(history_current, current_prior, cholesky)
-        weights = self.GPBatchWeights(history_current, cholesky)
+        variance = self.GPBatchVariance(history, current_physical_state, cholesky)
+        weights = self.GPBatchWeights(history, current_physical_state, cholesky)
 
         return weights, variance
 
@@ -134,7 +134,7 @@ class GaussianProcess:
         mean = np.dot(weights, shifted_measurements) + self.mean_function
         return mean
 
-    def GPBatchWeights(self, history_current, cholesky):
+    def GPBatchWeights(self, history, current_physical_state, cholesky):
         """
         history_current - (n,k) matrix - covariances between history values and new points
         current_prior - (k,k) matrix
@@ -145,6 +145,7 @@ class GaussianProcess:
         # todo avoid computation of v twice
         # print cholesky.shape
         # print history_current.shape
+        history_current = self.CovarianceMesh(history, current_physical_state)
         v = linalg.solve_triangular(cholesky, history_current, lower=True)
         # print v.shape
         weights_transposed = linalg.solve_triangular(cholesky.T, v, lower=False)
@@ -156,7 +157,7 @@ class GaussianProcess:
         # print weights_transposed
         return weights_transposed.T
 
-    def GPBatchVariance(self, history_current, current_prior, cholesky):
+    def GPBatchVariance(self, history, current_physical_state, cholesky):
         """
          history_locations - (n,n) matix - prio
         history_current - (n,k) matrix
@@ -164,9 +165,13 @@ class GaussianProcess:
         cholesky - Cholesky decomposition of history_locations
         @ return (k,k) covariance
         """
+        current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
+        history_current = self.CovarianceMesh(history, current_physical_state)
+
         # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
         v = linalg.solve_triangular(cholesky, history_current, lower=True)
         # should be (k,k) matrix
+
         assert history_current.shape[0] == v.shape[0]
         assert current_prior.shape[0] == current_prior.shape[1]
         assert current_prior.shape[1] == v.shape[1]
