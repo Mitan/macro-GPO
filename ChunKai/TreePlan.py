@@ -1,15 +1,13 @@
 import copy
-import math
 import itertools
 
 import numpy as np
-from scipy.stats import norm
 from scipy.stats import multivariate_normal
 
+from qEI import qEI
 from GaussianProcess import GaussianProcess
 from GaussianProcess import SquareExponential
 from Vis2d import Vis2d
-from mutil import mutil
 
 
 class TreePlan:
@@ -179,6 +177,37 @@ class TreePlan:
         return best_expected_improv, best_action, len(valid_actions)
     """
 
+    def qEI(self, x_0, eps = 10**(-5)):
+        """
+        @param x_0 - augmented state
+        @return approximately optimal value, answer, and number of node expansions
+        """
+        # x_0 stores a 2D np array of k points with history
+        max_measurement = max(x_0.history.measurements)
+        best_action = None
+        best_expected_improv = -1.0
+
+        valid_actions = self.GetValidActionSet(x_0.physical_state)
+
+        chol = self.gp.GPCholTraining(x_0.history.locations)
+        for a in valid_actions:
+            x_next = self.TransitionP(x_0, a)
+
+            Sigma = self.gp.GPBatchVariance(x_0.history.locations, x_next.physical_state, chol)
+            weights = self.gp.GPBatchWeights(x_0.history.locations, x_next.physical_state, chol)
+            mu = self.gp.GPBatchMean(x_next.history.measurements,weights)
+
+            expectedImprov = qEI(Sigma, eps, mu, max_measurement, self.batch_size)
+
+            #comparison
+            if expectedImprov >= best_expected_improv:
+                best_expected_improv = expectedImprov
+                best_action = a
+
+        return best_expected_improv, best_action, len(valid_actions)
+
+
+
     def StochasticFull(self, x_0, H):
         """
         @param x_0 - augmented state
@@ -218,7 +247,6 @@ class TreePlan:
             # go down the semitree node
             # select new state obtained by transition
             new_st = st.children[ToTuple(a)]
-
             mean = self.gp.GPBatchMean(x_next.history.measurements,new_st.weights)
             var = new_st.variance
             #r = self.reward_analytical(mean, math.sqrt(var))

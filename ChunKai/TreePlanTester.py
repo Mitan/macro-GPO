@@ -1,7 +1,6 @@
 from datetime import datetime
 import os
-
-import numpy as np
+import math
 
 from SampleFunctionBuilder import GetSampleFunction
 from TreePlan import *
@@ -137,7 +136,8 @@ class TreePlanTester:
             tp = TreePlan(self.grid_domain, self.grid_gap, self.gp, action_set=action_set,
                           reward_type=self.reward_model, batch_size= self.batch_size, number_of_nodes_function= my_func, horizon=self.H)
 
-            _, a, nodes_expanded = tp.StochasticFull(x_0, self.H)
+            _, a, nodes_expanded = tp.qEI(x_0)
+            #_, a, nodes_expanded = tp.StochasticFull(x_0, self.H)
             """
             if time == 0 and cheat:
                 a = (0.0, 0.05)
@@ -285,12 +285,12 @@ if __name__ == "__main__":
 
 
 
-    horizons = [1,2,3,4]
+    horizons = [1]
     for h in horizons:
-        for b in range(2, 5):
+        for b in range(2, 3):
             print b, h
             print datetime.now()
-            for i in xrange(110, 111):
+            for i in xrange(110, 120):
                 f = lambda t: GetSampleFunction(h, t)
                 my_save_folder = save_trunk + "seed" + str(i) + "_b" +str(b) + "_h"+ str(h) +  "/"
                 my_initial_state = initial_state(b)
