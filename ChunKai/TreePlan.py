@@ -13,10 +13,8 @@ from Vis2d import Vis2d
 
 
 class TreePlan:
-
-
-    def __init__(self, grid_domain, grid_gap, gaussian_process, max_nodes=None, reward_type="Linear",
-                 number_of_nodes_function=None, batch_size=1, horizon=1, beta = 0.0):
+    def __init__(self, grid_domain, grid_gap, gaussian_process, number_of_nodes_function=None,
+                 batch_size=1, horizon=1, beta=0.0):
         """
         - Gradularity given by grid_gap
         - Squared exponential covariance function
@@ -36,7 +34,7 @@ class TreePlan:
         self.grid_gap = grid_gap
         # actions available for one agent
         self.single_agent_action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0),
-                                            (-grid_gap, 0))  # TODO: ensure that we can handle > 2 dimensions
+                                        (-grid_gap, 0))  # TODO: ensure that we can handle > 2 dimensions
 
         self.grid_domain = grid_domain
         """
@@ -57,21 +55,20 @@ class TreePlan:
         # in the form
         # lambda t: f(t)
         # set default value
+        """
         if number_of_nodes_function is None:
             number_of_nodes_function = lambda t: 10
+        """
         self.nodes_function = number_of_nodes_function
+        # linear rewards
+        self.reward_analytical = lambda mu, sigma: self.AcquizitionFunction(mu, sigma)
+        self.reward_sampled = lambda f: 0
 
-        if reward_type == "Linear":
-
-            self.reward_analytical = lambda mu, sigma: self.AcquizitionFunction(mu, sigma)
-            self.reward_sampled = lambda f: 0
-        else:
-            assert False, "Unknown reward type"
-
-    #heuristic
+    # heuristic
     # we use batch UCB version from Erik
     def AcquizitionFunction(self, mu, sigma):
-        exploration_matrix = np.identity(sigma.shape) * (self.gp.noise_variance)**(-2) + sigma
+        exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.noise_variance) ** (-2) + sigma
+
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     def Preprocess(self, physical_state, history_locations, H):

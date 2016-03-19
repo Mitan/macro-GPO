@@ -1,10 +1,6 @@
 import numpy as np
 from scipy import linalg
 from scipy.stats import multivariate_normal
-from matplotlib import pyplot as pl
-from matplotlib import cm
-
-from Vis2d import Vis2d
 
 
 class GaussianProcess:
