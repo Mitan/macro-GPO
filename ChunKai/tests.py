@@ -20,3 +20,5 @@ a = np.array([[1,2], [3,4]])
 b = np.array([6,1])
 print a.shape, b.shape
 print np.dot(a,b)
+
+print 15 * (2)**(-2)

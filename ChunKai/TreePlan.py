@@ -1,7 +1,9 @@
 import copy
 import itertools
+import math
 
 import numpy as np
+
 from scipy.stats import multivariate_normal
 
 from qEI import qEI
@@ -11,14 +13,10 @@ from Vis2d import Vis2d
 
 
 class TreePlan:
-    """
-    TODO: allow for more flexible initialization
-    def __init__(self, states, actions, transition, reward, GP):
-        pass
-    """
 
-    def __init__(self, grid_domain, grid_gap, gaussian_process, action_set=None, max_nodes=None, reward_type="Linear",
-                 number_of_nodes_function=None, batch_size=1, horizon = 1):
+
+    def __init__(self, grid_domain, grid_gap, gaussian_process, max_nodes=None, reward_type="Linear",
+                 number_of_nodes_function=None, batch_size=1, horizon=1, beta = 0.0):
         """
         - Gradularity given by grid_gap
         - Squared exponential covariance function
@@ -28,6 +26,8 @@ class TreePlan:
         self.batch_size = batch_size
         # planning horizon
         self.H = horizon
+        # parameter for controlling exploration-exploitation
+        self.beta = beta
 
         # Preset constants
         self.INF = 10 ** 15
@@ -35,16 +35,22 @@ class TreePlan:
         # Problem parameters
         self.grid_gap = grid_gap
         # actions available for one agent
+        self.single_agent_action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0),
+                                            (-grid_gap, 0))  # TODO: ensure that we can handle > 2 dimensions
+
+        self.grid_domain = grid_domain
+        """
         self.single_agent_action_set = action_set
         if action_set == None:
             self.single_agent_action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0),
-                               (-grid_gap, 0))  # TODO: ensure that we can handle > 2 dimensions
+                                            (-grid_gap, 0))  # TODO: ensure that we can handle > 2 dimensions
+
         elif action_set == 'GridWithStay':
             self.single_agent_action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0), (-grid_gap, 0), (0.0, 0.0))
-        self.grid_domain = grid_domain
-
+        """
         # an ugly way to create joint actions
-        self.joint_action_set = np.asarray(list(itertools.product(self.single_agent_action_set, repeat = self.batch_size)))
+        self.joint_action_set = np.asarray(
+            list(itertools.product(self.single_agent_action_set, repeat=self.batch_size)))
         self.gp = gaussian_process
 
         # user defined function for number of nodes at every level
@@ -56,12 +62,17 @@ class TreePlan:
         self.nodes_function = number_of_nodes_function
 
         if reward_type == "Linear":
-            #TODO add Erik's
-            self.reward_analytical = lambda mu, sigma: np.sum(mu)
-            #self.reward_analytical = lambda mu, sigma: mu + sd_bonus * (sigma)
+
+            self.reward_analytical = lambda mu, sigma: self.AcquizitionFunction(mu, sigma)
             self.reward_sampled = lambda f: 0
         else:
             assert False, "Unknown reward type"
+
+    #heuristic
+    # we use batch UCB version from Erik
+    def AcquizitionFunction(self, mu, sigma):
+        exploration_matrix = np.identity(sigma.shape) * (self.gp.noise_variance)**(-2) + sigma
+        return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     def Preprocess(self, physical_state, history_locations, H):
 
@@ -89,14 +100,15 @@ class TreePlan:
         # history for root possibly empty
         if not isRoot:
             node.ComputeWeightsAndVariance(self.gp)
-            #print H, node.variance
+            # print H, node.variance
 
         if H == 0:
             return
 
         cur_physical_state = node.ss.physical_state
         # history locations for all child nodes
-        new_history_locations = cur_physical_state if node.ss.locations is None else np.append(node.ss.locations, cur_physical_state, 0)
+        new_history_locations = cur_physical_state if node.ss.locations is None else np.append(node.ss.locations,
+                                                                                               cur_physical_state, 0)
         # can clculate cholesky since it is the same for all children
         cholesky = self.gp.GPCholTraining(new_history_locations)
 
@@ -113,7 +125,7 @@ class TreePlan:
             # add child to old state
             node.AddChild(a, new_st)
             # why calculate twice?
-            #new_st.ComputeWeightsAndVariance(self.gp)
+            # new_st.ComputeWeightsAndVariance(self.gp)
             self.BuildTree(new_st, H - 1)
 
     def GetValidActionSet(self, physical_state):
@@ -126,12 +138,12 @@ class TreePlan:
         new_state = np.add(physical_state, a)
         ndims = 2
         for i in range(a.shape[0]):
-            current_agent_postion = new_state[i, : ]
+            current_agent_postion = new_state[i, :]
             for dim in xrange(ndims):
-                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= self.grid_domain[dim][1]: return False
+                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
+                        self.grid_domain[dim][1]: return False
 
         return True
-
 
     # Hacks to overcome bad design
     def TransitionP(self, augmented_state, action):
@@ -177,7 +189,7 @@ class TreePlan:
         return best_expected_improv, best_action, len(valid_actions)
     """
 
-    def qEI(self, x_0, eps = 10**(-5)):
+    def qEI(self, x_0, eps=10 ** (-5)):
         """
         @param x_0 - augmented state
         @return approximately optimal value, answer, and number of node expansions
@@ -195,18 +207,16 @@ class TreePlan:
 
             Sigma = self.gp.GPBatchVariance(x_0.history.locations, x_next.physical_state, chol)
             weights = self.gp.GPBatchWeights(x_0.history.locations, x_next.physical_state, chol)
-            mu = self.gp.GPBatchMean(x_next.history.measurements,weights)
+            mu = self.gp.GPBatchMean(x_next.history.measurements, weights)
 
             expectedImprov = qEI(Sigma, eps, mu, max_measurement, self.batch_size)
 
-            #comparison
+            # comparison
             if expectedImprov >= best_expected_improv:
                 best_expected_improv = expectedImprov
                 best_action = a
 
         return best_expected_improv, best_action, len(valid_actions)
-
-
 
     def StochasticFull(self, x_0, H):
         """
@@ -214,13 +224,13 @@ class TreePlan:
         @return approximately optimal value, answer, and number of node expansions
         """
         # x_0 stores a 2D np array of k points with history
-        #print "Preprocessing weight spaces..."
+        # print "Preprocessing weight spaces..."
         # We take current position and past locations separately
 
-        #now history locations do not include current
+        # now history locations do not include current
         st = self.Preprocess(x_0.physical_state, x_0.history.locations[: -self.batch_size, :], H)
 
-        #print "Performing search..."
+        # print "Performing search..."
         # Get answer
         Vapprox, Aapprox = self.Calculate_V(H, x_0, st)
 
@@ -247,9 +257,9 @@ class TreePlan:
             # go down the semitree node
             # select new state obtained by transition
             new_st = st.children[ToTuple(a)]
-            mean = self.gp.GPBatchMean(x_next.history.measurements,new_st.weights)
+            mean = self.gp.GPBatchMean(x_next.history.measurements, new_st.weights)
             var = new_st.variance
-            #r = self.reward_analytical(mean, math.sqrt(var))
+            # r = self.reward_analytical(mean, math.sqrt(var))
             r = self.reward_analytical(mean, var)
 
             # Future reward
@@ -273,13 +283,14 @@ class TreePlan:
         return v + r_1
         """
         mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
-        #print mu.shape, new_st.variance.shape
+        # print mu.shape, new_st.variance.shape
         assert mu.shape[0] == new_st.variance.shape[0]
 
         # the number of samples is given by user-defined function
 
         samples = self.GenerateStochasticSamples(mu, new_st.variance, T)
-        sample_v_values = [(self.Calculate_V(T - 1, self.TransitionH(x, sam), new_st))[0] + self.reward_sampled(sam) for sam
+        sample_v_values = [(self.Calculate_V(T - 1, self.TransitionH(x, sam), new_st))[0] + self.reward_sampled(sam) for
+                           sam
                            in samples]
         avg = np.mean(sample_v_values)
         return avg
@@ -293,12 +304,12 @@ class TreePlan:
         else:
             return np.random.multivariate_normal(mu, sigma, number_of_samples)
 
+
 ###UTIL
 # converts ndarray to tuple
 # can't pass ndarray as a key for dict
 def ToTuple(arr):
     return tuple(map(tuple, arr))
-
 
 
 ### TRANSITION AND MEASUREMENTS ###
@@ -338,9 +349,9 @@ class AugmentedState:
         """
         Initialize augmented state with initial position and history
         """
-        #2D array
+        # 2D array
         self.physical_state = physical_state
-        #2D array
+        # 2D array
         self.history = initial_history
 
     def to_str(self):
@@ -354,7 +365,7 @@ class AugmentedState:
 
 
 class SemiTree:
-    def __init__(self, semi_state, chol = None):
+    def __init__(self, semi_state, chol=None):
         self.ss = semi_state
         self.children = dict()
         self.weights = None  # Weight space vector
@@ -366,7 +377,8 @@ class SemiTree:
         self.children[key] = semi_tree
 
     def ComputeWeightsAndVariance(self, gp):
-        self.weights, self.variance = gp.GetBatchWeightsAndVariance(self.ss.locations, self.ss.physical_state, self.cholesky)
+        self.weights, self.variance = gp.GetBatchWeightsAndVariance(self.ss.locations, self.ss.physical_state,
+                                                                    self.cholesky)
 
 
 class SemiState:
@@ -390,7 +402,7 @@ class History:
         @modifies - self.locations, self.measurements
         """
         self.locations = np.append(self.locations, new_locations, axis=0)
-        #1D array
+        # 1D array
         self.measurements = np.append(self.measurements, new_measurements)
 
 
