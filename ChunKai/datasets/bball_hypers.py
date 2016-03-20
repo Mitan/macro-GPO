@@ -63,7 +63,7 @@ P_log = data[:, 6:7]
 
 
 print X_values.shape
-print InferHypers(X_values, P_log, 0.02, 0.057, 1.1, 2.5)
+print InferHypers(X_values, K_log, 0.02, 0.057, 1.1, 2.5)
 
 #plt.plot(*zip(*X_values), marker='o', color='r', ls='')
 #plt.show()
