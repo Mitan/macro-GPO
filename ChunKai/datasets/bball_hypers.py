@@ -21,7 +21,7 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
 
     #m.optimize(messages=True)
     m.optimize(messages=False)
-    #m.optimize_restarts(num_restarts = 10)
+    m.optimize_restarts(num_restarts = 10)
 
 
     # lengthscales go indexes 1 and 2
@@ -45,46 +45,39 @@ file = open("./bball.dat")
 data = np.genfromtxt(file,skip_header=10)
 file.close()
 
+
+indexes_x = [i for i in range(data.shape[0]) if data[i,0] > 4  and data[i,1] < 19 and data[i,1] > 6]
+data = data[indexes_x, :]
+
+
 X_values = data[:, 0:2]
 
-print max(data[:, 0:1])
+#print max(data[:, 0:1])
 K_normal = data[:, 2:3]
 K_log = data[:, 3:4]
 P_normal = data[:, 5:6]
 P_log = data[:, 6:7]
 #print K_log
 
+
+
+
 print X_values.shape
-#print InferHypers(X_values, K_log)
+print InferHypers(X_values, P_log, 0.02, 0.057, 1.1, 2.5)
 
-a=[[1,2],[3,3],[4,4],[5,2]]
-plt.plot(*zip(*X_values), marker='o', color='r', ls='')
-plt.show()
+#plt.plot(*zip(*X_values), marker='o', color='r', ls='')
+#plt.show()
 
-"""
+
+
+
 x = K_log
 
 # the histogram of the data
-n, bins, patches = plt.hist(K_log, 400, normed=1, facecolor='green', alpha=0.75)
+n, bins, patches = plt.hist(K_log, 50, normed=1, facecolor='green', alpha=0.75)
 
 
-plt.axis([0, 10, 0, 2])
+plt.axis([0, 2, 0, 10])
 plt.grid(True)
 
-plt.show()
-
-
-import matplotlib.cm as cm
-n = 256
-x = np.linspace(-3., 3., n)
-
-y = np.linspace(-3., 3., n)
-X, Y = np.meshgrid(x, y)
-#X, Y = np.meshgrid(data[:, 0:1],  data[:, 1:2])
-
-Z = X * np.sinc(X ** 2 + Y ** 2)
-print Z.shape
-
-plt.pcolormesh(data[:, 0:1], data[:, 1:2], data[:, 3:4])
 #plt.show()
-"""
