@@ -1,5 +1,5 @@
 import numpy as np
-
+"""
 a = np.array([[2.0,2.1], [3.1,3.1], [2.2, 2.2]])
 b = np.array([[1.0, 1.0], [4,4]])
 #print np.add(a,b)
@@ -22,3 +22,9 @@ print a.shape, b.shape
 print np.dot(a,b)
 
 print 15 * (2)**(-2)
+"""
+file = open("./datasets/bball.dat")
+data = np.genfromtxt(file,skip_header=10)
+file.close()
+X_values = data[:, 0:2]
+print X_values
