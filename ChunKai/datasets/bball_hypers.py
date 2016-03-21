@@ -1,15 +1,10 @@
 #from ChunKai.hypers import InferHypers
 import GPy
 import numpy as np
-import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 
 def InferHypers(X, Y, noise, signal, l_1, l_2):
 
-    y_max = np.max(Y)
-    y_min = np.min(Y)
-    l = 0.01
-    diff = (y_max - y_min)/2
     Y = Y - np.mean(Y)
     assert X.shape[0] == Y.shape[0]
     assert X.shape[1] ==2
@@ -25,9 +20,11 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
 
 
     # lengthscales go indexes 1 and 2
+    #todo note need to square the l_1 and l_2
     l_1, l_2 =  m.param_array[1:3]
     #print l_1, l_2
 
+    # todo note this is already sigma^2
     noise_variance = m.param_array[3]
     #print noise_variance
 
