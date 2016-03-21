@@ -1,17 +1,16 @@
 import GPy
 import numpy as np
 
-
-
-"""
-print X.shape
-print Y.shape
-"""
-def InferHypers(X, Y):
+# required to provide initial guess for hypers
+def InferHypers(X, Y, noise, signal, l_1, l_2):
+    mu = np.mean(Y)
+    Y = Y - mu
     assert X.shape[0] == Y.shape[0]
     assert X.shape[1] ==2
-    kernel = GPy.kern.RBF(input_dim=2, lengthscale=[1.0, 1.0], ARD= True)
-    m = GPy.models.GPRegression(X,Y,kernel)
+
+    kernel = GPy.kern.RBF(input_dim=2,variance= signal,lengthscale=[l_1, l_2], ARD= True)
+    m = GPy.models.GPRegression(X,Y,kernel, noise_var=noise)
+    print m
     #print m
 
     #m.optimize(messages=True)
@@ -20,16 +19,19 @@ def InferHypers(X, Y):
 
 
     # lengthscales go indexes 1 and 2
+    #todo note need to square the l_1 and l_2
     l_1, l_2 =  m.param_array[1:3]
     #print l_1, l_2
 
+    # todo note this is already sigma^2
     noise_variance = m.param_array[3]
     #print noise_variance
 
     signal_variance = m.param_array[0]
     #print signal_variance
     print m
-    return l_1, l_2, noise_variance, signal_variance
+    #return l_1, l_2, noise_variance, signal_variance
+    return mu, l_1, l_2, noise_variance,signal_variance
 
 if __name__ == "__main__":
     X = np.random.uniform(-3.,3.,(400,2))
