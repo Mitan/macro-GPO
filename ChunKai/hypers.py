@@ -15,7 +15,7 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
 
     #m.optimize(messages=True)
     m.optimize(messages=False)
-    m.optimize_restarts(num_restarts = 10)
+    m.optimize_restarts(num_restarts = 2)
 
 
     # lengthscales go indexes 1 and 2

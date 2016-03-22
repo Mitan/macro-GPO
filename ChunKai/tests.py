@@ -59,3 +59,7 @@ Z = -__Bukin6(X,Y)
 surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
                        linewidth=0, antialiased=False)
 plt.show()
+
+a = np.array([1,2,3])
+for i in a:
+    print i
