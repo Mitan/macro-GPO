@@ -29,75 +29,66 @@ def __PlotFunction(X, Y, Z):
                        linewidth=0, antialiased=False)
     plt.show()
 
-def __CreateGrid(x_max, x_min, y_max, y_min):
-    X = np.arange(-x_min, x_max + 1)
-    Y = np.arange(-y_min, y_max + 1)
-    grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-    return grid
 
 def GetSimulatedDataset(i):
+    gridSizeX = 20
+    gridSizeY = 20
     if i==0:
         # Ackley
-        X = np.linspace(-15.0, 15.0, num=20)
-        Y = np.linspace(-15.0, 15.0, num=20)
-        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-        values = np.apply_along_axis(__Ackley, 1, grid)
+        X = np.linspace(-15.0, 15.0, num=gridSizeX)
+        Y = np.linspace(-15.0, 15.0, num=gridSizeY)
+        f = __Ackley
 
     elif i==1:
         #DropWave
-        X = np.linspace(-1.0, 1.0, num=20)
-        Y = np.linspace(-1.0, 1.0, num=20)
-        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-        values = np.apply_along_axis(__DropWave, 1, grid)
+        X = np.linspace(-1.0, 1.0, num=gridSizeX)
+        Y = np.linspace(-1.0, 1.0, num=gridSizeY)
+        f = __DropWave
     elif i ==2:
         # Griewank
-        X = np.linspace(-5.0, 5.0, num=20)
-        Y = np.linspace(-5.0, 5.0, num=20)
-        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-        values = np.apply_along_axis(_Griewank, 1, grid)
+        X = np.linspace(-5.0, 5.0, num=gridSizeX)
+        Y = np.linspace(-5.0, 5.0, num=gridSizeY)
+        f = _Griewank
     elif i ==3:
         # Holder Table
-        X = np.linspace(-10.0, 10.0, num=20)
-        Y = np.linspace(-10.0, 10.0, num=20)
-        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-        values = np.apply_along_axis(_HolderTable, 1, grid)
+        X = np.linspace(-10.0, 10.0, num=gridSizeX)
+        Y = np.linspace(-10.0, 10.0, num=gridSizeY)
+        f = _HolderTable
 
     elif i ==4:
         # Branin
-        X = np.linspace(-5.0, 10.0, num=20)
-        Y = np.linspace(0.0, 15.0, num=20)
-        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-        values = np.apply_along_axis(_Branin, 1, grid)
+        X = np.linspace(-5.0, 10.0, num=gridSizeX)
+        Y = np.linspace(0.0, 15.0, num=gridSizeY)
+        f = _Branin
 
     elif i ==5:
         # McCormick
-        X = np.linspace(-1.5, 4.0, num=20)
-        Y = np.linspace(-3.0, 4.0, num=20)
-        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-        values = np.apply_along_axis(_McCormick, 1, grid)
+        X = np.linspace(-1.5, 4.0, num=gridSizeX)
+        Y = np.linspace(-3.0, 4.0, num=gridSizeY)
+        f = _McCormick
     elif i ==6:
         # SixCamel
-        X = np.linspace(-3.0, 3.0, num=20)
-        Y = np.linspace(-2.0, 2.0, num=20)
-        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-        values = np.apply_along_axis(_SixCamel, 1, grid)
+        X = np.linspace(-3.0, 3.0, num=gridSizeX)
+        Y = np.linspace(-2.0, 2.0, num=gridSizeY)
+        f = _SixCamel
     elif i ==7:
         # Shubert
-        X = np.linspace(-2.0, 2.0, num=20)
-        Y = np.linspace(-2.0, 2.0, num=20)
-        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-        values = np.apply_along_axis(__Shubert, 1, grid)
+        X = np.linspace(-2.0, 2.0, num=gridSizeX)
+        Y = np.linspace(-2.0, 2.0, num=gridSizeY)
+        f = __Shubert
     elif i ==8:
-        # Shubert
-        X = np.linspace(0.0, 1.0, num=20)
-        Y = np.linspace(0.0, 1.0, num=20)
-        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
-        values = np.apply_along_axis(__Cosines, 1, grid)
-
+        # COsines
+        X = np.linspace(0.0, 1.0, num=gridSizeX)
+        Y = np.linspace(0.0, 1.0, num=gridSizeY)
+        f = __Cosines
     else:
         raise ValueError("Imcorrect dataset number")
 
+    grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
+    values = np.apply_along_axis(f, 1, grid)
     values = values.reshape((values.shape[0],1))
+    max_value = np.max(values)
+    min_value = np.min(values)
     skewness = skew(values)
     print skewness
     #__PlotFunction(X, Y, values)
@@ -111,16 +102,16 @@ def GetSimulatedDataset(i):
     m_best = None
     mu_best = 0.0
     likeilhood_best =  - np.Inf
+
     # train hypers with several random starts
     for i in range(len(tests)):
-
         m, mu = InferHypers(grid, values, noise * tests[i], signal * tests[i], l_1 * tests[i-1], l_2 * tests[i-1])
         if m.likelihood > likeilhood_best:
             m_best = m
             mu_best = mu
             likeilhood_best = m.likelihood
     print m_best
-    print "MSE is " + str(TestPrediction(m_best, mu_best))
+    print "MSE is " + str(TestPrediction(m_best, mu_best, f)) + " with range " + str(max_value - min_value)
 
     return grid, values
 
@@ -162,6 +153,9 @@ def __Ackley(x):
     term1  = -a * math.exp(-b*math.sqrt(s_1/d))
     term2 = -math.exp(s_2/d)
     y =  term1 + term2 + a + math.exp(1.0)
+    #Warning!
+    # real Ackley function is y
+    # but to ensure small skewness we perform transformation
     return math.log(-y + 21.3)
 
 def __DropWave(x):
@@ -306,19 +300,23 @@ def _Eggholder(x):
 
 """
 
-def TestPrediction(m, mu):
+
+def TestPrediction(m, mu, f):
     # test points
-    n = 30
-    grid = np.random.uniform(-3.,3.,(n ,2))
-    #print grid
+    n = 50
+    grid = np.random.uniform(-15.,15.,(n ,2))
+    #print at
     predictions =  [(m.predict(np.atleast_2d(grid[i, :]))[0])[0,0] for i in range(n)]
+        # model m uses zero mean, so need to add it
     predictions = mu + np.asarray(predictions)
-    ground_truth =  np.apply_along_axis(__Ackley, 1, grid)
+    ground_truth =  np.apply_along_axis(f, 1, grid)
     diff = predictions - ground_truth
-    mse = np.sum(diff* diff) / n
+    squares = diff* diff
+    assert diff.shape == squares.shape
+    mse = np.sum(squares) / n
     return mse
 
 
 
 if __name__ == "__main__":
-    GetSimulatedDataset(0)
+    GetSimulatedDataset(1)
