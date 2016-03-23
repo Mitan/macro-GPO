@@ -38,28 +38,33 @@ def GetSimulatedDataset(i):
         X = np.linspace(-15.0, 15.0, num=gridSizeX)
         Y = np.linspace(-15.0, 15.0, num=gridSizeY)
         f = __Ackley
+        test_prediction_range = [-15.0,15.0]
 
     elif i==1:
         #DropWave
         X = np.linspace(-1.0, 1.0, num=gridSizeX)
         Y = np.linspace(-1.0, 1.0, num=gridSizeY)
         f = __DropWave
+        test_prediction_range = [-1.0,1.0]
     elif i ==2:
         # Griewank
         X = np.linspace(-5.0, 5.0, num=gridSizeX)
         Y = np.linspace(-5.0, 5.0, num=gridSizeY)
         f = _Griewank
+        test_prediction_range = [-5.0, 5.0]
     elif i ==3:
         # Holder Table
         X = np.linspace(-10.0, 10.0, num=gridSizeX)
         Y = np.linspace(-10.0, 10.0, num=gridSizeY)
         f = _HolderTable
+        test_prediction_range = [-10.0,10.0]
 
     elif i ==4:
         # Branin
         X = np.linspace(-5.0, 10.0, num=gridSizeX)
         Y = np.linspace(0.0, 15.0, num=gridSizeY)
         f = _Branin
+        test_prediction_range  = [0.0, 10.0]
 
     elif i ==5:
         # McCormick
@@ -71,32 +76,40 @@ def GetSimulatedDataset(i):
         X = np.linspace(-3.0, 3.0, num=gridSizeX)
         Y = np.linspace(-2.0, 2.0, num=gridSizeY)
         f = _SixCamel
+        test_prediction_range = [-2.0, 2.0]
     elif i ==7:
         # Shubert
         X = np.linspace(-2.0, 2.0, num=gridSizeX)
         Y = np.linspace(-2.0, 2.0, num=gridSizeY)
         f = __Shubert
+        test_prediction_range = [-2.0, 2.0]
     elif i ==8:
         # COsines
         X = np.linspace(0.0, 1.0, num=gridSizeX)
         Y = np.linspace(0.0, 1.0, num=gridSizeY)
         f = __Cosines
+        test_prediction_range = [0.0, 1.0]
     else:
         raise ValueError("Imcorrect dataset number")
 
     grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
     values = np.apply_along_axis(f, 1, grid)
     values = values.reshape((values.shape[0],1))
-    max_value = np.max(values)
-    min_value = np.min(values)
+
+    # skew for checking if need to transform data
     skewness = skew(values)
     print skewness
     #__PlotFunction(X, Y, values)
-    signal = np.std(values)
+    values_variance = np.std(values)
+
+    # set initial values for parameters
+    signal = values_variance
     #signal = __GetLengthScaleHeuristc(values)
     noise = signal * 0.1
     l_1 = __GetLengthScaleHeuristc(X)
     l_2 = __GetLengthScaleHeuristc(Y)
+
+    # array for random restarts
     tests = [10**i for i in range(-3,3)]
 
     m_best = None
@@ -111,7 +124,7 @@ def GetSimulatedDataset(i):
             mu_best = mu
             likeilhood_best = m.likelihood
     print m_best
-    print "MSE is " + str(TestPrediction(m_best, mu_best, f)) + " with range " + str(max_value - min_value)
+    print "MSE is " + str(TestPrediction(m_best, mu_best, f, test_prediction_range)) + " with data variance " + str(values_variance)
 
     return grid, values
 
@@ -301,10 +314,10 @@ def _Eggholder(x):
 """
 
 
-def TestPrediction(m, mu, f):
+def TestPrediction(m, mu, f, preditcion_range):
     # test points
     n = 50
-    grid = np.random.uniform(-15.,15.,(n ,2))
+    grid = np.random.uniform(preditcion_range[0], preditcion_range[1],(n ,2))
     #print at
     predictions =  [(m.predict(np.atleast_2d(grid[i, :]))[0])[0,0] for i in range(n)]
         # model m uses zero mean, so need to add it
@@ -319,4 +332,4 @@ def TestPrediction(m, mu, f):
 
 
 if __name__ == "__main__":
-    GetSimulatedDataset(1)
+    GetSimulatedDataset(0)
