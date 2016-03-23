@@ -1,0 +1,80 @@
+function is <function __Ackley at 0x0EB68F70>
+MSE is 0.0854046847848 with data variance 0.70961225299
+l_1 = 1.76030067316
+l_2 = 10.7911469234
+sigma noise = 0.0430165337672
+sigma signal = 0.571823797414
+mean = 1.20093709782
+
+function is <function __DropWave at 0x0EB68FB0>
+MSE is 5.80895535838e-09 with data variance 0.304215802627
+l_1 = 0.341725619306
+l_2 = 0.341728687679
+sigma noise = 1.23195228302e-15
+sigma signal = 28.624585417
+mean = 0.437328162957
+
+function is <function _Griewank at 0x0EB6B030>
+MSE is 1.17871204694e-10 with data variance 0.505344482439
+l_1 = 2.89006998921
+l_2 = 3.83510985068
+sigma noise = 1.23195228302e-15
+sigma signal = 35.2239112408
+mean = 0.980346327848
+
+function is <function _HolderTable at 0x0EB6B070>
+MSE is 0.672274982999 with data variance 1.23902562556
+l_1 = 10.9750425658
+l_2 = 0.82116988714
+sigma noise = 0.0767232428978
+sigma signal = 3.07133609974
+mean = 0.488945188451
+
+function is <function _Branin at 0x0EB6B0F0>
+MSE is 1.94201252983e-05 with data variance 0.94950011895
+l_1 = 0.874452113867
+l_2 = 2.16146708449
+sigma noise = 5.65464310399e-15
+sigma signal = 0.26217986955
+mean = 3.73043473872
+
+function is <function _McCormick at 0x0EB6B130>
+MSE is 4.75098509725e-09 with data variance 0.70090074058
+l_1 = 1.02460182294
+l_2 = 0.978851412574
+sigma noise = 1.23195228302e-15
+sigma signal = 0.18153040024
+mean = 2.26014258154
+
+function is <function _SixCamel at 0x0EB6B170>
+MSE is 0.000190374405686 with data variance 1.43898705959
+l_1 = 0.551335632732
+l_2 = 0.47104355729
+sigma noise = 0.000290713542301
+sigma signal = 1.06742725889
+mean = 2.51248495747
+
+function is <function __Shubert at 0x0EB6B0B0>
+MSE is 1.6008506273e-05 with data variance 38.2874781416
+l_1 = 0.586105494277
+l_2 = 0.586042998255
+sigma noise = 1.23195228302e-15
+sigma signal = 1896783.29212
+mean = 0.0339401136802
+
+function is <function __Cosines at 0x0EB6B1B0>
+MSE is 0.00355342946584 with data variance 0.183687303121
+l_1 = 0.144919966415
+l_2 = 0.144919845721
+sigma noise = 1.23195228302e-15
+sigma signal = 0.0198994696282
+mean = 1.21409403551
+
+function is <function _Eggholder at 0x0EB6B270>
+MSE is 1.74220658035e-09 with data variance 34.8206073859
+l_1 = 13.669539149
+l_2 = 15.0549052426
+sigma noise = 1.23195228302e-15
+sigma signal = 1998733.28031
+mean = -16.4368065798
+
