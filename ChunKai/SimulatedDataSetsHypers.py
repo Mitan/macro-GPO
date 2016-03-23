@@ -371,7 +371,7 @@ def TestPrediction(m, mu, f, preditcion_range):
 
 
 if __name__ == "__main__":
-    my_file = file = open("./datasets/simulated-functions-hypers.txt", 'w')
+    my_file =  open("./datasets/simulated-functions-hypers.txt", 'w')
     for i in range(10):
         GetSimulatedDataset(i, my_file)
     my_file.close()
