@@ -10,12 +10,16 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
 
     kernel = GPy.kern.RBF(input_dim=2,variance= signal,lengthscale=[l_1, l_2], ARD= True)
     m = GPy.models.GPRegression(X,Y,kernel, noise_var=noise)
+    #m.constrain_bounded('rbf_var',1e-3,1e5)
+    #m.constrain_bounded('rbf_len',.1,200.)
+    #m.constrain_fixed('noise',1e-5)
+
     print m
     #print m
 
     #m.optimize(messages=True)
     m.optimize(messages=False)
-    m.optimize_restarts(num_restarts = 2)
+    m.optimize_restarts(num_restarts = 10)
 
 
     # lengthscales go indexes 1 and 2
