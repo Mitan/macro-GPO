@@ -13,7 +13,7 @@ from Vis2d import Vis2d
 
 
 class TreePlan:
-    def __init__(self, grid_domain, grid_gap, gaussian_process, number_of_nodes_function=None,
+    def __init__(self, grid_domain, grid_gapX, grid_gapY, gaussian_process, number_of_nodes_function=None,
                  batch_size=1, horizon=1, beta=0.0):
         """
         - Gradularity given by grid_gap
@@ -31,10 +31,10 @@ class TreePlan:
         self.INF = 10 ** 15
 
         # Problem parameters
-        self.grid_gap = grid_gap
+        #self.grid_gap = grid_gap
         # actions available for one agent
-        self.single_agent_action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0),
-                                        (-grid_gap, 0))  # TODO: ensure that we can handle > 2 dimensions
+        self.single_agent_action_set = ((0, grid_gapY), (0, -grid_gapY), (grid_gapX, 0),
+                                        (-grid_gapX, 0))  # TODO: ensure that we can handle > 2 dimensions
 
         self.grid_domain = grid_domain
         """
@@ -137,8 +137,7 @@ class TreePlan:
         for i in range(a.shape[0]):
             current_agent_postion = new_state[i, :]
             for dim in xrange(ndims):
-                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] > \
-                        self.grid_domain[dim][1]: return False
+                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >  self.grid_domain[dim][1]: return False
 
         return True
 

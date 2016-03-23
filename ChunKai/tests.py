@@ -34,16 +34,15 @@ data = np.genfromtxt(file,skip_header=10)
 file.close()
 X_values = data[:, 0:2]
 print X_values
-"""
+
 @np.vectorize
 def __Bukin6(x1, x2):
     # return Bukin function n 6 multiplied by -1
     #this function is 2D
-    """
     assert x.shape[0] ==2
     x1 = x[0]
     x2 = x[1]
-    """
+
     term1 =  100 * math.sqrt(abs(x2 - 0.01*(x1)**2))
     term2 = 0.01 * abs(x1+10)
     y = term1 + term2
@@ -63,3 +62,11 @@ plt.show()
 a = np.array([1,2,3])
 for i in a:
     print i
+"""
+
+
+X = np.linspace(0.0, 1.0, num=3)
+print X
+
+a = np.asarray([1,2])
+print a.shape

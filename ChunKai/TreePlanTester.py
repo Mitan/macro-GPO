@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import math
+from SimulatedDataSetsHypers import __Ackley
 
 from SampleFunctionBuilder import GetSampleFunction
 from TreePlan import *
@@ -46,7 +47,7 @@ class TreePlanTester:
         self.gp = GaussianProcess(self.covariance_function, noise_variance, mean_function=mean_function)
         self.noise_variance = noise_variance
 
-    def InitEnvironment(self, environment_noise, model):
+    def InitEnvironment(self, environment_noise, model, number_of_points):
         """
         @param environment noise - float for variance of zero mean gaussian noise present in the actual environment
         @param model - function taking in a numpy array of appropriate dimension and returns the actual (deterministic) reading
@@ -56,8 +57,10 @@ class TreePlanTester:
         """
         self.environment_noise = environment_noise
         self.model = model
+        # number of points at each dimension
+        self.number_of_points = number_of_points
 
-    def InitPlanner(self, grid_domain, grid_gap):
+    def InitPlanner(self, grid_domain, grid_gap_X, grid_gap_Y):
         """
         Creates a planner. For now, we only allow gridded/latticed domains.
 
@@ -82,7 +85,8 @@ class TreePlanTester:
         """
 
         self.grid_domain = grid_domain
-        self.grid_gap = grid_gap
+        self.grid_gapX = grid_gap_X
+        self.grid_gapY = grid_gap_Y
 
     def InitTestParameters(self, initial_physical_state, past_locations):
         """
@@ -108,7 +112,7 @@ class TreePlanTester:
         self.past_measurements = None if self.past_locations is None else np.apply_along_axis(self.model, 1,
                                                                                               past_locations)
 
-    def Test(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, debug=True, save_per_step=True,
+    def Test(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, debug=False, save_per_step=True,
              save_folder="default_results/"):
         """ Pipeline for testing
         @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
@@ -128,15 +132,17 @@ class TreePlanTester:
         nodes_expanded_history = []
         base_measurement_history = []
         for time in xrange(num_timesteps_test):
-            tp = TreePlan(self.grid_domain, self.grid_gap, self.gp,
+            tp = TreePlan(self.grid_domain, self.grid_gapX, self.grid_gapY,  self.gp,
                           batch_size=batch_size, number_of_nodes_function=my_nodes_func, horizon=H, beta=beta)
 
             if alg_type == 'qEI':
                 _, a, _ = tp.qEI(x_0)
             elif alg_type == 'UCB':
-                _, a, nodes_expanded = tp.StochasticFull(x_0, 1)
+                _, a, _ = tp.StochasticFull(x_0, 1)
             elif alg_type == 'Non-myopic':
                 _, a, _ = tp.StochasticFull(x_0, H)
+            elif alg_type == 'MLE':
+                _, a, _ = tp.MLE(x_0, H)
             else:
                 raise ValueError("wrong type")
             # _, a, nodes_expanded = tp.StochasticFull(x_0, self.H)
@@ -148,11 +154,14 @@ class TreePlanTester:
             # single_agent_state is a position of one agent in a batch
             baseline_measurements = [self.model(single_agent_state) for single_agent_state in x_temp.physical_state]
             # noise components is a set of noises for k agents
+            """
             if self.simulate_noise_in_trials:
                 noise_components = np.random.normal(0, math.sqrt(self.noise_variance), batch_size)
             else:
                 noise_components = [0 for i in range(batch_size)]
-            percieved_measurements = baseline_measurements + noise_components
+            """
+            #percieved_measurements = baseline_measurements + noise_components
+            percieved_measurements = baseline_measurements
 
             x_next = tp.TransitionH(x_temp, percieved_measurements)
 
@@ -173,7 +182,7 @@ class TreePlanTester:
                 print "A = ", a
                 print "M = ", percieved_measurements
                 print "X = "
-                print "Noise = ", noise_components
+                #print "Noise = ", noise_components
                 print x_0.to_str()
 
             # Add to plot history
@@ -210,11 +219,12 @@ class TreePlanTester:
         """ Visualize 2d environments
         """
 
-        XGrid = np.arange(self.grid_domain[0][0], self.grid_domain[0][1] - 1e-10, self.grid_gap)
-        YGrid = np.arange(self.grid_domain[1][0], self.grid_domain[1][1] - 1e-10, self.grid_gap)
+
+        XGrid = np.linspace(self.grid_domain[0][0], self.grid_domain[0][1], num = self.number_of_points)
+        YGrid = np.arange(self.grid_domain[1][0], self.grid_domain[1][1], self.number_of_points)
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
-        ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
+        ground_truth = np.vectorize(lambda x, y: self.model(np.asarray([x, y])))
 
         # Plot graph of locations
         vis = Vis2d()
@@ -226,23 +236,48 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-def Random(initial_state, horizon, batch_size, alg_type, my_func, beta, grid_gap_=0.05, length_scale=(0.1, 0.1),
+def Random(initial_state,
+           horizon,
+           batch_size,
+           alg_type,
+           beta,
+           my_func,
+           lengthscale,
+           noise_variance,
+           signal_variance,
+           mu,
            num_timesteps_test=20,
-           noise_variance=10 ** -5,
-           seed=142857, save_folder=None, save_per_step=False,
+           save_folder=None, save_per_step=False,
            ):
     """
     Assume a map size of [0, 1] for both axes
     """
-    covariance_function = SquareExponential(length_scale, 1)
-    gpgen = GaussianProcess(covariance_function)
+    """
+    covariance_function = SquareExponential(length_scale, sig_variance)
+    gpgen = GaussianProcess(covariance_function, noise_variance = noise_var, mean_function= mean)
     m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed)
+    """
+    # model is inited
+    # todo pass as parameter
+    m = __Ackley
 
-    TPT = TreePlanTester(simulate_noise_in_trials=True)
-    TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
-    TPT.InitEnvironment(environment_noise=noise_variance, model=m)
+    # todo pass as parameter
+    number_of_points = 20
+    TPT = TreePlanTester(simulate_noise_in_trials=False)
+    TPT.InitGP(length_scale=lengthscale, signal_variance=signal_variance, noise_variance=noise_variance, mean_function= mu)
+    TPT.InitEnvironment(environment_noise=noise_variance, model=m, number_of_points = number_of_points)
 
-    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_)
+    #todo pass as parameter
+
+    # number of points at each dimension
+
+    minX = -15.0
+    maxX = 15.0
+    minY = -15.0
+    maxY = 15.0
+    grid_gap_X =( maxX - minX ) / (number_of_points - 1)
+    grid_gap_Y =( maxY - minY ) / (number_of_points - 1)
+    TPT.InitPlanner(grid_domain=((minX, maxX), (minY, maxY)), grid_gap_X=grid_gap_X, grid_gap_Y = grid_gap_Y)
 
     TPT.InitTestParameters(initial_physical_state=initial_state,
                            past_locations=initial_state)
@@ -253,7 +288,7 @@ def Random(initial_state, horizon, batch_size, alg_type, my_func, beta, grid_gap
 
 def initial_state(batch_size):
     if batch_size == 2:
-        return np.array([[0.2, 0.2], [0.8, 0.8]])
+        return np.array([[-5.0, -5.0], [1.0, 1.0]])
     elif batch_size == 3:
         return np.array([[0.2, 0.2], [0.8, 0.8], [0.5, 0.5]])
     elif batch_size == 4:
@@ -277,22 +312,32 @@ if __name__ == "__main__":
         for b in range(2, 3):
             print b, h
             print datetime.now()
-            for i in xrange(111, 112):
-                f = lambda t: GetSampleFunction(h, t)
-                my_save_folder = save_trunk + "seed" + str(i) + "_b" + str(b) + "_h" + str(h)
-                my_initial_state = initial_state(b)
+            f = lambda t: GetSampleFunction(h, t)
+            my_save_folder = save_trunk +  "_b" + str(b) + "_h" + str(h)
+            my_initial_state = initial_state(b)
 
-                """
-                Random(my_initial_state, h, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1), seed=i,
+            """
+            Random(my_initial_state, h, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1), seed=i,
                        save_folder=my_save_folder + '_non-myopic' + "/",
                        save_per_step=True, num_timesteps_test=7)
-                Random(my_initial_state, h, b, 'UCB', f, beta, length_scale=(0.1, 0.1), seed=i,
+            Random(my_initial_state, h, b, 'UCB', f, beta, length_scale=(0.1, 0.1), seed=i,
                        save_folder=my_save_folder + '_ucb' + "/",
                        save_per_step=True, num_timesteps_test=7)
-                """
-                Random(my_initial_state, h, b, 'qEI', f, beta, length_scale=(0.1, 0.1), seed=i,
-                       save_folder=my_save_folder + 'qEI' + "/",
-                       save_per_step=True, num_timesteps_test=7)
+            """
+            Random(initial_state = my_initial_state,
+                horizon = h,
+                batch_size = b,
+                alg_type = 'Non-myopic',
+                beta = beta,
+                my_func = f,
+                lengthscale = (1.76030067316, 10.7911469234),
+                noise_variance = 0.0430165337672,
+                signal_variance = 0.571823797414,
+                mu =  1.20093709782,
+                num_timesteps_test=7,
+                save_folder=my_save_folder + 'MLE' + "/",
+                save_per_step=True,
+           )
 
             print datetime.now()
             print
