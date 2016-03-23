@@ -137,6 +137,8 @@ class TreePlanTester:
                 _, a, nodes_expanded = tp.StochasticFull(x_0, 1)
             elif alg_type == 'Non-myopic':
                 _, a, _ = tp.StochasticFull(x_0, H)
+            elif alg_type == 'MLE':
+                _, a, _ = tp.MLE(x_0, H)
             else:
                 raise ValueError("wrong type")
             # _, a, nodes_expanded = tp.StochasticFull(x_0, self.H)

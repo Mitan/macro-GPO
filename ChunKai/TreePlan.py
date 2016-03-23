@@ -137,7 +137,7 @@ class TreePlan:
         for i in range(a.shape[0]):
             current_agent_postion = new_state[i, :]
             for dim in xrange(ndims):
-                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] > \
+                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
                         self.grid_domain[dim][1]: return False
 
         return True
