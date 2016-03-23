@@ -31,7 +31,7 @@ def __PlotFunction(X, Y, Z):
     plt.show()
 
 
-def GetSimulatedDataset(i):
+def GetSimulatedDataset(i, my_output_file):
     gridSizeX = 20
     gridSizeY = 20
     if i == 0:
@@ -92,6 +92,12 @@ def GetSimulatedDataset(i):
         Y = np.linspace(0.0, 1.0, num=gridSizeY)
         f = __Cosines
         test_prediction_range = [0.0, 1.0]
+    elif i == 9:
+        # Cosines
+        X = np.linspace(-20.0, 20.0, num=gridSizeX)
+        Y = np.linspace(-20.0, 20.0, num=gridSizeY)
+        f = _Eggholder
+        test_prediction_range = [-20.0, 20.0]
     else:
         raise ValueError("Imcorrect dataset number")
     print f
@@ -128,10 +134,30 @@ def GetSimulatedDataset(i):
             mu_best = mu
             likeilhood_best = m.likelihood
     print m_best
-    print "MSE is " + str(TestPrediction(m_best, mu_best, f, test_prediction_range)) + " with data variance " + str(
-        values_variance)
+    mse = TestPrediction(m_best, mu_best, f, test_prediction_range)
+    #print "MSE is " + str(mse) + " with data variance " + str(values_variance)
+    WriteInfoToFile(my_output_file, f, mse, values_variance, m, mu)
 
     return grid, values
+
+
+def WriteInfoToFile(my_output_file,f, mse, variance, m, mu):
+    my_output_file.write("function is " + str(f) + "\n")
+    my_output_file.write("MSE is " + str(mse) + " with data variance " + str(variance)+ "\n")
+
+    #todo note need to square the l_1 and l_2
+    l_1, l_2 =  m.param_array[1:3]
+    my_output_file.write("l_1 = " + str(l_1) + "\n")
+    my_output_file.write("l_2 = " + str(l_2) + "\n")
+
+    # todo note this is already sigma^2
+    noise_variance = m.param_array[3]
+    my_output_file.write("sigma noise = " + str(noise_variance) + "\n")
+
+    signal_variance = m.param_array[0]
+    my_output_file.write("sigma signal = " + str(signal_variance) + "\n")
+
+    my_output_file.write("mean = " + str(mu) + "\n\n")
 
 
 """
@@ -162,6 +188,7 @@ def GetSimulatedDataset(i):
 
 def __Ackley(x):
     # return Ackley function
+    assert x.shape[0] == 2
     a = 20.0
     b = 0.2
     c = 2 * math.pi
@@ -312,7 +339,7 @@ def __CrosInTray(x):
 
 
 
-
+"""
 def _Eggholder(x):
     # return EGGHOLDER function
     #this function is 2D
@@ -323,9 +350,8 @@ def _Eggholder(x):
     term2 = -x1 * math.sin(math.sqrt(abs(x1 - (x2 + 47))))
     y = term1 + term2
     return y
-    #return math.log(-y + 0.02)
 
-"""
+
 
 
 def TestPrediction(m, mu, f, preditcion_range):
@@ -345,4 +371,7 @@ def TestPrediction(m, mu, f, preditcion_range):
 
 
 if __name__ == "__main__":
-    GetSimulatedDataset(8)
+    my_file = file = open("./datasets/simulated-functions-hypers.txt", 'w')
+    for i in range(10):
+        GetSimulatedDataset(i, my_file)
+    my_file.close()
