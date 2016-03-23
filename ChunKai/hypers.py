@@ -14,7 +14,7 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
     #m.constrain_bounded('rbf_len',.1,200.)
     #m.constrain_fixed('noise',1e-5)
 
-    print m
+    #print m
     #print m
 
     #m.optimize(messages=True)
@@ -33,9 +33,11 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
 
     signal_variance = m.param_array[0]
     #print signal_variance
-    print m
+    #print m
     #return l_1, l_2, noise_variance, signal_variance
-    return mu, l_1, l_2, noise_variance,signal_variance
+
+    #return mu, l_1, l_2, noise_variance,signal_variance
+    return m, mu
 
 if __name__ == "__main__":
     X = np.random.uniform(-3.,3.,(400,2))

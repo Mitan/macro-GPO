@@ -36,7 +36,6 @@ def __CreateGrid(x_max, x_min, y_max, y_min):
     return grid
 
 def GetSimulatedDataset(i):
-    bad_places = []
     if i==0:
         # Ackley
         X = np.linspace(-15.0, 15.0, num=20)
@@ -88,6 +87,12 @@ def GetSimulatedDataset(i):
         Y = np.linspace(-2.0, 2.0, num=20)
         grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
         values = np.apply_along_axis(__Shubert, 1, grid)
+    elif i ==8:
+        # Shubert
+        X = np.linspace(0.0, 1.0, num=20)
+        Y = np.linspace(0.0, 1.0, num=20)
+        grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
+        values = np.apply_along_axis(__Cosines, 1, grid)
 
     else:
         raise ValueError("Imcorrect dataset number")
@@ -102,9 +107,22 @@ def GetSimulatedDataset(i):
     l_1 = __GetLengthScaleHeuristc(X)
     l_2 = __GetLengthScaleHeuristc(Y)
     tests = [10**i for i in range(-3,3)]
+
+    m_best = None
+    mu_best = 0.0
+    likeilhood_best =  - np.Inf
+    # train hypers with several random starts
     for i in range(len(tests)):
-        hypers = InferHypers(grid, values, noise * tests[i], signal * tests[i], l_1 * tests[i-1], l_2 * tests[i-1])
-    return hypers, grid, values, bad_places
+
+        m, mu = InferHypers(grid, values, noise * tests[i], signal * tests[i], l_1 * tests[i-1], l_2 * tests[i-1])
+        if m.likelihood > likeilhood_best:
+            m_best = m
+            mu_best = mu
+            likeilhood_best = m.likelihood
+    print m_best
+    print "MSE is " + str(TestPrediction(m_best, mu_best))
+
+    return grid, values
 
 
 """
@@ -144,7 +162,7 @@ def __Ackley(x):
     term1  = -a * math.exp(-b*math.sqrt(s_1/d))
     term2 = -math.exp(s_2/d)
     y =  term1 + term2 + a + math.exp(1.0)
-    return y
+    return math.log(-y + 21.3)
 
 def __DropWave(x):
     # return Dropwave function
@@ -233,6 +251,21 @@ def _SixCamel(x):
     term3 =  (-4 + 4 * x2**2) * x2**2
     y = term1 + term2 + term3
     return y
+
+def __Cosines(x):
+    assert x.shape[0] ==2
+    cosine_list = [__g_cosines(x[i]) - __r_cosines(x[i]) for i in range(2)]
+    y = 1 - sum(cosine_list)
+    return y
+
+def __g_cosines(x):
+    return (1.6 * x  - 0.5)**2
+
+def __r_cosines(x):
+    return 0.3 * math.cos(3* math.pi* (1.6 * x  - 0.5))
+
+
+
 """
 def __Bukin6(x):
     # return Bukin function n 6
@@ -273,7 +306,19 @@ def _Eggholder(x):
 
 """
 
+def TestPrediction(m, mu):
+    # test points
+    n = 30
+    grid = np.random.uniform(-3.,3.,(n ,2))
+    #print grid
+    predictions =  [(m.predict(np.atleast_2d(grid[i, :]))[0])[0,0] for i in range(n)]
+    predictions = mu + np.asarray(predictions)
+    ground_truth =  np.apply_along_axis(__Ackley, 1, grid)
+    diff = predictions - ground_truth
+    mse = np.sum(diff* diff) / n
+    return mse
+
 
 
 if __name__ == "__main__":
-    GetSimulatedDataset(7)
+    GetSimulatedDataset(0)
