@@ -137,7 +137,7 @@ class TreePlan:
         for i in range(a.shape[0]):
             current_agent_postion = new_state[i, :]
             for dim in xrange(ndims):
-                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
+                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] > \
                         self.grid_domain[dim][1]: return False
 
         return True
@@ -300,6 +300,79 @@ class TreePlan:
             return [mu]
         else:
             return np.random.multivariate_normal(mu, sigma, number_of_samples)
+
+
+    def MLE(self, x_0, H):
+        """
+        @param x_0 - augmented state
+        @return approximately optimal value, answer, and number of node expansions
+        """
+        # x_0 stores a 2D np array of k points with history
+        # print "Preprocessing weight spaces..."
+        # We take current position and past locations separately
+
+        # now history locations do not include current
+        st = self.Preprocess(x_0.physical_state, x_0.history.locations[: -self.batch_size, :], H)
+
+        # print "Performing search..."
+        # Get answer
+        Vapprox, Aapprox = self.Calculate_V_MLE(H, x_0, st)
+
+        return Vapprox, Aapprox, -1
+
+
+    def Calculate_V_MLE(self, T, x, st):
+        """
+        @return vBest - approximate value function computed
+        @return aBest - action at the root for the policy defined by alg1
+        @param st - root of the semi-tree to be used
+        """
+
+        valid_actions = self.GetValidActionSet(x.physical_state)
+        if T == 0: return 0, valid_actions[0]
+
+        vBest = -self.INF
+        aBest = valid_actions[0]
+
+        # for every action
+        for a in valid_actions:
+
+            x_next = self.TransitionP(x, a)
+
+            # go down the semitree node
+            # select new state obtained by transition
+            new_st = st.children[ToTuple(a)]
+            mean = self.gp.GPBatchMean(x_next.history.measurements, new_st.weights)
+            var = new_st.variance
+            # r = self.reward_analytical(mean, math.sqrt(var))
+            r = self.reward_analytical(mean, var)
+
+            # Future reward
+            f = self.Calculate_Q_MLE(T, x_next, new_st) + r
+            if (f > vBest):
+                aBest = a
+                vBest = f
+
+        return vBest, aBest
+
+    def Calculate_Q_MLE(self, T, x, new_st):
+        """
+        Approximates the integration step derived from alg1
+        @param new_st - semi-tree at this stage
+        @return - approximate value of the integral/expectation
+        mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
+        v, _ = self.V_ML(T - 1, self.TransitionH(x, mu), new_st)
+        # R_1 which is also sampled
+        r_1 = self.reward_sampled(mu)
+
+        return v + r_1
+        """
+        mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
+        # print mu.shape, new_st.variance.shape
+        assert mu.shape[0] == new_st.variance.shape[0]
+
+        v_value = (self.Calculate_V(T - 1, self.TransitionH(x, mu), new_st))[0] + self.reward_sampled(mu)
+        return v_value
 
 
 ###UTIL
