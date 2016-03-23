@@ -14,11 +14,12 @@ def __GetLengthScaleHeuristc(inputs):
     for i in range(length):
         for j in range(i, length):
             sum_diff += inputs[j] - inputs[i]
-    n = length * (length+1) / 2.0
+    n = length * (length + 1) / 2.0
     mean_diff = sum_diff / n
     return 2.0 / mean_diff
 
-#note - not working
+
+# note - not working
 def __PlotFunction(X, Y, Z):
     # X and Y are np arrays
     # ranges in our case
@@ -26,105 +27,109 @@ def __PlotFunction(X, Y, Z):
     ax = fig.gca(projection='3d')
     X, Y = np.meshgrid(X, Y)
     surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
-                       linewidth=0, antialiased=False)
+                           linewidth=0, antialiased=False)
     plt.show()
 
 
 def GetSimulatedDataset(i):
     gridSizeX = 20
     gridSizeY = 20
-    if i==0:
+    if i == 0:
         # Ackley
         X = np.linspace(-15.0, 15.0, num=gridSizeX)
         Y = np.linspace(-15.0, 15.0, num=gridSizeY)
         f = __Ackley
-        test_prediction_range = [-15.0,15.0]
+        test_prediction_range = [-15.0, 15.0]
 
-    elif i==1:
-        #DropWave
+    elif i == 1:
+        # DropWave
         X = np.linspace(-1.0, 1.0, num=gridSizeX)
         Y = np.linspace(-1.0, 1.0, num=gridSizeY)
         f = __DropWave
-        test_prediction_range = [-1.0,1.0]
-    elif i ==2:
+        test_prediction_range = [-1.0, 1.0]
+    elif i == 2:
         # Griewank
         X = np.linspace(-5.0, 5.0, num=gridSizeX)
         Y = np.linspace(-5.0, 5.0, num=gridSizeY)
         f = _Griewank
         test_prediction_range = [-5.0, 5.0]
-    elif i ==3:
+
+    elif i == 3:
         # Holder Table
         X = np.linspace(-10.0, 10.0, num=gridSizeX)
         Y = np.linspace(-10.0, 10.0, num=gridSizeY)
         f = _HolderTable
-        test_prediction_range = [-10.0,10.0]
+        test_prediction_range = [-10.0, 10.0]
 
-    elif i ==4:
+    elif i == 4:
         # Branin
         X = np.linspace(-5.0, 10.0, num=gridSizeX)
         Y = np.linspace(0.0, 15.0, num=gridSizeY)
         f = _Branin
-        test_prediction_range  = [0.0, 10.0]
+        test_prediction_range = [0.0, 10.0]
 
-    elif i ==5:
+    elif i == 5:
         # McCormick
         X = np.linspace(-1.5, 4.0, num=gridSizeX)
         Y = np.linspace(-3.0, 4.0, num=gridSizeY)
         f = _McCormick
-    elif i ==6:
+        test_prediction_range = [-1.5, 4.0]
+    elif i == 6:
         # SixCamel
         X = np.linspace(-3.0, 3.0, num=gridSizeX)
         Y = np.linspace(-2.0, 2.0, num=gridSizeY)
         f = _SixCamel
         test_prediction_range = [-2.0, 2.0]
-    elif i ==7:
+    elif i == 7:
         # Shubert
         X = np.linspace(-2.0, 2.0, num=gridSizeX)
         Y = np.linspace(-2.0, 2.0, num=gridSizeY)
         f = __Shubert
         test_prediction_range = [-2.0, 2.0]
-    elif i ==8:
-        # COsines
+    elif i == 8:
+        # Cosines
         X = np.linspace(0.0, 1.0, num=gridSizeX)
         Y = np.linspace(0.0, 1.0, num=gridSizeY)
         f = __Cosines
         test_prediction_range = [0.0, 1.0]
     else:
         raise ValueError("Imcorrect dataset number")
-
+    print f
     grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
     values = np.apply_along_axis(f, 1, grid)
-    values = values.reshape((values.shape[0],1))
+    values = values.reshape((values.shape[0], 1))
 
     # skew for checking if need to transform data
     skewness = skew(values)
     print skewness
-    #__PlotFunction(X, Y, values)
+
+    # __PlotFunction(X, Y, values)
     values_variance = np.std(values)
 
     # set initial values for parameters
     signal = values_variance
-    #signal = __GetLengthScaleHeuristc(values)
+    # signal = __GetLengthScaleHeuristc(values)
     noise = signal * 0.1
     l_1 = __GetLengthScaleHeuristc(X)
     l_2 = __GetLengthScaleHeuristc(Y)
 
     # array for random restarts
-    tests = [10**i for i in range(-3,3)]
+    tests = [10 ** i for i in range(-3, 3)]
 
     m_best = None
     mu_best = 0.0
-    likeilhood_best =  - np.Inf
+    likeilhood_best = - np.Inf
 
     # train hypers with several random starts
     for i in range(len(tests)):
-        m, mu = InferHypers(grid, values, noise * tests[i], signal * tests[i], l_1 * tests[i-1], l_2 * tests[i-1])
+        m, mu = InferHypers(grid, values, noise * tests[i], signal * tests[i], l_1 * tests[i - 1], l_2 * tests[i - 1])
         if m.likelihood > likeilhood_best:
             m_best = m
             mu_best = mu
             likeilhood_best = m.likelihood
     print m_best
-    print "MSE is " + str(TestPrediction(m_best, mu_best, f, test_prediction_range)) + " with data variance " + str(values_variance)
+    print "MSE is " + str(TestPrediction(m_best, mu_best, f, test_prediction_range)) + " with data variance " + str(
+        values_variance)
 
     return grid, values
 
@@ -154,123 +159,132 @@ def GetSimulatedDataset(i):
         values = np.apply_along_axis(__CrosInTray, 1, grid)
 """
 
+
 def __Ackley(x):
     # return Ackley function
     a = 20.0
     b = 0.2
     c = 2 * math.pi
-    #todo note dimension is hardcoded
-    d  = 2
+    # todo note dimension is hardcoded
+    d = 2
     s_1 = np.sum(np.square(x))
-    s_2 = np.sum(np.cos(c*x))
-    term1  = -a * math.exp(-b*math.sqrt(s_1/d))
-    term2 = -math.exp(s_2/d)
-    y =  term1 + term2 + a + math.exp(1.0)
-    #Warning!
+    s_2 = np.sum(np.cos(c * x))
+    term1 = -a * math.exp(-b * math.sqrt(s_1 / d))
+    term2 = -math.exp(s_2 / d)
+    y = term1 + term2 + a + math.exp(1.0)
+    # Warning!
     # real Ackley function is y
     # but to ensure small skewness we perform transformation
     return math.log(-y + 21.3)
 
+
 def __DropWave(x):
     # return Dropwave function
-    #this function is 2D
-    assert x.shape[0] ==2
+    # this function is 2D
+    assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
-    frac1 =  1 + math.cos(12*math.sqrt(x1**2+x2**2))
-    frac2 = 0.5*(x1**2+x2**2) + 2
-    y = frac1/frac2
-    #return y
+    frac1 = 1 + math.cos(12 * math.sqrt(x1 ** 2 + x2 ** 2))
+    frac2 = 0.5 * (x1 ** 2 + x2 ** 2) + 2
+    y = frac1 / frac2
+    # return y
     return y
+
 
 def _Griewank(x):
     # return Griewank function
-    #this function is 2D
-    assert x.shape[0] ==2
+    # this function is 2D
+    assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
-    sum = (x1**2 + x2**2) / 4000.0
+    sum = (x1 ** 2 + x2 ** 2) / 4000.0
     prod = math.cos(x1) * math.cos(x2 / math.sqrt(2))
     y = sum - prod + 1
     return y
 
+# could be better
 def _HolderTable(x):
     # return HolderTable function
-    #this function is 2D
-    assert x.shape[0] ==2
+    # this function is 2D
+    assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
-    fact1 =  math.sin(x1)*math.cos(x2)
-    fact2 = math.exp(abs(1 - math.sqrt(x1**2+x2**2)/math.pi))
-    y = -abs(fact1*fact2)
-    return y
+    fact1 = math.sin(x1) * math.cos(x2)
+    fact2 = math.exp(abs(1 - math.sqrt(x1 ** 2 + x2 ** 2) / math.pi))
+    y = -abs(fact1 * fact2)
+    return math.log(-y + 0.25)
 
 
 def __Shubert(x):
     # return HolderTable function
-    #this function is 2D
-    assert x.shape[0] ==2
+    # this function is 2D
+    assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
-    list_x1 = [i * math.cos((i+1)* x1 + i) for i in range(1,6)]
-    list_x2 = [i * math.cos((i+1)* x2 + i) for i in range(1,6)]
+    list_x1 = [i * math.cos((i + 1) * x1 + i) for i in range(1, 6)]
+    list_x2 = [i * math.cos((i + 1) * x2 + i) for i in range(1, 6)]
     y = sum(list_x1) * sum(list_x2)
     return y
 
+
 def _Branin(x):
     # return Branin function
-    #this function is 2D
-    assert x.shape[0] ==2
+    # this function is 2D
+    assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
     a = 1.0
-    b = 5.1/(4* math.pi**2)
-    c =  5.0/math.pi
+    b = 5.1 / (4 * math.pi ** 2)
+    c = 5.0 / math.pi
     r = 6.0
     s = 10.0
-    t = 1.0 /(8 * math.pi)
-    term1 =  a * (x2 - b* x1**2 + c * x1 - r)**2
-    term2  =  s * (1-t) * math.cos(x1)
-    y =  term1 + term2 + s
-    return y
+    t = 1.0 / (8 * math.pi)
+    term1 = a * (x2 - b * x1 ** 2 + c * x1 - r) ** 2
+    term2 = s * (1 - t) * math.cos(x1)
+    y = term1 + term2 + s
+    return math.log(y + 5.0)
+
 
 def _McCormick(x):
     # return Branin function
-    #this function is 2D
-    assert x.shape[0] ==2
+    # this function is 2D
+    assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
     term1 = math.sin(x1 + x2)
-    term2  = (x1 - x2)**2
+    term2 = (x1 - x2) ** 2
     term3 = -1.5 * x1
     term4 = 2.5 * x2
     y = term1 + term2 + term3 + term4 + 1
-    return y
+    return math.log(y + 4.0)
+
 
 def _SixCamel(x):
     # return Branin function
-    #this function is 2D
-    assert x.shape[0] ==2
+    # this function is 2D
+    assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
-    term1 =  (4-2.1 * x1**2 +  (x1**4) / 3 )  * x1**2
+    term1 = (4 - 2.1 * x1 ** 2 + (x1 ** 4) / 3) * x1 ** 2
     term2 = x1 * x2
-    term3 =  (-4 + 4 * x2**2) * x2**2
+    term3 = (-4 + 4 * x2 ** 2) * x2 ** 2
     y = term1 + term2 + term3
-    return y
+    return math.log(y + 1.5)
+
 
 def __Cosines(x):
-    assert x.shape[0] ==2
+    assert x.shape[0] == 2
     cosine_list = [__g_cosines(x[i]) - __r_cosines(x[i]) for i in range(2)]
     y = 1 - sum(cosine_list)
-    return y
+    return math.log(-y + 3.7)
+
 
 def __g_cosines(x):
-    return (1.6 * x  - 0.5)**2
+    return (1.6 * x - 0.5) ** 2
+
 
 def __r_cosines(x):
-    return 0.3 * math.cos(3* math.pi* (1.6 * x  - 0.5))
-
+    return 0.3 * math.cos(3 * math.pi * (1.6 * x - 0.5))
 
 
 """
@@ -317,19 +331,18 @@ def _Eggholder(x):
 def TestPrediction(m, mu, f, preditcion_range):
     # test points
     n = 50
-    grid = np.random.uniform(preditcion_range[0], preditcion_range[1],(n ,2))
-    #print at
-    predictions =  [(m.predict(np.atleast_2d(grid[i, :]))[0])[0,0] for i in range(n)]
-        # model m uses zero mean, so need to add it
+    grid = np.random.uniform(preditcion_range[0], preditcion_range[1], (n, 2))
+    # print at
+    predictions = [(m.predict(np.atleast_2d(grid[i, :]))[0])[0, 0] for i in range(n)]
+    # model m uses zero mean, so need to add it
     predictions = mu + np.asarray(predictions)
-    ground_truth =  np.apply_along_axis(f, 1, grid)
+    ground_truth = np.apply_along_axis(f, 1, grid)
     diff = predictions - ground_truth
-    squares = diff* diff
+    squares = diff * diff
     assert diff.shape == squares.shape
     mse = np.sum(squares) / n
     return mse
 
 
-
 if __name__ == "__main__":
-    GetSimulatedDataset(0)
+    GetSimulatedDataset(8)
