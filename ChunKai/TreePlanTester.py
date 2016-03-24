@@ -109,7 +109,7 @@ class TreePlanTester:
                                                                                               past_locations)
 
     def DoTest(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, debug=False, save_per_step=True,
-             save_folder="default_results/"):
+               save_folder="default_results/"):
         """ Pipeline for testing
         @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
         """
@@ -179,7 +179,7 @@ class TreePlanTester:
                 print "A = ", a
                 print "M = ", percieved_measurements
                 print "X = "
-                #print "Noise = ", noise_components
+                # print "Noise = ", noise_components
                 print x_0.to_str()
 
             # Add to plot history
@@ -236,10 +236,11 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-def TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta, simulated_function,
-           num_timesteps_test=5,
-           save_folder=None, save_per_step=False,
-           ):
+def TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
+                            simulated_function,
+                            num_timesteps_test=20,
+                            save_folder=None, save_per_step=False,
+                            ):
     """
     Assume a map size of [0, 1] for both axes
 
@@ -252,15 +253,16 @@ def TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_sam
 
     TPT.InitGP(length_scale=simulated_function.lengthscale, signal_variance=simulated_function.signal_variance,
                noise_variance=simulated_function.noise_variance, mean_function=simulated_function.mean)
-    TPT.InitEnvironment(environment_noise=simulated_function.noise_variance, model=simulated_function.simulated_function)
+    TPT.InitEnvironment(environment_noise=simulated_function.noise_variance,
+                        model=simulated_function.simulated_function)
 
     TPT.InitPlanner(grid_domain=simulated_function.domain, grid_gap=simulated_function.grid_gap)
 
     TPT.InitTestParameters(initial_physical_state=initial_state,
                            past_locations=initial_state)
     return TPT.DoTest(num_timesteps_test=num_timesteps_test, H=horizon, batch_size=batch_size, alg_type=alg_type,
-                    my_nodes_func=my_samples_count_func, beta=beta, debug=False, save_folder=save_folder,
-                    save_per_step=save_per_step)
+                      my_nodes_func=my_samples_count_func, beta=beta, debug=False, save_folder=save_folder,
+                      save_per_step=save_per_step)
 
 
 def initial_state(batch_size):
@@ -279,7 +281,7 @@ if __name__ == "__main__":
 
     # default stepcount
     # todo
-    steps_count = 5
+    steps_count = 20
 
     current_function = AckleyInfo()
 
@@ -297,27 +299,31 @@ if __name__ == "__main__":
             f = lambda t: GetSampleFunction(1, t)
 
             ucb = TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='UCB',
-                         my_samples_count_func=f, beta=beta, simulated_function=current_function,
-                         save_folder=my_save_folder_batch + '_ucb' + "/")
+                                          my_samples_count_func=f, beta=beta, simulated_function=current_function,
+                                          save_folder=my_save_folder_batch + '_ucb' + "/")
             result_graphs.append(['UCB', ucb])
 
             qei = TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='qEI',
-                         my_samples_count_func=f, beta=beta, simulated_function=current_function,
-                         save_folder=my_save_folder_batch + '_ei' + "/")
+                                          my_samples_count_func=f, beta=beta, simulated_function=current_function,
+                                          save_folder=my_save_folder_batch + '_ei' + "/")
             result_graphs.append(['qEI', qei])
 
             f = lambda t: GetSampleFunction(2, t)
             my_save_folder = my_save_folder_batch + "_h" + str(2)
-            non_myopic_2 = TestWithFixedParameters(initial_state=my_initial_state, horizon=2, batch_size=b, alg_type='Non-myopic',
-                                  my_samples_count_func=f, beta=beta, simulated_function=current_function,
-                                  save_folder=my_save_folder + '_non-myopic' + "/")
+            non_myopic_2 = TestWithFixedParameters(initial_state=my_initial_state, horizon=2, batch_size=b,
+                                                   alg_type='Non-myopic',
+                                                   my_samples_count_func=f, beta=beta,
+                                                   simulated_function=current_function,
+                                                   save_folder=my_save_folder + '_non-myopic' + "/")
             result_graphs.append(['H=2', non_myopic_2])
 
             f = lambda t: GetSampleFunction(3, t)
             my_save_folder = my_save_folder_batch + "_h" + str(3)
-            non_myopic_3 = TestWithFixedParameters(initial_state=my_initial_state, horizon=3, batch_size=b, alg_type='Non-myopic',
-                                  my_samples_count_func=f, beta=beta, simulated_function=current_function,
-                                  save_folder=my_save_folder + '_non-myopic' + "/")
+            non_myopic_3 = TestWithFixedParameters(initial_state=my_initial_state, horizon=3, batch_size=b,
+                                                   alg_type='Non-myopic',
+                                                   my_samples_count_func=f, beta=beta,
+                                                   simulated_function=current_function,
+                                                   save_folder=my_save_folder + '_non-myopic' + "/")
             result_graphs.append(['H=3', non_myopic_3])
 
             PlotData(steps_count, result_graphs)
