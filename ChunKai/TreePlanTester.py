@@ -1,9 +1,7 @@
-from datetime import datetime
 import os
-import math
-from ResultsPlotter import PlotData
-from SimulatedDataSetsHypers import __Ackley
 
+from SimulatedDataSetFynctions import AckleyInfo
+from ResultsPlotter import PlotData
 from SampleFunctionBuilder import GetSampleFunction
 from TreePlan import *
 from GaussianProcess import GaussianProcess
@@ -12,7 +10,7 @@ from Vis2d import Vis2d
 
 
 class TreePlanTester:
-    def __init__(self, simulate_noise_in_trials=True):
+    def __init__(self, simulate_noise_in_trials=False):
         """
         @param simulate_noise_in_trials: True if we want to add in noise artificially into measurements
         False if noise is already presumed to be present in the data model
@@ -110,7 +108,7 @@ class TreePlanTester:
         self.past_measurements = None if self.past_locations is None else np.apply_along_axis(self.model, 1,
                                                                                               past_locations)
 
-    def Test(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, debug=False, save_per_step=True,
+    def DoTest(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, debug=False, save_per_step=True,
              save_folder="default_results/"):
         """ Pipeline for testing
         @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
@@ -150,12 +148,15 @@ class TreePlanTester:
             # Draw an actual observation from the underlying environment field and add it to the our measurements
             # for batch case x_temp.physical_states is a list
             # single_agent_state is a position of one agent in a batch
+
             baseline_measurements = [self.model(single_agent_state) for single_agent_state in x_temp.physical_state]
             # noise components is a set of noises for k agents
+            """
             if self.simulate_noise_in_trials:
                 noise_components = np.random.normal(0, math.sqrt(self.noise_variance), batch_size)
             else:
                 noise_components = [0 for i in range(batch_size)]
+            """
             percieved_measurements = baseline_measurements
 
             x_next = tp.TransitionH(x_temp, percieved_measurements)
@@ -178,7 +179,7 @@ class TreePlanTester:
                 print "A = ", a
                 print "M = ", percieved_measurements
                 print "X = "
-                print "Noise = ", noise_components
+                #print "Noise = ", noise_components
                 print x_0.to_str()
 
             # Add to plot history
@@ -189,7 +190,7 @@ class TreePlanTester:
                                save_path=save_folder + "step" + str(time))
                 # Save to file
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
-                #f.write(x_0.to_str() + "\n")
+                # f.write(x_0.to_str() + "\n")
                 f.write("Total accumulated reward = " + str(total_reward))
                 f.close()
 
@@ -207,12 +208,12 @@ class TreePlanTester:
         """
         f.write("Total accumulated reward = " + str(total_reward) + "\n")
         f.write("Total accumulated reward history = \n" + str(total_reward_history) + "\n")
-        #f.write("Nodes Expanded per stage\n")
+        # f.write("Nodes Expanded per stage\n")
         # f.write(str(nodes_expanded_history) + "\n")
         # f.write("Total nodes expanded = " + str(total_nodes_expanded))
         f.close()
 
-        #return reward_history, nodes_expanded_history, base_measurement_history
+        # return reward_history, nodes_expanded_history, base_measurement_history
         return total_reward_history
 
     def Visualize(self, state_history, display=True, save_path=None):
@@ -235,32 +236,31 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-def Random(initial_state, horizon, batch_size, alg_type, my_func, beta, grid_gap_=0.5, length_scale=(0.1, 0.1),
-           num_timesteps_test=20,
-           noise_variance=10 ** -5,
-
-           seed=142857, save_folder=None, save_per_step=False,
+def TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta, simulated_function,
+           num_timesteps_test=5,
+           save_folder=None, save_per_step=False,
            ):
     """
     Assume a map size of [0, 1] for both axes
-    """
+
     covariance_function = SquareExponential(length_scale, 1)
     gpgen = GaussianProcess(covariance_function)
     #m = gpgen.GPGenerate(predict_range=((-15, 15), (-15, 15)), num_samples=(20, 20), seed=seed)
-    m = __Ackley
+    #m = __Ackley
+    """
     TPT = TreePlanTester(simulate_noise_in_trials=True)
 
+    TPT.InitGP(length_scale=simulated_function.lengthscale, signal_variance=simulated_function.signal_variance,
+               noise_variance=simulated_function.noise_variance, mean_function=simulated_function.mean)
+    TPT.InitEnvironment(environment_noise=simulated_function.noise_variance, model=simulated_function.simulated_function)
 
-    TPT.InitGP(length_scale=(4.97859606259, 4.97858531881), signal_variance=0.151286346398, noise_variance=0.00621336727951, mean_function= 2.43787748468)
-    TPT.InitEnvironment(environment_noise=noise_variance, model=m)
-
-    TPT.InitPlanner(grid_domain=((-5, 5), (-5, 5)), grid_gap=grid_gap_)
+    TPT.InitPlanner(grid_domain=simulated_function.domain, grid_gap=simulated_function.grid_gap)
 
     TPT.InitTestParameters(initial_physical_state=initial_state,
                            past_locations=initial_state)
-    return TPT.Test(num_timesteps_test=num_timesteps_test, H=horizon, batch_size=batch_size, alg_type=alg_type,
-             my_nodes_func=my_func, beta=beta, debug=False, save_folder=save_folder,
-             save_per_step=save_per_step)
+    return TPT.DoTest(num_timesteps_test=num_timesteps_test, H=horizon, batch_size=batch_size, alg_type=alg_type,
+                    my_nodes_func=my_samples_count_func, beta=beta, debug=False, save_folder=save_folder,
+                    save_per_step=save_per_step)
 
 
 def initial_state(batch_size):
@@ -275,62 +275,56 @@ def initial_state(batch_size):
 
 
 if __name__ == "__main__":
-    # assert len(sys.argv) == 2, "Wrong number of arguments"
-
-    # initial_state = np.array([[0.2, 0.2], [0.8, 0.8], [0.5, 0.5]])
-    # initial_state = np.array([[0.2, 0.2], [0.8, 0.8]])
     save_trunk = "./tests/"
-    # my_batch_size = 2
 
     # default stepcount
-    #todo
-    steps_count = 20
+    # todo
+    steps_count = 5
 
-    #locations = [np.array([[4.0, 4.0], [-3.0, -3.0]]), np.array([[2.0, 4.0], [-4.0, -3.0]]), np.array([[4.5, 4.0], [-4.5, -4.5]])]
+    current_function = AckleyInfo()
+
+    # locations = [np.array([[4.0, 4.0], [-3.0, -3.0]]), np.array([[2.0, 4.0], [-4.0, -3.0]]), np.array([[4.5, 4.0], [-4.5, -4.5]])]
     locations = [np.array([[4.0, 4.0], [-3.0, -3.0]])]
     for i in range(len(locations)):
         beta = 1.0
-        horizons = [2,3]
 
         result_graphs = []
         for b in range(2, 3):
-            #my_initial_state = initial_state(b)
+            # my_initial_state = initial_state(b)
             my_initial_state = locations[i]
-            my_save_folder_batch = save_trunk + "_l"+ str(i) +  "_b" + str(b)
+            my_save_folder_batch = save_trunk + "_l" + str(i) + "_b" + str(b)
             # this algorithms are myopic
             f = lambda t: GetSampleFunction(1, t)
 
-            ucb = Random(my_initial_state, 1, b, 'UCB', f, beta, length_scale=(0.1, 0.1),
-                           save_folder=my_save_folder_batch + '_ucb' + "/",
-                           save_per_step=False)
+            ucb = TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='UCB',
+                         my_samples_count_func=f, beta=beta, simulated_function=current_function,
+                         save_folder=my_save_folder_batch + '_ucb' + "/")
             result_graphs.append(['UCB', ucb])
 
-            qei = Random(my_initial_state, 1, b, 'qEI', f, beta, length_scale=(0.1, 0.1),
-                           save_folder=my_save_folder_batch + '_ei' + "/",
-                           save_per_step=False)
+            qei = TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='qEI',
+                         my_samples_count_func=f, beta=beta, simulated_function=current_function,
+                         save_folder=my_save_folder_batch + '_ei' + "/")
             result_graphs.append(['qEI', qei])
 
             f = lambda t: GetSampleFunction(2, t)
-            #my_save_folder = save_trunk + "seed" + str(i) + "_b" + str(b) + "_h" + str(h)
-            my_save_folder =my_save_folder_batch + "_h" + str(2)
-            non_myopic_2 = Random(my_initial_state, 2, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1),
-                           save_folder=my_save_folder + '_non-myopic' + "/",
-                           save_per_step=False)
+            my_save_folder = my_save_folder_batch + "_h" + str(2)
+            non_myopic_2 = TestWithFixedParameters(initial_state=my_initial_state, horizon=2, batch_size=b, alg_type='Non-myopic',
+                                  my_samples_count_func=f, beta=beta, simulated_function=current_function,
+                                  save_folder=my_save_folder + '_non-myopic' + "/")
             result_graphs.append(['H=2', non_myopic_2])
 
             f = lambda t: GetSampleFunction(3, t)
-            #my_save_folder = save_trunk + "seed" + str(i) + "_b" + str(b) + "_h" + str(h)
-            my_save_folder =my_save_folder_batch + "_h" + str(3)
-            non_myopic_3 = Random(my_initial_state, 3, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1),
-                           save_folder=my_save_folder + '_non-myopic' + "/",
-                           save_per_step=False, num_timesteps_test=steps_count)
+            my_save_folder = my_save_folder_batch + "_h" + str(3)
+            non_myopic_3 = TestWithFixedParameters(initial_state=my_initial_state, horizon=3, batch_size=b, alg_type='Non-myopic',
+                                  my_samples_count_func=f, beta=beta, simulated_function=current_function,
+                                  save_folder=my_save_folder + '_non-myopic' + "/")
             result_graphs.append(['H=3', non_myopic_3])
 
             PlotData(steps_count, result_graphs)
 
 
-        #print datetime.now()
-        #print
+            # print datetime.now()
+            # print
             # Transect(seed=i)
 
             # print "Performing sanity checks"
