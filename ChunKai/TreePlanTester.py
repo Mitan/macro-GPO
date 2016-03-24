@@ -239,7 +239,7 @@ class TreePlanTester:
 
 def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
                             simulated_function,
-                            num_timesteps_test=5,
+                            num_timesteps_test=20,
                             save_folder=None, save_per_step=False,
                             ):
     """
@@ -328,7 +328,7 @@ def TestScenario(b, beta, locations, i,  simulated_func, save_trunk):
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=3', non_myopic_3])
 
-    """
+
     print datetime.now()
     # h = 4
     f = lambda t: GetSampleFunction(4, t)
@@ -340,7 +340,7 @@ def TestScenario(b, beta, locations, i,  simulated_func, save_trunk):
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=4', non_myopic_4])
     print datetime.now()
-    """
+
     PlotData(result_graphs, my_save_folder_root)
 
 

@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from SimulatedDataSetFynctions import DropWaveInfo, AckleyInfo, CosinesInfo, BraninInfo, GriewankInfo, McCormickInfo, \
     SixCamelInfo, HolderTableInfo
 from TreePlanTester import TestScenario
@@ -50,19 +51,25 @@ def GetSimulatedFunction(i):
 
 if __name__ == '__main__':
 
+    args = sys.argv
     batch_size = 2
     save_trunk = "./tests/"
 
     # should be passed as params
-    beta_iteration = 2
-    location_iteration = 0
-    function_iteration = 7
+    function_iteration = int(args[1])
+    beta_iteration = int(args[2])
+    location_iteration = int(args[3])
 
+    #function_iteration = 2
+    #beta_iteration = 1
+    #location_iteration = 2
     current_function = GetSimulatedFunction(function_iteration)
     initial_location = GenerateInitialLocation(current_function, batch_size)
     beta = GetBeta(beta_iteration)
 
-    print initial_location
+    print "function is " + str(current_function.name)
+    print "beta is " + str(beta)
+    print "location " + str(location_iteration) +  " is "  + str(initial_location)
 
     TestScenario(b=batch_size, beta=beta, locations=initial_location, i = location_iteration,  simulated_func=current_function,
                  save_trunk=save_trunk)
