@@ -1,0 +1,8 @@
+function is <function __Cosines at 0x0ECC16F0>
+MSE is 3.52886188561e-07 with data variance 0.213409567745
+l_1 = 0.12605123651
+l_2 = 0.126051232038
+sigma noise = 1.23195228302e-15
+sigma signal = 0.0198660061591
+mean = 0.940527042428
+

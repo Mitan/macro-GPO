@@ -1,4 +1,4 @@
-from SimulatedDataSetsHypers import __Ackley
+from SimulatedDataSetsHypers import __Ackley, __Cosines
 
 
 # class with hardcoded parameters of simulated functions
@@ -18,3 +18,9 @@ def AckleyInfo():
     return __SimulatedFunctionInfo(f=__Ackley, lengthscale=(4.97859606259, 4.97858531881),
                                    signal_variance=0.151286346398, noise_variance=0.00621336727951, mean=2.43787748468,
                                    domain=((-5, 5), (-5, 5)), grid_gap=0.5)
+
+
+def CosinesInfo():
+    return __SimulatedFunctionInfo(f=__Cosines, lengthscale=(0.12605123651, 0.126051232038),
+                                   signal_variance=0.0198660061591, noise_variance=1.23195228302e-15, mean=0.940527042428,
+                                   domain=((0.0, 1.0), (0.0, 1.0)), grid_gap=0.05)

@@ -89,8 +89,8 @@ def GetSimulatedDataset(i, my_output_file):
         test_prediction_range = [-2.0, 2.0]
     elif i == 8:
         # Cosines
-        X = np.linspace(0.0, 1.0, num=gridSizeX)
-        Y = np.linspace(0.0, 1.0, num=gridSizeY)
+        X = np.arange(0.0, 1.0, step=0.05)
+        Y = np.arange(0.0, 1.0, step=0.05)
         f = __Cosines
         test_prediction_range = [0.0, 1.0]
     elif i == 9:
@@ -210,6 +210,7 @@ def __Ackley(x):
 def __DropWave(x):
     # return Dropwave function
     # this function is 2D
+    x = np.asarray(x)
     assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
@@ -223,6 +224,7 @@ def __DropWave(x):
 def _Griewank(x):
     # return Griewank function
     # this function is 2D
+    x = np.asarray(x)
     assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
@@ -235,6 +237,7 @@ def _Griewank(x):
 def _HolderTable(x):
     # return HolderTable function
     # this function is 2D
+    x = np.asarray(x)
     assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
@@ -247,6 +250,7 @@ def _HolderTable(x):
 def __Shubert(x):
     # return HolderTable function
     # this function is 2D
+    x = np.asarray(x)
     assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
@@ -259,6 +263,7 @@ def __Shubert(x):
 def _Branin(x):
     # return Branin function
     # this function is 2D
+    x = np.asarray(x)
     assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
@@ -277,6 +282,7 @@ def _Branin(x):
 def _McCormick(x):
     # return Branin function
     # this function is 2D
+    x = np.asarray(x)
     assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
@@ -291,6 +297,7 @@ def _McCormick(x):
 def _SixCamel(x):
     # return Branin function
     # this function is 2D
+    x = np.asarray(x)
     assert x.shape[0] == 2
     x1 = x[0]
     x2 = x[1]
@@ -302,10 +309,11 @@ def _SixCamel(x):
 
 
 def __Cosines(x):
+    x = np.asarray(x)
     assert x.shape[0] == 2
     cosine_list = [__g_cosines(x[i]) - __r_cosines(x[i]) for i in range(2)]
     y = 1 - sum(cosine_list)
-    return math.log(-y + 3.7)
+    return math.log(-y + 3.)
 
 
 def __g_cosines(x):
@@ -373,7 +381,7 @@ def TestPrediction(m, mu, f, preditcion_range):
 
 
 if __name__ == "__main__":
-    my_file =  open("./datasets/simulated-functions-hypers.txt", 'w')
-    for i in range(10):
+    my_file =  open("./datasets/simulated-functions-hypers_test.txt", 'w')
+    for i in range(8,9):
         GetSimulatedDataset(i, my_file)
     my_file.close()
