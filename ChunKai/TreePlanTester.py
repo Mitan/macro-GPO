@@ -124,6 +124,7 @@ class TreePlanTester:
             os.makedirs(save_folder)
 
         total_reward = 0
+        total_reward_history = []
         measurement_history = []
         reward_history = []
         nodes_expanded_history = []
@@ -146,7 +147,6 @@ class TreePlanTester:
 
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
-            print x_temp.physical_state[0].shape
             # for batch case x_temp.physical_states is a list
             # single_agent_state is a position of one agent in a batch
             baseline_measurements = [self.model(single_agent_state) for single_agent_state in x_temp.physical_state]
@@ -167,6 +167,7 @@ class TreePlanTester:
             # Accumulated measurements
             reward_history.append(reward_obtained)
             total_reward += reward_obtained
+            total_reward_history.append(total_reward)
             measurement_history.append(percieved_measurements)
             base_measurement_history.append(baseline_measurements)
             # total_nodes_expanded += nodes_expanded
@@ -187,7 +188,7 @@ class TreePlanTester:
                                save_path=save_folder + "step" + str(time))
                 # Save to file
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
-                f.write(x_0.to_str() + "\n")
+                #f.write(x_0.to_str() + "\n")
                 f.write("Total accumulated reward = " + str(total_reward))
                 f.close()
 
@@ -195,19 +196,23 @@ class TreePlanTester:
         self.Visualize(state_history=state_history, display=False, save_path=save_folder + "summary")
         # Save to file
         f = open(save_folder + "summary" + ".txt", "w")
+        """
         f.write(x_0.to_str() + "\n")
         f.write("===============================================")
         f.write("Measurements Collected\n")
         f.write(str(measurement_history) + "\n")
         f.write("Base measurements collected\n")
         f.write(str(base_measurement_history) + "\n")
+        """
         f.write("Total accumulated reward = " + str(total_reward) + "\n")
-        f.write("Nodes Expanded per stage\n")
+        f.write("Total accumulated reward history = \n" + str(total_reward_history) + "\n")
+        #f.write("Nodes Expanded per stage\n")
         # f.write(str(nodes_expanded_history) + "\n")
         # f.write("Total nodes expanded = " + str(total_nodes_expanded))
         f.close()
 
-        return state_history, reward_history, nodes_expanded_history, base_measurement_history
+        #return reward_history, nodes_expanded_history, base_measurement_history
+        return total_reward_history
 
     def Visualize(self, state_history, display=True, save_path=None):
         """ Visualize 2d environments
@@ -240,14 +245,15 @@ def Random(initial_state, horizon, batch_size, alg_type, my_func, beta, grid_gap
     """
     covariance_function = SquareExponential(length_scale, 1)
     gpgen = GaussianProcess(covariance_function)
-    m = gpgen.GPGenerate(predict_range=((-15, 15), (-15, 15)), num_samples=(20, 20), seed=seed)
+    #m = gpgen.GPGenerate(predict_range=((-15, 15), (-15, 15)), num_samples=(20, 20), seed=seed)
     m = __Ackley
     TPT = TreePlanTester(simulate_noise_in_trials=True)
 
-    TPT.InitGP(length_scale=(1.76030067316, 10.7911469234), signal_variance=0.571823797414, noise_variance=0.0430165337672, mean_function= 1.20093709782)
+
+    TPT.InitGP(length_scale=(4.97859606259, 4.97858531881), signal_variance=0.151286346398, noise_variance=0.00621336727951, mean_function= 2.43787748468)
     TPT.InitEnvironment(environment_noise=noise_variance, model=m)
 
-    TPT.InitPlanner(grid_domain=((-15, 15), (-15, 15)), grid_gap=grid_gap_)
+    TPT.InitPlanner(grid_domain=((-5, 5), (-5, 5)), grid_gap=grid_gap_)
 
     TPT.InitTestParameters(initial_physical_state=initial_state,
                            past_locations=initial_state)
@@ -276,30 +282,34 @@ if __name__ == "__main__":
     # my_batch_size = 2
 
 
-    beta = 0.0
-    horizons = [3]
-    for h in horizons:
-        for b in range(2, 3):
+    beta = 1.0
+    horizons = [2,3]
+    steps_count = 16
+    for b in range(2, 3):
+        my_save_folder_batch = save_trunk +  "_b" + str(b)
+        my_initial_state = initial_state(b)
+        # this algorithms are myopic
+        f = lambda t: GetSampleFunction(1, t)
+        Random(my_initial_state, 1, b, 'UCB', f, beta, length_scale=(0.1, 0.1),
+                       save_folder=my_save_folder_batch + '_ucb' + "/",
+                       save_per_step=False, num_timesteps_test=steps_count)
+
+        Random(my_initial_state, 1, b, 'qEI', f, beta, length_scale=(0.1, 0.1),
+                       save_folder=my_save_folder_batch + '_ei' + "/",
+                       save_per_step=False, num_timesteps_test=steps_count)
+        for h in horizons:
             print b, h
             print datetime.now()
-            for i in xrange(111, 112):
-                f = lambda t: GetSampleFunction(h, t)
-                my_save_folder = save_trunk + "seed" + str(i) + "_b" + str(b) + "_h" + str(h)
-                my_initial_state = initial_state(b)
+            f = lambda t: GetSampleFunction(h, t)
+            #my_save_folder = save_trunk + "seed" + str(i) + "_b" + str(b) + "_h" + str(h)
+            my_save_folder =my_save_folder_batch + "_h" + str(h)
 
-                """
-                Random(my_initial_state, h, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1), seed=i,
+
+            Random(my_initial_state, h, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1),
                        save_folder=my_save_folder + '_non-myopic' + "/",
-                       save_per_step=True, num_timesteps_test=7)
-                """
-                Random(my_initial_state, h, b, 'UCB', f, beta, length_scale=(0.1, 0.1), seed=i,
-                       save_folder=my_save_folder + '_ucb' + "/",
-                       save_per_step=True, num_timesteps_test=12)
-                """
-                Random(my_initial_state, h, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1), seed=i,
-                       save_folder=my_save_folder + '_non-myopic' + "/",
-                       save_per_step=True, num_timesteps_test=12)
-                """
+                       save_per_step=False, num_timesteps_test=steps_count)
+
+
             print datetime.now()
             print
             # Transect(seed=i)

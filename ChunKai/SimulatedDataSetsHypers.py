@@ -36,10 +36,11 @@ def GetSimulatedDataset(i, my_output_file):
     gridSizeY = 20
     if i == 0:
         # Ackley
-        X = np.linspace(-15.0, 15.0, num=gridSizeX)
-        Y = np.linspace(-15.0, 15.0, num=gridSizeY)
+        X = np.arange(-5.0, 5.0, step= 0.5)
+        Y = np.arange(-5.0, 5.0, step= 0.5)
+        #Y = np.linspace(-15.0, 15.0, num=gridSizeY)
         f = __Ackley
-        test_prediction_range = [-15.0, 15.0]
+        test_prediction_range = [-5.0, 5.0]
 
     elif i == 1:
         # DropWave
