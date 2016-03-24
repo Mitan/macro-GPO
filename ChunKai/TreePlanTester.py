@@ -282,13 +282,16 @@ if __name__ == "__main__":
     save_trunk = "./tests/"
     # my_batch_size = 2
 
+    # default stepcount
+    #todo
+    steps_count = 20
 
     #locations = [np.array([[4.0, 4.0], [-3.0, -3.0]]), np.array([[2.0, 4.0], [-4.0, -3.0]]), np.array([[4.5, 4.0], [-4.5, -4.5]])]
     locations = [np.array([[4.0, 4.0], [-3.0, -3.0]])]
     for i in range(len(locations)):
         beta = 1.0
         horizons = [2,3]
-        steps_count = 5
+
         result_graphs = []
         for b in range(2, 3):
             #my_initial_state = initial_state(b)
@@ -299,12 +302,12 @@ if __name__ == "__main__":
 
             ucb = Random(my_initial_state, 1, b, 'UCB', f, beta, length_scale=(0.1, 0.1),
                            save_folder=my_save_folder_batch + '_ucb' + "/",
-                           save_per_step=False, num_timesteps_test=steps_count)
+                           save_per_step=False)
             result_graphs.append(['UCB', ucb])
 
             qei = Random(my_initial_state, 1, b, 'qEI', f, beta, length_scale=(0.1, 0.1),
                            save_folder=my_save_folder_batch + '_ei' + "/",
-                           save_per_step=False, num_timesteps_test=steps_count)
+                           save_per_step=False)
             result_graphs.append(['qEI', qei])
 
             f = lambda t: GetSampleFunction(2, t)
@@ -312,7 +315,7 @@ if __name__ == "__main__":
             my_save_folder =my_save_folder_batch + "_h" + str(2)
             non_myopic_2 = Random(my_initial_state, 2, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1),
                            save_folder=my_save_folder + '_non-myopic' + "/",
-                           save_per_step=False, num_timesteps_test=steps_count)
+                           save_per_step=False)
             result_graphs.append(['H=2', non_myopic_2])
 
             f = lambda t: GetSampleFunction(3, t)
