@@ -188,6 +188,7 @@ def WriteInfoToFile(my_output_file,f, mse, variance, m, mu):
 
 def __Ackley(x):
     # return Ackley function
+    x = np.asarray(x)
     assert x.shape[0] == 2
     a = 20.0
     b = 0.2

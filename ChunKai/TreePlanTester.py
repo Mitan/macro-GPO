@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import math
+from SimulatedDataSetsHypers import __Ackley
 
 from SampleFunctionBuilder import GetSampleFunction
 from TreePlan import *
@@ -108,7 +109,7 @@ class TreePlanTester:
         self.past_measurements = None if self.past_locations is None else np.apply_along_axis(self.model, 1,
                                                                                               past_locations)
 
-    def Test(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, debug=True, save_per_step=True,
+    def Test(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, debug=False, save_per_step=True,
              save_folder="default_results/"):
         """ Pipeline for testing
         @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
@@ -134,7 +135,7 @@ class TreePlanTester:
             if alg_type == 'qEI':
                 _, a, _ = tp.qEI(x_0)
             elif alg_type == 'UCB':
-                _, a, nodes_expanded = tp.StochasticFull(x_0, 1)
+                v, a, nodes_expanded = tp.StochasticFull(x_0, 1)
             elif alg_type == 'Non-myopic':
                 _, a, _ = tp.StochasticFull(x_0, H)
             elif alg_type == 'MLE':
@@ -145,7 +146,7 @@ class TreePlanTester:
 
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
-
+            print x_temp.physical_state[0].shape
             # for batch case x_temp.physical_states is a list
             # single_agent_state is a position of one agent in a batch
             baseline_measurements = [self.model(single_agent_state) for single_agent_state in x_temp.physical_state]
@@ -154,7 +155,7 @@ class TreePlanTester:
                 noise_components = np.random.normal(0, math.sqrt(self.noise_variance), batch_size)
             else:
                 noise_components = [0 for i in range(batch_size)]
-            percieved_measurements = baseline_measurements + noise_components
+            percieved_measurements = baseline_measurements
 
             x_next = tp.TransitionH(x_temp, percieved_measurements)
 
@@ -228,9 +229,10 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-def Random(initial_state, horizon, batch_size, alg_type, my_func, beta, grid_gap_=0.05, length_scale=(0.1, 0.1),
+def Random(initial_state, horizon, batch_size, alg_type, my_func, beta, grid_gap_=0.5, length_scale=(0.1, 0.1),
            num_timesteps_test=20,
            noise_variance=10 ** -5,
+
            seed=142857, save_folder=None, save_per_step=False,
            ):
     """
@@ -238,13 +240,14 @@ def Random(initial_state, horizon, batch_size, alg_type, my_func, beta, grid_gap
     """
     covariance_function = SquareExponential(length_scale, 1)
     gpgen = GaussianProcess(covariance_function)
-    m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed)
-
+    m = gpgen.GPGenerate(predict_range=((-15, 15), (-15, 15)), num_samples=(20, 20), seed=seed)
+    m = __Ackley
     TPT = TreePlanTester(simulate_noise_in_trials=True)
-    TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
+
+    TPT.InitGP(length_scale=(1.76030067316, 10.7911469234), signal_variance=0.571823797414, noise_variance=0.0430165337672, mean_function= 1.20093709782)
     TPT.InitEnvironment(environment_noise=noise_variance, model=m)
 
-    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_)
+    TPT.InitPlanner(grid_domain=((-15, 15), (-15, 15)), grid_gap=grid_gap_)
 
     TPT.InitTestParameters(initial_physical_state=initial_state,
                            past_locations=initial_state)
@@ -255,7 +258,7 @@ def Random(initial_state, horizon, batch_size, alg_type, my_func, beta, grid_gap
 
 def initial_state(batch_size):
     if batch_size == 2:
-        return np.array([[0.2, 0.2], [0.8, 0.8]])
+        return np.array([[4.0, 4.0], [-3.0, -3.0]])
     elif batch_size == 3:
         return np.array([[0.2, 0.2], [0.8, 0.8], [0.5, 0.5]])
     elif batch_size == 4:
@@ -274,7 +277,7 @@ if __name__ == "__main__":
 
 
     beta = 0.0
-    horizons = [2]
+    horizons = [3]
     for h in horizons:
         for b in range(2, 3):
             print b, h
@@ -288,14 +291,15 @@ if __name__ == "__main__":
                 Random(my_initial_state, h, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1), seed=i,
                        save_folder=my_save_folder + '_non-myopic' + "/",
                        save_per_step=True, num_timesteps_test=7)
+                """
                 Random(my_initial_state, h, b, 'UCB', f, beta, length_scale=(0.1, 0.1), seed=i,
                        save_folder=my_save_folder + '_ucb' + "/",
-                       save_per_step=True, num_timesteps_test=7)
+                       save_per_step=True, num_timesteps_test=12)
                 """
-                Random(my_initial_state, h, b, 'qEI', f, beta, length_scale=(0.1, 0.1), seed=i,
-                       save_folder=my_save_folder + 'qEI' + "/",
-                       save_per_step=True, num_timesteps_test=7)
-
+                Random(my_initial_state, h, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1), seed=i,
+                       save_folder=my_save_folder + '_non-myopic' + "/",
+                       save_per_step=True, num_timesteps_test=12)
+                """
             print datetime.now()
             print
             # Transect(seed=i)
