@@ -44,8 +44,8 @@ def GetSimulatedDataset(i, my_output_file):
 
     elif i == 1:
         # DropWave
-        X = np.linspace(-1.0, 1.0, num=gridSizeX)
-        Y = np.linspace(-1.0, 1.0, num=gridSizeY)
+        X = np.arange(-1.0, 1.0, step= 0.1)
+        Y = np.arange(-1.0, 1.0, step= 0.1)
         f = __DropWave
         test_prediction_range = [-1.0, 1.0]
     elif i == 2:
@@ -382,6 +382,6 @@ def TestPrediction(m, mu, f, preditcion_range):
 
 if __name__ == "__main__":
     my_file =  open("./datasets/simulated-functions-hypers_test.txt", 'w')
-    for i in range(8,9):
+    for i in range(1,2):
         GetSimulatedDataset(i, my_file)
     my_file.close()

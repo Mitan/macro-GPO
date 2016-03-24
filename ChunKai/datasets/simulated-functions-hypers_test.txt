@@ -1,8 +1,8 @@
-function is <function __Cosines at 0x0ECC16F0>
-MSE is 3.52886188561e-07 with data variance 0.213409567745
-l_1 = 0.12605123651
-l_2 = 0.126051232038
-sigma noise = 1.23195228302e-15
-sigma signal = 0.0198660061591
-mean = 0.940527042428
+function is <function __DropWave at 0x0EB56570>
+MSE is 8.34548729618e-07 with data variance 0.304245631147
+l_1 = 0.33928922958
+l_2 = 0.339289285926
+sigma noise = 5.0131158287e-13
+sigma signal = 26.199383292
+mean = 0.433088851736
 
