@@ -71,6 +71,7 @@ class TreePlan:
 
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
+
     def Preprocess(self, physical_state, history_locations, H):
 
         # history locations include physical state

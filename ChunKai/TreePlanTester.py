@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 
 from SimulatedDataSetFynctions import AckleyInfo, CosinesInfo, DropWaveInfo
@@ -327,6 +328,19 @@ def TestScenario(b, beta, locations, i,  simulated_func, save_trunk):
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=3', non_myopic_3])
 
+    """
+    print datetime.now()
+    # h = 4
+    f = lambda t: GetSampleFunction(4, t)
+    my_save_folder = my_save_folder_root + "h" + str(4)
+    non_myopic_4 = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=4, batch_size=b,
+                                                   alg_type='Non-myopic',
+                                                   my_samples_count_func=f, beta=beta,
+                                                   simulated_function=simulated_func,
+                                                   save_folder=my_save_folder + '_non-myopic' + "/")
+    result_graphs.append(['H=4', non_myopic_4])
+    print datetime.now()
+    """
     PlotData(result_graphs, my_save_folder_root)
 
 

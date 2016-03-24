@@ -50,41 +50,49 @@ def GetSimulatedDataset(i, my_output_file):
         test_prediction_range = [-1.0, 1.0]
     elif i == 2:
         # Griewank
-        X = np.linspace(-5.0, 5.0, num=gridSizeX)
-        Y = np.linspace(-5.0, 5.0, num=gridSizeY)
+        X = np.arange(-5.0, 5.0, step= 0.5)
+        Y = np.arange(-5.0, 5.0, step= 0.5)
         f = _Griewank
         test_prediction_range = [-5.0, 5.0]
 
     elif i == 3:
         # Holder Table
-        X = np.linspace(-10.0, 10.0, num=gridSizeX)
-        Y = np.linspace(-10.0, 10.0, num=gridSizeY)
+        X = np.arange(-10.0, 10.0, step= 1.0)
+        Y = np.arange(-10.0, 10.0, step= 1.0)
+        #X = np.linspace(-10.0, 10.0, num=gridSizeX)
+        #Y = np.linspace(-10.0, 10.0, num=gridSizeY)
         f = _HolderTable
         test_prediction_range = [-10.0, 10.0]
 
     elif i == 4:
         # Branin
-        X = np.linspace(-5.0, 10.0, num=gridSizeX)
-        Y = np.linspace(0.0, 15.0, num=gridSizeY)
+        X = np.arange(-5.0, 10.0, step= 0.75)
+        Y = np.arange(0.0, 15.0, step= 0.75)
         f = _Branin
         test_prediction_range = [0.0, 10.0]
 
     elif i == 5:
         # McCormick
+        """
         X = np.linspace(-1.5, 4.0, num=gridSizeX)
         Y = np.linspace(-3.0, 4.0, num=gridSizeY)
+        """
+        X = np.arange(-1.0, 4.0, step= 0.25)
+        Y = np.arange(-1.0, 4.0, step= 0.25)
         f = _McCormick
         test_prediction_range = [-1.5, 4.0]
     elif i == 6:
         # SixCamel
-        X = np.linspace(-3.0, 3.0, num=gridSizeX)
-        Y = np.linspace(-2.0, 2.0, num=gridSizeY)
+        X = np.arange(-2.0, 2.0, step= 0.2)
+        Y = np.arange(-2.0, 2.0, step= 0.2)
+        #X = np.linspace(-2.0, 2.0, num=gridSizeX)
+        #Y = np.linspace(-2.0, 2.0, num=gridSizeY)
         f = _SixCamel
         test_prediction_range = [-2.0, 2.0]
     elif i == 7:
         # Shubert
-        X = np.linspace(-2.0, 2.0, num=gridSizeX)
-        Y = np.linspace(-2.0, 2.0, num=gridSizeY)
+        X = np.arange(-2.0, 2.0, step= 0.2)
+        Y = np.arange(-2.0, 2.0, step= 0.2)
         f = __Shubert
         test_prediction_range = [-2.0, 2.0]
     elif i == 8:
@@ -246,7 +254,7 @@ def _HolderTable(x):
     y = -abs(fact1 * fact2)
     return math.log(-y + 0.25)
 
-
+# Note, doesn't work - exploartion matrix det is zero
 def __Shubert(x):
     # return HolderTable function
     # this function is 2D
@@ -291,7 +299,7 @@ def _McCormick(x):
     term3 = -1.5 * x1
     term4 = 2.5 * x2
     y = term1 + term2 + term3 + term4 + 1
-    return math.log(y + 4.0)
+    return math.log(y + 2.5)
 
 
 def _SixCamel(x):
@@ -305,7 +313,7 @@ def _SixCamel(x):
     term2 = x1 * x2
     term3 = (-4 + 4 * x2 ** 2) * x2 ** 2
     y = term1 + term2 + term3
-    return math.log(y + 1.5)
+    return math.log(y + 1.2)
 
 
 def __Cosines(x):
@@ -350,6 +358,7 @@ def __CrosInTray(x):
 
 
 """
+# Note, POSSIBLY doesn't work - exploartion matrix det is zero
 def _Eggholder(x):
     # return EGGHOLDER function
     #this function is 2D
@@ -382,6 +391,7 @@ def TestPrediction(m, mu, f, preditcion_range):
 
 if __name__ == "__main__":
     my_file =  open("./datasets/simulated-functions-hypers_test.txt", 'w')
-    for i in range(1,2):
+    t = 3
+    for i in range(t,t+1):
         GetSimulatedDataset(i, my_file)
     my_file.close()

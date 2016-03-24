@@ -1,8 +1,8 @@
-function is <function __DropWave at 0x0EB56570>
-MSE is 8.34548729618e-07 with data variance 0.304245631147
-l_1 = 0.33928922958
-l_2 = 0.339289285926
-sigma noise = 5.0131158287e-13
-sigma signal = 26.199383292
-mean = 0.433088851736
+function is <function _HolderTable at 0x0EC595F0>
+MSE is 0.308154838322 with data variance 1.0092798491
+l_1 = 1.04938884147
+l_2 = 1.16990619532
+sigma noise = 0.000108666419245
+sigma signal = 1.78932992583
+mean = 0.537306851025
 
