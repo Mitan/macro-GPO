@@ -1,5 +1,5 @@
 import numpy as np
-from SimulatedDataSetFynctions import DropWaveInfo
+from SimulatedDataSetFynctions import DropWaveInfo, AckleyInfo, CosinesInfo
 from TreePlanTester import TestScenario
 
 
@@ -24,15 +24,33 @@ def GenerateInitialLocation(current_f, batch_size):
     return np.asarray([[int_x[i], int_y[i]] for i in range(batch_size)])
 
 
+def GetBeta(iteration):
+    beta_values = [0.0, 0.5, 1.0,  3.0, 5.0, 10.0]
+    return beta_values[iteration]
+
+def GetSimulatedFunction(i):
+    if i == 0:
+        return AckleyInfo()
+    elif i ==1:
+        return DropWaveInfo()
+    elif i ==2:
+        return CosinesInfo()
+
 if __name__ == '__main__':
 
     batch_size = 2
-    beta = 1.0
-    iteration = 0
     save_trunk = "./tests/"
-    current_function = DropWaveInfo()
 
+    # should be passed as params
+    beta_iteration = 1
+    location_iteration = 0
+    function_iteration = 2
+
+    current_function = GetSimulatedFunction(function_iteration)
     initial_location = GenerateInitialLocation(current_function, batch_size)
+    beta = GetBeta(beta_iteration)
 
-    TestScenario(b=batch_size, beta=beta, locations=initial_location, i = iteration,  simulated_func=current_function,
+    print initial_location
+
+    TestScenario(b=batch_size, beta=beta, locations=initial_location, i = location_iteration,  simulated_func=current_function,
                  save_trunk=save_trunk)
