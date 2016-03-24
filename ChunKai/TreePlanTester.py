@@ -1,6 +1,6 @@
 import os
 
-from SimulatedDataSetFynctions import AckleyInfo
+from SimulatedDataSetFynctions import AckleyInfo, CosinesInfo, DropWaveInfo
 from ResultsPlotter import PlotData
 from SampleFunctionBuilder import GetSampleFunction
 from TreePlan import *
@@ -238,7 +238,7 @@ class TreePlanTester:
 
 def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
                             simulated_function,
-                            num_timesteps_test=20,
+                            num_timesteps_test=5,
                             save_folder=None, save_per_step=False,
                             ):
     """
@@ -282,13 +282,13 @@ def TestScenario(b, beta, locations, i,  simulated_func, save_trunk):
     :param b: batch size
     :param beta: beta from ucb reward function
     :param locations:  array of start locations for evaluation
-    :param i: index of current location
+    :param i: index of current iteration. should be obtained from sys arguments
     :param simulated_func: function info
     :param save_trunk: root folder
     :return:
     """
     result_graphs = []
-    my_initial_state = locations[i]
+    my_initial_state = locations
 
     # folder where we can put results of methods
     my_save_folder_root = save_trunk + "batch"  + str(b) + "/function" + str(simulated_func.name) + "/beta" + str(beta) + "/location" + str(i) + "/"
@@ -323,7 +323,7 @@ def TestScenario(b, beta, locations, i,  simulated_func, save_trunk):
     non_myopic_3 = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=3, batch_size=b,
                                                    alg_type='Non-myopic',
                                                    my_samples_count_func=f, beta=beta,
-                                                   simulated_function=current_function,
+                                                   simulated_function=simulated_func,
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=3', non_myopic_3])
 
@@ -337,13 +337,14 @@ if __name__ == "__main__":
     # todo
     steps_count = 20
 
-    current_function = AckleyInfo()
+    #current_function = DropWaveInfo()
 
     # locations = [np.array([[4.0, 4.0], [-3.0, -3.0]]), np.array([[2.0, 4.0], [-4.0, -3.0]]), np.array([[4.5, 4.0], [-4.5, -4.5]])]
-    locations = [np.array([[4.0, 4.0], [-3.0, -3.0]])]
+    #locations = [np.array([[4.0, 4.0], [-3.0, -3.0]])]
+    locations = [np.array([[0.2, 0.2], [0.8, 0.8]])]
 
 
-    TestScenario(b=2, beta=1.0, locations = locations, i = 0, simulated_func=current_function, save_trunk=save_trunk)
+    #TestScenario(b=2, beta=1.0, locations = locations, i = 0, simulated_func=current_function, save_trunk=save_trunk)
     """
     for i in range(len(locations)):
         beta = 1.0
