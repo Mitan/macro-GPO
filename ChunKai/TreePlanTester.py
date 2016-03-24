@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import math
+from ResultsPlotter import PlotData
 from SimulatedDataSetsHypers import __Ackley
 
 from SampleFunctionBuilder import GetSampleFunction
@@ -257,7 +258,7 @@ def Random(initial_state, horizon, batch_size, alg_type, my_func, beta, grid_gap
 
     TPT.InitTestParameters(initial_physical_state=initial_state,
                            past_locations=initial_state)
-    TPT.Test(num_timesteps_test=num_timesteps_test, H=horizon, batch_size=batch_size, alg_type=alg_type,
+    return TPT.Test(num_timesteps_test=num_timesteps_test, H=horizon, batch_size=batch_size, alg_type=alg_type,
              my_nodes_func=my_func, beta=beta, debug=False, save_folder=save_folder,
              save_per_step=save_per_step)
 
@@ -282,36 +283,51 @@ if __name__ == "__main__":
     # my_batch_size = 2
 
 
-    beta = 1.0
-    horizons = [2,3]
-    steps_count = 16
-    for b in range(2, 3):
-        my_save_folder_batch = save_trunk +  "_b" + str(b)
-        my_initial_state = initial_state(b)
-        # this algorithms are myopic
-        f = lambda t: GetSampleFunction(1, t)
-        Random(my_initial_state, 1, b, 'UCB', f, beta, length_scale=(0.1, 0.1),
-                       save_folder=my_save_folder_batch + '_ucb' + "/",
-                       save_per_step=False, num_timesteps_test=steps_count)
+    #locations = [np.array([[4.0, 4.0], [-3.0, -3.0]]), np.array([[2.0, 4.0], [-4.0, -3.0]]), np.array([[4.5, 4.0], [-4.5, -4.5]])]
+    locations = [np.array([[4.0, 4.0], [-3.0, -3.0]])]
+    for i in range(len(locations)):
+        beta = 1.0
+        horizons = [2,3]
+        steps_count = 5
+        result_graphs = []
+        for b in range(2, 3):
+            #my_initial_state = initial_state(b)
+            my_initial_state = locations[i]
+            my_save_folder_batch = save_trunk + "_l"+ str(i) +  "_b" + str(b)
+            # this algorithms are myopic
+            f = lambda t: GetSampleFunction(1, t)
 
-        Random(my_initial_state, 1, b, 'qEI', f, beta, length_scale=(0.1, 0.1),
-                       save_folder=my_save_folder_batch + '_ei' + "/",
-                       save_per_step=False, num_timesteps_test=steps_count)
-        for h in horizons:
-            print b, h
-            print datetime.now()
-            f = lambda t: GetSampleFunction(h, t)
+            ucb = Random(my_initial_state, 1, b, 'UCB', f, beta, length_scale=(0.1, 0.1),
+                           save_folder=my_save_folder_batch + '_ucb' + "/",
+                           save_per_step=False, num_timesteps_test=steps_count)
+            result_graphs.append(['UCB', ucb])
+
+            qei = Random(my_initial_state, 1, b, 'qEI', f, beta, length_scale=(0.1, 0.1),
+                           save_folder=my_save_folder_batch + '_ei' + "/",
+                           save_per_step=False, num_timesteps_test=steps_count)
+            result_graphs.append(['qEI', qei])
+
+            f = lambda t: GetSampleFunction(2, t)
             #my_save_folder = save_trunk + "seed" + str(i) + "_b" + str(b) + "_h" + str(h)
-            my_save_folder =my_save_folder_batch + "_h" + str(h)
+            my_save_folder =my_save_folder_batch + "_h" + str(2)
+            non_myopic_2 = Random(my_initial_state, 2, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1),
+                           save_folder=my_save_folder + '_non-myopic' + "/",
+                           save_per_step=False, num_timesteps_test=steps_count)
+            result_graphs.append(['H=2', non_myopic_2])
+
+            f = lambda t: GetSampleFunction(3, t)
+            #my_save_folder = save_trunk + "seed" + str(i) + "_b" + str(b) + "_h" + str(h)
+            my_save_folder =my_save_folder_batch + "_h" + str(3)
+            non_myopic_3 = Random(my_initial_state, 3, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1),
+                           save_folder=my_save_folder + '_non-myopic' + "/",
+                           save_per_step=False, num_timesteps_test=steps_count)
+            result_graphs.append(['H=3', non_myopic_3])
+
+            PlotData(steps_count, result_graphs)
 
 
-            Random(my_initial_state, h, b, 'Non-myopic', f, beta, length_scale=(0.1, 0.1),
-                       save_folder=my_save_folder + '_non-myopic' + "/",
-                       save_per_step=False, num_timesteps_test=steps_count)
-
-
-            print datetime.now()
-            print
+        #print datetime.now()
+        #print
             # Transect(seed=i)
 
             # print "Performing sanity checks"
