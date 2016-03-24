@@ -236,7 +236,7 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-def TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
+def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
                             simulated_function,
                             num_timesteps_test=20,
                             save_folder=None, save_per_step=False,
@@ -264,7 +264,7 @@ def TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_sam
                       my_nodes_func=my_samples_count_func, beta=beta, debug=False, save_folder=save_folder,
                       save_per_step=save_per_step)
 
-
+"""
 def initial_state(batch_size):
     if batch_size == 2:
         return np.array([[4.0, 4.0], [-3.0, -3.0]])
@@ -274,6 +274,60 @@ def initial_state(batch_size):
         return np.array([[0.2, 0.2], [0.8, 0.8], [0.2, 0.8], [0.8, 0.2]])
     else:
         raise Exception("wrong batch size")
+"""
+
+
+def TestScenario(b, beta, locations, i,  simulated_func, save_trunk):
+    """
+    :param b: batch size
+    :param beta: beta from ucb reward function
+    :param locations:  array of start locations for evaluation
+    :param i: index of current location
+    :param simulated_func: function info
+    :param save_trunk: root folder
+    :return:
+    """
+    result_graphs = []
+    my_initial_state = locations[i]
+
+    # folder where we can put results of methods
+    my_save_folder_root = save_trunk + "batch"  + str(b) + "/function" + str(simulated_func.name) + "/beta" + str(beta) + "/location" + str(i) + "/"
+    # these algorithms are myopic
+    #  nodes function
+    f = lambda t: GetSampleFunction(1, t)
+
+    ucb = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='UCB',
+                                          my_samples_count_func=f, beta=beta, simulated_function=simulated_func,
+                                          save_folder=my_save_folder_root + 'ucb' + "/")
+    result_graphs.append(['UCB', ucb])
+
+    qei = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='qEI',
+                                          my_samples_count_func=f, beta=beta, simulated_function=simulated_func,
+                                          save_folder=my_save_folder_root + 'ei' + "/")
+    result_graphs.append(['qEI', qei])
+
+    # non-myopic part
+    # h = 2
+    f = lambda t: GetSampleFunction(2, t)
+    my_save_folder = my_save_folder_root + "h" + str(2)
+    non_myopic_2 = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=2, batch_size=b,
+                                                   alg_type='Non-myopic',
+                                                   my_samples_count_func=f, beta=beta,
+                                                   simulated_function=simulated_func,
+                                                   save_folder=my_save_folder + '_non-myopic' + "/")
+    result_graphs.append(['H=2', non_myopic_2])
+
+    # h = 3
+    f = lambda t: GetSampleFunction(3, t)
+    my_save_folder = my_save_folder_root + "h" + str(3)
+    non_myopic_3 = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=3, batch_size=b,
+                                                   alg_type='Non-myopic',
+                                                   my_samples_count_func=f, beta=beta,
+                                                   simulated_function=current_function,
+                                                   save_folder=my_save_folder + '_non-myopic' + "/")
+    result_graphs.append(['H=3', non_myopic_3])
+
+    PlotData(result_graphs, my_save_folder_root)
 
 
 if __name__ == "__main__":
@@ -287,11 +341,16 @@ if __name__ == "__main__":
 
     # locations = [np.array([[4.0, 4.0], [-3.0, -3.0]]), np.array([[2.0, 4.0], [-4.0, -3.0]]), np.array([[4.5, 4.0], [-4.5, -4.5]])]
     locations = [np.array([[4.0, 4.0], [-3.0, -3.0]])]
+
+
+    TestScenario(b=2, beta=1.0, locations = locations, i = 0, simulated_func=current_function, save_trunk=save_trunk)
+    """
     for i in range(len(locations)):
         beta = 1.0
 
-        result_graphs = []
+
         for b in range(2, 3):
+            result_graphs = []
             # my_initial_state = initial_state(b)
             my_initial_state = locations[i]
             my_save_folder_batch = save_trunk + "_l" + str(i) + "_b" + str(b)
@@ -327,8 +386,7 @@ if __name__ == "__main__":
             result_graphs.append(['H=3', non_myopic_3])
 
             PlotData(steps_count, result_graphs)
-
-
+            """
             # print datetime.now()
             # print
             # Transect(seed=i)

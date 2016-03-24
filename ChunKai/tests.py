@@ -35,7 +35,7 @@ file.close()
 X_values = data[:, 0:2]
 print X_values
 """
-@np.vectorize
+#@np.vectorize
 def __Bukin6(x1, x2):
     # return Bukin function n 6 multiplied by -1
     #this function is 2D
@@ -49,17 +49,22 @@ def __Bukin6(x1, x2):
     y = term1 + term2
     return -y
 
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-X = np.arange(-5.0, 6.0, 0.1)
-Y = np.arange(-3.0, 4.0, 0.1)
-X, Y = np.meshgrid(X, Y)
-R = np.sqrt(X**2 + Y**2)
-Z = -__Bukin6(X,Y)
-surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
-                       linewidth=0, antialiased=False)
-plt.show()
 
-a = np.array([1,2,3])
-for i in a:
-    print i
+if __name__ == "__main__":
+    """
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    X = np.arange(-5.0, 6.0, 0.1)
+    Y = np.arange(-3.0, 4.0, 0.1)
+    X, Y = np.meshgrid(X, Y)
+    R = np.sqrt(X**2 + Y**2)
+    Z = -__Bukin6(X,Y)
+    surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
+                           linewidth=0, antialiased=False)
+    #plt.show()
+    """
+    a = np.array([1,2,3])
+    for i in a:
+        print i
+
+    print  __Bukin6.__name__

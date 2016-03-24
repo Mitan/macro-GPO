@@ -11,6 +11,7 @@ class __SimulatedFunctionInfo:
         self.signal_variance = signal_variance
         self.noise_variance = noise_variance
         self.mean = mean
+        self.name = f.__name__
 
 
 def AckleyInfo():
