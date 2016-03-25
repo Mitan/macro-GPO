@@ -297,8 +297,6 @@ class TreePlan:
         number_of_samples = self.nodes_function(t)
         if t == 1:
             return [0.0]
-        elif t == 2:
-            return [mu]
         else:
             return np.random.multivariate_normal(mu, sigma, number_of_samples)
 

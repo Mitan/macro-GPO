@@ -37,7 +37,7 @@ def __Sample_funciton_4(t):
         return 4
     # case of myopic, no need to sample, should be held by upper lvl
     elif t == 1:
-        return 3
+        return 1
     else:
         raise ValueError("wrong value of lvl - out of range horizon")
 
@@ -45,7 +45,7 @@ def __Sample_funciton_3(t):
     if t == 3:
         return 5
     elif t == 2:
-        return 4
+        return 2
     # case of myopic, no need to sample, should be held by upper lvl
     elif t == 1:
         return 1
