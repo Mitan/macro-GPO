@@ -240,7 +240,7 @@ class TreePlanTester:
 def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
                             simulated_function,
                             num_timesteps_test=20,
-                            save_folder=None, save_per_step=False,
+                            save_folder=None, save_per_step=True,
                             ):
     """
     Assume a map size of [0, 1] for both axes
