@@ -1,4 +1,4 @@
-from SimulatedDataSetsHypers import  __Ackley, __Cosines, _Branin, _Eggholder, _Griewank, _HolderTable, _McCormick, _SixCamel, __DropWave, \
+from HyperInference import  __Ackley, __Cosines, _Branin, _Eggholder, _Griewank, _HolderTable, _McCormick, _SixCamel, __DropWave, \
     __Shubert
 
 

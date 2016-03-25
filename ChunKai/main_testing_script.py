@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-from SimulatedDataSetFynctions import DropWaveInfo, AckleyInfo, CosinesInfo, BraninInfo, GriewankInfo, McCormickInfo, \
+from DatasetInfo import DropWaveInfo, AckleyInfo, CosinesInfo, BraninInfo, GriewankInfo, McCormickInfo, \
     SixCamelInfo, HolderTableInfo
 from TreePlanTester import TestScenario
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 
-from SimulatedDataSetFynctions import AckleyInfo, CosinesInfo, DropWaveInfo
+from DatasetInfo import AckleyInfo, CosinesInfo, DropWaveInfo
 from ResultsPlotter import PlotData
 from SampleFunctionBuilder import GetSampleFunction
 from TreePlan import *

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import skew
 
-#from hypers import InferHypers
+from hypers import InferHypers
 
 
 def __GetLengthScaleHeuristc(inputs):
@@ -139,8 +139,8 @@ def GetSimulatedDataset(i, my_output_file):
 
     # train hypers with several random starts
     for i in range(len(tests)):
-        m, mu = 0,0
-        #m, mu = InferHypers(grid, values, noise * tests[i], signal * tests[i], l_1 * tests[i - 1], l_2 * tests[i - 1])
+        #m, mu = 0,0
+        m, mu = InferHypers(grid, values, noise * tests[i], signal * tests[i], l_1 * tests[i - 1], l_2 * tests[i - 1])
         if m.likelihood > likeilhood_best:
             m_best = m
             mu_best = mu
