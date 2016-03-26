@@ -60,8 +60,19 @@ if __name__ == "__main__":
                            linewidth=0, antialiased=False)
     #plt.show()
     """
-    a = np.array([1,2,3])
-    for i in a:
-        print i
+
+
+    a = [np.array([1.0, 2.0]), np.array([1., 1.])]
+
+
+    new_state = np.array([1., 1])
+    for i in xrange(len(a)):
+                if abs(new_state[0] - a[i][0]) < 0.001 and abs(
+                                new_state[1] - a[i][1]) < 0.001:
+                    print False
+
+
+    #for i in a:
+    #   print i
 
     print  __Bukin6.__name__

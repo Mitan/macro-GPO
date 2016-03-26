@@ -71,5 +71,5 @@ if __name__ == '__main__':
     print "beta is " + str(beta)
     print "location " + str(location_iteration) +  " is "  + str(initial_location)
 
-    TestScenario(b=batch_size, beta=beta, locations=initial_location, i = location_iteration,  simulated_func=current_function,
+    TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
                  save_trunk=save_trunk)

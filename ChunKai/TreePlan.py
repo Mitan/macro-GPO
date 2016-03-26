@@ -13,8 +13,9 @@ from Vis2d import Vis2d
 
 
 class TreePlan:
-    def __init__(self, grid_domain, grid_gap, gaussian_process, number_of_nodes_function=None,
+    def __init__(self, grid_domain, grid_gap, gaussian_process, bad_places, number_of_nodes_function=None,
                  batch_size=1, horizon=1, beta=0.0):
+
         """
         - Gradularity given by grid_gap
         - Squared exponential covariance function
@@ -27,6 +28,8 @@ class TreePlan:
         # parameter for controlling exploration-exploitation
         self.beta = beta
 
+        # obstacles - points which are not found in dataset
+        self.bad_places = bad_places
         # Preset constants
         self.INF = 10 ** 15
 
@@ -133,6 +136,7 @@ class TreePlan:
         # TODO: ensure scalability to multiple dimensions
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
         assert physical_state.shape == a.shape
+        # new state is np array
         new_state = np.add(physical_state, a)
         ndims = 2
         for i in range(a.shape[0]):
@@ -140,6 +144,13 @@ class TreePlan:
             for dim in xrange(ndims):
                 if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
                         self.grid_domain[dim][1]: return False
+
+            # if new state contains an obstacle
+            eps = 0.00001
+            if self.bad_places:
+                for i in xrange(len(self.bad_places)):
+                    if abs(new_state[0] - self.bad_places[i][0]) <eps and abs(new_state[1] - self.bad_places[i][1]) < eps:
+                        return False
 
         return True
 
@@ -476,7 +487,8 @@ class History:
 
 
 if __name__ == "__main__":
-
+    pass
+    """
     # Init GP: Init hyperparameters and covariance function
     length_scale = [1.5, 1.5]
     signal_variance = 1
@@ -542,3 +554,4 @@ if __name__ == "__main__":
     vis.MapPlot(model_grid(XGrid, YGrid),  # Mesh grid
                 [grid_domain[0][0], grid_domain[0][1], grid_domain[1][0], grid_domain[1][1]],
                 [x.physical_state for x in state_history])
+    """

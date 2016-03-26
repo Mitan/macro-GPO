@@ -109,7 +109,7 @@ class TreePlanTester:
         self.past_measurements = None if self.past_locations is None else np.apply_along_axis(self.model, 1,
                                                                                               past_locations)
 
-    def DoTest(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, debug=False, save_per_step=True,
+    def DoTest(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, bad_places, debug=False, save_per_step=True,
                save_folder="default_results/"):
         """ Pipeline for testing
         @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
@@ -131,7 +131,7 @@ class TreePlanTester:
         base_measurement_history = []
         for time in xrange(num_timesteps_test):
             tp = TreePlan(self.grid_domain, self.grid_gap, self.gp,
-                          batch_size=batch_size, number_of_nodes_function=my_nodes_func, horizon=H, beta=beta)
+                          batch_size=batch_size, number_of_nodes_function=my_nodes_func, horizon=H, beta=beta, bad_places=bad_places)
 
             if alg_type == 'qEI':
                 _, a, _ = tp.qEI(x_0)
@@ -263,7 +263,7 @@ def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_
                            past_locations=initial_state)
     return TPT.DoTest(num_timesteps_test=num_timesteps_test, H=horizon, batch_size=batch_size, alg_type=alg_type,
                       my_nodes_func=my_samples_count_func, beta=beta, debug=False, save_folder=save_folder,
-                      save_per_step=save_per_step)
+                      save_per_step=save_per_step, bad_places = simulated_function.bad_places)
 
 """
 def initial_state(batch_size):
@@ -278,18 +278,18 @@ def initial_state(batch_size):
 """
 
 
-def TestScenario(b, beta, locations, i,  simulated_func, save_trunk):
+def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
     """
     :param b: batch size
     :param beta: beta from ucb reward function
-    :param locations:  array of start locations for evaluation
+    :param location:  initial location for agents
     :param i: index of current iteration. should be obtained from sys arguments
     :param simulated_func: function info
     :param save_trunk: root folder
     :return:
     """
     result_graphs = []
-    my_initial_state = locations
+    my_initial_state = location
 
     # folder where we can put results of methods
     my_save_folder_root = save_trunk + "batch"  + str(b) + "/function" + str(simulated_func.name) + "/beta" + str(beta) + "/location" + str(i) + "/"
