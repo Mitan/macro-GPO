@@ -1,6 +1,8 @@
 import math
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
+from MapDatasetStorage import MapDatasetStorage
+
 matplotlib.use('Agg')
 from matplotlib import cm
 import matplotlib.pyplot as plt
@@ -373,6 +375,34 @@ def _Eggholder(x):
     y = term1 + term2
     return y
 
+def LogPDataset():
+    file = open("./datasets/bball.dat")
+    data = np.genfromtxt(file,skip_header=10)
+    file.close()
+
+    # restrict the field
+    indexes_x = [i for i in range(data.shape[0]) if data[i,0] > 4  and data[i,1] < 19 and data[i,1] > 6]
+    # restricted full data
+    data = data[indexes_x, :]
+
+    X_values = data[:, 0:2]
+    P_log = data[:, 6]
+    return MapDatasetStorage(X_values, P_log)
+
+
+def LogKDataset():
+    file = open("./datasets/bball.dat")
+    data = np.genfromtxt(file,skip_header=10)
+    file.close()
+
+    # restrict the field
+    indexes_x = [i for i in range(data.shape[0]) if data[i,0] > 4  and data[i,1] < 19 and data[i,1] > 6]
+    # restricted full data
+    data = data[indexes_x, :]
+    X_values = data[:, 0:2]
+
+    K_log = data[:, 3]
+    return MapDatasetStorage(X_values, K_log)
 
 
 
@@ -393,8 +423,66 @@ def TestPrediction(m, mu, f, preditcion_range):
 
 
 if __name__ == "__main__":
+    """
     my_file =  open("./datasets/simulated-functions-hypers_test.txt", 'w')
     t = 3
     for i in range(t,t+1):
         GetSimulatedDataset(i, my_file)
     my_file.close()
+    """
+
+    file = open("./datasets/bball.dat")
+    data = np.genfromtxt(file,skip_header=10)
+    file.close()
+
+    # restrict the field
+    indexes_x = [i for i in range(data.shape[0]) if data[i,0] > 4  and data[i,1] < 19 and data[i,1] > 6]
+    # restricted full data
+    data = data[indexes_x, :]
+    X_values = data[:, 0:2]
+
+    X = X_values[:, 0]
+    Y = X_values[:, 1]
+    P_log = data[:, 6]
+
+    #grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
+    grid = X_values
+    #values = np.apply_along_axis(f, 1, grid)
+    values = P_log
+    values = values.reshape((values.shape[0], 1))
+
+    # skew for checking if need to transform data
+    skewness = skew(values)
+    print skewness
+
+    # __PlotFunction(X, Y, values)
+    values_variance = np.std(values)
+
+    # set initial values for parameters
+    signal = values_variance
+    # signal = __GetLengthScaleHeuristc(values)
+    noise = signal * 0.1
+    l_1 = __GetLengthScaleHeuristc(X)
+    l_2 = __GetLengthScaleHeuristc(Y)
+
+    # array for random restarts
+    tests = [10 ** i for i in range(-3, 3)]
+
+    m_best = None
+    mu_best = 0.0
+    likeilhood_best = - np.Inf
+
+    # train hypers with several random starts
+    for i in range(len(tests)):
+        #m, mu = 0,0
+        m, mu = InferHypers(grid, values, noise * tests[i], signal * tests[i], l_1 * tests[i - 1], l_2 * tests[i - 1])
+        if m.likelihood > likeilhood_best:
+            m_best = m
+            mu_best = mu
+            likeilhood_best = m.likelihood
+    print m_best
+    #mse = TestPrediction(m_best, mu_best, f, test_prediction_range)
+    #print "MSE is " + str(mse) + " with data variance " + str(values_variance)
+    my_file =  open("./datasets/simulated-functions-hypers_test.txt", 'w')
+    WriteInfoToFile(my_file, LogPDataSet, 0, values_variance, m, mu)
+

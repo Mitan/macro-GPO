@@ -51,6 +51,7 @@ data = data[indexes_x, :]
 
 
 X_values = data[:, 0:2]
+print X_values
 
 #print max(data[:, 0:1])
 #K_normal = data[:, 2:3]

@@ -1,8 +1,9 @@
-import numpy as np
 import sys
-from HyperInference import __Cosines
+
+import numpy as np
+
 from DatasetInfo import DropWaveInfo, AckleyInfo, CosinesInfo, BraninInfo, GriewankInfo, McCormickInfo, \
-    SixCamelInfo, HolderTableInfo, __DatasetInfo
+    SixCamelInfo, HolderTableInfo, Log_K_Info, Log_P_Info
 from TreePlanTester import TestScenario
 
 
@@ -54,11 +55,15 @@ def GetSimulatedFunction(i):
         return McCormickInfo()
     elif i==6:
         return SixCamelInfo()
-    else:
+    elif i==7:
         return HolderTableInfo()
+    elif i==8:
+        return Log_K_Info()
+    else:
+        return Log_P_Info()
 
 if __name__ == '__main__':
-    
+
     args = sys.argv
     batch_size = 2
     save_trunk = "./tests/"

@@ -1,8 +1,8 @@
-function is <function _HolderTable at 0x0EC595F0>
-MSE is 0.308154838322 with data variance 1.0092798491
-l_1 = 1.04938884147
-l_2 = 1.16990619532
-sigma noise = 0.000108666419245
-sigma signal = 1.78932992583
-mean = 0.537306851025
+function is <function LogPDataSet at 0x0EA813F0>
+MSE is 0 with data variance 0.281975596347
+l_1 = 1.67979331936
+l_2 = 0.846648874122
+sigma noise = 0.0218197172656
+sigma signal = 0.0596869912157
+mean = 0.447529156627
 

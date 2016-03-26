@@ -1,5 +1,5 @@
-from HyperInference import  __Ackley, __Cosines, _Branin, _Eggholder, _Griewank, _HolderTable, _McCormick, _SixCamel, __DropWave, \
-    __Shubert
+from DataSetFunctionDefinitions import  __Ackley, __Cosines, _Branin, _Eggholder, _Griewank, _HolderTable, _McCormick, _SixCamel, __DropWave, \
+    __Shubert, LogKDataset, LogPDataset
 
 
 # class with hardcoded parameters of simulated functions
@@ -64,3 +64,18 @@ def HolderTableInfo():
     return __DatasetInfo(f=_HolderTable, lengthscale=(1.04938884147,1.16990619532),
                                    signal_variance=1.78932992583, noise_variance=0.000108666419245, mean= 0.537306851025,
                                    domain=((-10.0, 10.0), (-10.0, 10.0)), grid_gap=1.0)
+
+###### Real world
+
+def Log_K_Info():
+    f = LogKDataset
+    return __DatasetInfo(f=f, lengthscale=(2.46972056804,1.7731049831),
+                                   signal_variance=0.0116432647237, noise_variance=0.00398114247025, mean= 1.43860126506,
+                                   domain=((5.0, 19.0), (7.0, 19.0)), grid_gap=1.0, bad_places=[[5., 8.], [18., 17.]])
+
+def Log_P_Info():
+    f = LogPDataset
+    return __DatasetInfo(f=f, lengthscale=(1.67979331936,0.846648874122),
+                                   signal_variance=0.0596869912157, noise_variance=0.0218197172656, mean= 0.447529156627,
+                                   domain=((5.0, 19.0), (7.0, 19.0)), grid_gap=1.0, bad_places=[[5., 8.], [18., 17.]])
+
