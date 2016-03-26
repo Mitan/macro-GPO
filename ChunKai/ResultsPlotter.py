@@ -6,6 +6,9 @@ import matplotlib.patches as mpatches
 
 #for each result, result[0] is the name, result[1] is the data as list of rewards
 def PlotData(results, path_to_file):
+    if not results:
+
+        return
     color_sequence = ['red', 'green', 'blue', '#e377c2', 'black', 'yellow', '#2ca02c',
                   '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5',
                   '#8c564b', '#c49c94',  '#7f7f7f',
@@ -27,6 +30,8 @@ def PlotData(results, path_to_file):
         handles.append(patch)
     plt.legend(handles=handles, loc = 2)
     plt.savefig(path_to_file + 'comparison.png' , bbox_inches='tight')
+    plt.clf()
+    plt.close()
     #plt.show()
 
 if __name__ == "__main__":
