@@ -22,7 +22,7 @@ class MapDatasetStorage():
         if tuple_key in self.dictionary:
             return self.dictionary[tuple_key]
         else:
-            raise KeyError("Point" + str(tuple_key)+ "is not in dataset")
+            raise KeyError("Point " + str(tuple_key)+ " is not in dataset")
 
     def ToTuple(self, arr):
         #if isinstance(arr, list):

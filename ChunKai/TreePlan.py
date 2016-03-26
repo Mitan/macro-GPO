@@ -139,18 +139,20 @@ class TreePlan:
         # new state is np array
         new_state = np.add(physical_state, a)
         ndims = 2
+        eps = 0.001
         for i in range(a.shape[0]):
             current_agent_postion = new_state[i, :]
             for dim in xrange(ndims):
                 if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
                         self.grid_domain[dim][1]: return False
 
+            #print "current_position is" + str(current_agent_postion)
             # if new state contains an obstacle
-            eps = 0.00001
-            if self.bad_places:
-                for i in xrange(len(self.bad_places)):
-                    if abs(new_state[0] - self.bad_places[i][0]) <eps and abs(new_state[1] - self.bad_places[i][1]) < eps:
+            for j in xrange(len(self.bad_places)):
+                if abs(current_agent_postion[0] - (self.bad_places[j])[0]) <eps and abs(current_agent_postion[1] - (self.bad_places[j])[1]) < eps:
                         return False
+
+
 
         return True
 

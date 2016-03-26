@@ -187,7 +187,7 @@ class TreePlanTester:
             state_history.append(x_0)
 
             if save_per_step:
-                self.Visualize(state_history=state_history, display=False,
+                self.Visualize(state_history=state_history,bad_places=bad_places, display=False,
                                save_path=save_folder + "step" + str(time))
                 # Save to file
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
@@ -196,7 +196,7 @@ class TreePlanTester:
                 f.close()
 
         # Save for the whole trial
-        self.Visualize(state_history=state_history, display=False, save_path=save_folder + "summary")
+        self.Visualize(state_history=state_history, bad_places=bad_places, display=False, save_path=save_folder + "summary")
         # Save to file
         f = open(save_folder + "summary" + ".txt", "w")
         """
@@ -217,7 +217,16 @@ class TreePlanTester:
         # return reward_history, nodes_expanded_history, base_measurement_history
         return total_reward_history
 
-    def Visualize(self, state_history, display=True, save_path=None):
+    #todo
+    # need to remove bad points from the plot
+    def UglyPointRemover(self, x,y, bad_places):
+        eps = 0.0001
+        for j in xrange(len(bad_places)):
+                if abs(x - (bad_places[j])[0]) <eps and abs(y - (bad_places[j])[1]) < eps:
+                        return 0.5
+        return self.model([x,y])
+
+    def Visualize(self, state_history, bad_places, display=True, save_path=None):
         """ Visualize 2d environments
         """
 
@@ -225,7 +234,8 @@ class TreePlanTester:
         YGrid = np.arange(self.grid_domain[1][0], self.grid_domain[1][1] - 1e-10, self.grid_gap)
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
-        ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
+        ground_truth = np.vectorize(lambda x, y: self.UglyPointRemover(x,y, bad_places))
+        #ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
 
         # Plot graph of locations
         vis = Vis2d()
@@ -239,7 +249,7 @@ class TreePlanTester:
 
 def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
                             simulated_function,
-                            num_timesteps_test=20,
+                            num_timesteps_test=5,
                             save_folder=None, save_per_step=True,
                             ):
     """
@@ -328,7 +338,7 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=3', non_myopic_3])
 
-
+    """
     print datetime.now()
     # h = 4
     f = lambda t: GetSampleFunction(4, t)
@@ -340,7 +350,7 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=4', non_myopic_4])
     print datetime.now()
-
+    """
     PlotData(result_graphs, my_save_folder_root)
 
 

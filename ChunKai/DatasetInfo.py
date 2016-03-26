@@ -68,10 +68,13 @@ def HolderTableInfo():
 ###### Real world
 
 def Log_K_Info():
-    f = LogKDataset
-    return __DatasetInfo(f=f, lengthscale=(2.46972056804,1.7731049831),
+    dataset = LogKDataset()
+    f = lambda t: dataset(t)
+    set =  __DatasetInfo(f=f, lengthscale=(2.46972056804,1.7731049831),
                                    signal_variance=0.0116432647237, noise_variance=0.00398114247025, mean= 1.43860126506,
                                    domain=((5.0, 19.0), (7.0, 19.0)), grid_gap=1.0, bad_places=[[5., 8.], [18., 17.]])
+    set.name = "LogK"
+    return set
 
 def Log_P_Info():
     f = LogPDataset
