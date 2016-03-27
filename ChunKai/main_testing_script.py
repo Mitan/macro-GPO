@@ -9,7 +9,6 @@ from TreePlanTester import TestScenario
 
 # Random initial locations
 def GenerateInitialLocation(current_f, batch_size):
-
     domain = current_f.domain
     gap = current_f.grid_gap
     min_x, max_x = domain[0]
@@ -19,7 +18,7 @@ def GenerateInitialLocation(current_f, batch_size):
     default_grid_size_x = float(max_x - min_x) / gap
     default_grid_size_y = float(max_y - min_y) / gap
 
-    #todo
+    # todo
     # should add some check for this
     default_grid_size_x = int(default_grid_size_x)
     default_grid_size_y = int(default_grid_size_y)
@@ -36,31 +35,33 @@ def GenerateInitialLocation(current_f, batch_size):
 
 
 def GetBeta(iteration):
-    beta_values = [0.0, 0.5, 1.0,  3.0, 5.0, 10.0]
+    beta_values = [0.0, 0.5, 1.0, 3.0, 5.0, 10.0]
     return beta_values[iteration]
+
 
 def GetSimulatedFunction(i):
     if i == 0:
         return AckleyInfo()
-    elif i ==1:
+    elif i == 1:
         return DropWaveInfo()
-    elif i ==2:
+    elif i == 2:
         return CosinesInfo()
 
-    elif i==3:
+    elif i == 3:
         return BraninInfo()
-    elif i==4:
+    elif i == 4:
         return GriewankInfo()
-    elif i==5:
+    elif i == 5:
         return McCormickInfo()
-    elif i==6:
+    elif i == 6:
         return SixCamelInfo()
-    elif i==7:
+    elif i == 7:
         return HolderTableInfo()
-    elif i==8:
+    elif i == 8:
         return Log_K_Info()
     else:
         return Log_P_Info()
+
 
 if __name__ == '__main__':
 
@@ -69,30 +70,34 @@ if __name__ == '__main__':
     save_trunk = "./tests/"
 
     # should be passed as params
-    """
     function_iteration = int(args[1])
     beta_iteration = int(args[2])
     location_iteration = int(args[3])
-    """
-    function_iteration = 8
-    beta_iteration = 1
 
-    for i in range(1):
-        location_iteration = i
 
-        #function_iteration = 2
-        #beta_iteration = 1
-        #location_iteration = 2
-        current_function = GetSimulatedFunction(function_iteration)
-        initial_location = GenerateInitialLocation(current_function, batch_size)
-        beta = GetBeta(beta_iteration)
+    zero_locations = [np.asarray([[15., 16.], [13., 8.]]), np.asarray([[9., 12.], [18., 7.]]),
+                      np.asarray([[10., 18.], [11., 15.]]), np.asarray([[8., 13.], [15., 12.]]),
+                      np.asarray([[11., 11.], [16., 10.]]), np.asarray([[11., 9.], [18., 12.]])]
 
-        print "function is " + str(current_function.name)
-        print "beta is " + str(beta)
-        print "location " + str(location_iteration) +  " is "  + str(initial_location)
+    half_locations = [np.asarray([[9., 13.], [10., 14.]]), np.asarray([[11., 11.], [14., 18.]]),
+                      np.asarray([[10., 8.], [6., 13.]]), np.asarray([[16., 7.], [12., 16.]]),
+                      np.asarray([[12., 15.], [10., 10.]]), np.asarray([[11., 11.], [16., 10.]])]
 
-        TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
-                     save_trunk=save_trunk)
+
+
+    # function_iteration = 2
+    # beta_iteration = 1
+    # location_iteration = 2
+    current_function = GetSimulatedFunction(function_iteration)
+    #initial_location = GenerateInitialLocation(current_function, batch_size)
+    initial_location = zero_locations[location_iteration] if beta_iteration == 0 else half_locations[location_iteration]
+    beta = GetBeta(beta_iteration)
+
+    print "function is " + str(current_function.name)
+    print "beta is " + str(beta)
+    print "location " + str(location_iteration) + " is " + str(initial_location)
+    TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
+                save_trunk=save_trunk)
     """
     test_f = __DatasetInfo(f=__Cosines, lengthscale=(0.12605123651, 0.126051232038),
                                    signal_variance=0.0198660061591, noise_variance=0.0001, mean=0.940527042428,

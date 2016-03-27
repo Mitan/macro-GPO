@@ -249,7 +249,7 @@ class TreePlanTester:
 
 def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
                             simulated_function,
-                            num_timesteps_test=5,
+                            num_timesteps_test=20,
                             save_folder=None, save_per_step=True,
                             ):
     """
@@ -409,6 +409,7 @@ if __name__ == "__main__":
                                                    simulated_function=current_function,
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
             result_graphs.append(['H=3', non_myopic_3])
+
 
             PlotData(steps_count, result_graphs)
             """
