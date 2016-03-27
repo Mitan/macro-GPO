@@ -70,10 +70,12 @@ if __name__ == '__main__':
     save_trunk = "./tests/"
 
     # should be passed as params
+    """
     function_iteration = int(args[1])
     beta_iteration = int(args[2])
     location_iteration = int(args[3])
-
+    """
+    function_iteration = 8
 
     zero_locations = [np.asarray([[15., 16.], [13., 8.]]), np.asarray([[9., 12.], [18., 7.]]),
                       np.asarray([[10., 18.], [11., 15.]]), np.asarray([[8., 13.], [15., 12.]]),
@@ -83,21 +85,19 @@ if __name__ == '__main__':
                       np.asarray([[10., 8.], [6., 13.]]), np.asarray([[16., 7.], [12., 16.]]),
                       np.asarray([[12., 15.], [10., 10.]]), np.asarray([[11., 11.], [16., 10.]])]
 
+    for beta_iteration in range(2):
+        for location_iteration in [5,4,3,2,1,0]:
 
+            current_function = GetSimulatedFunction(function_iteration)
+            #initial_location = GenerateInitialLocation(current_function, batch_size)
+            initial_location = zero_locations[location_iteration] if beta_iteration == 0 else half_locations[location_iteration]
+            beta = GetBeta(beta_iteration)
 
-    # function_iteration = 2
-    # beta_iteration = 1
-    # location_iteration = 2
-    current_function = GetSimulatedFunction(function_iteration)
-    #initial_location = GenerateInitialLocation(current_function, batch_size)
-    initial_location = zero_locations[location_iteration] if beta_iteration == 0 else half_locations[location_iteration]
-    beta = GetBeta(beta_iteration)
-
-    print "function is " + str(current_function.name)
-    print "beta is " + str(beta)
-    print "location " + str(location_iteration) + " is " + str(initial_location)
-    TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
-                save_trunk=save_trunk)
+            print "function is " + str(current_function.name)
+            print "beta is " + str(beta)
+            print "location " + str(location_iteration) + " is " + str(initial_location)
+            TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
+                        save_trunk=save_trunk)
     """
     test_f = __DatasetInfo(f=__Cosines, lengthscale=(0.12605123651, 0.126051232038),
                                    signal_variance=0.0198660061591, noise_variance=0.0001, mean=0.940527042428,

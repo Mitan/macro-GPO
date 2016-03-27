@@ -78,27 +78,30 @@ if __name__ == "__main__":
 
     print  __Bukin6.__name__
 """
-basepath = './tests/batch2/function'
+basepath = './new_tests/'
+
+test_cases = [0,2,5]
 
 funcs = ['_Branin', '_Griewank','_McCormick', '_SixCamel', '_HolderTable', '__Ackley', '__Cosines', '__DropWave']
 beta_values = [0.0, 0.5, 1.0,  3.0, 5.0, 10.0]
 locations = range(7)
 methods = ['ei', 'h2_non-myopic', 'h3_non-myopic','ucb']
 
-for j in range(len(funcs)):
-    for k in range(len(beta_values)):
-        for l in range(7):
-            folder_path =  basepath + funcs[j] + '/beta' + str(beta_values[k]) + '/location' + str(l) + '/'
-            results = []
-            for i in range(len(methods)):
-                path = folder_path + methods[i] + '/summary.txt'
-                try:
-                    a = (open(path).readlines()[2])[1: -2]
-                except:
-                    continue
-                a = StringIO(a)
-                rewards = np.genfromtxt(a, delimiter=",")
-                #result = np.genfromtxt(a)
-                result = [methods[i], rewards.tolist()]
-                results.append(result)
-            PlotData(results, folder_path)
+for test_case in test_cases:
+    for j in range(len(funcs)):
+        for k in range(len(beta_values)):
+            for l in range(7):
+                folder_path =  basepath + str(test_case) + '/batch2/function' + funcs[j] + '/beta' + str(beta_values[k]) + '/location' + str(l) + '/'
+                results = []
+                for i in range(len(methods)):
+                    path = folder_path + methods[i] + '/summary.txt'
+                    try:
+                        a = (open(path).readlines()[2])[1: -2]
+                    except:
+                        continue
+                    a = StringIO(a)
+                    rewards = np.genfromtxt(a, delimiter=",")
+                    #result = np.genfromtxt(a)
+                    result = [methods[i], rewards.tolist()]
+                    results.append(result)
+                PlotData(results, folder_path)
