@@ -1,10 +1,10 @@
 #from ChunKai.hypers import InferHypers
 import numpy as np
-import GPy
+#import GPy
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import skew
-
+"""
 def InferHypers(X, Y, noise, signal, l_1, l_2):
 
     Y = Y - np.mean(Y)
@@ -36,7 +36,7 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
     #return l_1, l_2, noise_variance, signal_variance
     return l_1, l_2, noise_variance,signal_variance
 
-
+"""
 
 
 

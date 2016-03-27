@@ -148,9 +148,10 @@ class TreePlan:
 
             #print "current_position is" + str(current_agent_postion)
             # if new state contains an obstacle
-            for j in xrange(len(self.bad_places)):
-                if abs(current_agent_postion[0] - (self.bad_places[j])[0]) <eps and abs(current_agent_postion[1] - (self.bad_places[j])[1]) < eps:
-                        return False
+            if self.bad_places:
+                for j in xrange(len(self.bad_places)):
+                    if abs(current_agent_postion[0] - (self.bad_places[j])[0]) <eps and abs(current_agent_postion[1] - (self.bad_places[j])[1]) < eps:
+                            return False
 
 
 

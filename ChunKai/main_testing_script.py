@@ -69,29 +69,18 @@ if __name__ == '__main__':
     save_trunk = "./tests/"
 
     # should be passed as params
-    """
     function_iteration = int(args[1])
     beta_iteration = int(args[2])
     location_iteration = int(args[3])
-    """
-    function_iteration = 8
-    beta_iteration = 1
+    current_function = GetSimulatedFunction(function_iteration)
+    initial_location = GenerateInitialLocation(current_function, batch_size)
+    beta = GetBeta(beta_iteration)
 
-    for i in range(1):
-        location_iteration = i
+    print "function is " + str(current_function.name)
+    print "beta is " + str(beta)
+    print "location " + str(location_iteration) +  " is "  + str(initial_location)
 
-        #function_iteration = 2
-        #beta_iteration = 1
-        #location_iteration = 2
-        current_function = GetSimulatedFunction(function_iteration)
-        initial_location = GenerateInitialLocation(current_function, batch_size)
-        beta = GetBeta(beta_iteration)
-
-        print "function is " + str(current_function.name)
-        print "beta is " + str(beta)
-        print "location " + str(location_iteration) +  " is "  + str(initial_location)
-
-        TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
+    TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
                      save_trunk=save_trunk)
     """
     test_f = __DatasetInfo(f=__Cosines, lengthscale=(0.12605123651, 0.126051232038),
