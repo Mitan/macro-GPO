@@ -221,9 +221,10 @@ class TreePlanTester:
     # need to remove bad points from the plot
     def UglyPointRemover(self, x,y, bad_places):
         eps = 0.0001
-        for j in xrange(len(bad_places)):
-                if abs(x - (bad_places[j])[0]) <eps and abs(y - (bad_places[j])[1]) < eps:
-                        return 0.5
+        if bad_places:
+            for j in xrange(len(bad_places)):
+                    if abs(x - (bad_places[j])[0]) <eps and abs(y - (bad_places[j])[1]) < eps:
+                            return 0.5
         return self.model([x,y])
 
     def Visualize(self, state_history, bad_places, display=True, save_path=None):
@@ -338,7 +339,7 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=3', non_myopic_3])
 
-    """
+
     print datetime.now()
     # h = 4
     f = lambda t: GetSampleFunction(4, t)
@@ -350,7 +351,6 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=4', non_myopic_4])
     print datetime.now()
-    """
     PlotData(result_graphs, my_save_folder_root)
 
 

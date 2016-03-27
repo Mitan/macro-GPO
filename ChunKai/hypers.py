@@ -1,7 +1,8 @@
-import GPy
+#import GPy
 import numpy as np
 
 # required to provide initial guess for hypers
+"""
 def InferHypers(X, Y, noise, signal, l_1, l_2):
     mu = np.mean(Y)
     Y = Y - mu
@@ -38,7 +39,7 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
 
     #return mu, l_1, l_2, noise_variance,signal_variance
     return m, mu
-
+"""
 if __name__ == "__main__":
     X = np.random.uniform(-3.,3.,(400,2))
     Y = np.sin( np.sum(X, axis=0) ) + np.random.randn(400,1)*0.05
