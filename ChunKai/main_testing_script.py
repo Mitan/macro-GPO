@@ -36,7 +36,7 @@ def GenerateInitialLocation(current_f, batch_size):
 
 
 def GetBeta(iteration):
-    beta_values = [0.0, 0.5, 5.0, 10.0, 50.0]
+    beta_values = [0.0, 1.0, 3.0, 5.0, 10.0, 50.0]
     return beta_values[iteration]
 
 
@@ -68,16 +68,17 @@ if __name__ == '__main__':
 
     args = sys.argv
     batch_size = 2
-    save_trunk = "./tests/"
+
+    #function_iteration = 8
+    #location_iteration = 0
 
     # should be passed as params
-    """
     function_iteration = int(args[1])
     beta_iteration = int(args[2])
     location_iteration = int(args[3])
-    """
-    function_iteration = 8
 
+
+    """
     zero_locations = [np.asarray([[15., 16.], [13., 8.]]), np.asarray([[9., 12.], [18., 7.]]),
                       np.asarray([[10., 18.], [11., 15.]]), np.asarray([[8., 13.], [15., 12.]]),
                       np.asarray([[11., 11.], [16., 10.]]), np.asarray([[11., 9.], [18., 12.]])]
@@ -85,33 +86,40 @@ if __name__ == '__main__':
     half_locations = [np.asarray([[9., 13.], [10., 14.]]), np.asarray([[11., 11.], [14., 18.]]),
                       np.asarray([[10., 8.], [6., 13.]]), np.asarray([[16., 7.], [12., 16.]]),
                       np.asarray([[12., 15.], [10., 10.]]), np.asarray([[11., 11.], [16., 10.]])]
+    """
 
-    current_function = GetSimulatedFunction(8)
+    current_function = GetSimulatedFunction(function_iteration)
     initial_location = GenerateInitialLocation(current_function, batch_size)
-    location_iteration = 14
-    plottin_results = []
-    save_trunk = './testsbeta/'
+    beta = GetBeta(beta_iteration)
+    save_trunk = './tests/'
 
-    for beta_iteration in range(5):
+    #plottin_results = []
+    #save_trunk = './testsBeta/'
+
+
+    my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) + "/beta" + str(beta) +"/"
+    TestScenario(b=batch_size, beta=beta, location=initial_location, simulated_func=current_function,
+                        my_save_folder_root = my_save_folder_root)
+    """
+    beta_values = [0.0, 1.0, 3.0, 5.0, 10.0, 50.0]
+
+    for beta in beta_values:
         #for location_iteration in [5,4,3,2,1,0]:
 
             #current_function = GetSimulatedFunction(function_iteration)
             #initial_location = GenerateInitialLocation(current_function, batch_size)
             #initial_location = zero_locations[location_iteration] if beta_iteration == 0 else half_locations[location_iteration]
-            beta = GetBeta(beta_iteration)
+            #beta = GetBeta(beta_iteration)
 
             print "function is " + str(current_function.name)
             print "beta is " + str(beta)
             print "location " + str(location_iteration) + " is " + str(initial_location)
-            result = TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
-                        save_trunk=save_trunk)
+
+            my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) + "/beta" + str(beta) +"/"
+            result = TestScenario(b=batch_size, beta=beta, location=initial_location, simulated_func=current_function,
+                        my_save_folder_root = my_save_folder_root)
             plottin_results.append(['beta='+ str(beta), result])
 
-    PlotData(plottin_results, save_trunk)
-    """
-    test_f = __DatasetInfo(f=__Cosines, lengthscale=(0.12605123651, 0.126051232038),
-                                   signal_variance=0.0198660061591, noise_variance=0.0001, mean=0.940527042428,
-                                   domain=((0.0, 4.0), (0.0, 1.0)), grid_gap=0.05)
-    for i in range(50):
-        print GenerateInitialLocation(test_f,2)
+    plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
+    PlotData(plottin_results, plotting_path)
     """

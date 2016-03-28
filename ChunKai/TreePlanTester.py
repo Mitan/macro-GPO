@@ -250,7 +250,7 @@ class TreePlanTester:
 
 def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
                             simulated_function,
-                            num_timesteps_test=15,
+                            num_timesteps_test=20,
                             save_folder=None, save_per_step=True,
                             ):
     """
@@ -289,34 +289,34 @@ def initial_state(batch_size):
 """
 
 
-def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
+def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
     """
     :param b: batch size
     :param beta: beta from ucb reward function
     :param location:  initial location for agents
-    :param i: index of current iteration. should be obtained from sys arguments
     :param simulated_func: function info
     :param save_trunk: root folder
     :return:
     """
     result_graphs = []
     my_initial_state = location
+    time_steps = 20
 
     # folder where we can put results of methods
-    my_save_folder_root = save_trunk + "batch"  + str(b) + "/function" + str(simulated_func.name) + "/beta" + str(beta) + "/location" + str(i) + "/"
+
     # these algorithms are myopic
     #  nodes function
-    """
+
     f = lambda t: GetSampleFunction(1, t)
 
     ucb = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='UCB',
                                           my_samples_count_func=f, beta=beta, simulated_function=simulated_func,
-                                          save_folder=my_save_folder_root + 'ucb' + "/")
+                                          save_folder=my_save_folder_root + 'ucb' + "/", num_timesteps_test= time_steps)
     result_graphs.append(['UCB', ucb])
 
     qei = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='qEI',
                                           my_samples_count_func=f, beta=beta, simulated_function=simulated_func,
-                                          save_folder=my_save_folder_root + 'ei' + "/")
+                                          save_folder=my_save_folder_root + 'ei' + "/", num_timesteps_test= time_steps)
     result_graphs.append(['qEI', qei])
 
     # non-myopic part
@@ -327,9 +327,9 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
                                                    alg_type='Non-myopic',
                                                    my_samples_count_func=f, beta=beta,
                                                    simulated_function=simulated_func,
-                                                   save_folder=my_save_folder + '_non-myopic' + "/")
+                                                   save_folder=my_save_folder + '_non-myopic' + "/", num_timesteps_test= time_steps)
     result_graphs.append(['H=2', non_myopic_2])
-    """
+
     # h = 3
     f = lambda t: GetSampleFunction(3, t)
     my_save_folder = my_save_folder_root + "h" + str(3)
@@ -337,10 +337,10 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
                                                    alg_type='Non-myopic',
                                                    my_samples_count_func=f, beta=beta,
                                                    simulated_function=simulated_func,
-                                                   save_folder=my_save_folder + '_non-myopic' + "/")
+                                                   save_folder=my_save_folder + '_non-myopic' + "/", num_timesteps_test= time_steps)
     result_graphs.append(['H=3', non_myopic_3])
 
-    """
+
     print datetime.now()
     # h = 4
     f = lambda t: GetSampleFunction(4, t)
@@ -349,12 +349,12 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
                                                    alg_type='Non-myopic',
                                                    my_samples_count_func=f, beta=beta,
                                                    simulated_function=simulated_func,
-                                                   save_folder=my_save_folder + '_non-myopic' + "/")
+                                                   save_folder=my_save_folder + '_non-myopic' + "/", num_timesteps_test= time_steps)
     result_graphs.append(['H=4', non_myopic_4])
     print datetime.now()
     PlotData(result_graphs, my_save_folder_root)
-    """
-    return non_myopic_3
+
+    #return non_myopic_3
 
 if __name__ == "__main__":
     save_trunk = "./tests/"
