@@ -69,16 +69,15 @@ if __name__ == '__main__':
     args = sys.argv
     batch_size = 2
 
-    function_iteration = 8
-    location_iteration = 0
+    #function_iteration = 8
+    #location_iteration = 0
 
     # should be passed as params
-    """
+
     function_iteration = int(args[1])
     beta_iteration = int(args[2])
     location_iteration = int(args[3])
-    """
-
+    
     """
     zero_locations = [np.asarray([[15., 16.], [13., 8.]]), np.asarray([[9., 12.], [18., 7.]]),
                       np.asarray([[10., 18.], [11., 15.]]), np.asarray([[8., 13.], [15., 12.]]),
