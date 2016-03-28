@@ -165,7 +165,7 @@ class TreePlanTester:
             # Update future state
             x_0 = x_next
 
-            reward_obtained = self.reward_function(percieved_measurements)
+            reward_obtained = self.reward_function(percieved_measurements) - 2 * 1.4386 + np.random.normal(scale=0.03)
 
             # Accumulated measurements
             reward_history.append(reward_obtained)
@@ -250,7 +250,7 @@ class TreePlanTester:
 
 def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
                             simulated_function,
-                            num_timesteps_test=20,
+                            num_timesteps_test=15,
                             save_folder=None, save_per_step=True,
                             ):
     """
@@ -306,6 +306,7 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
     my_save_folder_root = save_trunk + "batch"  + str(b) + "/function" + str(simulated_func.name) + "/beta" + str(beta) + "/location" + str(i) + "/"
     # these algorithms are myopic
     #  nodes function
+    """
     f = lambda t: GetSampleFunction(1, t)
 
     ucb = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='UCB',
@@ -328,7 +329,7 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
                                                    simulated_function=simulated_func,
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=2', non_myopic_2])
-
+    """
     # h = 3
     f = lambda t: GetSampleFunction(3, t)
     my_save_folder = my_save_folder_root + "h" + str(3)
@@ -339,7 +340,7 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
                                                    save_folder=my_save_folder + '_non-myopic' + "/")
     result_graphs.append(['H=3', non_myopic_3])
 
-
+    """
     print datetime.now()
     # h = 4
     f = lambda t: GetSampleFunction(4, t)
@@ -352,7 +353,8 @@ def TestScenario(b, beta, location, i,  simulated_func, save_trunk):
     result_graphs.append(['H=4', non_myopic_4])
     print datetime.now()
     PlotData(result_graphs, my_save_folder_root)
-
+    """
+    return non_myopic_3
 
 if __name__ == "__main__":
     save_trunk = "./tests/"

@@ -1,6 +1,7 @@
 import sys
 
 import numpy as np
+from ResultsPlotter import PlotData
 
 from DatasetInfo import DropWaveInfo, AckleyInfo, CosinesInfo, BraninInfo, GriewankInfo, McCormickInfo, \
     SixCamelInfo, HolderTableInfo, Log_K_Info, Log_P_Info
@@ -35,7 +36,7 @@ def GenerateInitialLocation(current_f, batch_size):
 
 
 def GetBeta(iteration):
-    beta_values = [0.0, 0.5, 1.0, 3.0, 5.0, 10.0]
+    beta_values = [0.0, 0.5, 5.0, 10.0, 50.0]
     return beta_values[iteration]
 
 
@@ -85,19 +86,28 @@ if __name__ == '__main__':
                       np.asarray([[10., 8.], [6., 13.]]), np.asarray([[16., 7.], [12., 16.]]),
                       np.asarray([[12., 15.], [10., 10.]]), np.asarray([[11., 11.], [16., 10.]])]
 
-    for beta_iteration in range(2):
-        for location_iteration in [5,4,3,2,1,0]:
+    current_function = GetSimulatedFunction(8)
+    initial_location = GenerateInitialLocation(current_function, batch_size)
+    location_iteration = 14
+    plottin_results = []
+    save_trunk = './testsbeta/'
 
-            current_function = GetSimulatedFunction(function_iteration)
+    for beta_iteration in range(5):
+        #for location_iteration in [5,4,3,2,1,0]:
+
+            #current_function = GetSimulatedFunction(function_iteration)
             #initial_location = GenerateInitialLocation(current_function, batch_size)
-            initial_location = zero_locations[location_iteration] if beta_iteration == 0 else half_locations[location_iteration]
+            #initial_location = zero_locations[location_iteration] if beta_iteration == 0 else half_locations[location_iteration]
             beta = GetBeta(beta_iteration)
 
             print "function is " + str(current_function.name)
             print "beta is " + str(beta)
             print "location " + str(location_iteration) + " is " + str(initial_location)
-            TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
+            result = TestScenario(b=batch_size, beta=beta, location=initial_location, i = location_iteration,  simulated_func=current_function,
                         save_trunk=save_trunk)
+            plottin_results.append(['beta='+ str(beta), result])
+
+    PlotData(plottin_results, save_trunk)
     """
     test_f = __DatasetInfo(f=__Cosines, lengthscale=(0.12605123651, 0.126051232038),
                                    signal_variance=0.0198660061591, noise_variance=0.0001, mean=0.940527042428,
