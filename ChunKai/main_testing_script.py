@@ -69,14 +69,15 @@ if __name__ == '__main__':
     args = sys.argv
     batch_size = 2
 
-    #function_iteration = 8
-    #location_iteration = 0
+    function_iteration = 8
+    location_iteration = 0
 
     # should be passed as params
+    """
     function_iteration = int(args[1])
     beta_iteration = int(args[2])
     location_iteration = int(args[3])
-
+    """
 
     """
     zero_locations = [np.asarray([[15., 16.], [13., 8.]]), np.asarray([[9., 12.], [18., 7.]]),
@@ -90,17 +91,13 @@ if __name__ == '__main__':
 
     current_function = GetSimulatedFunction(function_iteration)
     initial_location = GenerateInitialLocation(current_function, batch_size)
-    beta = GetBeta(beta_iteration)
+    #beta = GetBeta(beta_iteration)
     save_trunk = './tests/'
 
-    #plottin_results = []
-    #save_trunk = './testsBeta/'
+    plottin_results = []
+    save_trunk = './testsBeta/'
 
 
-    my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) + "/beta" + str(beta) +"/"
-    TestScenario(b=batch_size, beta=beta, location=initial_location, simulated_func=current_function,
-                        my_save_folder_root = my_save_folder_root)
-    """
     beta_values = [0.0, 1.0, 3.0, 5.0, 10.0, 50.0]
 
     for beta in beta_values:
@@ -122,4 +119,4 @@ if __name__ == '__main__':
 
     plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
     PlotData(plottin_results, plotting_path)
-    """
+
