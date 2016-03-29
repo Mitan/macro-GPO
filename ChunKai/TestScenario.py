@@ -1,6 +1,4 @@
-from datetime import datetime
 from ResultsPlotter import PlotData
-from SampleFunctionBuilder import GetSampleFunction
 from TreePlanTester import TestWithFixedParameters
 
 
@@ -15,7 +13,7 @@ def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
     """
     result_graphs = []
     my_initial_state = location
-    time_steps = 10
+    time_steps = 20
 
     # folder where we can put results of methods
 
@@ -42,13 +40,15 @@ def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
                                                    save_folder=my_save_folder + '_non-myopic' + "/", num_timesteps_test= time_steps)
     result_graphs.append(['H=2', non_myopic_2])
 
-    """
+
     #MLE h = 3
     my_save_folder = my_save_folder_root + "h" + str(3)
     mle = TestWithFixedParameters(initial_state=my_initial_state, horizon=3, batch_size=b, alg_type='MLE',
                                   beta=beta, simulated_function=simulated_func,
                                           save_folder=my_save_folder + '_mle' + "/", num_timesteps_test= time_steps)
     result_graphs.append(['ML H = 3', mle])
+    """
+
     # h = 3
     my_save_folder = my_save_folder_root + "h" + str(3)
     non_myopic_3 = TestWithFixedParameters(initial_state=my_initial_state, horizon=3, batch_size=b,

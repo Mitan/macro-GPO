@@ -161,11 +161,13 @@ class TreePlanTester:
 
             x_next = tp.TransitionH(x_temp, percieved_measurements)
 
+            # for printing
+            x_old = x_0
+            
             # Update future state
             x_0 = x_next
 
-            # for printing
-            x_old = x_0
+
 
             reward_obtained = self.reward_function(percieved_measurements) - batch_size * simulated_func_mean
 
