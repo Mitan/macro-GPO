@@ -77,7 +77,7 @@ if __name__ == "__main__":
     #   print i
 
     print  __Bukin6.__name__
-"""
+
 basepath = './new_tests/'
 
 test_cases = [0,2,5]
@@ -105,3 +105,6 @@ for test_case in test_cases:
                     result = [methods[i], rewards.tolist()]
                     results.append(result)
                 PlotData(results, folder_path)
+"""
+for i in range(100):
+    print  np.random.normal(scale = 0.03)

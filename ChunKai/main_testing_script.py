@@ -1,11 +1,12 @@
 import sys
 
 import numpy as np
+from TestScenario import TestScenario
 from ResultsPlotter import PlotData
 
 from DatasetInfo import DropWaveInfo, AckleyInfo, CosinesInfo, BraninInfo, GriewankInfo, McCormickInfo, \
     SixCamelInfo, HolderTableInfo, Log_K_Info, Log_P_Info
-from TreePlanTester import TestScenario
+
 
 
 # Random initial locations
@@ -69,14 +70,15 @@ if __name__ == '__main__':
     args = sys.argv
     batch_size = 2
 
-    #function_iteration = 8
-    #location_iteration = 0
-
+    function_iteration = 8
+    location_iteration = 0
+    beta_iteration = 1
+    """
     # should be passed as params
     function_iteration = int(args[1])
     beta_iteration = int(args[2])
     location_iteration = int(args[3])
-
+    """
 
     """
     zero_locations = [np.asarray([[15., 16.], [13., 8.]]), np.asarray([[9., 12.], [18., 7.]]),

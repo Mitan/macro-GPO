@@ -1,9 +1,6 @@
-from datetime import datetime
 import os
-
-from DatasetInfo import AckleyInfo, CosinesInfo, DropWaveInfo
-from ResultsPlotter import PlotData
 from SampleFunctionBuilder import GetSampleFunction
+
 from TreePlan import *
 from GaussianProcess import GaussianProcess
 from GaussianProcess import SquareExponential
@@ -109,8 +106,9 @@ class TreePlanTester:
         self.past_measurements = None if self.past_locations is None else np.apply_along_axis(self.model, 1,
                                                                                               past_locations)
 
-    def DoTest(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, bad_places, debug=False, save_per_step=True,
-               save_folder="default_results/"):
+    def DoTest(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, bad_places, simulated_func_mean, debug=False,
+                 save_per_step=True,
+                 save_folder="default_results/"):
         """ Pipeline for testing
         @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
         """
@@ -131,7 +129,8 @@ class TreePlanTester:
         base_measurement_history = []
         for time in xrange(num_timesteps_test):
             tp = TreePlan(self.grid_domain, self.grid_gap, self.gp,
-                          batch_size=batch_size, number_of_nodes_function=my_nodes_func, horizon=H, beta=beta, bad_places=bad_places)
+                          batch_size=batch_size, number_of_nodes_function=my_nodes_func, horizon=H, beta=beta,
+                          bad_places=bad_places)
 
             if alg_type == 'qEI':
                 _, a, _ = tp.qEI(x_0)
@@ -165,7 +164,10 @@ class TreePlanTester:
             # Update future state
             x_0 = x_next
 
-            reward_obtained = self.reward_function(percieved_measurements) - 2 * 1.4386 + np.random.normal(scale=0.03)
+            # for printing
+            x_old = x_0
+
+            reward_obtained = self.reward_function(percieved_measurements) - batch_size * simulated_func_mean
 
             # Accumulated measurements
             reward_history.append(reward_obtained)
@@ -187,16 +189,18 @@ class TreePlanTester:
             state_history.append(x_0)
 
             if save_per_step:
-                self.Visualize(state_history=state_history,bad_places=bad_places, display=False,
+                self.Visualize(state_history=state_history, bad_places=bad_places, display=False,
                                save_path=save_folder + "step" + str(time))
                 # Save to file
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
                 # f.write(x_0.to_str() + "\n")
+                f.write("Initial location = " + str(x_old.physical_state) +"\n")
                 f.write("Total accumulated reward = " + str(total_reward))
                 f.close()
 
         # Save for the whole trial
-        self.Visualize(state_history=state_history, bad_places=bad_places, display=False, save_path=save_folder + "summary")
+        self.Visualize(state_history=state_history, bad_places=bad_places, display=False,
+                       save_path=save_folder + "summary")
         # Save to file
         f = open(save_folder + "summary" + ".txt", "w")
         """
@@ -217,15 +221,15 @@ class TreePlanTester:
         # return reward_history, nodes_expanded_history, base_measurement_history
         return total_reward_history
 
-    #todo
+    # todo
     # need to remove bad points from the plot
-    def UglyPointRemover(self, x,y, bad_places):
+    def UglyPointRemover(self, x, y, bad_places):
         eps = 0.0001
         if bad_places:
             for j in xrange(len(bad_places)):
-                    if abs(x - (bad_places[j])[0]) <eps and abs(y - (bad_places[j])[1]) < eps:
-                            return 0.5
-        return self.model([x,y])
+                if abs(x - (bad_places[j])[0]) < eps and abs(y - (bad_places[j])[1]) < eps:
+                    return 0.5
+        return self.model([x, y])
 
     def Visualize(self, state_history, bad_places, display=True, save_path=None):
         """ Visualize 2d environments
@@ -235,8 +239,8 @@ class TreePlanTester:
         YGrid = np.arange(self.grid_domain[1][0], self.grid_domain[1][1] - 1e-10, self.grid_gap)
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
-        ground_truth = np.vectorize(lambda x, y: self.UglyPointRemover(x,y, bad_places))
-        #ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
+        ground_truth = np.vectorize(lambda x, y: self.UglyPointRemover(x, y, bad_places))
+        # ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
 
         # Plot graph of locations
         vis = Vis2d()
@@ -248,7 +252,7 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_samples_count_func, beta,
+def TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, beta,
                             simulated_function,
                             num_timesteps_test=20,
                             save_folder=None, save_per_step=True,
@@ -261,6 +265,8 @@ def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_
     #m = gpgen.GPGenerate(predict_range=((-15, 15), (-15, 15)), num_samples=(20, 20), seed=seed)
     #m = __Ackley
     """
+    # function for generating samples for stochastic approximations
+    my_samples_count_func = lambda t: GetSampleFunction(horizon, t)
     TPT = TreePlanTester(simulate_noise_in_trials=True)
 
     TPT.InitGP(length_scale=simulated_function.lengthscale, signal_variance=simulated_function.signal_variance,
@@ -272,9 +278,10 @@ def ___TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, my_
 
     TPT.InitTestParameters(initial_physical_state=initial_state,
                            past_locations=initial_state)
-    return TPT.DoTest(num_timesteps_test=num_timesteps_test, H=horizon, batch_size=batch_size, alg_type=alg_type,
-                      my_nodes_func=my_samples_count_func, beta=beta, debug=False, save_folder=save_folder,
-                      save_per_step=save_per_step, bad_places = simulated_function.bad_places)
+    return TPT.DoTest(num_timesteps_test=num_timesteps_test, H=horizon, simulated_func_mean= simulated_function.mean, batch_size=batch_size, alg_type=alg_type,
+                        my_nodes_func=my_samples_count_func, beta=beta, debug=False, save_folder=save_folder,
+                        save_per_step=save_per_step, bad_places=simulated_function.bad_places)
+
 
 """
 def initial_state(batch_size):
@@ -288,74 +295,6 @@ def initial_state(batch_size):
         raise Exception("wrong batch size")
 """
 
-
-def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
-    """
-    :param b: batch size
-    :param beta: beta from ucb reward function
-    :param location:  initial location for agents
-    :param simulated_func: function info
-    :param save_trunk: root folder
-    :return:
-    """
-    result_graphs = []
-    my_initial_state = location
-    time_steps = 20
-
-    # folder where we can put results of methods
-
-    # these algorithms are myopic
-    #  nodes function
-
-    f = lambda t: GetSampleFunction(1, t)
-
-    ucb = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='UCB',
-                                          my_samples_count_func=f, beta=beta, simulated_function=simulated_func,
-                                          save_folder=my_save_folder_root + 'ucb' + "/", num_timesteps_test= time_steps)
-    result_graphs.append(['UCB', ucb])
-
-    qei = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='qEI',
-                                          my_samples_count_func=f, beta=beta, simulated_function=simulated_func,
-                                          save_folder=my_save_folder_root + 'ei' + "/", num_timesteps_test= time_steps)
-    result_graphs.append(['qEI', qei])
-
-    # non-myopic part
-    # h = 2
-    f = lambda t: GetSampleFunction(2, t)
-    my_save_folder = my_save_folder_root + "h" + str(2)
-    non_myopic_2 = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=2, batch_size=b,
-                                                   alg_type='Non-myopic',
-                                                   my_samples_count_func=f, beta=beta,
-                                                   simulated_function=simulated_func,
-                                                   save_folder=my_save_folder + '_non-myopic' + "/", num_timesteps_test= time_steps)
-    result_graphs.append(['H=2', non_myopic_2])
-
-    # h = 3
-    f = lambda t: GetSampleFunction(3, t)
-    my_save_folder = my_save_folder_root + "h" + str(3)
-    non_myopic_3 = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=3, batch_size=b,
-                                                   alg_type='Non-myopic',
-                                                   my_samples_count_func=f, beta=beta,
-                                                   simulated_function=simulated_func,
-                                                   save_folder=my_save_folder + '_non-myopic' + "/", num_timesteps_test= time_steps)
-    result_graphs.append(['H=3', non_myopic_3])
-
-
-    print datetime.now()
-    # h = 4
-    f = lambda t: GetSampleFunction(4, t)
-    my_save_folder = my_save_folder_root + "h" + str(4)
-    non_myopic_4 = ___TestWithFixedParameters(initial_state=my_initial_state, horizon=4, batch_size=b,
-                                                   alg_type='Non-myopic',
-                                                   my_samples_count_func=f, beta=beta,
-                                                   simulated_function=simulated_func,
-                                                   save_folder=my_save_folder + '_non-myopic' + "/", num_timesteps_test= time_steps)
-    result_graphs.append(['H=4', non_myopic_4])
-    print datetime.now()
-    PlotData(result_graphs, my_save_folder_root)
-
-    #return non_myopic_3
-
 if __name__ == "__main__":
     save_trunk = "./tests/"
 
@@ -363,14 +302,14 @@ if __name__ == "__main__":
     # todo
     steps_count = 20
 
-    #current_function = DropWaveInfo()
+    # current_function = DropWaveInfo()
 
     # locations = [np.array([[4.0, 4.0], [-3.0, -3.0]]), np.array([[2.0, 4.0], [-4.0, -3.0]]), np.array([[4.5, 4.0], [-4.5, -4.5]])]
-    #locations = [np.array([[4.0, 4.0], [-3.0, -3.0]])]
+    # locations = [np.array([[4.0, 4.0], [-3.0, -3.0]])]
     locations = [np.array([[0.2, 0.2], [0.8, 0.8]])]
 
 
-    #TestScenario(b=2, beta=1.0, locations = locations, i = 0, simulated_func=current_function, save_trunk=save_trunk)
+    # TestScenario(b=2, beta=1.0, locations = locations, i = 0, simulated_func=current_function, save_trunk=save_trunk)
     """
     for i in range(len(locations)):
         beta = 1.0
@@ -415,13 +354,13 @@ if __name__ == "__main__":
 
             PlotData(steps_count, result_graphs)
             """
-            # print datetime.now()
-            # print
-            # Transect(seed=i)
+    # print datetime.now()
+    # print
+    # Transect(seed=i)
 
-            # print "Performing sanity checks"
-            # SanityCheck()
-            # print "Performing Exploratory"
-            # Exploratory(1.0) # This goes to weird places
-            # print "Performing Exploratory 2"
-            # Exploratory(0.5)
+    # print "Performing sanity checks"
+    # SanityCheck()
+    # print "Performing Exploratory"
+    # Exploratory(1.0) # This goes to weird places
+    # print "Performing Exploratory 2"
+    # Exploratory(0.5)
