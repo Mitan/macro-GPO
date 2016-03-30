@@ -70,9 +70,10 @@ if __name__ == '__main__':
     args = sys.argv
     batch_size = 2
 
-    function_iteration = 8
-    location_iteration = 0
-    beta_iteration = 1
+    #function_iteration = 8
+    #location_iteration = 0
+    #beta_iteration = 0
+
     """
     # should be passed as params
     function_iteration = int(args[1])
@@ -90,38 +91,45 @@ if __name__ == '__main__':
                       np.asarray([[12., 15.], [10., 10.]]), np.asarray([[11., 11.], [16., 10.]])]
     """
 
-    current_function = GetSimulatedFunction(function_iteration)
-    initial_location = GenerateInitialLocation(current_function, batch_size)
-    beta = GetBeta(beta_iteration)
+    #current_function = GetSimulatedFunction(function_iteration)
+    #initial_location = GenerateInitialLocation(current_function, batch_size)
+    #beta = GetBeta(beta_iteration)
     save_trunk = './tests/'
 
-    #plottin_results = []
-    #save_trunk = './testsBeta/'
 
+    save_trunk = './testsBeta/'
 
+    """
     my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) + "/beta" + str(beta) +"/"
     TestScenario(b=batch_size, beta=beta, location=initial_location, simulated_func=current_function,
                         my_save_folder_root = my_save_folder_root)
     """
+
+
+    function_iteration = 8
     beta_values = [0.0, 1.0, 3.0, 5.0, 10.0, 50.0]
+    current_function = GetSimulatedFunction(function_iteration)
 
-    for beta in beta_values:
-        #for location_iteration in [5,4,3,2,1,0]:
+    for location_iteration in range(1,4):
+        plottin_results = []
+        initial_location = GenerateInitialLocation(current_function, batch_size)
+        for beta in beta_values:
+            #for location_iteration in [5,4,3,2,1,0]:
 
-            #current_function = GetSimulatedFunction(function_iteration)
-            #initial_location = GenerateInitialLocation(current_function, batch_size)
-            #initial_location = zero_locations[location_iteration] if beta_iteration == 0 else half_locations[location_iteration]
-            #beta = GetBeta(beta_iteration)
+                #current_function = GetSimulatedFunction(function_iteration)
+                #initial_location = GenerateInitialLocation(current_function, batch_size)
+                #initial_location = zero_locations[location_iteration] if beta_iteration == 0 else half_locations[location_iteration]
+                #beta = GetBeta(beta_iteration)
 
-            print "function is " + str(current_function.name)
-            print "beta is " + str(beta)
-            print "location " + str(location_iteration) + " is " + str(initial_location)
+                print "function is " + str(current_function.name)
+                print "beta is " + str(beta)
+                print "location " + str(location_iteration) + " is " + str(initial_location)
 
-            my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) + "/beta" + str(beta) +"/"
-            result = TestScenario(b=batch_size, beta=beta, location=initial_location, simulated_func=current_function,
-                        my_save_folder_root = my_save_folder_root)
-            plottin_results.append(['beta='+ str(beta), result])
+                my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) + "/beta" + str(beta) +"/"
+                result = TestScenario(b=batch_size, beta=beta, location=initial_location, simulated_func=current_function,
+                            my_save_folder_root = my_save_folder_root)
+                plottin_results.append(['beta='+ str(beta), result])
 
-    plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
-    PlotData(plottin_results, plotting_path)
-    """
+        plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
+        PlotData(plottin_results, plotting_path)
+

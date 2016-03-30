@@ -69,7 +69,6 @@ def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
                                                    save_folder=my_save_folder + '_non-myopic' + "/", num_timesteps_test= time_steps)
     result_graphs.append(['H=4', non_myopic_4])
     print datetime.now()
-    """
     PlotData(result_graphs, my_save_folder_root)
-
-    #return non_myopic_3
+    """
+    return non_myopic_3

@@ -163,7 +163,7 @@ class TreePlanTester:
 
             # for printing
             x_old = x_0
-            
+
             # Update future state
             x_0 = x_next
 
