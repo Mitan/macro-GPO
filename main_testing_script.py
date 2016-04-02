@@ -3,6 +3,7 @@ import sys
 import numpy as np
 from TestScenario import TestScenario
 from ResultsPlotter import PlotData
+from time import localtime, strftime
 
 from DatasetInfo import DropWaveInfo, AckleyInfo, CosinesInfo, BraninInfo, GriewankInfo, McCormickInfo, \
     SixCamelInfo, HolderTableInfo, Log_K_Info, Log_P_Info
@@ -70,9 +71,9 @@ if __name__ == '__main__':
     args = sys.argv
     batch_size = 2
 
-    #function_iteration = 8
-    #location_iteration = 0
-    #beta_iteration = 0
+    function_iteration = 8
+    location_iteration = 0
+    beta_iteration = 0
 
     """
     # should be passed as params
@@ -81,31 +82,21 @@ if __name__ == '__main__':
     location_iteration = int(args[3])
     """
 
-    """
-    zero_locations = [np.asarray([[15., 16.], [13., 8.]]), np.asarray([[9., 12.], [18., 7.]]),
-                      np.asarray([[10., 18.], [11., 15.]]), np.asarray([[8., 13.], [15., 12.]]),
-                      np.asarray([[11., 11.], [16., 10.]]), np.asarray([[11., 9.], [18., 12.]])]
-
-    half_locations = [np.asarray([[9., 13.], [10., 14.]]), np.asarray([[11., 11.], [14., 18.]]),
-                      np.asarray([[10., 8.], [6., 13.]]), np.asarray([[16., 7.], [12., 16.]]),
-                      np.asarray([[12., 15.], [10., 10.]]), np.asarray([[11., 11.], [16., 10.]])]
-    """
-
-    #current_function = GetSimulatedFunction(function_iteration)
-    #initial_location = GenerateInitialLocation(current_function, batch_size)
-    #beta = GetBeta(beta_iteration)
-    save_trunk = './tests/'
+    current_function = GetSimulatedFunction(function_iteration)
+    initial_location = GenerateInitialLocation(current_function, batch_size)
+    beta = GetBeta(beta_iteration)
 
 
-    save_trunk = './testsBeta/'
 
-    """
+
+    save_trunk = './tests/test' + strftime("%Y-%m-%d__%H-%M-%S", localtime()) + "/"
+
     my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) + "/beta" + str(beta) +"/"
     TestScenario(b=batch_size, beta=beta, location=initial_location, simulated_func=current_function,
                         my_save_folder_root = my_save_folder_root)
+
+
     """
-
-
     function_iteration = 8
     beta_values = [0.0, 1.0, 3.0, 5.0, 10.0, 50.0]
     current_function = GetSimulatedFunction(function_iteration)
@@ -132,4 +123,4 @@ if __name__ == '__main__':
 
         plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
         PlotData(plottin_results, plotting_path)
-
+    """

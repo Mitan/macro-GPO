@@ -1,4 +1,5 @@
 from StringIO import StringIO
+from datetime import  datetime
 import math
 
 import numpy as np
@@ -107,4 +108,12 @@ for test_case in test_cases:
                 PlotData(results, folder_path)
 """
 for i in range(100):
-    print  np.random.normal(scale = 0.03)
+    pass
+    #print  np.random.normal(scale = 0.03)
+
+
+from time import localtime, strftime
+print strftime("%Y-%m-%d__%H-%M-%S", localtime())
+
+
+#print str(dt.date()) +'_' +  str(dt.time())
