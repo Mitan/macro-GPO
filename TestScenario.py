@@ -13,7 +13,7 @@ def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
     """
     result_graphs = []
     my_initial_state = location
-    time_steps = 3
+    time_steps = 15
 
     # folder where we can put results of methods
 
