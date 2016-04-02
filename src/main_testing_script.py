@@ -80,7 +80,7 @@ if __name__ == '__main__':
     function_iteration = int(args[1])
     beta_iteration = int(args[2])
     location_iteration = int(args[3])
-    
+
 
     current_function = GetSimulatedFunction(function_iteration)
     initial_location = GenerateInitialLocation(current_function, batch_size)
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     save_trunk = './tests/'
     #save_trunk = './tests/test' + strftime("%Y-%m-%d__%H-%M-%S", localtime()) + "/"
 
-    my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) + "/beta" + str(beta) +"/"
+    my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name)  + "/beta" + str(beta) +  "/location" + str(location_iteration) +"/"
     TestScenario(b=batch_size, beta=beta, location=initial_location, simulated_func=current_function,
                         my_save_folder_root = my_save_folder_root)
 
