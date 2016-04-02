@@ -43,9 +43,9 @@ def __Sample_funciton_4(t):
 
 def __Sample_funciton_3(t):
     if t == 3:
-        return 5
+        return 6
     elif t == 2:
-        return 4
+        return 5
     # case of myopic, no need to sample, should be held by upper lvl
     elif t == 1:
         return 1
