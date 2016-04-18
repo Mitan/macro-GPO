@@ -14,7 +14,12 @@ ChunKai/tests/
 *.pyc
 log.txt
 ChunKai/testsBeta
-testsBeta
+testsBeta_0204
 ChunKai/new_tests/
 ChunKai/old_tests/
 tests
+src/tests_2
+src/testsBetaCosines
+src/testsBetaNew
+testsBetaCosines
+working_tests

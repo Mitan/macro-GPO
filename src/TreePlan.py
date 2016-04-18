@@ -1,6 +1,7 @@
 import copy
 import itertools
 import math
+#import GPy
 
 import numpy as np
 
@@ -77,7 +78,7 @@ class TreePlan:
 
     def Preprocess(self, physical_state, history_locations, H):
 
-        # history locations include physical state
+        # history locations do not include physical state
         # physical state is a list of k points
         """
         Builds the preprocessing tree and performs the necessary precalculations
@@ -275,14 +276,14 @@ class TreePlan:
             r = self.reward_analytical(mean, var)
 
             # Future reward
-            f = self.Calculate_Q(T, x_next, new_st) + r
+            f = self.Calculate_Q(T, x_next, new_st, mean, var) + r
             if (f > vBest):
                 aBest = a
                 vBest = f
 
         return vBest, aBest
 
-    def Calculate_Q(self, T, x, new_st):
+    def Calculate_Q(self, T, x, new_st, mean, var):
         """
         Approximates the integration step derived from alg1
         @param new_st - semi-tree at this stage
@@ -294,13 +295,34 @@ class TreePlan:
 
         return v + r_1
         """
+        """
         mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
-        # print mu.shape, new_st.variance.shape
-        assert mu.shape[0] == new_st.variance.shape[0]
+        new_st_variance = new_st.variance
+        """
+
+        """
+        locations = x.history.locations
+        l = self.gp.covariance_function.length_scale
+        signal = self.gp.covariance_function.signal_variance
+        mu_prior = self.gp.mean_function
+        values = x.history.measurements - mu_prior
+        values = values.reshape((values.shape[0], 1))
+        noise = self.gp.noise_variance
+        kernel = GPy.kern.RBF(input_dim=2,variance= signal,lengthscale= l , ARD= True)
+        m = GPy.models.GPRegression(locations,values,kernel, noise_var=noise)
+        mu_gp, var_gp = m.predict(new_st.ss.physical_state, full_cov= True)
+
+        mu_gp = (mu_gp + mu_prior).ravel()
+        print mu, mu_gp
+
+        assert np.linalg.norm(mu_gp - mu) < 0.001
+        assert np.linalg.norm(var_gp - new_st_variance) < 0.001
+        """
+        assert mean.shape[0] == var.shape[0]
 
         # the number of samples is given by user-defined function
 
-        samples = self.GenerateStochasticSamples(mu, new_st.variance, T)
+        samples = self.GenerateStochasticSamples(mean, var, T)
         sample_v_values = [(self.Calculate_V(T - 1, self.TransitionH(x, sam), new_st))[0] + self.reward_sampled(sam) for
                            sam
                            in samples]

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for f in 8
+for f in 0
 do
     for beta in  0
     do

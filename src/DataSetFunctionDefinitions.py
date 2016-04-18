@@ -2,6 +2,7 @@ import math
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 from MapDatasetStorage import MapDatasetStorage
+#from src.datasets.bball_hypers import InferHypers
 
 matplotlib.use('Agg')
 from matplotlib import cm
@@ -396,12 +397,17 @@ def LogKDataset():
     file.close()
 
     # restrict the field
-    indexes_x = [i for i in range(data.shape[0]) if data[i,0] > 4  and data[i,1] < 19 and data[i,1] > 6]
+    #indexes_x = [i for i in range(data.shape[0]) if data[i,0] > 4  and data[i,1] < 19 and data[i,1] > 6]
+    #indexes_x = [i for i in range(data.shape[0]) if data[i,0] > 4  and data[i,1] < 18 and data[i,1] > 5]
+    #indexes_x = [i for i in range(data.shape[0]) if data[i,0] > 4  and data[i,1] < 19 and data[i,1] > 6]
+    indexes_x = [i for i in range(data.shape[0]) if data[i,0] > 4  and data[i,1] < 18 and data[i,1] > 5]
     # restricted full data
     data = data[indexes_x, :]
     X_values = data[:, 0:2]
 
-    K_log = data[:, 3]
+    #K_log = data[:, 3]
+    K = data[:, 2]
+    K_log = np.log(K)
     return MapDatasetStorage(X_values, K_log)
 
 
@@ -443,12 +449,13 @@ if __name__ == "__main__":
 
     X = X_values[:, 0]
     Y = X_values[:, 1]
-    P_log = data[:, 6]
+    K = data[:, 2]
 
     #grid = np.asarray([[x0, y0] for x0 in X for y0 in Y])
     grid = X_values
     #values = np.apply_along_axis(f, 1, grid)
-    values = P_log
+    K_log = np.log(K)
+    values = K_log
     values = values.reshape((values.shape[0], 1))
 
     # skew for checking if need to transform data
@@ -481,8 +488,11 @@ if __name__ == "__main__":
             mu_best = mu
             likeilhood_best = m.likelihood
     print m_best
+    l_1, l_2 =  m_best.param_array[1:3]
+    print l_1, l_2
+    print mu
     #mse = TestPrediction(m_best, mu_best, f, test_prediction_range)
     #print "MSE is " + str(mse) + " with data variance " + str(values_variance)
     my_file =  open("./datasets/simulated-functions-hypers_test.txt", 'w')
-    #WriteInfoToFile(my_file, LogPDataSet, 0, values_variance, m, mu)
+    #WriteInfoToFile(my_file, LogKDataset, 0, values_variance, m, mu)
 

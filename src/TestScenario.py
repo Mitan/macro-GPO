@@ -13,12 +13,13 @@ def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
     """
     result_graphs = []
     my_initial_state = location
-    time_steps = 15
+    time_steps = 20
 
     # folder where we can put results of methods
 
     # these algorithms are myopic
     #  nodes function
+
 
     ucb = TestWithFixedParameters(initial_state=my_initial_state, horizon=1, batch_size=b, alg_type='UCB',
                                   beta=beta, simulated_function=simulated_func,
@@ -29,6 +30,7 @@ def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
                                   beta=beta, simulated_function=simulated_func,
                                           save_folder=my_save_folder_root + 'ei' + "/", num_timesteps_test= time_steps)
     result_graphs.append(['qEI', qei])
+
 
     # non-myopic part
     # h = 2
@@ -71,6 +73,7 @@ def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
     print datetime.now()
     """
 
-
     PlotData(result_graphs, my_save_folder_root)
+
+
     #return non_myopic_3

@@ -240,14 +240,17 @@ class SquareExponential(CovarianceFunction):
         @param: length_scale l - array or list containing the length scales for each dimension
         @param: signal variance sigma_f_squared - float containing the signal variance
         """
-        # lenthscales should be squared
-        length_scale = map(lambda x: x**2, length_scale)
-        self.length_scale = np.atleast_2d(length_scale)
+
+        self.length_scale = length_scale
         self.signal_variance = signal_variance
 
     def Cov(self, physical_state_1, physical_state_2):
+        # lenthscales should be squared
+        l_squared =  map(lambda x: x**2, self.length_scale)
+        l_squared = np.atleast_2d(l_squared)
+
         diff = np.atleast_2d(physical_state_1) - np.atleast_2d(physical_state_2)
-        squared = np.dot(diff, np.divide(diff, self.length_scale).T)
+        squared = np.dot(diff, np.divide(diff, l_squared).T)
         return self.signal_variance * np.exp(-0.5 * squared)
 
 

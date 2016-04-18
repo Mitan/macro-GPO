@@ -8,12 +8,12 @@ from Vis2d import Vis2d
 
 
 class TreePlanTester:
-    def __init__(self, simulate_noise_in_trials=False):
+    def __init__(self):
         """
         @param simulate_noise_in_trials: True if we want to add in noise artificially into measurements
         False if noise is already presumed to be present in the data model
         """
-        self.simulate_noise_in_trials = simulate_noise_in_trials
+        #self.simulate_noise_in_trials = False
         # if reward_model == "Linear":
         # for batch case z is a list of k measurements
         self.reward_function = lambda z: sum(z)
@@ -31,7 +31,7 @@ class TreePlanTester:
         self.sd_bonus = sd_bonus
         """
 
-    def InitGP(self, length_scale, signal_variance, noise_variance, mean_function=0.0):
+    def InitGP(self, length_scale, signal_variance, noise_variance, mean_function):
         """
         @param length_scale: list/nparray containing length scales of each axis respectively
         @param signal_variance
@@ -44,7 +44,7 @@ class TreePlanTester:
         self.gp = GaussianProcess(self.covariance_function, noise_variance, mean_function=mean_function)
         self.noise_variance = noise_variance
 
-    def InitEnvironment(self, environment_noise, model):
+    def InitEnvironment(self, model):
         """
         @param environment noise - float for variance of zero mean gaussian noise present in the actual environment
         @param model - function taking in a numpy array of appropriate dimension and returns the actual (deterministic) reading
@@ -52,7 +52,7 @@ class TreePlanTester:
         Example usage: InitEnvironment(0.1, lambda xy: multivariate_normal(mean=[0,0], cov=[[1,0],[0,1]]).pdf(xy))
         Makes the environment with 0.1 noise variance with a mean following that of a standard multivariate normal
         """
-        self.environment_noise = environment_noise
+        #self.environment_noise = environment_noise
         self.model = model
 
     def InitPlanner(self, grid_domain, grid_gap):
@@ -198,6 +198,15 @@ class TreePlanTester:
                 # f.write(x_0.to_str() + "\n")
                 f.write("Initial location = " + str(x_old.physical_state) +"\n")
                 f.write("Total accumulated reward = " + str(total_reward))
+                f.write(x_0.to_str() + "\n")
+                f.write("===============================================")
+                f.write("Measurements Collected\n")
+                f.write(str(measurement_history) + "\n")
+                f.write("Base measurements collected\n")
+                f.write(str(base_measurement_history) + "\n")
+
+                f.write("Total accumulated reward = " + str(total_reward) + "\n")
+                f.write("Total accumulated reward history = \n" + str(total_reward_history) + "\n")
                 f.close()
 
         # Save for the whole trial
@@ -269,12 +278,11 @@ def TestWithFixedParameters(initial_state, horizon, batch_size, alg_type, beta,
     """
     # function for generating samples for stochastic approximations
     my_samples_count_func = lambda t: GetSampleFunction(horizon, t)
-    TPT = TreePlanTester(simulate_noise_in_trials=True)
+    TPT = TreePlanTester()
 
     TPT.InitGP(length_scale=simulated_function.lengthscale, signal_variance=simulated_function.signal_variance,
                noise_variance=simulated_function.noise_variance, mean_function=simulated_function.mean)
-    TPT.InitEnvironment(environment_noise=simulated_function.noise_variance,
-                        model=simulated_function.simulated_function)
+    TPT.InitEnvironment(model=simulated_function.simulated_function)
 
     TPT.InitPlanner(grid_domain=simulated_function.domain, grid_gap=simulated_function.grid_gap)
 

@@ -4,6 +4,8 @@ import math
 
 import numpy as np
 from ResultsPlotter import PlotData
+from MapDatasetStorage import MapDatasetStorage
+import matplotlib.pyplot as plt
 
 """
 a = np.array([[2.0,2.1], [3.1,3.1], [2.2, 2.2]])
@@ -106,7 +108,7 @@ for test_case in test_cases:
                     result = [methods[i], rewards.tolist()]
                     results.append(result)
                 PlotData(results, folder_path)
-"""
+
 for i in range(100):
     pass
     #print  np.random.normal(scale = 0.03)
@@ -114,6 +116,40 @@ for i in range(100):
 
 from time import localtime, strftime
 print strftime("%Y-%m-%d__%H-%M-%S", localtime())
-
+"""
 
 #print str(dt.date()) +'_' +  str(dt.time())
+
+file = open("./datasets/bball.dat")
+data = np.genfromtxt(file,skip_header=10)
+file.close()
+
+X_values = data[:, 0:2]
+plt.plot(*zip(*X_values), marker='o', color='r', ls='')
+print "a"
+plt.show()
+
+x = data[:, 0:1]
+y = data[:, 1:2]
+print X_values
+
+#print max(data[:, 0:1])
+K_normal = data[:, 2:3]
+K_log = np.log(K_normal)
+#K_dataset = MapDatasetStorage(X_values, K_log)
+
+"""
+def getPoint(x,y):
+    return K_dataset([x,y])
+
+vect = np.vectorize(getPoint)
+X,Y = np.meshgrid(x,y)
+#print X,Y
+Z = vect(X,Y)
+plt.figure()
+plt.contour(X, Y, Z)
+print Z
+#plt.clabel(CS, inline=1, fontsize=10)
+
+plt.show()
+"""

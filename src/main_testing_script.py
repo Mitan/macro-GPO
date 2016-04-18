@@ -81,15 +81,15 @@ if __name__ == '__main__':
     beta_iteration = int(args[2])
     location_iteration = int(args[3])
 
-
+    """
     current_function = GetSimulatedFunction(function_iteration)
     initial_location = GenerateInitialLocation(current_function, batch_size)
     beta = GetBeta(beta_iteration)
 
-
-
-
+    save_trunk = './tests1010/'
+    save_trunk = './tests11111/'
     save_trunk = './tests/'
+
     #save_trunk = './tests/test' + strftime("%Y-%m-%d__%H-%M-%S", localtime()) + "/"
 
     my_save_folder_root = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name)  + "/beta" + str(beta) +  "/location" + str(location_iteration) +"/"
@@ -98,14 +98,15 @@ if __name__ == '__main__':
 
 
     """
-    function_iteration = 8
-    beta_values = [0.0, 1.0, 3.0, 5.0, 10.0, 50.0]
+    save_trunk = './testsBetaCosines/'
+    function_iteration = 2
+    beta_values = [0.0, 1.0,5.0, 10.0]
     current_function = GetSimulatedFunction(function_iteration)
 
-    for location_iteration in range(1,4):
-        plottin_results = []
-        initial_location = GenerateInitialLocation(current_function, batch_size)
-        for beta in beta_values:
+    #for location_iteration in range(1,4):
+    plottin_results = []
+    initial_location = GenerateInitialLocation(current_function, batch_size)
+    for beta in beta_values:
             #for location_iteration in [5,4,3,2,1,0]:
 
                 #current_function = GetSimulatedFunction(function_iteration)
@@ -122,6 +123,6 @@ if __name__ == '__main__':
                             my_save_folder_root = my_save_folder_root)
                 plottin_results.append(['beta='+ str(beta), result])
 
-        plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
-        PlotData(plottin_results, plotting_path)
-    """
+    plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
+    PlotData(plottin_results, plotting_path)
+
