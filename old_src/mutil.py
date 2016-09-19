@@ -1,9 +1,8 @@
+import math
+
 from scipy import optimize
 from scipy.stats import norm
-import math
-import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+
 
 class mutil:
 

@@ -2,7 +2,7 @@ import math
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 from MapDatasetStorage import MapDatasetStorage
-#from src.datasets.bball_hypers import InferHypers
+#from old_src.datasets.bball_hypers import InferHypers
 
 matplotlib.use('Agg')
 from matplotlib import cm

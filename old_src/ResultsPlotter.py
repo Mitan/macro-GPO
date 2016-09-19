@@ -42,4 +42,4 @@ if __name__ == "__main__":
     fif = ['lev3', [1,6,3,5,11]]
     six= ['lev3', [1,6,3,2,1]]
     results = [first, second, third, foru, fif, six]
-    PlotData(results)
+    PlotData(results, "./")
