@@ -3,6 +3,7 @@ import os
 from GaussianProcess import MapValueDict
 from TreePlan import *
 from Vis2d import Vis2d
+from ResultsPlotter import PlotData
 
 
 class TreePlanTester:
@@ -105,8 +106,8 @@ class TreePlanTester:
              save_folder="default_results/", MCTS=True, MCTSMaxNodes=10 ** 15, cheat=False, cheatnum=0,
              Randomized=False, special=None):
         """ Pipeline for testing
-		@param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
-		"""
+        @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
+        """
 
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
@@ -207,6 +208,11 @@ class TreePlanTester:
         """
         f.write(str(total_reward_history))
         f.close()
+
+        name_label = "test"
+        result_data = []
+        result_data.append([name_label, total_reward_history])
+        PlotData(result_data, save_folder)
 
         return state_history, reward_history, nodes_expanded_history, base_measurement_history, total_reward_history
 

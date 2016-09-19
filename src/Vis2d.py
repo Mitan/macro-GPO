@@ -1,5 +1,9 @@
-import numpy as np
+
+
 import matplotlib as mpl
+# Force matplotlib to not use any Xwindows backend.
+mpl.use('Agg')
+import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 
