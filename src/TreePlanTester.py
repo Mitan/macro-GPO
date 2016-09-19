@@ -209,12 +209,14 @@ class TreePlanTester:
         f.write(str(total_reward_history))
         f.close()
 
+        """
         name_label = "test"
         result_data = []
         result_data.append([name_label, total_reward_history])
         PlotData(result_data, save_folder)
-
-        return state_history, reward_history, nodes_expanded_history, base_measurement_history, total_reward_history
+        """
+        # return state_history, reward_history, nodes_expanded_history, base_measurement_history, total_reward_history
+        return total_reward_history
 
     def Visualize(self, state_history, display=True, save_path=None):
         """ Visualize 2d environments
@@ -249,32 +251,27 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-
-
-def Random(grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0, depth=3, num_timesteps_test=20,
-           signal_variance=1, noise_variance=10 ** -5,
-           seed=142857, save_folder=None, save_per_step=True,
-           preset=False, action_set=None, MCTS=False, MCTSMaxNodes=10 ** 15, reward_model="Linear", cheat=False,
-           cheatnum=0, Randomized=False, sd_bonus=0.0,
-           special=None):
+def TestWithFixedParameters(model, horizon, num_timesteps_test, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0,
+                            noise_variance=10 ** -5,
+                            save_folder=None, save_per_step=True,
+                            preset=False, action_set=None, MCTS=False, MCTSMaxNodes=10 ** 15, reward_model="Linear",
+                            cheat=False,
+                            cheatnum=0, Randomized=False, sd_bonus=0.0,
+                            special=None):
     """
     Assume a map size of [0, 1] for both axes
     """
-    covariance_function = SquareExponential(length_scale, 1)
-    gpgen = GaussianProcess(covariance_function)
-    m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed)
 
     TPT = TreePlanTester(simulate_noise_in_trials=True, reward_model=reward_model, sd_bonus=sd_bonus)
     TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
-    TPT.InitEnvironment(environment_noise=noise_variance, model=m)
-    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=depth)
+    TPT.InitEnvironment(environment_noise=noise_variance, model=model)
+    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=horizon)
     TPT.InitTestParameters(initial_physical_state=np.array([0.5, 0.5]),
                            past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
                                [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
     return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
                     cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special)
-
 
 
 def TestRealData(locations, values, length_scale, signal_variance, noise_variance, mean_function, grid_domain,
@@ -308,9 +305,10 @@ if __name__ == "__main__":
 
     # save_trunk = sys.argv[1]
 
-    for i in xrange(10, 11):
-        Random(length_scale=(0.1, 0.1), epsilon_=10 ** 10, seed=i, depth=2, save_folder="./tests/seed" + str(i) + "/",
-               preset=False)
+    for i in xrange(20, 30):
+        TestWithFixedParameters(length_scale=(0.1, 0.1), epsilon_=10 ** 10, horizon=2,
+                                save_folder="./tests/seed" + str(i) + "/",
+                                preset=False)
         # Transect(seed=i)
 
         # print "Performing sanity checks"
