@@ -102,12 +102,9 @@ class TreePlanTester:
         # Compute measurements
         self.past_measurements = np.apply_along_axis(self.model, 1, past_locations)
 
-    def Test(self, num_timesteps_test, debug=True, visualize=False, action_set=None, save_per_step=True,
+    def Test(self, num_timesteps_test, visualize=False, action_set=None, save_per_step=True,
              save_folder="default_results/", MCTS=True, MCTSMaxNodes=10 ** 15, cheat=False, cheatnum=0,
              Randomized=False, special=None):
-        """ Pipeline for testing
-        @param num_timesteps_test - int, number of timesteps we should RUN the algo for. Do not confuse with search horizon
-        """
 
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
@@ -152,6 +149,7 @@ class TreePlanTester:
                 noise_component = np.random.normal(0, math.sqrt(self.noise_variance))
             else:
                 noise_component = 0
+            # NB shift measurements by mean
             percieved_measurement = baseline_measurement + noise_component
 
             x_next = tp.TransitionH(x_temp, percieved_measurement)
@@ -251,7 +249,7 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-def TestWithFixedParameters(model, horizon, num_timesteps_test, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0,
+def testWithFixedParameters(model, horizon, num_timesteps_test, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0,
                             noise_variance=10 ** -5,
                             save_folder=None, save_per_step=True,
                             preset=False, action_set=None, MCTS=False, MCTSMaxNodes=10 ** 15, reward_model="Linear",
@@ -269,7 +267,9 @@ def TestWithFixedParameters(model, horizon, num_timesteps_test, grid_gap_=0.05, 
     TPT.InitTestParameters(initial_physical_state=np.array([0.5, 0.5]),
                            past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
                                [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
-    return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, save_folder=save_folder,
+
+    return TPT.Test(num_timesteps_test=num_timesteps_test, visualize=False,
+                    save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
                     cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special)
 
@@ -306,7 +306,7 @@ if __name__ == "__main__":
     # save_trunk = sys.argv[1]
 
     for i in xrange(20, 30):
-        TestWithFixedParameters(length_scale=(0.1, 0.1), epsilon_=10 ** 10, horizon=2,
+        testWithFixedParameters(length_scale=(0.1, 0.1), epsilon_=10 ** 10, horizon=2,
                                 save_folder="./tests/seed" + str(i) + "/",
                                 preset=False)
         # Transect(seed=i)

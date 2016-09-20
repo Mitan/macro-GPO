@@ -114,13 +114,12 @@ class GaussianProcess:
 
     def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857):
         """
-		Generates a draw from the gaussian process
+        Generates a draw from the gaussian process
 
-		@param predict_range - map range for each dimension
-		@param num_samples - number of samples for each dimension
-		@return dict mapping locations to values 
-		"""
-
+        @param predict_range - map range for each dimension
+        @param num_samples - number of samples for each dimension
+        @return dict mapping locations to values
+        """
         assert (len(predict_range) == len(num_samples))
 
         # Number of dimensions of the multivariate gaussian is equal to the number of grid points
@@ -356,10 +355,14 @@ class SquareExponential(CovarianceFunction):
 class MapValueDict():
     def __init__(self, locations, values, epsilon=None):
         """
-		@param epsilon - minimum tolerance level to determine equivalence between two points
-		"""
+        @param epsilon - minimum tolerance level to determine equivalence between two points
+        """
+
         self.locations = locations
-        self.values = values
+        # the original mean of the values
+        self.mean = np.mean(values)
+
+        self.values = values - self.mean
 
         if not epsilon == None:
             self.epsilon = epsilon
@@ -390,8 +393,10 @@ class MapValueDict():
         return self.values[bi]
 
 
+
 if __name__ == "__main__":
     # Generation Tests
+    """
     covariance_function = SquareExponential(0.05, 1)
     gp1d = GaussianProcess(covariance_function)
     gp1d.GPGenerateTest(predict_range=((-1, 1),), num_samples=(100,))
@@ -419,3 +424,4 @@ if __name__ == "__main__":
 
     gp2d3 = GaussianProcess(covariance_function)
     gp2d3.GPRegressionTest("2dmixed")  # mixture of two functions
+    """

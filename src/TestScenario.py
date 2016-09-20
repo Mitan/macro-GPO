@@ -1,5 +1,5 @@
 from ResultsPlotter import PlotData
-from TreePlanTester import TestWithFixedParameters
+from TreePlanTester import testWithFixedParameters
 from GaussianProcess import SquareExponential
 
 from GaussianProcess import GaussianProcess
@@ -7,14 +7,7 @@ from GaussianProcess import GaussianProcess
 
 def TestScenario(my_save_folder_root, h_max, seed, time_steps):
     # def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
-    """
-    :param b: batch size
-    :param beta: beta from ucb reward function
-    :param location:  initial location for agents
-    :param simulated_func: function info
-    :param save_trunk: root folder
-    :return:
-    """
+
     result_graphs = []
 
     eps = 10 ** 10
@@ -26,8 +19,8 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps):
     m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed)
 
     for h in range(1, h_max):
-        #print h
-        current_h_result = TestWithFixedParameters(model=m, horizon=h, num_timesteps_test=time_steps,
+        # print h
+        current_h_result = testWithFixedParameters(model=m, horizon=h, num_timesteps_test=time_steps,
                                                    length_scale=length_scale, epsilon_=eps,
                                                    save_folder=save_folder + "h" + str(h) + "/",
                                                    preset=False)
@@ -89,4 +82,3 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps):
     PlotData(result_graphs, save_folder)
 
 
-    # return non_myopic_3

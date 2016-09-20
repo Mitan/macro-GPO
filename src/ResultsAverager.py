@@ -3,13 +3,13 @@ import numpy as np
 from StringIO import StringIO
 
 
-seeds = range(10, 13)
+seeds = range(10, 25)
 root_path = './tests/'
 
-methods = ['h1', 'h2', 'h3']
-method_names = ['H = 1', 'H = 2', 'H = 3']
+methods = ['h1', 'h2', 'h3', 'h4']
+method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4']
 
-steps = 10
+steps = 20
 
 results = []
 
