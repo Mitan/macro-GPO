@@ -3,10 +3,10 @@ import numpy as np
 from StringIO import StringIO
 
 
-seeds = range(10, 25)
-root_path = './tests/'
+seeds = range(0, 15)
+root_path = './testsAAAI/'
 
-methods = ['h1', 'h2', 'h3', 'h4']
+methods = ['h1', 'h2', 'h3' ]
 method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4']
 
 steps = 20
@@ -15,8 +15,8 @@ results = []
 
 for index, method in enumerate(methods):
     number_of_location = 0
+    results_for_method = np.zeros((steps,))
     for seed in seeds:
-        results_for_method = np.zeros((steps,))
         # counter
 
         file_path = root_path + 'seed' + str(seed) + '/' + method + '/summary.txt'
@@ -31,6 +31,7 @@ for index, method in enumerate(methods):
         results_for_method = np.add(results_for_method, rewards)
     # check that we collected data for every location
     assert number_of_location == len(seeds)
+    #print results_for_method
     results_for_method = results_for_method / number_of_location
 
     result = [method_names[index], results_for_method.tolist()]
