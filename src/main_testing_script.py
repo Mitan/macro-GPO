@@ -128,7 +128,11 @@ if __name__ == '__main__':
     """
     my_save_folder_root = "./tests/"
 
+    args = sys.argv
+
+    seed = int(args[1])
+
     h_max = 4
     t = 20
-    for s in range(16,25):
-        TestScenario(my_save_folder_root=my_save_folder_root, h_max= h_max, seed= s, time_steps=t)
+    #for s in range(25,50):
+    TestScenario(my_save_folder_root=my_save_folder_root, h_max= h_max, seed= seed, time_steps=t)
