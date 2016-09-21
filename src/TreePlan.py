@@ -234,10 +234,12 @@ class TreePlan:
         # node d_0, where we have actions
         root_action_node = MCTSActionNode(x_0, st, self, l)
         print "MCTS max nodes:", max_nodes, "Skeletal Expansion"
+        # Expand tree
         total_nodes_expanded = root_action_node.SkeletalExpand()
         print "Performing search..."
 
         # TODO: Set a proper termination condition
+        # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
             lower, upper, num_nodes_expanded = self.MCTSRollout(root_action_node, st, H, l)
             total_nodes_expanded += num_nodes_expanded
@@ -279,10 +281,13 @@ class TreePlan:
 
         best_a = None
         best_a_val = -float('inf')
+        # all  nodes d_t + s
         for a, cc in action_node.ChanceChildren.iteritems():
+            #next level d_{t+1}
             v = [None] * len(cc.ActionChildren)
             for i in xrange(len(v)):
                 if cc.ActionChildren[i] == None: continue
+                # some of the nodes are empty
                 v[i], _ = self.MCTSTraverseBest(cc.ActionChildren[i])
 
             # nearest neighbour
@@ -293,6 +298,7 @@ class TreePlan:
             curval = float('inf')
             for i in xrange(len(v)):
                 if not v[i] == None:
+                    # Z value
                     curdist = cc.ObservationValue[i]
                     curval = v[i]
                 left[i] = (curval, cc.ObservationValue[i] - curdist)
@@ -305,6 +311,7 @@ class TreePlan:
                     curval = v[i]
                 right[i] = (curval, curdist - cc.ObservationValue[i])
 
+            # todo How do we get a nearest neighbour?
             # Set to nearest neighbour if none
             for i in xrange(len(v)):
                 if not v[i] == None: continue
@@ -537,6 +544,7 @@ class TreePlan:
         # Select action that has the greatest upper bound (TODO: make sure there are still leaves in that branch)
         highest_upper = -float('inf')
         best_a = None
+        # choose the best child so far
         for a, bounds in action_node.BoundsChildren.iteritems():
             if action_node.ChanceChildren[a].saturated: continue
             if highest_upper < bounds[1]: best_a = a
@@ -691,6 +699,7 @@ class MCTSActionNode:
         self.augmented_state = augmented_state
         self.semi_tree = semi_tree
         self.treeplan = treeplan
+
         self.lamb = l
 
         # is full?
@@ -728,11 +737,11 @@ class MCTSActionNode:
         """ Builds observation nodes for every action
         """
 
-        # expand all children d_t + s_{t+1}
+        # generate all children d_t + s_{t+1}
         num_nodes_expanded = 1
         for a, semi_child in self.semi_tree.children.iteritems():
             # d_t + s_{t+1}
-            c = MCTSChanceNode(TransitionP(self.augmented_state, a), semi_child, self.treeplan, self.lamb)
+            c = MCTSObservationNode(TransitionP(self.augmented_state, a), semi_child, self.treeplan, self.lamb)
             num_nodes_expanded += c.SkeletalExpand()
             self.ChanceChildren[a] = c
             self.BoundsChildren[a] = c.Eval()
@@ -774,13 +783,14 @@ class MCTSActionNode:
         self.saturated = allSat
 
 
-class MCTSChanceNode:
+class MCTSObservationNode:
     def __init__(self, augmented_state, semi_tree, treeplan, l):
         self.augmented_state = augmented_state
         self.semi_tree = semi_tree
         self.treeplan = treeplan
         self.lamb = l
 
+        # todo need to change to stochastic samples
         # Number of partitions INCLUDING tails
         if self.semi_tree.n == 0:
             self.num_partitions = 1  # MLE case
@@ -788,6 +798,8 @@ class MCTSChanceNode:
             self.num_partitions = self.semi_tree.n + 2
 
         self.saturated = False
+        # all children with observations are good
+        #
         self.numchild_unsaturated = self.num_partitions
         self.mu = self.treeplan.gp.GPMean(augmented_state.history.locations, augmented_state.history.measurements,
                                           augmented_state.physical_state, weights=semi_tree.weights)
@@ -796,10 +808,13 @@ class MCTSChanceNode:
         self.ActionChildren = [None] * self.num_partitions
         # Array of (lower, upper) tuple. Includes bounds which are due to Lipschitz constraints.
         self.BoundsChildren = [(-float('inf'), float('inf'))] * self.num_partitions
+        # todo check if we need it
         # Range of observations for this partition
         self.ObservationBounds = [None] * self.num_partitions
+        # todo change into stochastic sample values
         # Value of observation that we take from this partition
         self.ObservationValue = [None] * self.num_partitions
+        # todo remove
         # Weight of each interval
         self.IntervalWeights = [None] * self.num_partitions
 
@@ -853,6 +868,7 @@ class MCTSChanceNode:
     def Eval(self):
         """
         Evaluate upper and lower bounds of this chance node (weighted)
+       they are Q_lower and Q_upper
         """
 
         lower = 0.0
@@ -867,6 +883,7 @@ class MCTSChanceNode:
         # Update reward
         # lower += self.mu - self.semi_tree.true_error
         # upper += self.mu + self.semi_tree.true_error
+        # todo check if we need this true error? defined in get partitions
         r = self.treeplan.reward_analytical(self.mu, math.sqrt(self.semi_tree.variance))
         lower += r - self.semi_tree.true_error
         upper += r + self.semi_tree.true_error
@@ -880,10 +897,13 @@ class MCTSChanceNode:
         @param index_updated: index of child whose bound was just updated
         """
 
+
         lip = self.semi_tree.lipchitz
 
         assert self.BoundsChildren[index_updated][0] <= self.BoundsChildren[index_updated][1], "%s, %s" % (
         self.BoundsChildren[index_updated][0], self.BoundsChildren[index_updated][1])
+
+        # todo no more left and right!
         # Intervals lying to the left of just updated interval
         for i in reversed(xrange(index_updated)):
             change = False
@@ -938,6 +958,8 @@ class MCTSChanceNode:
         # 	num_nodes_expanded += self.SkeletalExpandHere(self.num_partitions-1)
         # 	self.UpdateChildrenBounds(self.num_partitions-1)
 
+        # choose the center node
+        # todo change into minimal distance
         target = int(math.floor(self.num_partitions / 2))
         num_nodes_expanded += self.SkeletalExpandHere(target)
         self.UpdateChildrenBounds(target)
@@ -948,6 +970,7 @@ class MCTSChanceNode:
         """
         num_nodes_expanded = 0
         assert self.ActionChildren[index_to_expand] == None, "Node already expanded"
+        # uses obervation value
         self.ActionChildren[index_to_expand] = MCTSActionNode(
             TransitionH(self.augmented_state, self.ObservationValue[index_to_expand]), self.semi_tree, self.treeplan,
             self.lamb)
@@ -956,6 +979,7 @@ class MCTSChanceNode:
         assert lower <= upper
         # print lower, upper, self.BoundsChildren[index_to_expand]
         self.BoundsChildren[index_to_expand] = (
+        # tighten the bounds
         max(self.BoundsChildren[index_to_expand][0], lower), min(self.BoundsChildren[index_to_expand][1], upper))
         # print self.BoundsChildren[index_to_expand]
         assert self.BoundsChildren[index_to_expand][0] <= self.BoundsChildren[index_to_expand][1]
