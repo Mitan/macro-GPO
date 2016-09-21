@@ -3,10 +3,12 @@ import numpy as np
 from StringIO import StringIO
 
 
-seeds = range(0, 15)
-root_path = './testsAAAI/'
+seeds = range(10, 31)
 
-methods = ['h1', 'h2', 'h3' ]
+seeds = list(set(seeds) - set([17,28]))
+root_path = './tests/'
+
+methods = ['h1', 'h2', 'h3', 'h4' ]
 method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4']
 
 steps = 20

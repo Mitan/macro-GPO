@@ -578,42 +578,21 @@ class TreePlan:
 
         sd = math.sqrt(new_st.variance)
         k = new_st.k
-        num_partitions = new_st.n + 2  # number of partitions INCLUDING the tail ends
 
-        if new_st.n > 0: width = 2.0 * k * sd / new_st.n
-        vAccum = 0
+        #num_partitions = new_st.n + 2  # number of partitions INCLUDING the tail ends
 
-        testsum = 0
-        for i in xrange(2, num_partitions):
-            # Compute boundary points
-            zLower = mu - sd * k + (i - 2) * width
-            zUpper = mu - sd * k + (i - 1) * width
+        # todo check
+        n = 10
 
-            # Compute evaluation points
-            zPoints = 0.5 * (zLower + zUpper)
-            v, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, zPoints), new_st)
-            v += self.reward_sampled(zPoints)
+        sams = np.random.normal(mu, sd, n)
 
-            # Recursively compute values
-            vAccum += v * (norm.cdf(x=zUpper, loc=mu, scale=sd) - norm.cdf(x=zLower, loc=mu, scale=sd))
-            testsum += (norm.cdf(x=zUpper, loc=mu, scale=sd) - norm.cdf(x=zLower, loc=mu, scale=sd))
+        rrr = [self.EstimateV(T - 1, l,gamma,self.TransitionH(x, sam),
+                                   new_st)[0] + self.reward_sampled(sam) for sam in sams]
+        avg = np.mean(rrr)
 
-        # Weight values
-        rightLimit = mu + k * sd
-        leftLimit = mu - k * sd
-        vRightTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, rightLimit), new_st)
-        vRightTailVal += self.reward_sampled(rightLimit)
-        if num_partitions == 2:
-            vLeftTailVal = vRightTailVal  # Quick hack for cases where the algo only requires us to us MLE (don't need to repeat measurement at mean of gaussian pdf)
-        else:
-            vLeftTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, leftLimit), new_st)  # usual case
-            vLeftTailVal += self.reward_sampled(leftLimit)
-        vAccum += vRightTailVal * (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + \
-                  vLeftTailVal * norm.cdf(x=leftLimit, loc=mu, scale=sd)
-        testsum += (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + norm.cdf(x=leftLimit, loc=mu, scale=sd)
-        assert abs(testsum - 1.0) < 0.0001, "Area != 1, %f instead" % testsum
+        return avg
 
-        return vAccum
+        #return vAccum
 
     def MCTSRollout(self, action_node, st, T, l):
 
