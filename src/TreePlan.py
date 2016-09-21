@@ -92,72 +92,6 @@ class TreePlan:
         else:
             assert False, "Unknown reward type"
 
-    def EI(self, x_0):
-
-        """
-        *Myopic* implementation of EI (Expected improvement)
-        """
-
-        best_observation = max(x_0.history.measurements)
-        best_action = None
-        best_expected_improv = 0.0
-
-        valid_actions = self.GetValidActionSet(x_0.physical_state)
-
-        for a in valid_actions:
-            x_next = self.TransitionP(x_0, a)
-
-            chol = self.gp.GPCholTraining(x_0.history.locations)
-            cov_query = self.gp.GPCovQuery(x_0.history.locations, x_next.physical_state)
-            weights = self.gp.GPWeights(x_0.history.locations, x_next.physical_state, chol, cov_query)
-            var = self.gp.GPVariance2(x_0.history.locations, x_next.physical_state, chol, cov_query)
-
-            sigma = math.sqrt(var)
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=weights)
-
-            Z = (mean - best_observation) / sigma
-            expectedImprov = (mean - best_observation) * norm.cdf(x=Z, loc=0, scale=1.0) + sigma * norm.pdf(x=Z, loc=0,
-                                                                                                            scale=1.0)
-
-            if expectedImprov >= best_expected_improv:
-                best_expected_improv = expectedImprov
-                best_action = a
-
-        return best_expected_improv, best_action, len(valid_actions)
-
-    def PI(self, x_0):
-
-        """
-        *Myopic implementation of PI (probability of improvement)*
-        """
-
-        best_observation = max(x_0.history.measurements)
-        best_action = None
-        best_improv_prob = 0.0
-
-        valid_actions = self.GetValidActionSet(x_0.physical_state)
-
-        for a in valid_actions:
-            x_next = self.TransitionP(x_0, a)
-
-            chol = self.gp.GPCholTraining(x_0.history.locations)
-            cov_query = self.gp.GPCovQuery(x_0.history.locations, x_next.physical_state)
-            weights = self.gp.GPWeights(x_0.history.locations, x_next.physical_state, chol, cov_query)
-            var = self.gp.GPVariance2(x_0.history.locations, x_next.physical_state, chol, cov_query)
-
-            sigma = math.sqrt(var)
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=weights)
-
-            improv_prob = 1.0 - norm.cdf(x=best_observation, loc=mean, scale=sigma)
-
-            if improv_prob >= best_improv_prob:
-                best_improv_prob = improv_prob
-                best_action = a
-
-        return best_improv_prob, best_action, len(valid_actions)
-
     def Algorithm1(self, epsilon, gamma, x_0, H):
         """
         @param x_0 - augmented state
@@ -216,7 +150,7 @@ class TreePlan:
             r = self.reward_analytical(mean, math.sqrt(var))
 
             # Future reward
-            f = self.EstimateV_tilde(H, lamb_d, 1, x_next, new_st) + r  # using MLE
+            f = self.Q_det(H, lamb_d, 1, x_next, new_st) + r  # using MLE
             frandom = self.ComputeQRandom(H, lamb, x_next, 1.0 - delta, new_st) + r
 
             # Correction step
@@ -292,11 +226,12 @@ class TreePlan:
 
         return max_err
 
-    def MCTSExpand(self, epsilon, gamma, x_0, H, max_nodes=10 ** 15):
+    def AnytimeAlgorithm(self, epsilon, gamma, x_0, H, max_nodes=10 ** 15):
         print "Preprocessing weight spaces..."
         st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,
                                                              epsilon)
 
+        # node d_0, where we have actions
         root_action_node = MCTSActionNode(x_0, st, self, l)
         print "MCTS max nodes:", max_nodes, "Skeletal Expansion"
         total_nodes_expanded = root_action_node.SkeletalExpand()
@@ -556,7 +491,7 @@ class TreePlan:
             r = self.reward_analytical(mean, math.sqrt(var))
 
             # Future reward
-            f = self.EstimateV_tilde(T, l, gamma, x_next, new_st) + r
+            f = self.Q_det(T, l, gamma, x_next, new_st) + r
 
             if (f > vBest):
                 aBest = a
@@ -564,7 +499,7 @@ class TreePlan:
 
         return vBest, aBest
 
-    def EstimateV_tilde(self, T, l, gamma, x, new_st):
+    def Q_det(self, T, l, gamma, x, new_st):
         """
         Approximates the integration step derived from alg1
         @param new_st - semi-tree at this stage
@@ -758,23 +693,32 @@ class MCTSActionNode:
         self.treeplan = treeplan
         self.lamb = l
 
-        self.Saturated = False
+        # is full?
+        self.saturated = False
+        # d_t + s_{t]
         self.ChanceChildren = dict()
+        # Q_lower and Q_upper for each child
         self.BoundsChildren = dict()
+        self.max_upper = -float('inf')
+        self.max_lower = -float('inf')
 
     def Eval(self):
         """
         Evaluate upper and lower bounds of this action node
+        V_lower and V_upper
         """
-
+        # if no children, then we are certain, and zero value
         if len(self.BoundsChildren) == 0: return (-MCTSActionNode.mini_epsilon, MCTSActionNode.mini_epsilon)
 
         max_upper = -float('inf')
         max_lower = -float('inf')
+        # get max upper and lower bound
+        # V_lower and V_upper
         for a, b in self.BoundsChildren.iteritems():
             max_upper = max(b[1], max_upper)
             max_lower = max(b[0], max_lower)
 
+        # todo refact
         self.max_upper = max_upper
         self.max_lower = max_lower
 
@@ -784,8 +728,10 @@ class MCTSActionNode:
         """ Builds observation nodes for every action
         """
 
+        # expand all children d_t + s_{t+1}
         num_nodes_expanded = 1
         for a, semi_child in self.semi_tree.children.iteritems():
+            # d_t + s_{t+1}
             c = MCTSChanceNode(TransitionP(self.augmented_state, a), semi_child, self.treeplan, self.lamb)
             num_nodes_expanded += c.SkeletalExpand()
             self.ChanceChildren[a] = c
@@ -795,6 +741,7 @@ class MCTSActionNode:
         self.DetermineSaturation()
         return num_nodes_expanded
 
+    # not used
     def DetermineDominance(self):
 
         dominated = True
@@ -818,11 +765,12 @@ class MCTSActionNode:
         """ Action node is saturated when
         Everything underneath it is saturated (or dominated)
         """
-
         allSat = True
         for a, cc in self.ChanceChildren.iteritems():
             if not cc.saturated: allSat = False
 
+        # todo check if works initially was like this
+        #self.saturated = allSat
         self.saturated = allSat
 
 
@@ -1070,7 +1018,7 @@ if __name__ == "__main__":
     for time in xrange(num_timesteps_test):
         tp = TreePlan(grid_domain, grid_gap, gp)
 
-        print tp.MCTSExpand(epsilon, gamma, x_0, H)
+        print tp.AnytimeAlgorithm(epsilon, gamma, x_0, H)
 
         _, a, _ = tp.Algorithm1(epsilon, gamma, x_0, H)
 

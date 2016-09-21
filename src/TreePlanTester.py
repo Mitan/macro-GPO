@@ -135,8 +135,8 @@ class TreePlanTester:
                 if not MCTS:
                     _, a, nodes_expanded = tp.Algorithm1(self.epsilon, self.gamma, x_0, self.H)
                 else:
-                    bounds, a, nodes_expanded = tp.MCTSExpand(self.epsilon, self.gamma, x_0, self.H,
-                                                              max_nodes=MCTSMaxNodes)
+                    bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, self.gamma, x_0, self.H,
+                                                                    max_nodes=MCTSMaxNodes)
             else:
                 # Use random sampling
                 vBest, a = tp.RandomSampling(self.epsilon, x_0, self.H)
