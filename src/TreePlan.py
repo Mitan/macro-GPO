@@ -254,16 +254,16 @@ class TreePlan:
         # 		best_a = a
         # 		bestavg = avg
 
-        # Select according to maximum node
-        # best_upper = -float('inf')
-        # for a, cc in root_action_node.BoundsChildren.iteritems():
-        # 	print a, cc
-        # 	if best_upper < cc[1]:
-        # 		best_a = a
-        # 		best_upper = cc[1]
+        # Select according to maximum lower bound node
+        best_lower = -float('inf')
+        for a, cc in root_action_node.BoundsChildren.iteritems():
+            print a, cc
+            if best_lower < cc[0]:
+         	    best_a = a
+         	    best_lower = cc[0]
 
-        bestval, best_a = self.MCTSTraverseBest(root_action_node)
-        print bestval, best_a
+        #bestval, best_a = self.MCTSTraverseBest(root_action_node)
+        #print bestval, best_a
 
         # Vreal, Areal, _ = self.Algorithm1(epsilon, gamma, x_0, H)
         # print Vreal, Areal
@@ -272,6 +272,7 @@ class TreePlan:
 
         print "Total nodes expanded %d" % total_nodes_expanded
         return root_action_node.BoundsChildren[best_a], best_a, total_nodes_expanded
+
 
     def MCTSTraverseBest(self, action_node):
         """
@@ -692,7 +693,7 @@ class SemiState:
 class MCTSActionNode:
     """
     """
-
+    # d_t
     mini_epsilon = 10 ** -8
 
     def __init__(self, augmented_state, semi_tree, treeplan, l):
@@ -885,6 +886,7 @@ class MCTSObservationNode:
         # upper += self.mu + self.semi_tree.true_error
         # todo check if we need this true error? defined in get partitions
         r = self.treeplan.reward_analytical(self.mu, math.sqrt(self.semi_tree.variance))
+        # todo change to lambda
         lower += r - self.semi_tree.true_error
         upper += r + self.semi_tree.true_error
 
