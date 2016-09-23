@@ -94,80 +94,58 @@ class TreePlan:
 
     def Algorithm1(self, epsilon, gamma, x_0, H):
         """
-        @param x_0 - augmented state
-        @return approximately optimal value, answer, and number of node expansions
-        """
+                @param x_0 - augmented state
+                @return approximately optimal value, answer, and number of node expansions
+                """
 
         # Obtain lambda
         # l = epsilon / (gamma * H * (H+1))
         # l = epsilon / sum([gamma ** i for i in xrange(1, H+1)])
 
-        #print "Preprocessing weight spaces..."
+        print "Preprocessing weight spaces..."
         # Obtain Lipchitz lookup tree
         st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,
                                                              epsilon)
 
-        #print "Performing search..."
+        print "Performing search..."
         # Get answer
         Vapprox, Aapprox = self.EstimateV(H, l, gamma, x_0, st)
 
         return Vapprox, Aapprox, nodes_expanded
 
+        return Vapprox, Aapprox, nodes_expanded
+
     def RandomSampling(self, epsilon, x_0, H):
-        print "gururu"
+        """
+                @param x_0 - augmented state
+                @return approximately optimal value, answer, and number of node expansions
+                """
 
-        beta = epsilon / H
-        e_s = beta / 4
+        # Obtain lambda
+        # l = epsilon / (gamma * H * (H+1))
+        # l = epsilon / sum([gamma ** i for i in xrange(1, H+1)])
 
-        # max_err = self.FindMLEError(st)
-        max_err = 1.0
-        lamb_d = max_err / H
+        # print "Preprocessing weight spaces..."
+        # Obtain Lipchitz lookup tree
+        st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,
+                                                             epsilon)
 
-        delta = min(beta / 8 / max_err, 1)
-        lamb = e_s / H
+        # print "Performing search..."
+        # Get answer
+        Vapprox, Aapprox = self.ComputeVRandom(H, l, x_0, st)
 
-        st, _, __, ___ = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H, max_err)
+        return Vapprox, Aapprox, nodes_expanded
 
-        print "max error", max_err
-        print "delta", delta
+    def ComputeVRandom(self, T, l, x,  st):
 
-        x = x_0
-        valid_actions = self.GetValidActionSet(x.physical_state)
-        vBest = -self.INF
-        aBest = valid_actions[0]
-
-        for a in valid_actions:
-
-            x_next = self.TransitionP(x, a)
-
-            # go down the semitree node
-            new_st = st.children[a]
-
-            # Reward is just the mean added to a multiple of the variance at that point
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=new_st.weights)
-            var = new_st.variance
-            r = self.reward_analytical(mean, math.sqrt(var))
-
-            # Future reward
-            f = self.Q_det(H, lamb_d, 1, x_next, new_st) + r  # using MLE
-            frandom = self.ComputeQRandom(H, lamb, x_next, 1.0 - delta, new_st) + r
-
-            # Correction step
-            qmod = frandom
-            if abs(frandom - f) > e_s + max_err:
-                qmod = f
-
-            if (qmod > vBest):
-                aBest = a
-                vBest = qmod
-
-        return vBest, aBest
-
-    def ComputeVRandom(self, T, l, x, p, st):
+        """
+                @return vBest - approximate value function computed
+                @return aBest - action at the root for the policy defined by alg1
+                @param st - root of the semi-tree to be used
+                """
 
         valid_actions = self.GetValidActionSet(x.physical_state)
-        if T == 0: return 0
+        if T == 0: return 0, valid_actions[0]
 
         vBest = -self.INF
         aBest = valid_actions[0]
@@ -185,31 +163,27 @@ class TreePlan:
             r = self.reward_analytical(mean, math.sqrt(var))
 
             # Future reward
-            f = self.ComputeQRandom(T, l, x_next, p ** (1.0 / len(valid_actions)), new_st) + r
+            f = self.ComputeQRandom(T, l, x_next, new_st) + r
 
-            if (f > vBest):
+            if f > vBest:
                 aBest = a
                 vBest = f
 
-        return vBest
+        return vBest, aBest
 
-    def ComputeQRandom(self, T, l, x, p, new_st):
-        # print "Q: p", p
-        # Initialize variables
+    def ComputeQRandom(self, T, l, x, new_st):
+
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
         sd = math.sqrt(new_st.variance)
 
-        n = math.ceil(
-            2 * math.log(0.5 - 0.5 * (p ** self.PEWPEW)) * ((self.l1 + new_st.lipchitz) ** 2) * new_st.variance / (
-            -(l ** 2)))
-        n = max(n, 1)
-        if n > 1: print n
+        # todo check
+        n = 10
 
         sams = np.random.normal(mu, sd, n)
 
-        rrr = [self.ComputeVRandom(T - 1, l, self.TransitionH(x, sam), p ** ((1 - self.PEWPEW) / n),
-                                   new_st) + self.reward_sampled(sam) for sam in sams]
+        rrr = [self.ComputeVRandom(T - 1, l, self.TransitionH(x, sam),
+                              new_st)[0] + self.reward_sampled(sam) for sam in sams]
         avg = np.mean(rrr)
 
         return avg
@@ -358,7 +332,7 @@ class TreePlan:
             else:
                 break
 
-        #print "Suggested epsilon=%f, Using epsilon=%f, num_nodes=%f" % (suggested_epsilon, ep, num_nodes)
+        print "Suggested epsilon=%f, Using epsilon=%f, num_nodes=%f" % (suggested_epsilon, ep, num_nodes)
         return root_node, ep, l, num_nodes
 
     def BuildTree(self, node, H, isRoot=False):
@@ -521,19 +495,42 @@ class TreePlan:
 
         sd = math.sqrt(new_st.variance)
         k = new_st.k
+        num_partitions = new_st.n + 2  # number of partitions INCLUDING the tail ends
 
-        #num_partitions = new_st.n + 2  # number of partitions INCLUDING the tail ends
+        if new_st.n > 0: width = 2.0 * k * sd / new_st.n
+        vAccum = 0
 
-        # todo check
-        n = 10
+        testsum = 0
+        for i in xrange(2, num_partitions):
+            # Compute boundary points
+            zLower = mu - sd * k + (i - 2) * width
+            zUpper = mu - sd * k + (i - 1) * width
 
-        sams = np.random.normal(mu, sd, n)
+            # Compute evaluation points
+            zPoints = 0.5 * (zLower + zUpper)
+            v, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, zPoints), new_st)
+            v += self.reward_sampled(zPoints)
 
-        rrr = [self.EstimateV(T - 1, l,gamma,self.TransitionH(x, sam),
-                                   new_st)[0] + self.reward_sampled(sam) for sam in sams]
-        avg = np.mean(rrr)
+            # Recursively compute values
+            vAccum += v * (norm.cdf(x=zUpper, loc=mu, scale=sd) - norm.cdf(x=zLower, loc=mu, scale=sd))
+            testsum += (norm.cdf(x=zUpper, loc=mu, scale=sd) - norm.cdf(x=zLower, loc=mu, scale=sd))
 
-        return avg
+        # Weight values
+        rightLimit = mu + k * sd
+        leftLimit = mu - k * sd
+        vRightTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, rightLimit), new_st)
+        vRightTailVal += self.reward_sampled(rightLimit)
+        if num_partitions == 2:
+            vLeftTailVal = vRightTailVal  # Quick hack for cases where the algo only requires us to us MLE (don't need to repeat measurement at mean of gaussian pdf)
+        else:
+            vLeftTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, leftLimit), new_st)  # usual case
+            vLeftTailVal += self.reward_sampled(leftLimit)
+        vAccum += vRightTailVal * (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + \
+                  vLeftTailVal * norm.cdf(x=leftLimit, loc=mu, scale=sd)
+        testsum += (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + norm.cdf(x=leftLimit, loc=mu, scale=sd)
+        assert abs(testsum - 1.0) < 0.0001, "Area != 1, %f instead" % testsum
+
+        return vAccum
 
         #return vAccum
 

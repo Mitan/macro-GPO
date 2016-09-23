@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
     #seed = int(args[1])
 
-    h_max = 4
+    h_max = 5
     t = 20
-    for seed in range(65, 75):
+    for seed in range(72, 82):
         TestScenario(my_save_folder_root=my_save_folder_root, h_max= h_max, seed= seed, time_steps=t)

@@ -23,7 +23,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps):
         current_h_result = testWithFixedParameters(model=m, horizon=h, num_timesteps_test=time_steps,
                                                    length_scale=length_scale, epsilon_=eps,
                                                    save_folder=save_folder + "h" + str(h) + "/",
-                                                   preset=False, MCTS=True)
+                                                   preset=False, MCTS=False)
         result_graphs.append(['H = ' + str(h), current_h_result])
 
     """
