@@ -130,9 +130,9 @@ if __name__ == '__main__':
 
     args = sys.argv
 
-    seed = int(args[1])
+    #seed = int(args[1])
 
-    h_max = 5
+    h_max = 4
     t = 20
-    #for s in range(25,50):
-    TestScenario(my_save_folder_root=my_save_folder_root, h_max= h_max, seed= seed, time_steps=t)
+    for seed in range(65, 75):
+        TestScenario(my_save_folder_root=my_save_folder_root, h_max= h_max, seed= seed, time_steps=t)

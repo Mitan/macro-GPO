@@ -253,7 +253,7 @@ class TreePlan:
         # 	if bestavg < avg:
         # 		best_a = a
         # 		bestavg = avg
-
+        """
         # Select according to maximum lower bound node
         best_lower = -float('inf')
         for a, cc in root_action_node.BoundsChildren.iteritems():
@@ -261,9 +261,9 @@ class TreePlan:
             if best_lower < cc[0]:
          	    best_a = a
          	    best_lower = cc[0]
-
-        #bestval, best_a = self.MCTSTraverseBest(root_action_node)
-        #print bestval, best_a
+        """
+        bestval, best_a = self.MCTSTraverseBest(root_action_node)
+        print bestval, best_a
 
         # Vreal, Areal, _ = self.Algorithm1(epsilon, gamma, x_0, H)
         # print Vreal, Areal
