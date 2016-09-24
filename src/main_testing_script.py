@@ -126,7 +126,7 @@ if __name__ == '__main__':
     plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
     PlotData(plottin_results, plotting_path)
     """
-    my_save_folder_root = "./tests50/"
+    my_save_folder_root = "./tests50_4/"
 
     args = sys.argv
 
@@ -134,5 +134,5 @@ if __name__ == '__main__':
 
     h_max = 5
     t = 20
-    #for seed in range(72, 82):
+    #for seed in range(100, 101):
     TestScenario(my_save_folder_root=my_save_folder_root, h_max= h_max, seed= seed, time_steps=t)

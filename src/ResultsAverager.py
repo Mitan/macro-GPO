@@ -3,7 +3,7 @@ import numpy as np
 from StringIO import StringIO
 
 
-seeds = range(31, 41)
+seeds = range(31, 56)
 
 #seeds = list(set(seeds) - set([17,28]))
 root_path = '../tests50/'

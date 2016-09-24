@@ -115,7 +115,7 @@ class TreePlan:
 
         return Vapprox, Aapprox, nodes_expanded
 
-    def RandomSampling(self, epsilon, x_0, H):
+    def RandomSampling(self, x_0, H):
         """
                 @param x_0 - augmented state
                 @return approximately optimal value, answer, and number of node expansions
@@ -128,11 +128,11 @@ class TreePlan:
 
         # print "Performing search..."
         # Get answer
-        Vapprox, Aapprox = self.ComputeVRandom(H, l, x_0, st)
+        Vapprox, Aapprox = self.ComputeVRandom(H, x_0, root_node)
 
         return Vapprox, Aapprox, -1
 
-    def ComputeVRandom(self, T, l, x,  st):
+    def ComputeVRandom(self, T, x,  st):
 
         """
                 @return vBest - approximate value function computed
@@ -159,7 +159,7 @@ class TreePlan:
             r = self.reward_analytical(mean, math.sqrt(var))
 
             # Future reward
-            f = self.ComputeQRandom(T, l, x_next, new_st) + r
+            f = self.ComputeQRandom(T, x_next, new_st) + r
 
             if f > vBest:
                 aBest = a
@@ -167,7 +167,7 @@ class TreePlan:
 
         return vBest, aBest
 
-    def ComputeQRandom(self, T, l, x, new_st):
+    def ComputeQRandom(self, T, x, new_st):
 
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
@@ -178,7 +178,7 @@ class TreePlan:
 
         sams = np.random.normal(mu, sd, n)
 
-        rrr = [self.ComputeVRandom(T - 1, l, self.TransitionH(x, sam),
+        rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
                               new_st)[0] + self.reward_sampled(sam) for sam in sams]
         avg = np.mean(rrr)
 

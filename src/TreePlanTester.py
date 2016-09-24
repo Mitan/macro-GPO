@@ -139,7 +139,7 @@ class TreePlanTester:
                                                                     max_nodes=MCTSMaxNodes)
             else:
                 # Use random sampling
-                vBest, a, nodes_expanded = tp.RandomSampling(self.epsilon, x_0, self.H)
+                vBest, a, nodes_expanded = tp.RandomSampling( x_0, self.H)
 
             # Take action a
             x_temp = tp.TransitionP(x_0, a)
