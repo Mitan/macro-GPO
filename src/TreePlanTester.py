@@ -139,7 +139,7 @@ class TreePlanTester:
                                                                     max_nodes=MCTSMaxNodes)
             else:
                 # Use random sampling
-                vBest, a = tp.RandomSampling(self.epsilon, x_0, self.H)
+                vBest, a, nodes_expanded = tp.RandomSampling(self.epsilon, x_0, self.H)
 
             # Take action a
             x_temp = tp.TransitionP(x_0, a)
@@ -254,7 +254,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, grid_gap_=0.05, 
                             save_folder=None, save_per_step=True,
                             preset=False, action_set=None, MCTS=False, MCTSMaxNodes=10 ** 15, reward_model="Linear",
                             cheat=False,
-                            cheatnum=0, Randomized=False, sd_bonus=0.0,
+                            cheatnum=0, Randomized=True, sd_bonus=0.0,
                             special=None):
     """
     Assume a map size of [0, 1] for both axes

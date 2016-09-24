@@ -119,22 +119,18 @@ class TreePlan:
         """
                 @param x_0 - augmented state
                 @return approximately optimal value, answer, and number of node expansions
-                """
+        """
+        root_ss = SemiState(x_0.physical_state, x_0.history.locations[0:-1])
+        root_node = SemiTree(root_ss)
+        self.BuildTree(root_node, H, isRoot=True)
 
-        # Obtain lambda
-        # l = epsilon / (gamma * H * (H+1))
-        # l = epsilon / sum([gamma ** i for i in xrange(1, H+1)])
-
-        # print "Preprocessing weight spaces..."
-        # Obtain Lipchitz lookup tree
-        st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,
-                                                             epsilon)
+        #st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,epsilon)
 
         # print "Performing search..."
         # Get answer
         Vapprox, Aapprox = self.ComputeVRandom(H, l, x_0, st)
 
-        return Vapprox, Aapprox, nodes_expanded
+        return Vapprox, Aapprox, -1
 
     def ComputeVRandom(self, T, l, x,  st):
 
@@ -178,7 +174,7 @@ class TreePlan:
         sd = math.sqrt(new_st.variance)
 
         # todo check
-        n = 10
+        n = 50
 
         sams = np.random.normal(mu, sd, n)
 
