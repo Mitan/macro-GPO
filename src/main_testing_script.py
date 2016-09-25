@@ -126,7 +126,7 @@ if __name__ == '__main__':
     plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
     PlotData(plottin_results, plotting_path)
     """
-    my_save_folder_root = "./tests50_4/"
+    my_save_folder_root = "./tests/test4/"
 
     args = sys.argv
 

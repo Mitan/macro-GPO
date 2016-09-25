@@ -141,6 +141,7 @@ class TreePlan:
                 """
 
         valid_actions = self.GetValidActionSet(x.physical_state)
+        # not needed
         if T == 0: return 0, valid_actions[0]
 
         vBest = -self.INF
@@ -174,9 +175,13 @@ class TreePlan:
         sd = math.sqrt(new_st.variance)
 
         # todo check
-        n = 50
+        n = 40
 
         sams = np.random.normal(mu, sd, n)
+
+        # no need to average over zeroes
+        if (T == 1):
+            return 0
 
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
                               new_st)[0] + self.reward_sampled(sam) for sam in sams]
