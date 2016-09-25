@@ -180,7 +180,7 @@ class TreePlan:
         sams = np.random.normal(mu, sd, n)
 
         # no need to average over zeroes
-        if (T == 1):
+        if T == 1:
             return 0
 
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
