@@ -31,6 +31,7 @@ class TreePlan:
 
     static_mathutil = mutil()
     static_mathutil.Init(200)
+
     # static_mathutil.Init(25000)
 
     def __init__(self, grid_domain, grid_gap, gaussian_process, action_set=None, max_nodes=None, reward_type="Linear",
@@ -124,7 +125,7 @@ class TreePlan:
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
 
-        #st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,epsilon)
+        # st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,epsilon)
 
         # print "Performing search..."
         # Get answer
@@ -132,7 +133,7 @@ class TreePlan:
 
         return Vapprox, Aapprox, -1
 
-    def ComputeVRandom(self, T, x,  st):
+    def ComputeVRandom(self, T, x, st):
 
         """
                 @return vBest - approximate value function computed
@@ -184,7 +185,7 @@ class TreePlan:
             return 0
 
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
-                              new_st)[0] + self.reward_sampled(sam) for sam in sams]
+                                   new_st)[0] + self.reward_sampled(sam) for sam in sams]
         avg = np.mean(rrr)
 
         return avg
@@ -216,7 +217,7 @@ class TreePlan:
         # TODO: Set a proper termination condition
         # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
-            lower, upper, num_nodes_expanded = self.MCTSRollout(root_action_node, st, H, l)
+            lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, st, H, l)
             total_nodes_expanded += num_nodes_expanded
 
         # TODO: Set action selection scheme
@@ -228,17 +229,17 @@ class TreePlan:
         # 	if bestavg < avg:
         # 		best_a = a
         # 		bestavg = avg
-        """
+
         # Select according to maximum lower bound node
         best_lower = -float('inf')
         for a, cc in root_action_node.BoundsChildren.iteritems():
             print a, cc
             if best_lower < cc[0]:
-         	    best_a = a
-         	    best_lower = cc[0]
-        """
-        bestval, best_a = self.MCTSTraverseBest(root_action_node)
-        print bestval, best_a
+                best_a = a
+                best_lower = cc[0]
+
+        # bestval, best_a = self.MCTSTraverseBest(root_action_node)
+        print best_lower, best_a
 
         # Vreal, Areal, _ = self.Algorithm1(epsilon, gamma, x_0, H)
         # print Vreal, Areal
@@ -247,7 +248,6 @@ class TreePlan:
 
         print "Total nodes expanded %d" % total_nodes_expanded
         return root_action_node.BoundsChildren[best_a], best_a, total_nodes_expanded
-
 
     def MCTSTraverseBest(self, action_node):
         """
@@ -259,7 +259,7 @@ class TreePlan:
         best_a_val = -float('inf')
         # all  nodes d_t + s
         for a, cc in action_node.ChanceChildren.iteritems():
-            #next level d_{t+1}
+            # next level d_{t+1}
             v = [None] * len(cc.ActionChildren)
             for i in xrange(len(v)):
                 if cc.ActionChildren[i] == None: continue
@@ -401,7 +401,7 @@ class TreePlan:
             for a, c in node.children.iteritems():
                 self.PreprocessLipchitz(c)
                 av = (
-                c.L_upper[0:nl + 1] + ((c.L_upper[-1] + self.l1 + self.l2(math.sqrt(c.variance))) * (c.weights.T)))
+                    c.L_upper[0:nl + 1] + ((c.L_upper[-1] + self.l1 + self.l2(math.sqrt(c.variance))) * (c.weights.T)))
                 vmax = np.maximum(vmax, av)
 
             node.L_upper = vmax
@@ -533,9 +533,9 @@ class TreePlan:
 
         return vAccum
 
-        #return vAccum
+        # return vAccum
 
-    def MCTSRollout(self, action_node, st, T, l):
+    def ConstructTree(self, action_node, st, T, l):
 
         if T == 0: return (0, 0, 0)
         assert not action_node.saturated, "Exploring saturated action node"
@@ -575,19 +575,19 @@ class TreePlan:
             # Update upper and lower bounds on this observation node
             lower, upper = new_action_node.Eval()
             obs_node.BoundsChildren[i] = (
-            max(obs_node.BoundsChildren[i][0], lower), min(obs_node.BoundsChildren[i][1], upper))
+                max(obs_node.BoundsChildren[i][0], lower), min(obs_node.BoundsChildren[i][1], upper))
 
         else:  # Observation has already been made, expand further
 
-            lower, upper, num_nodes_expanded = self.MCTSRollout(obs_node.ActionChildren[i], new_semi_tree, T - 1, l)
+            lower, upper, num_nodes_expanded = self.ConstructTree(obs_node.ActionChildren[i], new_semi_tree, T - 1, l)
             obs_node.BoundsChildren[i] = (
-            max(lower, obs_node.BoundsChildren[i][0]), min(upper, obs_node.BoundsChildren[i][1]))
+                max(lower, obs_node.BoundsChildren[i][0]), min(upper, obs_node.BoundsChildren[i][1]))
 
         obs_node.UpdateChildrenBounds(i)
         lower, upper = obs_node.Eval()
         assert (lower <= upper)
         action_node.BoundsChildren[best_a] = (
-        max(action_node.BoundsChildren[best_a][0], lower), min(action_node.BoundsChildren[best_a][1], upper))
+            max(action_node.BoundsChildren[best_a][0], lower), min(action_node.BoundsChildren[best_a][1], upper))
 
         if obs_node.ActionChildren[i].saturated:
             obs_node.numchild_unsaturated -= 1
@@ -716,21 +716,22 @@ class MCTSActionNode:
         V_lower and V_upper
         """
         # if no children, then we are certain, and zero value
-        if len(self.BoundsChildren) == 0: return (-MCTSActionNode.mini_epsilon, MCTSActionNode.mini_epsilon)
+        if len(self.BoundsChildren) == 0:
+            return -MCTSActionNode.mini_epsilon, MCTSActionNode.mini_epsilon
 
-        max_upper = -float('inf')
-        max_lower = -float('inf')
+        # max_upper = -float('inf')
+        # max_lower = -float('inf')
         # get max upper and lower bound
         # V_lower and V_upper
-        for a, b in self.BoundsChildren.iteritems():
-            max_upper = max(b[1], max_upper)
-            max_lower = max(b[0], max_lower)
+        for _, b in self.BoundsChildren.iteritems():
+            self.max_upper = max(b[1], self.max_upper)
+            self.max_lower = max(b[0], self.max_lower)
 
         # todo refact
-        self.max_upper = max_upper
-        self.max_lower = max_lower
+        # self.max_upper = max_upper
+        # self.max_lower = max_lower
 
-        return max_lower, max_upper
+        return self.max_lower, self.max_upper
 
     def SkeletalExpand(self):
         """ Builds observation nodes for every action
@@ -778,7 +779,7 @@ class MCTSActionNode:
             if not cc.saturated: allSat = False
 
         # todo check if works initially was like this
-        #self.saturated = allSat
+        # self.saturated = allSat
         self.saturated = allSat
 
 
@@ -789,47 +790,54 @@ class MCTSObservationNode:
         self.treeplan = treeplan
         self.lamb = l
 
+        self.num_samples = 50
+        """
         # todo need to change to stochastic samples
         # Number of partitions INCLUDING tails
         if self.semi_tree.n == 0:
-            self.num_partitions = 1  # MLE case
+            self.num_samples = 1  # MLE case
         else:
-            self.num_partitions = self.semi_tree.n + 2
-
+            self.num_samples = self.semi_tree.n + 2
+        """
         self.saturated = False
-        # all children with observations are good
-        #
-        self.numchild_unsaturated = self.num_partitions
+
+        self.numchild_unsaturated = self.num_samples
         self.mu = self.treeplan.gp.GPMean(augmented_state.history.locations, augmented_state.history.measurements,
                                           augmented_state.physical_state, weights=semi_tree.weights)
 
         # Pointer too children action selection nodes. "None" = this observation has not been expanded.
-        self.ActionChildren = [None] * self.num_partitions
+        self.ActionChildren = [None] * self.num_samples
         # Array of (lower, upper) tuple. Includes bounds which are due to Lipschitz constraints.
-        self.BoundsChildren = [(-float('inf'), float('inf'))] * self.num_partitions
+        self.BoundsChildren = [(-float('inf'), float('inf'))] * self.num_samples
         # todo check if we need it
         # Range of observations for this partition
-        self.ObservationBounds = [None] * self.num_partitions
+        # self.ObservationBounds = [None] * self.num_samples
         # todo change into stochastic sample values
         # Value of observation that we take from this partition
-        self.ObservationValue = [None] * self.num_partitions
+        # self.ObservationValue = [None] * self.num_samples
+
+        mu = self.mu
+        sd = math.sqrt(semi_tree.variance)
+
+        samples = np.random.normal(mu, sd, self.num_samples)
+        self.ObservationValue = np.sort(samples, axis=None)
+        """
         # todo remove
         # Weight of each interval
-        self.IntervalWeights = [None] * self.num_partitions
+        # self.IntervalWeights = [None] * self.num_samples
 
         #################################################
         # Compute partition information when NOT mle
         #################################################
-        if self.num_partitions > 1:
+        if self.num_samples > 1:
 
             # Initialize variables
-            kxi = semi_tree.lipchitz
-            mu = self.mu
-            sd = math.sqrt(semi_tree.variance)
+            # kxi = semi_tree.lipchitz
+
             k = semi_tree.k
 
             if semi_tree.n > 0: width = 2.0 * k * sd / semi_tree.n
-            for i in xrange(2, self.num_partitions):
+            for i in xrange(2, self.num_samples):
                 # Compute boundary points
                 zLower = mu - sd * k + (i - 2) * width
                 zUpper = mu - sd * k + (i - 1) * width
@@ -853,7 +861,7 @@ class MCTSObservationNode:
             self.IntervalWeights[-1] = 1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)
 
             assert abs(sum(self.IntervalWeights) - 1) < 0.0001, "Area != 1, %f instead\n With number: %s " % (
-            sum(self.IntervalWeights), str(self.IntervalWeights))
+                sum(self.IntervalWeights), str(self.IntervalWeights))
 
         else:
             #################################################
@@ -863,30 +871,34 @@ class MCTSObservationNode:
             self.ObservationBounds[0] = (-float('inf'), float('inf'))
             self.ObservationValue[0] = self.mu
             self.IntervalWeights[0] = 1.0
-
+        """
     def Eval(self):
         """
         Evaluate upper and lower bounds of this chance node (weighted)
        they are Q_lower and Q_upper
         """
 
-        lower = 0.0
-        upper = 0.0
+        #lower = 0.0
+        #upper = 0.0
+        # the same as num_samples
+        number_of_children = len(self.BoundsChildren)
 
+        lower = sum([childBound[0] for childBound in self.BoundsChildren]) / number_of_children
+        upper = sum([childBound[1] for childBound in self.BoundsChildren]) / number_of_children
+
+        """
         for i in xrange(len(self.BoundsChildren)):
-            lower += (self.BoundsChildren[i][0] + self.treeplan.reward_sampled(self.ObservationValue[i])) * \
-                     self.IntervalWeights[i]
-            upper += (self.BoundsChildren[i][1] + self.treeplan.reward_sampled(self.ObservationValue[i])) * \
-                     self.IntervalWeights[i]
-
+            lower += self.BoundsChildren[i][0] * self.IntervalWeights[i]
+            upper += self.BoundsChildren[i][1] * self.IntervalWeights[i]
+        """
         # Update reward
         # lower += self.mu - self.semi_tree.true_error
         # upper += self.mu + self.semi_tree.true_error
         # todo check if we need this true error? defined in get partitions
         r = self.treeplan.reward_analytical(self.mu, math.sqrt(self.semi_tree.variance))
         # todo change to lambda
-        lower += r - self.semi_tree.true_error
-        upper += r + self.semi_tree.true_error
+        lower += r - self.lamb
+        upper += r + self.lamb
 
         assert (lower <= upper), "Lower > Upper!, %s, %s" % (lower, upper)
 
@@ -897,11 +909,10 @@ class MCTSObservationNode:
         @param index_updated: index of child whose bound was just updated
         """
 
-
         lip = self.semi_tree.lipchitz
 
         assert self.BoundsChildren[index_updated][0] <= self.BoundsChildren[index_updated][1], "%s, %s" % (
-        self.BoundsChildren[index_updated][0], self.BoundsChildren[index_updated][1])
+            self.BoundsChildren[index_updated][0], self.BoundsChildren[index_updated][1])
 
         # todo no more left and right!
         # Intervals lying to the left of just updated interval
@@ -919,8 +930,9 @@ class MCTSObservationNode:
                 self.BoundsChildren[i] = (self.BoundsChildren[i][0], testUpper)
 
             assert (
-            self.BoundsChildren[i][0] <= self.BoundsChildren[i][1]), "lower bound greater than upper bound %f, %f" % (
-            self.BoundsChildren[i][0], self.BoundsChildren[i][1])
+                self.BoundsChildren[i][0] <= self.BoundsChildren[i][
+                    1]), "lower bound greater than upper bound %f, %f" % (
+                self.BoundsChildren[i][0], self.BoundsChildren[i][1])
 
             if not change == True:
                 break
@@ -939,8 +951,9 @@ class MCTSObservationNode:
                 self.BoundsChildren[i] = (self.BoundsChildren[i][0], testUpper)
 
             assert (
-            self.BoundsChildren[i][0] <= self.BoundsChildren[i][1]), "lower bound greater than upper bound %f, %f" % (
-            self.BoundsChildren[i][0], self.BoundsChildren[i][1])
+                self.BoundsChildren[i][0] <= self.BoundsChildren[i][
+                    1]), "lower bound greater than upper bound %f, %f" % (
+                self.BoundsChildren[i][0], self.BoundsChildren[i][1])
 
             if not change == True:
                 break
@@ -960,7 +973,7 @@ class MCTSObservationNode:
 
         # choose the center node
         # todo change into minimal distance
-        target = int(math.floor(self.num_partitions / 2))
+        target = int(math.floor(self.num_samples / 2))
         num_nodes_expanded += self.SkeletalExpandHere(target)
         self.UpdateChildrenBounds(target)
         return num_nodes_expanded
@@ -979,8 +992,8 @@ class MCTSObservationNode:
         assert lower <= upper
         # print lower, upper, self.BoundsChildren[index_to_expand]
         self.BoundsChildren[index_to_expand] = (
-        # tighten the bounds
-        max(self.BoundsChildren[index_to_expand][0], lower), min(self.BoundsChildren[index_to_expand][1], upper))
+            # tighten the bounds
+            max(self.BoundsChildren[index_to_expand][0], lower), min(self.BoundsChildren[index_to_expand][1], upper))
         # print self.BoundsChildren[index_to_expand]
         assert self.BoundsChildren[index_to_expand][0] <= self.BoundsChildren[index_to_expand][1]
         self.UpdateChildrenBounds(index_to_expand)
