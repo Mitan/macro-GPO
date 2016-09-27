@@ -202,13 +202,19 @@ class TreePlan:
 
         return max_err
 
-    def AnytimeAlgorithm(self, epsilon, gamma, x_0, H, max_nodes=10 ** 15):
+    def AnytimeAlgorithm(self, epsilon, x_0, H, max_nodes=10 ** 15):
         print "Preprocessing weight spaces..."
-        st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,
-                                                             epsilon)
 
+        root_ss = SemiState(x_0.physical_state, x_0.history.locations[0:-1])
+        root_node = SemiTree(root_ss)
+        self.BuildTree(root_node, H, isRoot=True)
+        self.PreprocessLipchitz(root_node, isRoot=True)
+
+        # st, new_epsilon, l, nodes_expanded=self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,epsilon)
+        lamb = epsilon / H
+        print "lambda is " + str(lamb)
         # node d_0, where we have actions
-        root_action_node = MCTSActionNode(x_0, st, self, l)
+        root_action_node = MCTSActionNode(x_0, root_node, self, lamb)
         print "MCTS max nodes:", max_nodes, "Skeletal Expansion"
         # Expand tree
         total_nodes_expanded = root_action_node.SkeletalExpand()
@@ -217,7 +223,7 @@ class TreePlan:
         # TODO: Set a proper termination condition
         # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
-            lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, st, H, l)
+            lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
 
         # TODO: Set action selection scheme
@@ -872,14 +878,15 @@ class MCTSObservationNode:
             self.ObservationValue[0] = self.mu
             self.IntervalWeights[0] = 1.0
         """
+
     def Eval(self):
         """
         Evaluate upper and lower bounds of this chance node (weighted)
        they are Q_lower and Q_upper
         """
 
-        #lower = 0.0
-        #upper = 0.0
+        # lower = 0.0
+        # upper = 0.0
         # the same as num_samples
         number_of_children = len(self.BoundsChildren)
 

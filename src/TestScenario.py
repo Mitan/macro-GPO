@@ -10,7 +10,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps):
 
     result_graphs = []
 
-    eps = 10 ** 10
+    #eps = 10 ** 10
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     length_scale = (0.1, 0.1)
@@ -21,7 +21,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps):
     for h in range(1, h_max):
         # print h
         current_h_result = testWithFixedParameters(model=m, horizon=h, num_timesteps_test=time_steps,
-                                                   length_scale=length_scale, epsilon_=eps,
+                                                   length_scale=length_scale,
                                                    save_folder=save_folder + "h" + str(h) + "/",
                                                    preset=False, MCTS=True, Randomized= True)
         result_graphs.append(['H = ' + str(h), current_h_result])

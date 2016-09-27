@@ -44,12 +44,12 @@ class TreePlanTester:
 
     def InitEnvironment(self, environment_noise, model):
         """
-		@param environment noise - float for variance of zero mean gaussian noise present in the actual environment
-		@param model - function taking in a numpy array of appropriate dimension and returns the actual (deterministic) reading
+        @param environment noise - float for variance of zero mean gaussian noise present in the actual environment
+        @param model - function taking in a numpy array of appropriate dimension and returns the actual (deterministic) reading
 
-		Example usage: InitEnvironment(0.1, lambda xy: multivariate_normal(mean=[0,0], cov=[[1,0],[0,1]]).pdf(xy))
-		Makes the environment with 0.1 noise variance with a mean following that of a standard multivariate normal
-		"""
+        Example usage: InitEnvironment(0.1, lambda xy: multivariate_normal(mean=[0,0], cov=[[1,0],[0,1]]).pdf(xy))
+        Makes the environment with 0.1 noise variance with a mean following that of a standard multivariate normal
+        """
         self.environment_noise = environment_noise
         self.model = model
 
@@ -132,9 +132,8 @@ class TreePlanTester:
             elif special == 'PI':
                 _, a, nodes_expanded = tp.PI(x_0)
             elif MCTS:
-                print "anytime"
-                bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, self.gamma, x_0, self.H,
-                                                                max_nodes=MCTSMaxNodes)
+                print "anytime  " + str(self.epsilon)
+                bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, self.H, max_nodes=MCTSMaxNodes)
             elif Randomized:
                 vBest, a, nodes_expanded = tp.RandomSampling(x_0, self.H)
             # MSTC is randomized
@@ -304,13 +303,8 @@ def TestRealData(locations, values, length_scale, signal_variance, noise_varianc
 300
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
+    print "bla"
 
-    # save_trunk = sys.argv[1]
-
-    for i in xrange(20, 30):
-        testWithFixedParameters(length_scale=(0.1, 0.1), epsilon_=10 ** 10, horizon=2,
-                                save_folder="./tests/seed" + str(i) + "/",
-                                preset=False)
         # Transect(seed=i)
 
         # print "Performing sanity checks"
