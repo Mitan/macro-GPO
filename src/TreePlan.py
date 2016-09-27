@@ -211,7 +211,7 @@ class TreePlan:
         self.PreprocessLipchitz(root_node, isRoot=True)
 
         # st, new_epsilon, l, nodes_expanded=self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,epsilon)
-        lamb = epsilon / H
+        lamb = epsilon
         print "lambda is " + str(lamb)
         # node d_0, where we have actions
         root_action_node = MCTSActionNode(x_0, root_node, self, lamb)
