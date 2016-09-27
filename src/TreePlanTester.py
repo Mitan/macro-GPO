@@ -131,15 +131,17 @@ class TreePlanTester:
                 _, a, nodes_expanded = tp.EI(x_0)
             elif special == 'PI':
                 _, a, nodes_expanded = tp.PI(x_0)
-            elif not Randomized:
-                if not MCTS:
-                    _, a, nodes_expanded = tp.Algorithm1(self.epsilon, self.gamma, x_0, self.H)
-                else:
-                    bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, self.gamma, x_0, self.H,
-                                                                    max_nodes=MCTSMaxNodes)
+            elif MCTS:
+                print "anytime"
+                bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, self.gamma, x_0, self.H,
+                                                                max_nodes=MCTSMaxNodes)
+            elif Randomized:
+                vBest, a, nodes_expanded = tp.RandomSampling(x_0, self.H)
+            # MSTC is randomized
             else:
-                # Use random sampling
-                vBest, a, nodes_expanded = tp.RandomSampling( x_0, self.H)
+                _, a, nodes_expanded = tp.Algorithm1(self.epsilon, self.gamma, x_0, self.H)
+
+
 
             # Take action a
             x_temp = tp.TransitionP(x_0, a)

@@ -537,7 +537,7 @@ class TreePlan:
 
     def ConstructTree(self, action_node, st, T, l):
 
-        if T == 0: return (0, 0, 0)
+        if T == 0: return 0, 0, 0
         assert not action_node.saturated, "Exploring saturated action node"
 
         # Select action that has the greatest upper bound (TODO: make sure there are still leaves in that branch)
@@ -555,17 +555,17 @@ class TreePlan:
         obs_node = action_node.ChanceChildren[best_a]
         highest_variance = -0.5
         most_uncertain_node_index = None
-        for i in xrange(obs_node.num_partitions):
-            if not (obs_node.ActionChildren[i] == None) and obs_node.ActionChildren[i].saturated: continue
-            if (obs_node.BoundsChildren[i][1] - obs_node.BoundsChildren[i][0]) * obs_node.IntervalWeights[
-                i] > highest_variance:
+        for i in xrange(obs_node.num_samples):
+            if not (obs_node.ActionChildren[i] is None) and obs_node.ActionChildren[i].saturated:
+                continue
+            current_variance = obs_node.BoundsChildren[i][1] - obs_node.BoundsChildren[i][0]
+            if current_variance > highest_variance:
                 most_uncertain_node_index = i
-                highest_variance = (obs_node.BoundsChildren[i][1] - obs_node.BoundsChildren[i][0]) * \
-                                   obs_node.IntervalWeights[i]
+                highest_variance = current_variance
 
         i = most_uncertain_node_index
         # If observation is leaf, then we expand:
-        if obs_node.ActionChildren[i] == None:
+        if obs_node.ActionChildren[i] is None:
 
             new_action_node = MCTSActionNode(TransitionH(obs_node.augmented_state, obs_node.ObservationValue[i]),
                                              new_semi_tree, self, l)
