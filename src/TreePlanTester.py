@@ -4,6 +4,7 @@ from GaussianProcess import MapValueDict
 from TreePlan import *
 from Vis2d import Vis2d
 from ResultsPlotter import PlotData
+from  MethodEnum import MethodEnum
 
 
 class TreePlanTester:
@@ -102,9 +103,8 @@ class TreePlanTester:
         # Compute measurements
         self.past_measurements = np.apply_along_axis(self.model, 1, past_locations)
 
-    def Test(self, num_timesteps_test, visualize=False, action_set=None, save_per_step=True,
-             save_folder="default_results/", MCTS=True, MCTSMaxNodes=10 ** 15, cheat=False, cheatnum=0,
-             Randomized=False, special=None):
+    def Test(self, num_timesteps_test, method, visualize=False, action_set=None, save_per_step=True,
+             save_folder="default_results/", MCTSMaxNodes=10 ** 15, cheat=False, cheatnum=0):
 
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
@@ -127,20 +127,25 @@ class TreePlanTester:
             if time == 0 and cheat:
                 a = (0.0, 0.05)
                 nodes_expanded = cheatnum
-            elif special == 'EI':
-                _, a, nodes_expanded = tp.EI(x_0)
-            elif special == 'PI':
-                _, a, nodes_expanded = tp.PI(x_0)
-            elif MCTS:
+
+            elif method == MethodEnum.Anytime:
                 print "anytime  " + str(self.epsilon)
                 bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, self.H, max_nodes=MCTSMaxNodes)
-            elif Randomized:
-                vBest, a, nodes_expanded = tp.RandomSampling(x_0, self.H)
-            # MSTC is randomized
+
+            elif method == MethodEnum.Exact:
+                vBest, a, nodes_expanded = tp.StochasticFull(x_0, self.H)
+
+            elif method == MethodEnum.MyopicUCB:
+                vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
+
+            elif method == MethodEnum.MLE:
+                pass
+
+            elif method == MethodEnum.qEI:
+                pass
+
             else:
-                _, a, nodes_expanded = tp.Algorithm1(self.epsilon, self.gamma, x_0, self.H)
-
-
+                raise Exception("Unknown method type")
 
             # Take action a
             x_temp = tp.TransitionP(x_0, a)
@@ -250,12 +255,12 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-def testWithFixedParameters(model, horizon, num_timesteps_test, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0,
+def testWithFixedParameters(model, horizon, num_timesteps_test, method, grid_gap_=0.05, length_scale=(0.1, 0.1), epsilon_=5.0,
                             noise_variance=10 ** -5,
                             save_folder=None, save_per_step=True,
-                            preset=False, action_set=None, MCTS=False, MCTSMaxNodes=10 ** 15, reward_model="Linear",
+                            preset=False, action_set=None, MCTSMaxNodes=10 ** 15, reward_model="Linear",
                             cheat=False,
-                            cheatnum=0, Randomized=True, sd_bonus=0.0,
+                            cheatnum=0, sd_bonus=0.0,
                             special=None):
     """
     Assume a map size of [0, 1] for both axes
@@ -271,8 +276,8 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, grid_gap_=0.05, 
 
     return TPT.Test(num_timesteps_test=num_timesteps_test, visualize=False,
                     save_folder=save_folder,
-                    action_set=action_set, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
-                    cheat=cheat, cheatnum=cheatnum, Randomized=Randomized, special=special)
+                    action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes,
+                    cheat=cheat, cheatnum=cheatnum, method=method)
 
 
 def TestRealData(locations, values, length_scale, signal_variance, noise_variance, mean_function, grid_domain,

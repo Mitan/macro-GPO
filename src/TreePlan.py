@@ -116,7 +116,7 @@ class TreePlan:
 
         return Vapprox, Aapprox, nodes_expanded
 
-    def RandomSampling(self, x_0, H):
+    def StochasticFull(self, x_0, H):
         """
                 @param x_0 - augmented state
                 @return approximately optimal value, answer, and number of node expansions
@@ -220,12 +220,15 @@ class TreePlan:
         total_nodes_expanded = root_action_node.SkeletalExpand()
         print "Performing search..."
 
+        counter = 0
         # TODO: Set a proper termination condition
         # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
             lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
-
+            counter+=1
+            if counter > 1000:
+                break
         # TODO: Set action selection scheme
         # Current: Selection based on the action with the highest average bound
         # bestavg = -float('inf')
