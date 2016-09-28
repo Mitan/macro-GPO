@@ -119,6 +119,67 @@ class TreePlan:
 
         return Vapprox, Aapprox, nodes_expanded
 
+    def MLE(self, x_0, H):
+        """
+                @param x_0 - augmented state
+                @return approximately optimal value, answer, and number of node expansions
+        """
+        root_ss = SemiState(x_0.physical_state, x_0.history.locations[0:-1])
+        root_node = SemiTree(root_ss)
+        self.BuildTree(root_node, H, isRoot=True)
+
+        # st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,epsilon)
+
+        # print "Performing search..."
+        # Get answer
+        Vapprox, Aapprox = self.ComputeVMLE(H, x_0, root_node)
+
+        return Vapprox, Aapprox, -1
+
+    def ComputeVMLE(self, T, x, st):
+
+        """
+                @return vBest - approximate value function computed
+                @return aBest - action at the root for the policy defined by alg1
+                @param st - root of the semi-tree to be used
+                """
+
+        valid_actions = self.GetValidActionSet(x.physical_state)
+        # not needed
+        if T == 0: return 0, valid_actions[0]
+
+        vBest = -self.INF
+        aBest = valid_actions[0]
+        for a in valid_actions:
+
+            x_next = self.TransitionP(x, a)
+
+            # go down the semitree node
+            new_st = st.children[a]
+
+            # Reward is just the mean added to a multiple of the variance at that point
+            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
+                                  weights=new_st.weights)
+            var = new_st.variance
+            r = self.reward_analytical(mean, math.sqrt(var))
+
+            # Future reward
+            f = self.ComputeQMLE(T, x_next, new_st) + r
+
+            if f > vBest:
+                aBest = a
+                vBest = f
+
+        return vBest, aBest
+
+    def ComputeQMLE(self, T, x, new_st):
+        # no need to average over zeroes
+        if T == 1:
+            return 0
+        mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
+        return self.ComputeVRandom(T - 1, self.TransitionH(x, mu), new_st)[0]
+
+
     def StochasticFull(self, x_0, H):
         """
                 @param x_0 - augmented state
@@ -187,7 +248,7 @@ class TreePlan:
             return 0
 
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
-                                   new_st)[0] + self.reward_sampled(sam) for sam in sams]
+                                   new_st)[0] for sam in sams]
         avg = np.mean(rrr)
 
         return avg

@@ -48,4 +48,10 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples):
                                       preset=False, num_samples=num_samples)
     result_graphs.append(['Anytime H = 3', anytime])
 
+    mle = testWithFixedParameters(model=m, method=MethodEnum.MLE, horizon=3, num_timesteps_test=time_steps,
+                                  length_scale=length_scale,
+                                  save_folder=save_folder + "mle_h3/",
+                                  preset=False, num_samples=num_samples)
+    result_graphs.append(['MLE H = 3', mle])
+
     PlotData(result_graphs, save_folder)

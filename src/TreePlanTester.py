@@ -141,7 +141,7 @@ class TreePlanTester:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
 
             elif method == MethodEnum.MLE:
-                pass
+                vBest, a, nodes_expanded = tp.MLE(x_0, self.H)
 
             elif method == MethodEnum.qEI:
                 pass
