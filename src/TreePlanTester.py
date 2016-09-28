@@ -4,7 +4,7 @@ from GaussianProcess import MapValueDict
 from TreePlan import *
 from Vis2d import Vis2d
 from ResultsPlotter import PlotData
-from  MethodEnum import MethodEnum
+from  MethodEnum import Methods
 
 
 class TreePlanTester:
@@ -130,20 +130,20 @@ class TreePlanTester:
                 a = (0.0, 0.05)
                 nodes_expanded = cheatnum
 
-            elif method == MethodEnum.Anytime:
+            elif method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
                 bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, self.H, max_nodes=MCTSMaxNodes)
 
-            elif method == MethodEnum.Exact:
+            elif method == Methods.Exact:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, self.H)
 
-            elif method == MethodEnum.MyopicUCB:
+            elif method == Methods.MyopicUCB:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
 
-            elif method == MethodEnum.MLE:
+            elif method == Methods.MLE:
                 vBest, a, nodes_expanded = tp.MLE(x_0, self.H)
 
-            elif method == MethodEnum.qEI:
+            elif method == Methods.qEI:
                 pass
 
             else:

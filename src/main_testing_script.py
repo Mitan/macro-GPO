@@ -4,7 +4,7 @@ from TestScenario import TestScenario
 
 if __name__ == '__main__':
 
-    my_save_folder_root = "../tests/full"
+    my_save_folder_root = "../tests/full/"
     # max horizon
     h_max = 5
     # time steps
