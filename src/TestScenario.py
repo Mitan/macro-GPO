@@ -8,7 +8,7 @@ from GaussianProcess import GaussianProcess
 from MethodEnum import MethodEnum
 
 
-def TestScenario(my_save_folder_root, h_max, seed, time_steps):
+def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples):
     result_graphs = []
 
     # eps = 10 ** 10
@@ -30,7 +30,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps):
     myopic_ucb = testWithFixedParameters(model=m, method=MethodEnum.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
                                          length_scale=length_scale,
                                          save_folder=save_folder + "h1/",
-                                         preset=False)
+                                         preset=False, num_samples=num_samples)
     result_graphs.append(['Myopic DB-GP-UCB', myopic_ucb])
 
     for h in range(2, h_max):
@@ -39,13 +39,13 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps):
                                                    num_timesteps_test=time_steps,
                                                    length_scale=length_scale,
                                                    save_folder=save_folder + "h" + str(h) + "/",
-                                                   preset=False)
+                                                   preset=False, num_samples=num_samples)
         result_graphs.append(['H = ' + str(h), current_h_result])
 
     anytime = testWithFixedParameters(model=m, method=MethodEnum.Anytime, horizon=3, num_timesteps_test=time_steps,
                                       length_scale=length_scale,
                                       save_folder=save_folder + "anytime_h3/",
-                                      preset=False)
+                                      preset=False, num_samples=num_samples)
     result_graphs.append(['Anytime H = 3', anytime])
 
     PlotData(result_graphs, save_folder)

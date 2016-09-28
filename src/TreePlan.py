@@ -34,7 +34,8 @@ class TreePlan:
 
     # static_mathutil.Init(25000)
 
-    def __init__(self, grid_domain, grid_gap, gaussian_process, action_set=None, max_nodes=None, reward_type="Linear",
+    def __init__(self, grid_domain, grid_gap, num_samples, gaussian_process, action_set=None, max_nodes=None,
+                 reward_type="Linear",
                  sd_bonus=0.0, bad_places=None):
         """
         - Gradularity given by grid_gap
@@ -45,6 +46,8 @@ class TreePlan:
         # Preset constants
         self.INF = 10 ** 15
         self.PEWPEW = 0.5  # 1.0-1.0/10000.0
+        # Number of observations/samples generated for every node
+        self.samples_per_stage = num_samples
 
         # Problem parameters
         self.grid_gap = grid_gap
@@ -176,9 +179,8 @@ class TreePlan:
         sd = math.sqrt(new_st.variance)
 
         # todo check
-        n = 40
-
-        sams = np.random.normal(mu, sd, n)
+        # n = 40
+        sams = np.random.normal(mu, sd, self.samples_per_stage)
 
         # no need to average over zeroes
         if T == 1:
@@ -226,7 +228,7 @@ class TreePlan:
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
             lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
-            counter+=1
+            counter += 1
             if counter > 1000:
                 break
         # TODO: Set action selection scheme
@@ -708,6 +710,9 @@ class MCTSActionNode:
         self.semi_tree = semi_tree
         self.treeplan = treeplan
 
+        # number of samples per stage at every child ObservationNode
+        self.number_of_samples = self.treeplan.samples_per_stage
+
         self.lamb = l
 
         # is full?
@@ -750,7 +755,8 @@ class MCTSActionNode:
         num_nodes_expanded = 1
         for a, semi_child in self.semi_tree.children.iteritems():
             # d_t + s_{t+1}
-            c = MCTSObservationNode(TransitionP(self.augmented_state, a), semi_child, self.treeplan, self.lamb)
+            c = MCTSObservationNode(TransitionP(self.augmented_state, a), semi_child, self.treeplan, self.lamb,
+                                    self.number_of_samples)
             num_nodes_expanded += c.SkeletalExpand()
             self.ChanceChildren[a] = c
             self.BoundsChildren[a] = c.Eval()
@@ -793,13 +799,13 @@ class MCTSActionNode:
 
 
 class MCTSObservationNode:
-    def __init__(self, augmented_state, semi_tree, treeplan, l):
+    def __init__(self, augmented_state, semi_tree, treeplan, l, number_of_samples):
         self.augmented_state = augmented_state
         self.semi_tree = semi_tree
         self.treeplan = treeplan
         self.lamb = l
 
-        self.num_samples = 50
+        self.num_samples = number_of_samples
         """
         # todo need to change to stochastic samples
         # Number of partitions INCLUDING tails
