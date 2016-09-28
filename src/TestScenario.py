@@ -1,3 +1,5 @@
+import os
+
 from ResultsPlotter import PlotData
 from TreePlanTester import testWithFixedParameters
 from GaussianProcess import SquareExponential
@@ -6,24 +8,31 @@ from GaussianProcess import GaussianProcess
 
 
 def TestScenario(my_save_folder_root, h_max, seed, time_steps):
-    # def TestScenario(b, beta, location, simulated_func, my_save_folder_root):
 
     result_graphs = []
 
     #eps = 10 ** 10
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
     length_scale = (0.1, 0.1)
     covariance_function = SquareExponential(length_scale, 1)
     gpgen = GaussianProcess(covariance_function)
     m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed)
+    # write the dataset to file
+    m.WriteToFile(save_folder + "dataset.txt")
 
     for h in range(1, h_max):
         # print h
         current_h_result = testWithFixedParameters(model=m, horizon=h, num_timesteps_test=time_steps,
                                                    length_scale=length_scale,
                                                    save_folder=save_folder + "h" + str(h) + "/",
-                                                   preset=False, MCTS=True, Randomized= True)
+                                                   preset=False, MCTS=False, Randomized= True)
         result_graphs.append(['H = ' + str(h), current_h_result])
 
     """

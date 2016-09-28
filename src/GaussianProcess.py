@@ -148,6 +148,8 @@ class GaussianProcess:
         drawn_vector = multivariate_normal.rvs(mean=u, cov=cov_mat)
         assert drawn_vector.shape[0] == npoints
 
+        # print points
+        # print drawn_vector
         return MapValueDict(points, drawn_vector)
 
     ### Test Suites: Inefficient Visualizers
@@ -318,6 +320,14 @@ class GaussianProcess:
             vis2d = Vis2d()
             vis2d.MapPlot(predict_range[0] + predict_range[1], ground_truth=ground_truth)
 
+    # every string in the file corresponds to a data point
+    # format of every string is x_1 x_2 ... x_n y
+    def GPGenerateFromFile(self, filename):
+        # file should be in for
+        data = np.genfromtxt(filename)
+        locs = data[:, :-1]
+        vals = data[:, -1]
+        return MapValueDict(locs, vals)
 
 """
 === Covariance Functions ===
@@ -352,6 +362,7 @@ class SquareExponential(CovarianceFunction):
         return self.signal_variance * np.exp(-0.5 * squared)
 
 
+# todo note that values have zero mean
 class MapValueDict():
     def __init__(self, locations, values, epsilon=None):
         """
@@ -377,8 +388,8 @@ class MapValueDict():
 
     def __call__(self, query_location):
         """
-		Search for nearest grid point iteratively. Uses L1 norm as the distance metric
-		"""
+        Search for nearest grid point iteratively. Uses L1 norm as the distance metric
+        """
         bi = -1
         bd = None
         for i in xrange(self.locations.shape[0]):
@@ -388,40 +399,27 @@ class MapValueDict():
                 bd = l1
                 bi = i
 
-        assert not bd == None, "No close enough match found for query location " + str(query_location)
+        assert bd is not None, "No close enough match found for query location " + str(query_location)
 
         return self.values[bi]
 
+    def WriteToFile(self, filename):
+        vals = np.atleast_2d(self.values).T
+        concatenated_dataset = np.concatenate((self.locations, vals ), axis=1)
+        np.savetxt(filename, concatenated_dataset, fmt='%11.8f')
 
 
 if __name__ == "__main__":
     # Generation Tests
-    """
-    covariance_function = SquareExponential(0.05, 1)
-    gp1d = GaussianProcess(covariance_function)
-    gp1d.GPGenerateTest(predict_range=((-1, 1),), num_samples=(100,))
 
     covariance_function = SquareExponential(30, 1)
     gp2d = GaussianProcess(covariance_function)
-    gp2d.GPGenerateTest(predict_range=((0, 1), (0, 1)), num_samples=(30, 30))
+    predict_range = ((0, 1), (0, 1))
+    num_samples = (2, 2)
+    m = gp2d.GPGenerate(predict_range, num_samples, seed=12)
+    file_name = "test.txt"
+    m.WriteToFile(file_name)
+    m_1 = gp2d.GPGenerateFromFile(file_name)
 
-    # Regression Tests
-    # 1 Dimensional Test #
-    covariance_function = SquareExponential(1.5, 1)
-    gp1d = GaussianProcess(covariance_function)
-    gp1d.GPRegressionTest("1d")  # xsinx
-
-    gp1d2 = GaussianProcess(covariance_function, 1)  # add in some noise
-    gp1d2.GPRegressionTest("1d")
-
-    # 2 Dimensional Tests #
-    covariance_function = SquareExponential(np.array([1.5, 1.5]), 1)
-    gp2d = GaussianProcess(covariance_function)
-    gp2d.GPRegressionTest("2dgaussian")  # single gaussian
-
-    gp2d2 = GaussianProcess(covariance_function)
-    gp2d2.GPRegressionTest("2dmix2gaussian")  # two gaussians
-
-    gp2d3 = GaussianProcess(covariance_function)
-    gp2d3.GPRegressionTest("2dmixed")  # mixture of two functions
-    """
+    assert np.array_equal(m.locations, m_1.locations)
+    assert np.allclose(m.values, m_1.values)

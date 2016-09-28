@@ -126,13 +126,22 @@ if __name__ == '__main__':
     plotting_path = save_trunk + "batch"  + str(batch_size) + "/function" + str(current_function.name) +  "/location" + str(location_iteration) +"/"
     PlotData(plottin_results, plotting_path)
     """
-    my_save_folder_root = "../tests/tests-anytime/"
+    my_save_folder_root = "../tests/"
+    h_max = 4
+    t = 20
 
     args = sys.argv
 
-    # seed = int(args[1])
+    start = 200
+    end = 202
 
-    h_max = 4
-    t = 20
-    for seed in range(100, 110):
+    # for test
+    # no command line args => running locally
+    assert start <= end
+    if len(args) == 1:
+        for seed in range(start, end):
+            TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t)
+    # first argument is seed
+    else:
+        seed = int(args[1])
         TestScenario(my_save_folder_root=my_save_folder_root, h_max= h_max, seed= seed, time_steps=t)
