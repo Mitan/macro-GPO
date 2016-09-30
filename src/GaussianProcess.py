@@ -1,17 +1,12 @@
 import numpy as np
 from scipy import linalg
 from scipy.stats import multivariate_normal
-import matplotlib as mpl
-from matplotlib import pyplot as pl
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
-from Vis2d import Vis2d
 
 
 class GaussianProcess:
     def __init__(self, covariance_function, noise_variance=0, mean_function=0.0):
         """ @param mean_function: constant mean. TODO: Change to nonstatic mean function rather than a simple constant
-		"""
+        """
         self.covariance_function = covariance_function
         self.noise_variance = noise_variance
         self.mean_function = mean_function
@@ -47,11 +42,11 @@ class GaussianProcess:
 
     def GPVariance(self, locations, current_location, weights=None, cov_query=None):
         """
-		Return the posterior variance for measurements while the robot is in a particular augmented state
-		Warning: This method of computing the posterior variance is numerically unstable. 
+        Return the posterior variance for measurements while the robot is in a particular augmented state
+        Warning: This method of computing the posterior variance is numerically unstable.
 
-		@param weights - row vector of weight space interpretation of GP regression
-		"""
+        @param weights - row vector of weight space interpretation of GP regression
+        """
 
         if weights == None: weights = self.GPWeights(locations, current_location)
         if cov_query == None: cov_query = self.GPCovQuery(locations, current_location)
@@ -152,182 +147,93 @@ class GaussianProcess:
         # print drawn_vector
         return MapValueDict(points, drawn_vector)
 
-    ### Test Suites: Inefficient Visualizers
-    ###
-    def GPVisualize1D(self, locations, measurements, predict_range=(0, 1), num_samples=1000):
-        """
-		Visualize posterior in graphical form
-		NOTE: very ineffecient since we are using the weight space view to vizualize this
-		"""
-
-        # Grid points
-        x = np.atleast_2d(np.linspace(predict_range[0], predict_range[1], num_samples, endpoint=False)).T
-
-        # Compute predictions - very inefficient because we are using the weight space view
-        predicted_mean = [0.0] * num_samples
-        predicted_variance = [0.0] * num_samples
-        for i in xrange(num_samples):
-            predicted_mean[i] = self.GPMean(locations, measurements, x[i])[0]
-            predicted_variance[i] = self.GPVariance2(locations, x[i])[0]
-
-        # Plot posterior mean and variances
-        pl.plot(x, self.GPRegressionTestEnvironment(x), 'r:', label=u'$f(x)$')
-        pl.plot(locations, measurements, 'r.', markersize=10, label=u'Observations')
-        pl.plot(x, predicted_mean, 'b-', label=u'Prediction')
-        pl.fill(np.concatenate([x, x[::-1]]),
-                np.concatenate([predicted_mean - 1.9600 * np.sqrt(predicted_variance),
-                                (predicted_mean + 1.9600 * np.sqrt(predicted_variance))[::-1]]),
-                alpha=.5, fc='b', ec='None', label='95% confidence interval')
-        pl.xlabel('$x$')
-        pl.ylabel('$f(x)$')
-        pl.legend(loc='upper left')
-
-        pl.show()
-
-    def GPVisualize2D(self, locations, measurements, predict_range=((0, 1), (0, 1)), num_samples=(100, 100)):
-        """
-		"""
-
-        grid_res = [float(predict_range[x][1] - predict_range[x][0]) / float(num_samples[x]) for x in xrange(2)]
-
-        # Meshed grid points
-        col = np.arange(predict_range[0][0], predict_range[0][1], grid_res[0])
-        row = np.arange(predict_range[1][0], predict_range[1][1], grid_res[1])
-        gridc, gridr = np.meshgrid(row, col)
-
-        # Compute predictions
-        predicted_mean = np.zeros(gridc.shape)
-        predicted_variance = np.zeros(gridc.shape)
-
-        for c in xrange(col.size):
-            for r in xrange(row.size):
-                predicted_mean[c, r] = self.GPMean(locations, measurements, np.array([col[c], row[r]]))[0]
-                predicted_variance[c, r] = self.GPVariance2(locations, np.array([col[c], row[r]]))[0]
-
-        # Plot posterior means and variances
-        fig = pl.figure(figsize=pl.figaspect(0.5))
-
-        ax = fig.add_subplot(1, 2, 1, projection='3d')
-        surf = ax.plot_surface(gridr, gridc, predicted_mean, rstride=1, cstride=1, cmap=cm.coolwarm,
-                               linewidth=0, antialiased=False)
-
-        ax.scatter(locations[:, 0], locations[:, 1], measurements, c='r', marker='o')
-
-        ax.set_xlabel('X Axis')
-        ax.set_ylabel('Y Axis')
-        ax.set_zlabel('Z Axis')
-
-        fig.colorbar(surf, shrink=0.5, aspect=10)
-
-        pl.show()
-
-    def GPRegressionTest(self, test="1d"):
-        """
-		Test GPR and displays results on screen
-		"""
-
-        if test == "1d":
-            # Generate history
-            locations = np.atleast_2d([1., 3., 5., 6., 7., 8.]).T
-            measurements = self.GPRegressionTestEnvironment(locations, "1d")
-
-            self.GPVisualize1D(locations, measurements, (0, 10))
-
-        elif test == "2dgaussian":
-            # Generate history
-            locations = np.atleast_2d([[0, 0], [0, 1], [1, 0]])
-            measurements = self.GPRegressionTestEnvironment(locations, "2dgaussian")
-
-            self.GPVisualize2D(locations, measurements, ((-10, 10), (-10, 10)), (50, 50))
-
-        elif test == "2dmix2gaussian":
-            # Generate history
-
-            mesh = np.mgrid[-10:10.01:4, -10:10.01:4]
-            mesh = mesh.reshape(2, -1).T
-
-            locations = np.atleast_2d(mesh)
-            measurements = self.GPRegressionTestEnvironment(locations, "2dmix2gaussian")
-
-            self.GPVisualize2D(locations, measurements, ((-10, 10), (-10, 10)), (20, 20))
-
-        elif test == "2dmixed":
-
-            mesh = np.mgrid[-10:10.01:4, -10:10.01:4]
-            mesh = mesh.reshape(2, -1).T
-
-            locations = np.atleast_2d(mesh)
-            measurements = self.GPRegressionTestEnvironment(locations, "2dmixed")
-
-            self.GPVisualize2D(locations, measurements, ((-10, 10), (-10, 10)), (20, 20))
-
-    def GPRegressionTestEnvironment(self, loc, test="1d"):
-        if test == "1d":
-            # Environment field of xsin(x)
-            return loc * np.sin(loc)
-        elif test == "2dgaussian":
-            # 2d multivariate distribution centered at (0)
-            var = multivariate_normal(mean=[0, 0], cov=[[1, 0], [0, 1]])
-            return np.apply_along_axis(lambda xy: var.pdf(xy), 1, loc)
-        elif test == "2dmix2gaussian":
-            var1 = multivariate_normal(mean=[2, 5], cov=[[4, 0], [0, 1]])
-            var2 = multivariate_normal(mean=[-3, -5], cov=[[1, 0], [0, 1]])
-
-            return np.apply_along_axis(lambda xy: var1.pdf(xy) + var2.pdf(xy), 1, loc)
-
-        elif test == "2dmixed":
-            var1 = multivariate_normal(mean=[-3, 3], cov=[[4, 0], [0, 4]])
-            var2 = lambda xy: 0.01 * xy[0] * np.sin(0.05 * xy[0])
-
-            return np.apply_along_axis(lambda xy: var1.pdf(xy) + var2(xy), 1, loc)
-
-    def GPGenerateTest(self, predict_range=((-1, 1),), num_samples=(30,)):
-        assert (len(predict_range) == len(num_samples))
-        ndims = len(predict_range)
-
-        mapping = self.GPGenerate(predict_range, num_samples)
-
-        if ndims > 2:
-            print "Dimensions > 2. Unable to display function"
-            return
-
-        if ndims == 1:
-
-            # Grid points
-            x = np.atleast_2d(np.linspace(predict_range[0][0], predict_range[0][1], num_samples[0], endpoint=False)).T
-            mapping_v = np.vectorize(mapping)
-            y = mapping_v(x)
-
-            # Plot posterior mean and variances
-            pl.plot(x, y, 'r:', label=u'$f(x)$')
-            pl.xlabel('$x$')
-            pl.ylabel('$f(x)$')
-            pl.legend(loc='upper left')
-
-            pl.show()
-        else:
-
-            grid_res = [float(predict_range[x][1] - predict_range[x][0]) / float(num_samples[x]) for x in xrange(2)]
-            # Meshed grid points
-            col = np.arange(predict_range[0][0], predict_range[0][1], grid_res[0])
-            row = np.arange(predict_range[1][0], predict_range[1][1], grid_res[1])
-
-            ground_truth = np.zeros(num_samples)
-            for a in xrange(num_samples[0]):
-                for b in xrange(num_samples[1]):
-                    ground_truth[a][b] = mapping((col[a], row[b]))
-
-            vis2d = Vis2d()
-            vis2d.MapPlot(predict_range[0] + predict_range[1], ground_truth=ground_truth)
-
-    # every string in the file corresponds to a data point
-    # format of every string is x_1 x_2 ... x_n y
     def GPGenerateFromFile(self, filename):
         # file should be in for
         data = np.genfromtxt(filename)
         locs = data[:, :-1]
         vals = data[:, -1]
         return MapValueDict(locs, vals)
+
+
+    def GetBatchWeightsAndVariance(self, history, current_physical_state, cholesky):
+        # assume that both inputs are np 2D-arrays
+        history_prior = self.CovarianceMesh(history, history)
+        #current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
+        # cholesky = self.GPCholTraining(history_prior)
+        # cholesky = np.linalg.cholesky(history_prior + self.noise_variance * np.identity(history_prior.shape[0]))
+        assert  cholesky is not None
+        assert cholesky.shape == history_prior.shape
+
+        #history_current = self.CovarianceMesh(history, current_physical_state)
+
+        # n
+        #assert history_current.shape[0] == history_prior.shape[0]
+        # k
+        #assert history_current.shape[1] == current_prior.shape[1]
+
+        variance = self.GPBatchVariance(history, current_physical_state, cholesky)
+        weights = self.GPBatchWeights(history, current_physical_state, cholesky)
+
+        return weights, variance
+
+    def GPBatchMean(self, measurements, weights):
+        # surprisingly works
+        shifted_measurements = measurements - self.mean_function
+        # todo
+        #
+        # does (n, k) * (k,) produce matrix  product?
+        # Perhaps it does since the result is (n,)
+        # but not sure
+        mean = np.dot(weights, shifted_measurements) + self.mean_function
+        return mean
+
+    def GPBatchWeights(self, history, current_physical_state, cholesky):
+        """
+        history_current - (n,k) matrix - covariances between history values and new points
+        current_prior - (k,k) matrix
+        cholesky - Cholesky decomposition of history_locations
+        @ return (k, n) matrix
+        """
+        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
+        # todo avoid computation of v twice
+        # print cholesky.shape
+        # print history_current.shape
+        history_current = self.CovarianceMesh(history, current_physical_state)
+        v = linalg.solve_triangular(cholesky, history_current, lower=True)
+        # print v.shape
+        weights_transposed = linalg.solve_triangular(cholesky.T, v, lower=False)
+        # print weights_transposed.shape
+        # print weights_transposed.shape, history_current.shape
+
+        assert (weights_transposed).shape == history_current.shape
+        assert np.any(weights_transposed)
+        # print weights_transposed
+        return weights_transposed.T
+
+    def GPBatchVariance(self, history, current_physical_state, cholesky):
+        """
+         history_locations - (n,n) matix - prio
+        history_current - (n,k) matrix
+        current_prior - (k,k) matrix
+        cholesky - Cholesky decomposition of history_locations
+        @ return (k,k) covariance
+        """
+        current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
+        history_current = self.CovarianceMesh(history, current_physical_state)
+
+        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
+        v = linalg.solve_triangular(cholesky, history_current, lower=True)
+        # should be (k,k) matrix
+
+        assert history_current.shape[0] == v.shape[0]
+        assert current_prior.shape[0] == current_prior.shape[1]
+        assert current_prior.shape[1] == v.shape[1]
+
+        change = np.dot(v.T, v)
+        # assert np.any(change)
+        return current_prior + self.noise_variance * np.identity(current_prior.shape[0]) - change
+        # return change
+
 
 """
 === Covariance Functions ===
@@ -405,7 +311,7 @@ class MapValueDict():
 
     def WriteToFile(self, filename):
         vals = np.atleast_2d(self.values).T
-        concatenated_dataset = np.concatenate((self.locations, vals ), axis=1)
+        concatenated_dataset = np.concatenate((self.locations, vals), axis=1)
         np.savetxt(filename, concatenated_dataset, fmt='%11.8f')
 
 
