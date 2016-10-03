@@ -131,7 +131,7 @@ class TreePlan:
             x_next = self.TransitionP(x, a)
 
             # go down the semitree node
-            new_st = st.children[a]
+            new_st = st.children[ToTuple(a)]
 
             # Reward is just the mean added to a multiple of the variance at that point
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
@@ -191,7 +191,7 @@ class TreePlan:
             x_next = self.TransitionP(x, a)
 
             # go down the semitree node
-            new_st = st.children[a]
+            new_st = st.children[ToTuple(a)]
 
             # Reward is just the mean added to a multiple of the variance at that point
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
@@ -384,6 +384,7 @@ class TreePlan:
         print "Suggested epsilon=%f, Using epsilon=%f, num_nodes=%f" % (suggested_epsilon, ep, num_nodes)
         return root_node, ep, l, num_nodes
 
+    # todo need fix?
     def BuildTree(self, node, H, isRoot=False):
         """
         Builds the preprocessing (semi) tree recursively
@@ -513,7 +514,7 @@ class TreePlan:
             x_next = self.TransitionP(x, a)
 
             # go down the semitree node
-            new_st = st.children[a]
+            new_st = st.children[ToTuple(a)]
 
             # Reward is just the mean added to a multiple of the variance at that point
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
@@ -659,11 +660,10 @@ class TreePlan:
 
 
 ### TRANSITION AND MEASUREMENTS ###
-
 def TransitionP(augmented_state, action):
     """
-    @return - copy of augmented state with physical_state updated
-    """
+        @return - copy of augmented state with physical_state updated
+        """
     new_augmented_state = copy.deepcopy(augmented_state)
     new_augmented_state.physical_state = PhysicalTransition(new_augmented_state.physical_state, action)
     return new_augmented_state
@@ -671,30 +671,35 @@ def TransitionP(augmented_state, action):
 
 def TransitionH(augmented_state, measurement):
     """
-    @return - copy of augmented state with history updated
-    """
+        @return - copy of augmented state with history updated
+        """
     new_augmented_state = copy.deepcopy(augmented_state)
     new_augmented_state.history.append(new_augmented_state.physical_state, measurement)
     return new_augmented_state
 
 
-def PhysicalTransition(physical_state, action):
+def PhysicalTransition(physical_state, macroaction):
     """
-    @param - physical_state: numpy array with same size as action
-    @return - new physical state after taking the action
-    """
-
-    new_physical_state = physical_state + action
+        @param - physical_state: numpy array with same size as action
+        @return - new physical state after taking the action
+        :param macroaction:
+        """
+    # action should be joint
+    new_physical_state = np.add(physical_state, macroaction)
 
     return new_physical_state
 
 
+# updated
+# just state and history
 class AugmentedState:
     def __init__(self, physical_state, initial_history):
         """
         Initialize augmented state with initial position and history
         """
+        # 2D array
         self.physical_state = physical_state
+        # 2D array
         self.history = initial_history
 
     def to_str(self):
@@ -707,17 +712,27 @@ class AugmentedState:
             str(self.history.measurements)
 
 
+# UTIL
+# converts ndarray to tuple
+# can't pass ndarray as a key for dict
+def ToTuple(arr):
+    return tuple(map(tuple, arr))
+
+
+# updated
 class SemiTree:
-    def __init__(self, semi_state):
+    def __init__(self, semi_state, chol=None):
         self.ss = semi_state
         self.children = dict()
         self.weights = None  # Weight space vector
         self.variance = None  # Precomputed posterior variance
-        self.L_upper = None  # Upper bound for the lipchitz VECTOR L
-        self.lipchitz = None  # Lipchitz constant for the next observation
+        self.cholesky = chol
 
     def AddChild(self, action, semi_tree):
-        self.children[action] = semi_tree
+        key = ToTuple(action)
+        self.children[key] = semi_tree
+
+        # todo refact
 
     def ComputeWeightsAndVariance(self, gp):
         """ Compute the weights for this semi_state ONLY"""
@@ -727,10 +742,12 @@ class SemiTree:
         self.variance = gp.GPVariance2(self.ss.locations, self.ss.physical_state, chol, cov_query)
 
 
+# updated
 class SemiState:
     """ State which only contains locations visited and its current location
     """
 
+    # TODO locations include current state?
     def __init__(self, physical_state, locations):
         self.physical_state = physical_state
         self.locations = locations
@@ -1058,17 +1075,21 @@ class MCTSObservationNode:
         return num_nodes_expanded
 
 
+# updated
 class History:
     def __init__(self, initial_locations, initial_measurements):
         self.locations = initial_locations
         self.measurements = initial_measurements
 
-    def append(self, new_location, new_measurement):
+    def append(self, new_locations, new_measurements):
         """
+        new_measurements - 1D array
+        new_locations - 2D array
         @modifies - self.locations, self.measurements
         """
-        self.locations = np.append(self.locations, np.atleast_2d(new_location), axis=0)
-        self.measurements = np.append(self.measurements, new_measurement)
+        self.locations = np.append(self.locations, new_locations, axis=0)
+        # 1D array
+        self.measurements = np.append(self.measurements, new_measurements)
 
 
 if __name__ == "__main__":

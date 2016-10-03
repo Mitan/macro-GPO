@@ -3,19 +3,20 @@ import os
 from GaussianProcess import MapValueDict
 from TreePlan import *
 from Vis2d import Vis2d
-from ResultsPlotter import PlotData
-from  MethodEnum import Methods
+from MethodEnum import Methods
 
 
 class TreePlanTester:
     def __init__(self, simulate_noise_in_trials=True, reward_model="Linear", sd_bonus=0.0, bad_places=None):
         """
-		@param simulate_noise_in_trials: True if we want to add in noise artificially into measurements
-		False if noise is already presumed to be present in the data model
-		"""
+        @param simulate_noise_in_trials: True if we want to add in noise artificially into measurements
+        False if noise is already presumed to be present in the data model
+        """
         self.simulate_noise_in_trials = simulate_noise_in_trials
 
         self.reward_model = reward_model
+        self.reward_function = lambda z: sum(z)
+        """
         if reward_model == "Linear":
             self.reward_function = lambda z: z
         elif reward_model == "Positive_log":
@@ -26,7 +27,7 @@ class TreePlanTester:
             self.reward_function = lambda z: 1.0 if z > 1.5 else 0.0
         else:
             assert False, "Unknown reward type"
-
+        """
         self.bad_places = bad_places
         self.sd_bonus = sd_bonus
 
