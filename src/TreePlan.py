@@ -57,7 +57,7 @@ class TreePlan:
 
         self.grid_domain = grid_domain
         self.gp = gaussian_process
-        self.max_nodes = self.INF if max_nodes == None else max_nodes
+        self.max_nodes = self.INF if max_nodes is None else max_nodes
         self.sd_bonus = sd_bonus
 
         # Obstacles
@@ -411,9 +411,9 @@ class TreePlan:
             self.BuildTree(new_st, H - 1)
 
     def GetValidActionSet(self, physical_state):
-        return [a for a in self.macroaction_set if self.IsValidAction(physical_state, a)]
+        return [a for a in self.macroaction_set if self.IsValidMacroAction(physical_state, a)]
 
-    def IsValidAction(self, physical_state, a):
+    def IsValidMacroAction(self, physical_state, a):
         # TODO: ensure scalability to multiple dimensions
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
 
