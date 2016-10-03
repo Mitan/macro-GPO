@@ -122,8 +122,8 @@ class TreePlanTester:
         base_measurement_history = []
         for time in xrange(num_timesteps_test):
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
-                          action_set=action_set,
-                          reward_type=self.reward_model, sd_bonus=self.sd_bonus, bad_places=self.bad_places,
+                          macroaction_set=action_set,
+                          sd_bonus=self.sd_bonus, bad_places=self.bad_places,
                           num_samples=num_samples)
 
             if time == 0 and cheat:

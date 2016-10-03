@@ -7,19 +7,18 @@ Implements Algorithm I in my CA report
 
 """
 
+import copy
+import math
+
 import numpy as np
-from scipy import linalg
+from scipy.stats import multivariate_normal
 from scipy.stats import norm
-from matplotlib import pyplot as pl
+
 from GaussianProcess import GaussianProcess
 from GaussianProcess import SquareExponential
 from Vis2d import Vis2d
-from scipy.stats import multivariate_normal
 from mutil import mutil
-
-import copy
-import sys
-import math
+from src.MacroActionGenerator import GenerateSimpleMacroactions
 
 
 class TreePlan:
@@ -34,8 +33,8 @@ class TreePlan:
 
     # static_mathutil.Init(25000)
 
-    def __init__(self, grid_domain, grid_gap, num_samples, gaussian_process, action_set=None, max_nodes=None,
-                 reward_type="Linear",
+    def __init__(self, batch_size, grid_domain, grid_gap, num_samples, gaussian_process, macroaction_set=None,
+                 max_nodes=None,
                  sd_bonus=0.0, bad_places=None):
         """
         - Gradularity given by grid_gap
@@ -43,20 +42,19 @@ class TreePlan:
         - Characteristic length scale the same for both directions
         """
 
+        self.batch_size = batch_size
         # Preset constants
         self.INF = 10 ** 15
-        self.PEWPEW = 0.5  # 1.0-1.0/10000.0
+
         # Number of observations/samples generated for every node
         self.samples_per_stage = num_samples
 
         # Problem parameters
         self.grid_gap = grid_gap
-        self.action_set = action_set
-        if action_set == None:
-            self.action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0),
-                               (-grid_gap, 0))  # TODO: ensure that we can handle > 2 dimensions
-        elif action_set == 'GridWithStay':
-            self.action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0), (-grid_gap, 0), (0.0, 0.0))
+        self.macroaction_set = macroaction_set
+        if macroaction_set is None:
+            self.macroaction_set = GenerateSimpleMacroactions(batch_size)
+
         self.grid_domain = grid_domain
         self.gp = gaussian_process
         self.max_nodes = self.INF if max_nodes == None else max_nodes
@@ -69,32 +67,10 @@ class TreePlan:
         # TODO: factor this outside, or pass as a parameter to TreePlan. We don't need to keep recomputing!
         self.mathutil = TreePlan.static_mathutil
 
-        if reward_type == "Linear":
-            self.reward_analytical = lambda mu, sigma: mu + sd_bonus * (sigma)
-            self.reward_sampled = lambda f: 0
+        self.reward_analytical = lambda mu, sigma: mu + sd_bonus * (sigma)
 
-            self.l1 = 0
-            self.l2 = lambda sigma: 1
-        elif reward_type == "Positive_log":
-            self.reward_analytical = lambda mu, sigma: sd_bonus * (sigma)
-            self.reward_sampled = lambda f: math.log(f) if f > 1 else 0.0
-
-            self.l1 = 1
-            self.l2 = lambda sigma: 0
-        elif reward_type == "Step1mean":  # Step function with cutoff at 1
-            self.reward_analytical = lambda mu, sigma: 1 - norm.cdf(x=1, loc=mu, scale=sigma) + sd_bonus * (sigma)
-            self.reward_sampled = lambda f: 0
-
-            self.l1 = 0
-            self.l2 = lambda sigma: 1 / (math.sqrt(2 * math.pi) * sigma)
-        elif reward_type == "Step15mean":  # Step function with cutoff at 1.5
-            self.reward_analytical = lambda mu, sigma: 1 - norm.cdf(x=1.5, loc=mu, scale=sigma) + sd_bonus * (sigma)
-            self.reward_sampled = lambda f: 0
-
-            self.l1 = 0
-            self.l2 = lambda sigma: 1 / (math.sqrt(2 * math.pi) * sigma)
-        else:
-            assert False, "Unknown reward type"
+        self.l1 = 0
+        self.l2 = lambda sigma: 1
 
     def Algorithm1(self, epsilon, gamma, x_0, H):
         """
@@ -178,7 +154,6 @@ class TreePlan:
             return 0
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
         return self.ComputeVRandom(T - 1, self.TransitionH(x, mu), new_st)[0]
-
 
     def StochasticFull(self, x_0, H):
         """
@@ -321,6 +296,7 @@ class TreePlan:
         print "Total nodes expanded %d" % total_nodes_expanded
         return root_action_node.BoundsChildren[best_a], best_a, total_nodes_expanded
 
+    # TODO unused
     def MCTSTraverseBest(self, action_node):
         """
         """
@@ -434,7 +410,7 @@ class TreePlan:
             self.BuildTree(new_st, H - 1)
 
     def GetValidActionSet(self, physical_state):
-        return [a for a in self.action_set if self.IsValidAction(physical_state, a)]
+        return [a for a in self.macroaction_set if self.IsValidAction(physical_state, a)]
 
     def IsValidAction(self, physical_state, a):
         # TODO: ensure scalability to multiple dimensions
@@ -445,13 +421,13 @@ class TreePlan:
         for dim in xrange(ndims):
             if new_state[dim] < self.grid_domain[dim][0] or new_state[dim] >= self.grid_domain[dim][1]: return False
 
+        """
         # Check for obstacles
         if self.bad_places:
             for i in xrange(len(self.bad_places)):
-                if abs(new_state[0] - self.bad_places[i][0]) < 0.001 and abs(
-                                new_state[1] - self.bad_places[i][1]) < 0.001:
+                if abs(new_state[0] - self.bad_places[i][0]) < 0.001 and abs(new_state[1] - self.bad_places[i][1]) < 0.001:
                     return False
-
+        """
         return True
 
     def PreprocessLipchitz(self, node, isRoot=False):
@@ -582,7 +558,7 @@ class TreePlan:
             # Compute evaluation points
             zPoints = 0.5 * (zLower + zUpper)
             v, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, zPoints), new_st)
-            v += self.reward_sampled(zPoints)
+            # v += self.reward_sampled(zPoints)
 
             # Recursively compute values
             vAccum += v * (norm.cdf(x=zUpper, loc=mu, scale=sd) - norm.cdf(x=zLower, loc=mu, scale=sd))
@@ -592,12 +568,12 @@ class TreePlan:
         rightLimit = mu + k * sd
         leftLimit = mu - k * sd
         vRightTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, rightLimit), new_st)
-        vRightTailVal += self.reward_sampled(rightLimit)
+        # vRightTailVal += self.reward_sampled(rightLimit)
         if num_partitions == 2:
             vLeftTailVal = vRightTailVal  # Quick hack for cases where the algo only requires us to us MLE (don't need to repeat measurement at mean of gaussian pdf)
         else:
             vLeftTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, leftLimit), new_st)  # usual case
-            vLeftTailVal += self.reward_sampled(leftLimit)
+            # vLeftTailVal += self.reward_sampled(leftLimit)
         vAccum += vRightTailVal * (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + \
                   vLeftTailVal * norm.cdf(x=leftLimit, loc=mu, scale=sd)
         testsum += (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + norm.cdf(x=leftLimit, loc=mu, scale=sd)
