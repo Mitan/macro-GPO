@@ -417,18 +417,22 @@ class TreePlan:
         # TODO: ensure scalability to multiple dimensions
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
 
-        new_state = physical_state + a
+        new_state = PhysicalTransition(physical_state, a)
         ndims = 2
-        for dim in xrange(ndims):
-            if new_state[dim] < self.grid_domain[dim][0] or new_state[dim] >= self.grid_domain[dim][1]: return False
+        eps = 0.001
+        for i in range(a.shape[0]):
+            current_agent_postion = new_state[i, :]
+            for dim in xrange(ndims):
+                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
+                        self.grid_domain[dim][1]: return False
 
-        """
         # Check for obstacles
         if self.bad_places:
-            for i in xrange(len(self.bad_places)):
-                if abs(new_state[0] - self.bad_places[i][0]) < 0.001 and abs(new_state[1] - self.bad_places[i][1]) < 0.001:
+            for j in xrange(len(self.bad_places)):
+                if abs(current_agent_postion[0] - (self.bad_places[j])[0]) < eps and abs(
+                                current_agent_postion[1] - (self.bad_places[j])[1]) < eps:
                     return False
-        """
+
         return True
 
     def PreprocessLipchitz(self, node, isRoot=False):
@@ -665,16 +669,18 @@ def TransitionP(augmented_state, action):
         @return - copy of augmented state with physical_state updated
         """
     new_augmented_state = copy.deepcopy(augmented_state)
+    # new macroaction
     new_augmented_state.physical_state = PhysicalTransition(new_augmented_state.physical_state, action)
     return new_augmented_state
 
 
-def TransitionH(augmented_state, measurement):
+def TransitionH(augmented_state, measurements):
     """
         @return - copy of augmented state with history updated
         """
     new_augmented_state = copy.deepcopy(augmented_state)
-    new_augmented_state.history.append(new_augmented_state.physical_state, measurement)
+    # add new batch and measurements
+    new_augmented_state.history.append(new_augmented_state.physical_state, measurements)
     return new_augmented_state
 
 
@@ -684,8 +690,12 @@ def PhysicalTransition(physical_state, macroaction):
         @return - new physical state after taking the action
         :param macroaction:
         """
-    # action should be joint
-    new_physical_state = np.add(physical_state, macroaction)
+    # todo check dimensions
+    current_location = physical_state[-1, :]
+    batch_size = macroaction.shape[0]
+    repeated_location = np.tile(current_location, batch_size)
+    assert repeated_location.shape == macroaction.shape
+    new_physical_state = np.add(repeated_location, macroaction)
 
     return new_physical_state
 
