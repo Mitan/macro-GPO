@@ -53,7 +53,7 @@ class TreePlan:
         self.grid_gap = grid_gap
         self.macroaction_set = macroaction_set
         if macroaction_set is None:
-            self.macroaction_set = GenerateSimpleMacroactions(batch_size)
+            self.macroaction_set = GenerateSimpleMacroactions(self.batch_size, self.grid_gap)
 
         self.grid_domain = grid_domain
         self.gp = gaussian_process
@@ -64,13 +64,24 @@ class TreePlan:
         self.bad_places = bad_places
 
         # Precomputed algo stuff
-        # TODO: factor this outside, or pass as a parameter to TreePlan. We don't need to keep recomputing!
+        # todo do we need this?
         self.mathutil = TreePlan.static_mathutil
 
-        self.reward_analytical = lambda mu, sigma: mu + sd_bonus * (sigma)
-
         self.l1 = 0
+        # todo chenge
         self.l2 = lambda sigma: 1
+
+        self.reward_analytical = lambda mu, sigma: self.AcquizitionFunction(mu, sigma)
+        self.reward_sampled = lambda f: 0
+
+
+    # heuristic
+    # we use batch UCB version from Erik
+    # todo check that we do not add noise twice
+    def AcquizitionFunction(self, mu, sigma):
+        exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.noise_variance) ** (2) + sigma
+
+        return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     def Algorithm1(self, epsilon, gamma, x_0, H):
         """
@@ -212,12 +223,12 @@ class TreePlan:
 
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
-        sd = math.sqrt(new_st.variance)
+        sd = new_st.variance
 
         # todo check
         # n = 40
-        sams = np.random.normal(mu, sd, self.samples_per_stage)
-
+        #sams = np.random.normal(mu, sd, self.samples_per_stage)
+        np.random.multivariate_normal(mu, sd, self.samples_per_stage)
         # no need to average over zeroes
         if T == 1:
             return 0
@@ -417,6 +428,7 @@ class TreePlan:
         # TODO: ensure scalability to multiple dimensions
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
 
+        assert physical_state.shape == a.shape
         new_state = PhysicalTransition(physical_state, a)
         ndims = 2
         eps = 0.001

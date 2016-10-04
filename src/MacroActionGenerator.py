@@ -5,7 +5,7 @@ def __GetStraightLineMacroAction(direction, length):
 
 
 # Generates simple macroactions allowing to move straight in specified directions
-def GenerateSimpleMacroactions(batch_size):
+def GenerateSimpleMacroactions(batch_size, grid_gap):
     action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0),(-grid_gap, 0))
     return [__GetStraightLineMacroAction(direction, batch_size) for direction in action_set]
 
