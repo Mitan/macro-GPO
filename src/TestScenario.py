@@ -29,12 +29,12 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     m.WriteToFile(save_folder + "dataset.txt")
 
     # todo fix horizon to 1
-    myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
+    myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=2, num_timesteps_test=time_steps,
                                          length_scale=length_scale,
                                          save_folder=save_folder + "h1/",
                                          preset=False, num_samples=num_samples, batch_size=batch_size)
     result_graphs.append(['Myopic DB-GP-UCB', myopic_ucb])
-
+    """
     for h in range(2, h_max):
         # print h
         current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
@@ -55,5 +55,5 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                   save_folder=save_folder + "mle_h3/",
                                   preset=False, num_samples=num_samples, batch_size=batch_size)
     result_graphs.append(['MLE H = 3', mle])
-
+    """
     PlotData(result_graphs, save_folder)

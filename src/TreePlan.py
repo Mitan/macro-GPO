@@ -428,6 +428,7 @@ class TreePlan:
         # TODO: ensure scalability to multiple dimensions
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
 
+        # Physical state is a macro-action (batch)
         assert physical_state.shape == a.shape
         new_state = PhysicalTransition(physical_state, a)
         ndims = 2
@@ -707,6 +708,7 @@ def PhysicalTransition(physical_state, macroaction):
     batch_size = macroaction.shape[0]
     repeated_location = np.tile(current_location, batch_size)
     assert repeated_location.shape == macroaction.shape
+    # new physical state is a batch starting from the current location (the last element of batch)
     new_physical_state = np.add(repeated_location, macroaction)
 
     return new_physical_state
