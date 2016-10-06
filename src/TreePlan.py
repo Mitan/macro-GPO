@@ -220,18 +220,18 @@ class TreePlan:
         return vBest, aBest
 
     def ComputeQRandom(self, T, x, new_st):
+        
+        #sams = np.random.normal(mu, sd, self.samples_per_stage)
+
+        # no need to average over zeroes
+        if T == 1:
+            return 0
 
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
         sd = new_st.variance
 
-        # todo check
-        # n = 40
-        #sams = np.random.normal(mu, sd, self.samples_per_stage)
-        np.random.multivariate_normal(mu, sd, self.samples_per_stage)
-        # no need to average over zeroes
-        if T == 1:
-            return 0
+        sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
 
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
                                    new_st)[0] for sam in sams]
