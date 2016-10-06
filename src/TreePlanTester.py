@@ -153,27 +153,32 @@ class TreePlanTester:
             # Take action a
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
-            baseline_measurement = self.model(x_temp.physical_state)
-            if self.simulate_noise_in_trials:
-                noise_component = np.random.normal(0, math.sqrt(self.noise_variance))
-            else:
-                noise_component = 0
-            # NB shift measurements by mean
-            percieved_measurement = baseline_measurement + noise_component
 
-            x_next = tp.TransitionH(x_temp, percieved_measurement)
+            baseline_measurements = [self.model(single_agent_state) for single_agent_state in x_temp.physical_state]
+
+            """
+                        if self.simulate_noise_in_trials:
+                            noise_components = np.random.normal(0, math.sqrt(self.noise_variance), batch_size)
+                        else:
+                            noise_components = [0 for i in range(batch_size)]
+                        """
+            # NB shift measurements by mean
+            #percieved_measurements = baseline_measurements + noise_components
+            percieved_measurements = baseline_measurements
+
+            x_next = tp.TransitionH(x_temp, percieved_measurements)
 
             # Update future state
             x_0 = x_next
 
-            reward_obtained = self.reward_function(percieved_measurement)
+            reward_obtained = self.reward_function(percieved_measurements)
 
             # Accumulated measurements
             reward_history.append(reward_obtained)
             total_reward += reward_obtained
             total_reward_history.append(total_reward)
-            measurement_history.append(percieved_measurement)
-            base_measurement_history.append(baseline_measurement)
+            measurement_history.append(percieved_measurements)
+            base_measurement_history.append(baseline_measurements)
             total_nodes_expanded += nodes_expanded
             nodes_expanded_history.append(nodes_expanded)
 
