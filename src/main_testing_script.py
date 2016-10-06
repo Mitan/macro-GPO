@@ -10,6 +10,8 @@ if __name__ == '__main__':
     # time steps
     t = 20
 
+    batch_size = 2
+
     # number of samples per stage
     num_samples = 50
 
@@ -24,9 +26,9 @@ if __name__ == '__main__':
     if len(args) == 1:
         for seed in range(start, end):
             TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
-                         num_samples=num_samples)
+                         num_samples=num_samples, batch_size=batch_size)
     # first argument is seed
     else:
         seed = int(args[1])
         TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
-                     num_samples=num_samples)
+                     num_samples=num_samples, batch_size=batch_size)

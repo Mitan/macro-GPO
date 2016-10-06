@@ -9,7 +9,7 @@ from GaussianProcess import GaussianProcess
 from MethodEnum import Methods
 
 
-def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples):
+def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size):
     result_graphs = []
 
     # eps = 10 ** 10
@@ -28,10 +28,11 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples):
     # write the dataset to file
     m.WriteToFile(save_folder + "dataset.txt")
 
+    # todo fix horizon to 1
     myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
                                          length_scale=length_scale,
                                          save_folder=save_folder + "h1/",
-                                         preset=False, num_samples=num_samples)
+                                         preset=False, num_samples=num_samples, batch_size=batch_size)
     result_graphs.append(['Myopic DB-GP-UCB', myopic_ucb])
 
     for h in range(2, h_max):
@@ -40,19 +41,19 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples):
                                                    num_timesteps_test=time_steps,
                                                    length_scale=length_scale,
                                                    save_folder=save_folder + "h" + str(h) + "/",
-                                                   preset=False, num_samples=num_samples)
+                                                   preset=False, num_samples=num_samples, batch_size=batch_size)
         result_graphs.append(['H = ' + str(h), current_h_result])
 
     anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=3, num_timesteps_test=time_steps,
                                       length_scale=length_scale,
                                       save_folder=save_folder + "anytime_h3/",
-                                      preset=False, num_samples=num_samples)
+                                      preset=False, num_samples=num_samples, batch_size=batch_size)
     result_graphs.append(['Anytime H = 3', anytime])
 
     mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
                                   length_scale=length_scale,
                                   save_folder=save_folder + "mle_h3/",
-                                  preset=False, num_samples=num_samples)
+                                  preset=False, num_samples=num_samples, batch_size=batch_size)
     result_graphs.append(['MLE H = 3', mle])
 
     PlotData(result_graphs, save_folder)

@@ -7,7 +7,7 @@ from MethodEnum import Methods
 
 
 class TreePlanTester:
-    def __init__(self, simulate_noise_in_trials=True, reward_model="Linear", sd_bonus=0.0, bad_places=None):
+    def __init__(self, simulate_noise_in_trials=True, sd_bonus=0.0, bad_places=None):
         """
         @param simulate_noise_in_trials: True if we want to add in noise artificially into measurements
         False if noise is already presumed to be present in the data model
@@ -55,7 +55,7 @@ class TreePlanTester:
         self.environment_noise = environment_noise
         self.model = model
 
-    def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, H):
+    def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, batch_size):
         """
         Creates a planner. For now, we only allow gridded/latticed domains.
 
@@ -83,6 +83,7 @@ class TreePlanTester:
         self.epsilon = epsilon
         self.gamma = gamma
         self.H = H
+        self.batch_size = batch_size
 
     def InitTestParameters(self, initial_physical_state, past_locations):
         """
@@ -125,7 +126,7 @@ class TreePlanTester:
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
                           macroaction_set=action_set,
                           sd_bonus=self.sd_bonus, bad_places=self.bad_places,
-                          num_samples=num_samples)
+                          num_samples=num_samples, batch_size=self.batch_size)
 
             if time == 0 and cheat:
                 a = (0.0, 0.05)
@@ -270,8 +271,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
                             save_folder=None, save_per_step=True,
                             preset=False, action_set=None, MCTSMaxNodes=10 ** 15, reward_model="Linear",
                             cheat=False,
-                            cheatnum=0, sd_bonus=0.0,
-                            special=None):
+                            cheatnum=0, sd_bonus=0.0, batch_size=batch_size):
     """
     Assume a map size of [0, 1] for both axes
     """
@@ -279,7 +279,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     TPT = TreePlanTester(simulate_noise_in_trials=True, reward_model=reward_model, sd_bonus=sd_bonus)
     TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
     TPT.InitEnvironment(environment_noise=noise_variance, model=model)
-    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=horizon)
+    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=horizon, batch_size=batch_size)
     TPT.InitTestParameters(initial_physical_state=np.array([0.5, 0.5]),
                            past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
                                [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
