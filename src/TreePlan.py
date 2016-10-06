@@ -95,7 +95,7 @@ class TreePlan:
 
         print "Preprocessing weight spaces..."
         # Obtain Lipchitz lookup tree
-        st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,
+        st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[: -self.batch_size, :], H,
                                                              epsilon)
 
         print "Performing search..."
@@ -111,7 +111,7 @@ class TreePlan:
                 @param x_0 - augmented state
                 @return approximately optimal value, answer, and number of node expansions
         """
-        root_ss = SemiState(x_0.physical_state, x_0.history.locations[0:-1])
+        root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
 
@@ -171,7 +171,7 @@ class TreePlan:
                 @param x_0 - augmented state
                 @return approximately optimal value, answer, and number of node expansions
         """
-        root_ss = SemiState(x_0.physical_state, x_0.history.locations[0:-1])
+        root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
 
@@ -254,7 +254,7 @@ class TreePlan:
     def AnytimeAlgorithm(self, epsilon, x_0, H, max_nodes=10 ** 15):
         print "Preprocessing weight spaces..."
 
-        root_ss = SemiState(x_0.physical_state, x_0.history.locations[0:-1])
+        root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
         self.PreprocessLipchitz(root_node, isRoot=True)
@@ -405,6 +405,12 @@ class TreePlan:
 
         if H == 0:
             return
+
+        # add upon crash
+        """
+        new_history_locations = cur_physical_state if node.ss.locations is None else np.append(node.ss.locations,
+                                                                                               cur_physical_state, 0)
+        """
 
         # Add in new children for each valid action
         valid_actions = self.GetValidActionSet(node.ss.physical_state)
