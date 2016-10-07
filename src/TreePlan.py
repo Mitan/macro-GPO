@@ -35,7 +35,7 @@ class TreePlan:
 
     def __init__(self, batch_size, grid_domain, grid_gap, num_samples, gaussian_process, macroaction_set=None,
                  max_nodes=None,
-                 sd_bonus=0.0, bad_places=None):
+                 beta=0.0, bad_places=None):
         """
         - Gradularity given by grid_gap
         - Squared exponential covariance function
@@ -58,7 +58,7 @@ class TreePlan:
         self.grid_domain = grid_domain
         self.gp = gaussian_process
         self.max_nodes = self.INF if max_nodes is None else max_nodes
-        self.sd_bonus = sd_bonus
+        self.beta = beta
 
         # Obstacles
         self.bad_places = bad_places
@@ -80,7 +80,9 @@ class TreePlan:
     # todo check that we do not add noise twice
     def AcquizitionFunction(self, mu, sigma):
         exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.noise_variance) ** (2) + sigma
-
+        print exploration_matrix
+        print np.linalg.det(exploration_matrix)
+        print
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     def Algorithm1(self, epsilon, gamma, x_0, H):
