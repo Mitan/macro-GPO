@@ -220,7 +220,7 @@ class TreePlan:
         return vBest, aBest
 
     def ComputeQRandom(self, T, x, new_st):
-        
+
         #sams = np.random.normal(mu, sd, self.samples_per_stage)
 
         # no need to average over zeroes
@@ -435,6 +435,8 @@ class TreePlan:
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
 
         # Physical state is a macro-action (batch)
+        print "a =" + str(a)
+        print "state =" + str(physical_state)
         assert physical_state.shape == a.shape
         new_state = PhysicalTransition(physical_state, a)
         ndims = 2

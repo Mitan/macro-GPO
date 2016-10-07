@@ -14,7 +14,6 @@ class TreePlanTester:
         """
         self.simulate_noise_in_trials = simulate_noise_in_trials
 
-        self.reward_model = reward_model
         self.reward_function = lambda z: sum(z)
         """
         if reward_model == "Linear":
@@ -55,7 +54,7 @@ class TreePlanTester:
         self.environment_noise = environment_noise
         self.model = model
 
-    def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, batch_size):
+    def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, batch_size, horizon):
         """
         Creates a planner. For now, we only allow gridded/latticed domains.
 
@@ -82,7 +81,7 @@ class TreePlanTester:
         self.grid_gap = grid_gap
         self.epsilon = epsilon
         self.gamma = gamma
-        self.H = H
+        self.H = horizon
         self.batch_size = batch_size
 
     def InitTestParameters(self, initial_physical_state, past_locations):
@@ -265,21 +264,21 @@ class TreePlanTester:
 
 
 # todo check noise variance
-def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samples, grid_gap_=0.05,
+def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samples, batch_size, grid_gap_=0.05,
                             length_scale=(0.1, 0.1), epsilon_=5.0,
                             noise_variance=10 ** -5,
                             save_folder=None, save_per_step=True,
                             preset=False, action_set=None, MCTSMaxNodes=10 ** 15, reward_model="Linear",
                             cheat=False,
-                            cheatnum=0, sd_bonus=0.0, batch_size=batch_size):
+                            cheatnum=0, sd_bonus=0.0):
     """
     Assume a map size of [0, 1] for both axes
     """
 
-    TPT = TreePlanTester(simulate_noise_in_trials=True, reward_model=reward_model, sd_bonus=sd_bonus)
+    TPT = TreePlanTester(simulate_noise_in_trials=True, sd_bonus=sd_bonus)
     TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
     TPT.InitEnvironment(environment_noise=noise_variance, model=model)
-    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, H=horizon, batch_size=batch_size)
+    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, horizon=horizon, batch_size=batch_size)
     TPT.InitTestParameters(initial_physical_state=np.array([0.5, 0.5]),
                            past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
                                [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
