@@ -279,7 +279,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
     TPT.InitEnvironment(environment_noise=noise_variance, model=model)
     TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, horizon=horizon, batch_size=batch_size)
-    TPT.InitTestParameters(initial_physical_state=np.array([0.5, 0.5]),
+    TPT.InitTestParameters(initial_physical_state=np.array([[0.5, 0.5]]),
                            past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
                                [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
 

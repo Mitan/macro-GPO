@@ -1,7 +1,8 @@
+import numpy as np
 
 
 def __GetStraightLineMacroAction(direction, length):
-    return [[direction[0] * i, direction[1] * i] for i in range(1, length+1)]
+    return np.asarray([[direction[0] * i, direction[1] * i] for i in range(1, length+1)])
 
 
 # Generates simple macroactions allowing to move straight in specified directions

@@ -208,7 +208,7 @@ class TreePlan:
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
                                   weights=new_st.weights)
             var = new_st.variance
-            r = self.reward_analytical(mean, math.sqrt(var))
+            r = self.reward_analytical(mean, var)
 
             # Future reward
             f = self.ComputeQRandom(T, x_next, new_st) + r
@@ -435,10 +435,13 @@ class TreePlan:
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
 
         # Physical state is a macro-action (batch)
-        print "a =" + str(a)
-        print "state =" + str(physical_state)
-        assert physical_state.shape == a.shape
+
+        # both should be equal to 2, since the points are 2-d.
+        # the first dimension is the length of state. should be equal to batch size
+        #  but can't compare because of the first step
+        assert physical_state.shape[1] == a.shape[1]
         new_state = PhysicalTransition(physical_state, a)
+        # print new_state
         ndims = 2
         eps = 0.001
         for i in range(a.shape[0]):
@@ -714,7 +717,9 @@ def PhysicalTransition(physical_state, macroaction):
     # todo check dimensions
     current_location = physical_state[-1, :]
     batch_size = macroaction.shape[0]
-    repeated_location = np.tile(current_location, batch_size)
+    # todo fix cause very ugly
+    repeated_location = np.asarray([current_location for i in range(batch_size)])
+    # repeated_location = np.tile(current_location, batch_size)
     assert repeated_location.shape == macroaction.shape
     # new physical state is a batch starting from the current location (the last element of batch)
     new_physical_state = np.add(repeated_location, macroaction)
