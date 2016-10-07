@@ -202,7 +202,8 @@ class TreePlan:
         for a in valid_actions:
 
             x_next = self.TransitionP(x, a)
-
+            print "next"
+            print x_next.physical_state, x_next.history.locations
             # go down the semitree node
             new_st = st.children[ToTuple(a)]
 
@@ -210,6 +211,7 @@ class TreePlan:
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
                                   weights=new_st.weights)
             var = new_st.variance
+            print np.linalg.det(var)
             r = self.reward_analytical(mean, var)
 
             # Future reward
