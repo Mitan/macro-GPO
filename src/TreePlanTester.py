@@ -30,6 +30,7 @@ class TreePlanTester:
         self.bad_places = bad_places
         self.sd_bonus = sd_bonus
 
+    # just sets the parameters
     def InitGP(self, length_scale, signal_variance, noise_variance, mean_function=0.0):
         """
 		@param length_scale: list/nparray containing length scales of each axis respectively
@@ -105,7 +106,7 @@ class TreePlanTester:
         self.past_measurements = np.apply_along_axis(self.model, 1, past_locations)
 
     def Test(self, num_timesteps_test, method, num_samples, visualize=False, action_set=None, save_per_step=True,
-             save_folder="default_results/", MCTSMaxNodes=10 ** 15, cheat=False, cheatnum=0):
+             save_folder="default_results/", MCTSMaxNodes=10 ** 15):
 
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
@@ -126,12 +127,12 @@ class TreePlanTester:
                           macroaction_set=action_set,
                           beta=self.sd_bonus, bad_places=self.bad_places,
                           num_samples=num_samples, batch_size=self.batch_size)
-
+            """
             if time == 0 and cheat:
                 a = (0.0, 0.05)
                 nodes_expanded = cheatnum
-
-            elif method == Methods.Anytime:
+            """
+            if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
                 bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, self.H, max_nodes=MCTSMaxNodes)
 
@@ -154,17 +155,16 @@ class TreePlanTester:
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
 
-            baseline_measurements = [self.model(single_agent_state) for single_agent_state in x_temp.physical_state]
+            baseline_measurements = np.asarray([self.model(single_agent_state) for single_agent_state in x_temp.physical_state])
 
-            """
-                        if self.simulate_noise_in_trials:
-                            noise_components = np.random.normal(0, math.sqrt(self.noise_variance), batch_size)
-                        else:
-                            noise_components = [0 for i in range(batch_size)]
-                        """
+            if self.simulate_noise_in_trials:
+                noise_components = np.random.normal(0, math.sqrt(self.noise_variance), self.batch_size)
+            else:
+                noise_components = np.asarray([0 for i in range(self.batch_size)])
+
             # NB shift measurements by mean
-            #percieved_measurements = baseline_measurements + noise_components
-            percieved_measurements = baseline_measurements
+            percieved_measurements = np.add(baseline_measurements, noise_components)
+            # percieved_measurements = baseline_measurements
 
             x_next = tp.TransitionH(x_temp, percieved_measurements)
 
@@ -265,37 +265,43 @@ class TreePlanTester:
 
 # todo check noise variance
 def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samples, batch_size, grid_gap_=0.05,
-                            length_scale=(0.1, 0.1), epsilon_=5.0,
-                            noise_variance=10 ** -5,
+                            epsilon_=5.0,
                             save_folder=None, save_per_step=True,
-                            preset=False, action_set=None, MCTSMaxNodes=10 ** 15, reward_model="Linear",
-                            cheat=False,
-                            cheatnum=0, sd_bonus=0.0):
+                            action_set=None, MCTSMaxNodes=10 ** 15, sd_bonus=0.0):
     """
     Assume a map size of [0, 1] for both axes
     """
+    # parameters of GP for prediction
+    # in case of real data these should be learned hypers
+    lengthscale = (0.1, 0.1)
+    signalvariance = 1.0
+    noisevariance = 0.05
 
-    TPT = TreePlanTester(simulate_noise_in_trials=True, sd_bonus=sd_bonus)
-    TPT.InitGP(length_scale=length_scale, signal_variance=1, noise_variance=noise_variance)
-    TPT.InitEnvironment(environment_noise=noise_variance, model=model)
-    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, horizon=horizon, batch_size=batch_size)
-    TPT.InitTestParameters(initial_physical_state=np.array([[0.5, 0.5]]),
-                           past_locations=np.array([[0.5, 0.5]]) if not preset else np.array(
-                               [[0.25, 0.25], [0.25, 0.75], [0.75, 0.75], [0.75, 0.25], [0.5, 0.5]]))
+    # for real data it should be false
+    noise_in_trials = True
+
+    TPT = TreePlanTester(simulate_noise_in_trials=noise_in_trials, sd_bonus=sd_bonus)
+    # this GP is for prediction
+    TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance)
+    # adds noise to observations
+    TPT.InitEnvironment(environment_noise=noisevariance, model=model)
+    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, horizon=horizon,
+                    batch_size=batch_size)
+    TPT.InitTestParameters(initial_physical_state=np.array([[0.5, 0.5]]), past_locations=np.array([[0.5, 0.5]]))
 
     return TPT.Test(num_timesteps_test=num_timesteps_test, visualize=False,
                     save_folder=save_folder,
-                    action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes,
-                    cheat=cheat, cheatnum=cheatnum, method=method, num_samples=num_samples)
+                    action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
+                    num_samples=num_samples)
 
 
+"""
 def TestRealData(locations, values, length_scale, signal_variance, noise_variance, mean_function, grid_domain,
                  start_location,
                  grid_gap=1.0, epsilon=1.0, depth=5, num_timesteps_test=20, save_folder=None, save_per_step=True,
                  MCTS=True, MCTSMaxNodes=10 ** 15, Randomized=False,
                  reward_model="Linear", sd_bonus=0.0, special=None, bad_places=[]):
-    """
-	"""
+
 
     m = MapValueDict(locations, values)
 
@@ -315,6 +321,7 @@ def TestRealData(locations, values, length_scale, signal_variance, noise_varianc
 
 
 300
+"""
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
     print "bla"

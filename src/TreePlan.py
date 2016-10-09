@@ -79,10 +79,10 @@ class TreePlan:
     # we use batch UCB version from Erik
     # todo check that we do not add noise twice
     def AcquizitionFunction(self, mu, sigma):
+        print "sigma is "
+        print sigma
+        print np.linalg.det(sigma)
         exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.noise_variance) ** (2) + sigma
-        print exploration_matrix
-        print np.linalg.det(exploration_matrix)
-        print
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     def Algorithm1(self, epsilon, gamma, x_0, H):
@@ -211,7 +211,7 @@ class TreePlan:
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
                                   weights=new_st.weights)
             var = new_st.variance
-            print np.linalg.det(var)
+            # print np.linalg.det(var)
             r = self.reward_analytical(mean, var)
 
             # Future reward

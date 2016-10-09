@@ -251,6 +251,8 @@ class CovarianceFunction:
     def __init__(self):
         pass
 
+# doesn't contain noise
+
 
 class SquareExponential(CovarianceFunction):
     def __init__(self, length_scale, signal_variance):
