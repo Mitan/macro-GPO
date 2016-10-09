@@ -1,11 +1,3 @@
-"""
-
-Implements Algorithm I in my CA report
-
-- iterative Deepening
-- epsilon optimal
-
-"""
 
 import copy
 import math
@@ -18,7 +10,8 @@ from GaussianProcess import GaussianProcess
 from GaussianProcess import SquareExponential
 from Vis2d import Vis2d
 from mutil import mutil
-from src.MacroActionGenerator import GenerateSimpleMacroactions
+from MacroActionGenerator import GenerateSimpleMacroactions
+from qEI import qEI
 
 
 class TreePlan:
@@ -169,6 +162,35 @@ class TreePlan:
 
         # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
         return self.ComputeVRandom(T - 1, self.TransitionH(x, mu), new_st)[0]
+
+    def qEI(self, x_0, eps=10 ** (-5)):
+        """
+        @param x_0 - augmented state
+        @return approximately optimal value, answer, and number of node expansions
+        """
+        # x_0 stores a 2D np array of k points with history
+        max_measurement = max(x_0.history.measurements)
+        best_action = None
+        best_expected_improv = -1.0
+
+        valid_actions = self.GetValidActionSet(x_0.physical_state)
+
+        chol = self.gp.GPCholTraining(x_0.history.locations)
+        for a in valid_actions:
+            x_next = self.TransitionP(x_0, a)
+
+            Sigma = self.gp.GPBatchVariance(x_0.history.locations, x_next.physical_state, chol)
+            weights = self.gp.GPBatchWeights(x_0.history.locations, x_next.physical_state, chol)
+            mu = self.gp.GPBatchMean(x_next.history.measurements, weights)
+
+            expectedImprov = qEI(Sigma, eps, mu, max_measurement, self.batch_size)
+
+            # comparison
+            if expectedImprov >= best_expected_improv:
+                best_expected_improv = expectedImprov
+                best_action = a
+
+        return best_expected_improv, best_action, len(valid_actions)
 
     def StochasticFull(self, x_0, H):
         """

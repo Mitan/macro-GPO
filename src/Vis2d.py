@@ -104,7 +104,7 @@ class Vis2d:
         mmin = 10 ** 10
         for q in [ground_truth, posterior_mean_before, posterior_mean_after]:
             # for q in [ground_truth, posterior_mean_before, posterior_mean_after]:
-            if not q == None:
+            if q is not  None:
                 mmax = max(np.amax(np.amax(q)), mmax)
                 mmin = min(np.amin(np.amin(q)), mmin)
         axes = plt.axes()

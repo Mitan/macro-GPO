@@ -146,7 +146,7 @@ class TreePlanTester:
                 vBest, a, nodes_expanded = tp.MLE(x_0, self.H)
 
             elif method == Methods.qEI:
-                pass
+                vBest, a, nodes_expanded = tp.qEI(x_0)
 
             else:
                 raise Exception("Unknown method type")
