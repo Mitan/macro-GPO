@@ -107,7 +107,7 @@ class GaussianProcess:
 
         return cov_query
 
-    def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857):
+    def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857, noiseVariance = 0):
         """
         Generates a draw from the gaussian process
 
@@ -140,12 +140,17 @@ class GaussianProcess:
 
         # Draw vector
         np.random.seed(seed=seed)
+        # these are noiseless observations
         drawn_vector = multivariate_normal.rvs(mean=u, cov=cov_mat)
+        # add noise to them
+        noise_components = np.random.normal(0, np.math.sqrt(noiseVariance), npoints)
+        assert drawn_vector.shape == noise_components.shape
         assert drawn_vector.shape[0] == npoints
+        drawn_vector_with_noise = np.add(drawn_vector, noise_components)
 
         # print points
         # print drawn_vector
-        return MapValueDict(points, drawn_vector)
+        return MapValueDict(points, drawn_vector_with_noise)
 
     def GPGenerateFromFile(self, filename):
         # file should be in for

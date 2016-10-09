@@ -9,10 +9,11 @@ from GaussianProcess import GaussianProcess
 from MethodEnum import Methods
 
 
-def GenerateSimulatedModel(length_scale, signal_variance, save_folder, seed):
+def GenerateSimulatedModel(length_scale, signal_variance, noise_variance,  save_folder, seed):
     covariance_function = SquareExponential(length_scale, signal_variance=signal_variance)
+    # Generate a drawn vector from GP with noise
     gpgen = GaussianProcess(covariance_function, noise_variance=0)
-    m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed)
+    m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed, noiseVariance=noise_variance)
     # write the dataset to file
     m.WriteToFile(save_folder + "dataset.txt")
     return m
@@ -37,9 +38,9 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
 
     # this model contains noiseless values
     m = GenerateSimulatedModel(length_scale=length_scale, signal_variance=signal_variance,
-                               seed=seed)
+                               seed=seed, noise_variance=noise_variance)
 
-    # todo fix horizon to 1
+    # TODO fix horizon to 1
     myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=2, num_timesteps_test=time_steps,
                                          save_folder=save_folder + "h1/",
                                          num_samples=num_samples, batch_size=batch_size)

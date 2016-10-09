@@ -157,14 +157,16 @@ class TreePlanTester:
 
             baseline_measurements = np.asarray([self.model(single_agent_state) for single_agent_state in x_temp.physical_state])
 
+            # for simulated case, noise is incorporated into model
+            """
             if self.simulate_noise_in_trials:
                 noise_components = np.random.normal(0, math.sqrt(self.noise_variance), self.batch_size)
             else:
                 noise_components = np.asarray([0 for i in range(self.batch_size)])
-
+            """
             # NB shift measurements by mean
-            percieved_measurements = np.add(baseline_measurements, noise_components)
-            # percieved_measurements = baseline_measurements
+            # percieved_measurements = np.add(baseline_measurements, noise_components)
+            percieved_measurements = baseline_measurements
 
             x_next = tp.TransitionH(x_temp, percieved_measurements)
 
@@ -277,7 +279,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     signalvariance = 1.0
     noisevariance = 0.05
 
-    # for real data it should be false
+    # Unused
     noise_in_trials = True
 
     TPT = TreePlanTester(simulate_noise_in_trials=noise_in_trials, sd_bonus=sd_bonus)
