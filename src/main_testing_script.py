@@ -8,7 +8,7 @@ if __name__ == '__main__':
     # max horizon
     h_max = 5
     # time steps
-    t = 5
+    t = 10
 
     batch_size = 2
 

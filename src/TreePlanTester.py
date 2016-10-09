@@ -208,7 +208,7 @@ class TreePlanTester:
         self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary")
         # Save to file
         f = open(save_folder + "summary" + ".txt", "w")
-        """
+
         f.write(x_0.to_str() + "\n")
         f.write("===============================================")
         f.write("Measurements Collected\n")
@@ -219,7 +219,7 @@ class TreePlanTester:
         f.write("Nodes Expanded per stage\n")
         f.write(str(nodes_expanded_history) + "\n")
         f.write("Total nodes expanded = " + str(total_nodes_expanded))
-        """
+
         f.write(str(total_reward_history))
         f.close()
 
