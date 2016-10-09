@@ -38,7 +38,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
 
     # this model contains noiseless values
     m = GenerateSimulatedModel(length_scale=length_scale, signal_variance=signal_variance,
-                               seed=seed, noise_variance=noise_variance)
+                               seed=seed, noise_variance=noise_variance, save_folder=save_folder)
 
     # TODO fix horizon to 1
     myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=2, num_timesteps_test=time_steps,
