@@ -258,8 +258,6 @@ class TreePlanTester:
                     ground_truth=ground_truth(XGrid, YGrid),
                     posterior_mean_before=posterior_mean_before(XGrid, YGrid),
                     posterior_mean_after=posterior_mean_after(XGrid, YGrid),
-                    posterior_variance_before=posterior_variance_before(XGrid, YGrid),
-                    posterior_variance_after=posterior_mean_after(XGrid, YGrid),
                     path_points=[x.physical_state for x in state_history],
                     display=display,
                     save_path=save_path)

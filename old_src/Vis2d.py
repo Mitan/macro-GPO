@@ -15,7 +15,7 @@ class Vis2d:
         pass
 
     def MapPlot(self, grid_extent, ground_truth=None, posterior_mean_before=None, posterior_mean_after=None,
-                posterior_variance_before=None, posterior_variance_after=None, path_points=None, display=True,
+                path_points=None, display=True,
                 save_path=None):
         """
         Plots original field and path taken, as well as
