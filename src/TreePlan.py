@@ -78,9 +78,6 @@ class TreePlan:
     # we use batch UCB version from Erik
     # todo check that we do not add noise twice
     def AcquizitionFunction(self, mu, sigma):
-        print "sigma is "
-        print sigma
-        print np.linalg.det(sigma)
         exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.noise_variance) ** (2) + sigma
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
@@ -207,8 +204,6 @@ class TreePlan:
         for a in valid_actions:
 
             x_next = self.TransitionP(x, a)
-            print "next"
-            print x_next.physical_state, x_next.history.locations
             # go down the semitree node
             new_st = st.children[ToTuple(a)]
 
