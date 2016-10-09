@@ -46,11 +46,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                          num_samples=num_samples, batch_size=batch_size)
     result_graphs.append(['Myopic DB-GP-UCB', myopic_ucb])
 
-    qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "qEI/",
-                                  num_samples=num_samples, batch_size=batch_size)
-    result_graphs.append(['qEI', qEI])
-
     for h in range(2, h_max):
         # print h
         current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
@@ -70,4 +65,12 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                       preset=False, num_samples=num_samples, batch_size=batch_size)
     result_graphs.append(['Anytime H = 3', anytime])
     """
+    # can't apply qEI to single-point
+
+    if batch_size > 1:
+        qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
+                                      save_folder=save_folder + "qEI/",
+                                      num_samples=num_samples, batch_size=batch_size)
+        result_graphs.append(['qEI', qEI])
+
     PlotData(result_graphs, save_folder)
