@@ -74,7 +74,6 @@ class TreePlan:
         self.reward_analytical = lambda mu, sigma: self.AcquizitionFunction(mu, sigma)
         self.reward_sampled = lambda f: 0
 
-
     # heuristic
     # we use batch UCB version from Erik
     # todo check that we do not add noise twice
@@ -97,7 +96,8 @@ class TreePlan:
 
         print "Preprocessing weight spaces..."
         # Obtain Lipchitz lookup tree
-        st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state, x_0.history.locations[: -self.batch_size, :], H,
+        st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state,
+                                                             x_0.history.locations[: -self.batch_size, :], H,
                                                              epsilon)
 
         print "Performing search..."
@@ -146,9 +146,11 @@ class TreePlan:
             # go down the semitree node
             new_st = st.children[ToTuple(a)]
 
-            # Reward is just the mean added to a multiple of the variance at that point
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=new_st.weights)
+
+            mean = self.gp.GPBatchMean(x_next.history.measurements, new_st.weights)
+
+            # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
+            #                      weights=new_st.weights)
             var = new_st.variance
             r = self.reward_analytical(mean, math.sqrt(var))
 
@@ -165,7 +167,10 @@ class TreePlan:
         # no need to average over zeroes
         if T == 1:
             return 0
-        mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
+
+        mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
+
+        # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
         return self.ComputeVRandom(T - 1, self.TransitionH(x, mu), new_st)[0]
 
     def StochasticFull(self, x_0, H):
@@ -208,8 +213,10 @@ class TreePlan:
             new_st = st.children[ToTuple(a)]
 
             # Reward is just the mean added to a multiple of the variance at that point
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=new_st.weights)
+
+            mean = self.gp.GPBatchMean(x_next.history.measurements, new_st.weights)
+
+            # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state, weights=new_st.weights)
             var = new_st.variance
             # print np.linalg.det(var)
             r = self.reward_analytical(mean, var)
@@ -225,13 +232,15 @@ class TreePlan:
 
     def ComputeQRandom(self, T, x, new_st):
 
-        #sams = np.random.normal(mu, sd, self.samples_per_stage)
+        # sams = np.random.normal(mu, sd, self.samples_per_stage)
 
         # no need to average over zeroes
         if T == 1:
             return 0
 
-        mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
+        mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
+
+        # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
         sd = new_st.variance
 
@@ -404,8 +413,8 @@ class TreePlan:
         """
         Builds the preprocessing (semi) tree recursively
         """
-
-        if not isRoot: node.ComputeWeightsAndVariance(self.gp)
+        if not isRoot:
+            node.ComputeWeightsAndVariance(self.gp)
 
         if H == 0:
             return
@@ -415,18 +424,20 @@ class TreePlan:
         new_history_locations = cur_physical_state if node.ss.locations is None else np.append(node.ss.locations,
                                                                                                cur_physical_state, 0)
         """
+        cur_physical_state = node.ss.physical_state
+        new_locations = np.append(node.ss.locations, np.atleast_2d(cur_physical_state), 0)
+        cholesky = self.gp.GPCholTraining(new_locations)
 
         # Add in new children for each valid action
         valid_actions = self.GetValidActionSet(node.ss.physical_state)
         for a in valid_actions:
             # Get new semi state
-            cur_physical_state = node.ss.physical_state
+
             new_physical_state = self.PhysicalTransition(cur_physical_state, a)
-            new_locations = np.append(node.ss.locations, np.atleast_2d(cur_physical_state), 0)
             new_ss = SemiState(new_physical_state, new_locations)
 
             # Build child subtree
-            new_st = SemiTree(new_ss)
+            new_st = SemiTree(new_ss, chol=cholesky)
             node.AddChild(a, new_st)
             new_st.ComputeWeightsAndVariance(self.gp)
             self.BuildTree(new_st, H - 1)
@@ -549,6 +560,7 @@ class TreePlan:
             new_st = st.children[ToTuple(a)]
 
             # Reward is just the mean added to a multiple of the variance at that point
+            # todo fix
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
                                   weights=new_st.weights)
             var = new_st.variance
@@ -573,6 +585,7 @@ class TreePlan:
         # if T > 3: print T
         # Initialize variables
         kxi = new_st.lipchitz
+        # todo fix to batch
         mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
         sd = math.sqrt(new_st.variance)
@@ -777,10 +790,8 @@ class SemiTree:
 
     def ComputeWeightsAndVariance(self, gp):
         """ Compute the weights for this semi_state ONLY"""
-        chol = gp.GPCholTraining(self.ss.locations)
-        cov_query = gp.GPCovQuery(self.ss.locations, self.ss.physical_state)
-        self.weights = gp.GPWeights(self.ss.locations, self.ss.physical_state, chol, cov_query)
-        self.variance = gp.GPVariance2(self.ss.locations, self.ss.physical_state, chol, cov_query)
+        self.weights, self.variance = gp.GetBatchWeightsAndVariance(self.ss.locations, self.ss.physical_state,
+                                                                    self.cholesky)
 
 
 # updated
@@ -912,8 +923,11 @@ class MCTSObservationNode:
         self.saturated = False
 
         self.numchild_unsaturated = self.num_samples
-        self.mu = self.treeplan.gp.GPMean(augmented_state.history.locations, augmented_state.history.measurements,
-                                          augmented_state.physical_state, weights=semi_tree.weights)
+
+        self.mu = self.treeplan.gp.GPBatchMean(augmented_state.history.measurements, semi_tree.weights)
+
+        # self.mu = self.treeplan.gp.GPMean(augmented_state.history.locations, augmented_state.history.measurements,
+        #                                  augmented_state.physical_state, weights=semi_tree.weights)
 
         # Pointer too children action selection nodes. "None" = this observation has not been expanded.
         self.ActionChildren = [None] * self.num_samples

@@ -16,13 +16,15 @@ class GaussianProcess:
 
     def CovarianceMesh(self, col, row):
         """
-		@param col, row - array of shape (number of dimensions * number of data points)
-		@return covariance matrix between physical states presented by col and row
-		"""
+        @param col, row - array of shape (number of dimensions * number of data points)
+        @return covariance matrix between physical states presented by col and row
+        """
 
-        covMat = np.zeros((col.shape[0], row.shape[0]), float)
-        for y in xrange(col.shape[0]):
-            for x in xrange(row.shape[0]):
+        cols = col.shape[0]
+        rows = row.shape[0]
+        covMat = np.zeros((cols, rows), float)
+        for y in xrange(cols):
+            for x in xrange(rows):
                 covMat[y, x] = self.CovarianceFunction(row[x, :], col[y, :])
         return covMat
 
@@ -40,30 +42,13 @@ class GaussianProcess:
 
         return mean
 
-    def GPVariance(self, locations, current_location, weights=None, cov_query=None):
-        """
-        Return the posterior variance for measurements while the robot is in a particular augmented state
-        Warning: This method of computing the posterior variance is numerically unstable.
-
-        @param weights - row vector of weight space interpretation of GP regression
-        """
-
-        if weights == None: weights = self.GPWeights(locations, current_location)
-        if cov_query == None: cov_query = self.GPCovQuery(locations, current_location)
-
-        # Obtain predictive variance by direct multiplication of
-        prior_variance = self.CovarianceFunction(np.atleast_2d(current_location), np.atleast_2d(current_location))
-        variance = prior_variance - np.dot(weights, cov_query.T)  # Numerically unstable component.
-
-        return variance + self.noise_variance
-
     def GPVariance2(self, locations, current_location, cholesky=None, cov_query=None):
         """
-		Return the posterior variance for measurements while the robot is in a particular augmented state
+        Return the posterior variance for measurements while the robot is in a particular augmented state
 
-		@param cholesky - lower triangular matrix of chol decomposition of covariance matrix for training points
-		@param cov_query - matrix of covariancs
-		"""
+        @param cholesky - lower triangular matrix of chol decomposition of covariance matrix for training points
+        @param cov_query - matrix of covariancs
+        """
         if cholesky is None: cholesky = self.GPCholTraining(locations)
         if cov_query is None: cov_query = self.GPCovQuery(locations, current_location)
 
@@ -71,7 +56,8 @@ class GaussianProcess:
         tv = linalg.solve_triangular(cholesky, cov_query.T, lower=True)
         variance = prior_variance - np.dot(tv.T, tv)
 
-        return variance + self.noise_variance
+        return variance + self.noise_variance * np.identity(variance.shape[0])
+
 
     def GPWeights(self, locations, current_location, cholesky=None, cov_query=None):
         """
@@ -100,8 +86,8 @@ class GaussianProcess:
 
     def GPCovQuery(self, locations, current_location):
         """
-		Return matrix of covariances between test point and training points
-		"""
+        Return matrix of covariances between test point and training points
+        """
         # Covariance of query point to data points (row vector)
         cov_query = self.CovarianceMesh(np.atleast_2d(current_location), locations)
 
@@ -159,22 +145,14 @@ class GaussianProcess:
         vals = data[:, -1]
         return MapValueDict(locs, vals)
 
-
     def GetBatchWeightsAndVariance(self, history, current_physical_state, cholesky):
         # assume that both inputs are np 2D-arrays
         history_prior = self.CovarianceMesh(history, history)
         #current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
         # cholesky = self.GPCholTraining(history_prior)
         # cholesky = np.linalg.cholesky(history_prior + self.noise_variance * np.identity(history_prior.shape[0]))
-        assert  cholesky is not None
+        assert cholesky is not None
         assert cholesky.shape == history_prior.shape
-
-        #history_current = self.CovarianceMesh(history, current_physical_state)
-
-        # n
-        #assert history_current.shape[0] == history_prior.shape[0]
-        # k
-        #assert history_current.shape[1] == current_prior.shape[1]
 
         variance = self.GPBatchVariance(history, current_physical_state, cholesky)
         weights = self.GPBatchWeights(history, current_physical_state, cholesky)
@@ -237,7 +215,6 @@ class GaussianProcess:
         change = np.dot(v.T, v)
         # assert np.any(change)
         return current_prior + self.noise_variance * np.identity(current_prior.shape[0]) - change
-        # return change
 
 
 """
