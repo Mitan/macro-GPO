@@ -17,11 +17,12 @@ if __name__ == '__main__':
 
     args = sys.argv
 
-    start = 203
-    end = 204
+    start = 205
+    end = start+1
     assert start < end
 
-    filename = "./debug_dataset.txt"
+    filename = None
+    # filename = "./debug_dataset.txt"
 
     # load dataset locally from file, for debug
     if filename is not None:
