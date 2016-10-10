@@ -1,4 +1,3 @@
-
 import copy
 import math
 
@@ -135,7 +134,6 @@ class TreePlan:
 
             # go down the semitree node
             new_st = st.children[ToTuple(a)]
-
 
             mean = self.gp.GPBatchMean(x_next.history.measurements, new_st.weights)
 
@@ -287,7 +285,7 @@ class TreePlan:
         root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
-        self.PreprocessLipchitz(root_node, isRoot=True)
+        self.PreprocessLipchitz(root_node)
 
         # st, new_epsilon, l, nodes_expanded=self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,epsilon)
         lamb = epsilon
@@ -409,7 +407,7 @@ class TreePlan:
         root_ss = SemiState(physical_state, locations)
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
-        self.PreprocessLipchitz(root_node, isRoot=True)
+        self.PreprocessLipchitz(root_node)
 
         # Search for appropriate epsilon and adjust partitions accordingly
         ep = suggested_epsilon
@@ -493,17 +491,14 @@ class TreePlan:
                                 current_agent_postion[1] - (self.bad_places[j])[1]) < eps:
                     return False
         """
-        print "state is " +str(new_state)
+        print "state is " + str(new_state)
         return True
 
-    def PreprocessLipchitz(self, node, isRoot=False):
+    def PreprocessLipchitz(self, node):
         """
         Obtain Lipchitz vector and Lipchitz constant for each node.
         @param node - root node of the semi-tree (assumed to be already constructed)
         """
-
-        nl = node.ss.locations.shape[
-            0]  # number of elements PRIOR to adding current location. Ie. the size of the weight space
 
         # Base case
         if len(node.children) == 0:
@@ -517,13 +512,13 @@ class TreePlan:
             vmax = 0
             for _, c in node.children.iteritems():
                 self.PreprocessLipchitz(c)
-                # do we need to count all the values L_upper if use only one
+                # do we need to count all the values L_upper if use only one?
                 # av = (c.L_upper[0:nl + 1] + ((c.L_upper[-1] + self.l1 + self.l2(math.sqrt(c.variance))) * (c.weights.T)))
                 alpha = np.linalg.norm(c.weights, ord='fro')
-                av = c.L_upper * math.sqrt(1 + alpha**2) + alpha * math.sqrt(self.batch_size)
+                av = c.L_upper * math.sqrt(1 + alpha ** 2) + alpha * math.sqrt(self.batch_size)
                 vmax = np.maximum(vmax, av)
 
-            # node.L_upper = vmax
+                # node.L_upper = vmax
 
         # node.lipchitz = node.L_upper[-1]
         node.lipchitz = vmax
@@ -969,10 +964,13 @@ class MCTSObservationNode:
         # self.ObservationValue = [None] * self.num_samples
 
         mu = self.mu
-        sd = math.sqrt(semi_tree.variance)
+        # sd = math.sqrt(semi_tree.variance)
+        samples = np.random.multivariate_normal(mu, semi_tree.variance, self.num_samples)
+        # samples = np.random.normal(mu, sd, self.num_samples)
 
-        samples = np.random.normal(mu, sd, self.num_samples)
-        self.ObservationValue = np.sort(samples, axis=None)
+        # cannot sort
+        # self.ObservationValue = np.sort(samples, axis=None)
+        self.ObservationValue = samples
         """
         # todo remove
         # Weight of each interval
@@ -1047,9 +1045,8 @@ class MCTSObservationNode:
         # Update reward
         # lower += self.mu - self.semi_tree.true_error
         # upper += self.mu + self.semi_tree.true_error
-        # todo check if we need this true error? defined in get partitions
         r = self.treeplan.reward_analytical(self.mu, self.semi_tree.variance)
-        # todo change to lambda
+
         lower += r - self.lamb
         upper += r + self.lamb
 
@@ -1057,6 +1054,7 @@ class MCTSObservationNode:
 
         return lower, upper
 
+    # TODO anytime fix here
     def UpdateChildrenBounds(self, index_updated):
         """ Update bounds of OTHER children while taking into account lipschitz constraints
         @param index_updated: index of child whose bound was just updated
@@ -1110,7 +1108,7 @@ class MCTSObservationNode:
 
             if not change == True:
                 break
-
+    # TODO anytime fix here
     def SkeletalExpand(self):
         """ Expand only using observations at the edges
         """
