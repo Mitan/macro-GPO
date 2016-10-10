@@ -142,7 +142,7 @@ class TreePlan:
             # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
             #                      weights=new_st.weights)
             var = new_st.variance
-            r = self.reward_analytical(mean, math.sqrt(var))
+            r = self.reward_analytical(mean, var)
 
             # Future reward
             f = self.ComputeQMLE(T, x_next, new_st) + r
@@ -389,7 +389,7 @@ class TreePlan:
                 v[i] += self.reward_sampled(cc.ObservationValue[i])
                 v[i] *= cc.IntervalWeights[i]
 
-            sumval = sum(v) + self.reward_analytical(cc.mu, math.sqrt(cc.semi_tree.variance))
+            sumval = sum(v) + self.reward_analytical(cc.mu, cc.semi_tree.variance)
             if sumval > best_a_val:
                 best_a_val = sumval
                 best_a = a
@@ -581,7 +581,7 @@ class TreePlan:
             mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
                                   weights=new_st.weights)
             var = new_st.variance
-            r = self.reward_analytical(mean, math.sqrt(var))
+            r = self.reward_analytical(mean, var)
 
             # Future reward
             f = self.Q_det(T, l, gamma, x_next, new_st) + r
@@ -1037,7 +1037,7 @@ class MCTSObservationNode:
         # lower += self.mu - self.semi_tree.true_error
         # upper += self.mu + self.semi_tree.true_error
         # todo check if we need this true error? defined in get partitions
-        r = self.treeplan.reward_analytical(self.mu, math.sqrt(self.semi_tree.variance))
+        r = self.treeplan.reward_analytical(self.mu, self.semi_tree.variance)
         # todo change to lambda
         lower += r - self.lamb
         upper += r + self.lamb

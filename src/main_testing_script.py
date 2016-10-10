@@ -6,7 +6,7 @@ if __name__ == '__main__':
 
     my_save_folder_root = "../tests/full/"
     # max horizon
-    h_max = 5
+    h_max = 4
     # time steps
     t = 10
 
@@ -17,8 +17,8 @@ if __name__ == '__main__':
 
     args = sys.argv
 
-    start = 202
-    end = 203
+    start = 203
+    end = 204
 
     # for test
     # no command line args => running locally
