@@ -12,14 +12,20 @@ from MethodEnum import Methods
 def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed):
     covariance_function = SquareExponential(length_scale, signal_variance=signal_variance)
     # Generate a drawn vector from GP with noise
-    gpgen = GaussianProcess(covariance_function, noise_variance=0)
+    gpgen = GaussianProcess(covariance_function, noise_variance)
     m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed, noiseVariance=noise_variance)
     # write the dataset to file
     m.WriteToFile(save_folder + "dataset.txt")
     return m
 
 
-def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size):
+def GenerateModelFromFile(filename):
+    m = GaussianProcess.GPGenerateFromFile(filename)
+
+    return m
+
+
+def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
     result_graphs = []
 
     # eps = 10 ** 10
@@ -37,8 +43,11 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     noise_variance = 0.05
 
     # this model contains noiseless values
-    m = GenerateSimulatedModel(length_scale=length_scale, signal_variance=signal_variance,
-                               seed=seed, noise_variance=noise_variance, save_folder=save_folder)
+    if filename is not None:
+        m = GenerateModelFromFile(filename)
+    else:
+        m = GenerateSimulatedModel(length_scale=length_scale, signal_variance=signal_variance,
+                                   seed=seed, noise_variance=noise_variance, save_folder=save_folder)
 
     # TODO fix horizon to 1
     myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=2, num_timesteps_test=time_steps,

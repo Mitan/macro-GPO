@@ -473,6 +473,7 @@ class TreePlan:
         #  but can't compare because of the first step
         assert physical_state.shape[1] == a.shape[1]
         new_state = PhysicalTransition(physical_state, a)
+        assert new_state.shape == a.shape
         # print new_state
         ndims = 2
         eps = 0.001

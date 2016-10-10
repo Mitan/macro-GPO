@@ -19,11 +19,18 @@ if __name__ == '__main__':
 
     start = 203
     end = 204
-
-    # for test
-    # no command line args => running locally
     assert start < end
-    if len(args) == 1:
+
+    filename = "./debug_dataset.txt"
+
+    # load dataset locally from file, for debug
+    if filename is not None:
+        for seed in range(start, end):
+            TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
+                         num_samples=num_samples, batch_size=batch_size, filename=filename)
+
+    # no command line args => running locally with generating datasets
+    elif len(args) == 1:
         for seed in range(start, end):
             TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
                          num_samples=num_samples, batch_size=batch_size)

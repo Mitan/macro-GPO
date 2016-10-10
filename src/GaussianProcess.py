@@ -138,7 +138,8 @@ class GaussianProcess:
         # print drawn_vector
         return MapValueDict(points, drawn_vector_with_noise)
 
-    def GPGenerateFromFile(self, filename):
+    @staticmethod
+    def GPGenerateFromFile(filename):
         # file should be in for
         data = np.genfromtxt(filename)
         locs = data[:, :-1]
