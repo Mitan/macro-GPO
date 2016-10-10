@@ -477,19 +477,23 @@ class TreePlan:
         # print new_state
         ndims = 2
         eps = 0.001
+        # a.shape[0] is batch_size
         for i in range(a.shape[0]):
             current_agent_postion = new_state[i, :]
             for dim in xrange(ndims):
                 if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
-                        self.grid_domain[dim][1]: return False
+                        self.grid_domain[dim][1]:
+                    return False
 
         # Check for obstacles
+        """
         if self.bad_places:
             for j in xrange(len(self.bad_places)):
                 if abs(current_agent_postion[0] - (self.bad_places[j])[0]) < eps and abs(
                                 current_agent_postion[1] - (self.bad_places[j])[1]) < eps:
                     return False
-
+        """
+        print "state is " +str(new_state)
         return True
 
     def PreprocessLipchitz(self, node, isRoot=False):
@@ -503,20 +507,26 @@ class TreePlan:
 
         # Base case
         if len(node.children) == 0:
-            node.L_upper = np.zeros((nl + 1, 1))
+            # now L_upper is a scalar
+            # node.L_upper = np.zeros((nl + 1, 1))
+            node.L_upper = 0
 
         else:
             # Recursive case
-            vmax = np.zeros((nl + 1, 1))
-            for a, c in node.children.iteritems():
+            # vmax = np.zeros((nl + 1, 1))
+            vmax = 0
+            for _, c in node.children.iteritems():
                 self.PreprocessLipchitz(c)
-                av = (
-                    c.L_upper[0:nl + 1] + ((c.L_upper[-1] + self.l1 + self.l2(math.sqrt(c.variance))) * (c.weights.T)))
+                # do we need to count all the values L_upper if use only one
+                # av = (c.L_upper[0:nl + 1] + ((c.L_upper[-1] + self.l1 + self.l2(math.sqrt(c.variance))) * (c.weights.T)))
+                alpha = np.linalg.norm(c.weights, ord='fro')
+                av = c.L_upper * math.sqrt(1 + alpha**2) + alpha * math.sqrt(self.batch_size)
                 vmax = np.maximum(vmax, av)
 
-            node.L_upper = vmax
+            # node.L_upper = vmax
 
-        node.lipchitz = node.L_upper[-1]
+        # node.lipchitz = node.L_upper[-1]
+        node.lipchitz = vmax
 
     def PreprocessPartitions(self, node, err_allowed, isRoot=False):
         """
