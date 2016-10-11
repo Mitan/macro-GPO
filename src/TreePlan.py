@@ -1129,7 +1129,6 @@ class MCTSObservationNode:
             if not change == True:
                 break
         """
-    # TODO anytime fix here
     def SkeletalExpand(self):
         """ Expand only using observations at the edges
         """
@@ -1144,8 +1143,18 @@ class MCTSObservationNode:
         # 	self.UpdateChildrenBounds(self.num_partitions-1)
 
         # choose the center node
-        # todo change into minimal distance
-        target = int(math.floor(self.num_samples / 2))
+        # todo change coz ugly
+        list_observations= self.ObservationValue.tolist()
+        distances = [np.linalg.norm(observation - self.mu) for observation in list_observations]
+        target = -1.0
+        current_min = float('inf')
+        for i in  range(len(distances)):
+            if distances[i] < current_min:
+                current_min = distances[i]
+                target = i
+
+        assert target >= 0
+        #target = int(math.floor(self.num_samples / 2))
         num_nodes_expanded += self.SkeletalExpandHere(target)
         self.UpdateChildrenBounds(target)
         return num_nodes_expanded
