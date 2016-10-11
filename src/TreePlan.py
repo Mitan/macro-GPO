@@ -1054,7 +1054,7 @@ class MCTSObservationNode:
 
         return lower, upper
 
-    # TODO anytime fix here
+
     def UpdateChildrenBounds(self, index_updated):
         """ Update bounds of OTHER children while taking into account lipschitz constraints
         @param index_updated: index of child whose bound was just updated
@@ -1065,6 +1065,26 @@ class MCTSObservationNode:
         assert self.BoundsChildren[index_updated][0] <= self.BoundsChildren[index_updated][1], "%s, %s" % (
             self.BoundsChildren[index_updated][0], self.BoundsChildren[index_updated][1])
 
+        for i in range(len(self.ActionChildren)):
+            # is it efficient? or better remove from iteration list?
+            if i == index_updated:
+                continue
+            # line 20 of algorithm in draft
+            b = np.linalg.norm(self.ObservationValue[i] - self.ObservationValue[index_updated]) * lip
+            testLower = self.BoundsChildren[index_updated][0] - b
+            testUpper = self.BoundsChildren[index_updated][1] + b
+            # print self.BoundsChildren[i], testLower, testUpper
+            if self.BoundsChildren[i][0] < testLower:
+                self.BoundsChildren[i] = (testLower, self.BoundsChildren[i][1])
+
+            if self.BoundsChildren[i][1] > testUpper:
+                self.BoundsChildren[i] = (self.BoundsChildren[i][0], testUpper)
+
+            assert (
+                self.BoundsChildren[i][0] <= self.BoundsChildren[i][
+                    1]), "lower bound greater than upper bound %f, %f" % (
+                self.BoundsChildren[i][0], self.BoundsChildren[i][1])
+        """
         # todo no more left and right!
         # Intervals lying to the left of just updated interval
         for i in reversed(xrange(index_updated)):
@@ -1108,6 +1128,7 @@ class MCTSObservationNode:
 
             if not change == True:
                 break
+        """
     # TODO anytime fix here
     def SkeletalExpand(self):
         """ Expand only using observations at the edges
