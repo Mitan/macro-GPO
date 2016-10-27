@@ -11,8 +11,10 @@ signal_variance = random.uniform(2, 5)
 
 
 def SquareExpKernel(x, y):
+    eps_tolerance = 10**-6
     ind = ((x - y) / l) ** 2
-    return signal_variance * math.exp(- 0.5 * ind)
+    kronecker = 1 if np.linalg.norm(x - y) < eps_tolerance else 0
+    return signal_variance * math.exp(- 0.5 * ind) + kronecker * noise_variance
 
 
 def CovarianceMesh(col_array, row_array):
@@ -36,11 +38,11 @@ def MyPredict(new_loc):
     # print k_star.shape
     number_of_points = locations.shape[0]
     # print K
-    noise_matrix = noise_variance * np.identity(number_of_points)
-    assert noise_matrix.shape == K.shape
-    K_noise = K + noise_matrix
+    # noise_matrix = noise_variance * np.identity(number_of_points)
+    # assert noise_matrix.shape == K.shape
+    # K_noise = K + noise_matrix
     # L is lower triangular, L *  L.T = K_noise
-    L = np.linalg.cholesky(K_noise)
+    L = np.linalg.cholesky(K)
 
     temp = scipy.linalg.solve_triangular(L, Y, lower=True)
     alpha = scipy.linalg.solve_triangular(L.T, temp, lower=False)
