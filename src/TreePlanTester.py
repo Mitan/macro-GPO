@@ -33,15 +33,16 @@ class TreePlanTester:
     # just sets the parameters
     def InitGP(self, length_scale, signal_variance, noise_variance, mean_function=0.0):
         """
-		@param length_scale: list/nparray containing length scales of each axis respectively
-		@param signal_variance
-		@param noise_variance
-		@param mean_function
+        @param length_scale: list/nparray containing length scales of each axis respectively
+        @param signal_variance
+        @param noise_variance
+        @param mean_function
 
-		Example usage: InitGP([1.5, 1.5], 1, 0.1)
-		"""
-        self.covariance_function = SquareExponential(np.array(length_scale), signal_variance)
-        self.gp = GaussianProcess(self.covariance_function, noise_variance, mean_function=mean_function)
+        Example usage: InitGP([1.5, 1.5], 1, 0.1)
+        """
+        self.covariance_function = SquareExponential(np.array(length_scale), signal_variance=signal_variance,
+                                                     noise_variance=noise_variance)
+        self.gp = GaussianProcess(self.covariance_function, mean_function=mean_function)
         self.noise_variance = noise_variance
 
     def InitEnvironment(self, environment_noise, model):
@@ -155,7 +156,8 @@ class TreePlanTester:
             x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
 
-            baseline_measurements = np.asarray([self.model(single_agent_state) for single_agent_state in x_temp.physical_state])
+            baseline_measurements = np.asarray(
+                [self.model(single_agent_state) for single_agent_state in x_temp.physical_state])
 
             # for simulated case, noise is incorporated into model
             """

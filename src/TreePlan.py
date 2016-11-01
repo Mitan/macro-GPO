@@ -1209,8 +1209,8 @@ if __name__ == "__main__":
     length_scale = [1.5, 1.5]
     signal_variance = 1
     noise_variance = 0.1
-    covariance_function = SquareExponential(np.array(length_scale), signal_variance)
-    gp = GaussianProcess(covariance_function, noise_variance)
+    covariance_function = SquareExponential(np.array(length_scale), signal_variance, noise_variance)
+    gp = GaussianProcess(covariance_function)
 
     # Init environment model
     actual_noise_variance = 0.1

@@ -10,9 +10,9 @@ from MethodEnum import Methods
 
 
 def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed):
-    covariance_function = SquareExponential(length_scale, signal_variance=signal_variance)
+    covariance_function = SquareExponential(length_scale, signal_variance=signal_variance, noise_variance=noise_variance)
     # Generate a drawn vector from GP with noise
-    gpgen = GaussianProcess(covariance_function, noise_variance)
+    gpgen = GaussianProcess(covariance_function)
     m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed, noiseVariance=noise_variance)
     # write the dataset to file
     m.WriteToFile(save_folder + "dataset.txt")
