@@ -1,14 +1,14 @@
 import numpy as np
-from scipy import linalg
+import scipy
 from scipy.stats import multivariate_normal
 
 
 class GaussianProcess:
-    def __init__(self, covariance_function, noise_variance=0, mean_function=0.0):
+    def __init__(self, covariance_function, mean_function=0.0):
         """ @param mean_function: constant mean. TODO: Change to nonstatic mean function rather than a simple constant
         """
         self.covariance_function = covariance_function
-        self.noise_variance = noise_variance
+        # self.noise_variance = noise_variance
         self.mean_function = mean_function
 
     def CovarianceFunction(self, s1, s2):
@@ -19,7 +19,8 @@ class GaussianProcess:
         @param col, row - array of shape (number of dimensions * number of data points)
         @return covariance matrix between physical states presented by col and row
         """
-
+        col = np.atleast_2d(col)
+        row = np.atleast_2d(row)
         cols = col.shape[0]
         rows = row.shape[0]
         covMat = np.zeros((cols, rows), float)
@@ -28,72 +29,34 @@ class GaussianProcess:
                 covMat[y, x] = self.CovarianceFunction(row[x, :], col[y, :])
         return covMat
 
-    def GPMean(self, locations, measurements, current_location, weights=None):
-        """
-		Return the posterior mean for measurements while the robot is in a particular augmented state
-		
-		@param weights - row vector of weight space interpretation of GP regression
-		"""
+    # assert locations, current_location a 2-D arrays
+    def GPMean(self, locations, current_location, measurements, cholesky=None):
+        if cholesky is None:
+            cholesky = self.Cholesky(locations)
+        k_star = self.CovarianceMesh(locations, current_location)
+        temp = scipy.linalg.solve_triangular(cholesky, measurements, lower=True)
+        alpha = scipy.linalg.solve_triangular(cholesky.T, temp, lower=False)
+        mu = np.dot(k_star.T, alpha)
+        return mu
 
-        if weights is None: weights = self.GPWeights(locations, current_location)
+    # assert locations, current_location a 2-D arrays
+    def Cholesky(self, locations):
+        K = self.CovarianceMesh(locations, locations)
+        return np.linalg.cholesky(K)
 
-        # Obtain mean
-        mean = np.dot(weights, measurements - np.ones(measurements.shape) * self.mean_function) + self.mean_function
+    # assert locations, current_location a 2-D arrays
+    def GPVariance(self, locations, current_location, cholesky=None):
+        if cholesky is None:
+            cholesky = self.Cholesky(locations)
+        k_star = self.CovarianceMesh(locations, current_location)
+        K_current = self.CovarianceMesh(current_location, current_location)
+        v = scipy.linalg.solve_triangular(cholesky, k_star, lower=True)
+        v_prodcut = np.dot(v.T, v)
+        assert v_prodcut.shape == K_current.shape
+        var = K_current - v_prodcut
+        return var
 
-        return mean
-
-    def GPVariance2(self, locations, current_location, cholesky=None, cov_query=None):
-        """
-        Return the posterior variance for measurements while the robot is in a particular augmented state
-
-        @param cholesky - lower triangular matrix of chol decomposition of covariance matrix for training points
-        @param cov_query - matrix of covariancs
-        """
-        if cholesky is None: cholesky = self.GPCholTraining(locations)
-        if cov_query is None: cov_query = self.GPCovQuery(locations, current_location)
-
-        prior_variance = self.CovarianceFunction(np.atleast_2d(current_location), np.atleast_2d(current_location))
-        tv = linalg.solve_triangular(cholesky, cov_query.T, lower=True)
-        variance = prior_variance - np.dot(tv.T, tv)
-
-        return variance + self.noise_variance * np.identity(variance.shape[0])
-
-
-    def GPWeights(self, locations, current_location, cholesky=None, cov_query=None):
-        """
-        Get a row vector of weights assuming a weight space view
-
-        @param cholesky - lower triangular matrix of chol decomposition of covariance matrix for training points
-        @param cov_query - matrix of covariancs
-        """
-
-        if cholesky is None: cholesky = self.GPCholTraining(locations)
-        if cov_query is None: cov_query = self.GPCovQuery(locations, current_location)
-
-        # Weights by matrix division using cholesky decomposition
-        weights = linalg.cho_solve((cholesky, True), cov_query.T).T
-
-        return weights
-
-    def GPCholTraining(self, locations):
-        # Covariance matrix between existing data points
-        cov_data = self.CovarianceMesh(locations, locations)
-
-        # Cholesky decomposition for numerically stable inversion
-        cholesky = np.linalg.cholesky(cov_data + self.noise_variance * np.identity(cov_data.shape[0]))
-
-        return cholesky
-
-    def GPCovQuery(self, locations, current_location):
-        """
-        Return matrix of covariances between test point and training points
-        """
-        # Covariance of query point to data points (row vector)
-        cov_query = self.CovarianceMesh(np.atleast_2d(current_location), locations)
-
-        return cov_query
-
-    def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857, noiseVariance = 0):
+    def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857, noiseVariance=0):
         """
         Generates a draw from the gaussian process
 
@@ -146,85 +109,6 @@ class GaussianProcess:
         vals = data[:, -1]
         return MapValueDict(locs, vals)
 
-    def GetBatchWeightsAndVariance(self, history, current_physical_state, cholesky):
-        # assume that both inputs are np 2D-arrays
-        history_prior = self.CovarianceMesh(history, history)
-        #current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
-        # cholesky = self.GPCholTraining(history_prior)
-        # cholesky = np.linalg.cholesky(history_prior + self.noise_variance * np.identity(history_prior.shape[0]))
-        assert cholesky is not None
-        assert cholesky.shape == history_prior.shape
-
-        variance = self.GPBatchVariance(history, current_physical_state, cholesky)
-        weights = self.GPBatchWeights(history, current_physical_state, cholesky)
-
-        return weights, variance
-
-    def GPBatchMean(self, measurements, weights):
-        # surprisingly works
-        shifted_measurements = measurements - self.mean_function
-        # todo
-        #
-        # does (n, k) * (k,) produce matrix  product?
-        # Perhaps it does since the result is (n,)
-        # but not sure
-        mean = np.dot(weights, shifted_measurements) + self.mean_function
-        return mean
-
-    def GPBatchWeights(self, history, current_physical_state, cholesky):
-        """
-        history_current - (n,k) matrix - covariances between history values and new points
-        current_prior - (k,k) matrix
-        cholesky - Cholesky decomposition of history_locations
-        @ return (k, n) matrix
-        """
-        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
-        # todo avoid computation of v twice
-        # print cholesky.shape
-        # print history_current.shape
-        history_current = self.CovarianceMesh(history, current_physical_state)
-        v = linalg.solve_triangular(cholesky, history_current, lower=True)
-        # print v.shape
-        weights_transposed = linalg.solve_triangular(cholesky.T, v, lower=False)
-        # print weights_transposed.shape
-        # print weights_transposed.shape, history_current.shape
-
-        assert (weights_transposed).shape == history_current.shape
-        assert np.any(weights_transposed)
-        # print weights_transposed
-        return weights_transposed.T
-
-    def GPBatchVariance(self, history, current_physical_state, cholesky):
-        """
-         history_locations - (n,n) matix - prio
-        history_current - (n,k) matrix
-        current_prior - (k,k) matrix
-        cholesky - Cholesky decomposition of history_locations
-        @ return (k,k) covariance
-        """
-        current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
-        history_current = self.CovarianceMesh(history, current_physical_state)
-
-        # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
-        v = linalg.solve_triangular(cholesky, history_current, lower=True)
-        # should be (k,k) matrix
-
-        assert history_current.shape[0] == v.shape[0]
-        assert current_prior.shape[0] == current_prior.shape[1]
-        assert current_prior.shape[1] == v.shape[1]
-
-        change = np.dot(v.T, v)
-        # assert np.any(change)
-        return current_prior + self.noise_variance * np.identity(current_prior.shape[0]) - change
-
-
-"""
-=== Covariance Functions ===
-
-Defines the common covariance functions
-
-"""
-
 
 class CovarianceFunction:
     """
@@ -234,26 +118,31 @@ class CovarianceFunction:
     def __init__(self):
         pass
 
-# doesn't contain noise
 
+# todo NB noise is inside of covariance function
 
 class SquareExponential(CovarianceFunction):
-    def __init__(self, length_scale, signal_variance):
+    def __init__(self, length_scale, signal_variance, noise_variance):
         """
-		@param: length_scale l - array or list containing the length scales for each dimension
-		@param: signal variance sigma_f_squared - float containing the signal variance
-		"""
-
+        @param: length_scale l - array or list containing the length scales for each dimension
+        @param: signal variance sigma_f_squared - float containing the signal variance
+        """
         self.length_scale = np.atleast_2d(length_scale)
         self.signal_variance = signal_variance
+        self.noise_variance = noise_variance
+        # const
+        self.eps_tolerance = 10 ** -6
 
     def Cov(self, physical_state_1, physical_state_2):
+        kronecker = 1 if np.linalg.norm(physical_state_1 - physical_state_2) < self.eps_tolerance else 0
         diff = np.atleast_2d(physical_state_1) - np.atleast_2d(physical_state_2)
-        squared = np.dot(diff, np.divide(diff, self.length_scale).T)
-        return self.signal_variance * np.exp(-0.5 * squared)
+        length_scale_squared = np.square(self.length_scale)
+        squared = np.dot(diff, np.divide(diff, length_scale_squared).T)
+        return self.signal_variance * np.exp(-0.5 * squared) + kronecker * self.noise_variance
 
 
-# todo note that values have zero mean
+# todo note that values  are normalized to have zero mean
+# see init
 class MapValueDict():
     def __init__(self, locations, values, epsilon=None):
         """
@@ -302,15 +191,4 @@ class MapValueDict():
 
 if __name__ == "__main__":
     # Generation Tests
-
-    covariance_function = SquareExponential(30, 1)
-    gp2d = GaussianProcess(covariance_function)
-    predict_range = ((0, 1), (0, 1))
-    num_samples = (2, 2)
-    m = gp2d.GPGenerate(predict_range, num_samples, seed=12)
-    file_name = "test.txt"
-    m.WriteToFile(file_name)
-    m_1 = gp2d.GPGenerateFromFile(file_name)
-
-    assert np.array_equal(m.locations, m_1.locations)
-    assert np.allclose(m.values, m_1.values)
+    pass
