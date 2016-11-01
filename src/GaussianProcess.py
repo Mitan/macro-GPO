@@ -11,31 +11,29 @@ class GaussianProcess:
         # self.noise_variance = noise_variance
         self.mean_function = mean_function
 
-    def CovarianceFunction(self, s1, s2):
-        return self.covariance_function.Cov(s1, s2)
+    def CovarianceFunction(self, s1, s2, kronecker):
+        return self.covariance_function.Cov(s1, s2, kronecker)
 
     def CovarianceMesh(self, col, row):
         """
         @param col, row - array of shape (number of dimensions * number of data points)
         @return covariance matrix between physical states presented by col and row
         """
-        col = np.atleast_2d(col)
-        row = np.atleast_2d(row)
         cols = col.shape[0]
         rows = row.shape[0]
         covMat = np.zeros((cols, rows), float)
         for y in xrange(cols):
             for x in xrange(rows):
-                covMat[y, x] = self.CovarianceFunction(row[x, :], col[y, :])
+                # compare indexes
+                kronecker = 1 if x == y else 0
+                covMat[y, x] = self.CovarianceFunction(row[x, :], col[y, :],kronecker)
         return covMat
 
     # assert locations, current_location a 2-D arrays
     def GPMean(self, locations, current_location, measurements, cholesky=None):
         if cholesky is None:
             cholesky = self.Cholesky(locations)
-        k_star = self.CovarianceMesh(locations, current_location)
-        measurements = np.atleast_2d(measurements)
-        print measurements.shape, cholesky.shape, locations.shape
+        k_star = self.CovarianceMesh(locations, np.atleast_2d(current_location))
         temp = scipy.linalg.solve_triangular(cholesky, measurements, lower=True)
         alpha = scipy.linalg.solve_triangular(cholesky.T, temp, lower=False)
         mu = np.dot(k_star.T, alpha)
@@ -44,8 +42,12 @@ class GaussianProcess:
     # assert locations, current_location a 2-D arrays
     def Cholesky(self, locations):
         K = self.CovarianceMesh(locations, locations)
-        return np.linalg.cholesky(K)
+        d =  np.linalg.det(K)
+        if abs(d) < 10**-24:
+            print K
+            print locations
 
+        return np.linalg.cholesky(K)
     # assert locations, current_location a 2-D arrays
     def GPVariance(self, locations, current_location, cholesky=None):
         if cholesky is None:
@@ -133,10 +135,11 @@ class SquareExponential(CovarianceFunction):
         self.signal_variance = signal_variance
         self.noise_variance = noise_variance
         # const
-        self.eps_tolerance = 10 ** -6
+        self.eps_tolerance = 10 ** -10
 
-    def Cov(self, physical_state_1, physical_state_2):
-        kronecker = 1 if np.linalg.norm(physical_state_1 - physical_state_2) < self.eps_tolerance else 0
+    def Cov(self, physical_state_1, physical_state_2, kronecker):
+        # kronecker = 1 if np.array_equal(physical_state_1, physical_state_2)  else 0
+        #  kronecker = 1 if np.linalg.norm(physical_state_1 - physical_state_2) < self.eps_tolerance else 0
         diff = np.atleast_2d(physical_state_1) - np.atleast_2d(physical_state_2)
         length_scale_squared = np.square(self.length_scale)
         squared = np.dot(diff, np.divide(diff, length_scale_squared).T)

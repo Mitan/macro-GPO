@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 from ResultsPlotter import PlotData
 from TreePlanTester import testWithFixedParameters
@@ -46,7 +47,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     if filename is not None:
         m = GenerateModelFromFile(filename)
     else:
-        m = GenerateSimulatedModel(length_scale=length_scale, signal_variance=signal_variance,
+        m = GenerateSimulatedModel(length_scale=np.array(length_scale), signal_variance=signal_variance,
                                    seed=seed, noise_variance=noise_variance, save_folder=save_folder)
 
     myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,

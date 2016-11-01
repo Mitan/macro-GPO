@@ -105,7 +105,7 @@ class TreePlanTester:
         # Compute measurements
         self.past_measurements = None if self.past_locations is None else np.apply_along_axis(self.model, 1,
                                                                                               past_locations)
-        
+        print "shapeeee" + str(self.past_measurements.shape)
 
     def DoTest(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, bad_places, simulated_func_mean, debug=False,
                  save_per_step=True,

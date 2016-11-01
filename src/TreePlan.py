@@ -493,7 +493,7 @@ class TreePlan:
                                 current_agent_postion[1] - (self.bad_places[j])[1]) < eps:
                     return False
         """
-        print "state is " + str(new_state)
+        # print "state is " + str(new_state)
         return True
 
     def PreprocessLipchitz(self, node):
@@ -1211,7 +1211,7 @@ if __name__ == "__main__":
     length_scale = [1.5, 1.5]
     signal_variance = 1
     noise_variance = 0.1
-    covariance_function = SquareExponential(np.array(length_scale), signal_variance, noise_variance)
+    covariance_function = SquareExponential(length_scale=np.array(length_scale), signal_variance=signal_variance, noise_variance=noise_variance)
     gp = GaussianProcess(covariance_function)
 
     # Init environment model
