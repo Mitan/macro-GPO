@@ -34,6 +34,8 @@ class GaussianProcess:
         if cholesky is None:
             cholesky = self.Cholesky(locations)
         k_star = self.CovarianceMesh(locations, current_location)
+        measurements = np.atleast_2d(measurements)
+        print measurements.shape, cholesky.shape, locations.shape
         temp = scipy.linalg.solve_triangular(cholesky, measurements, lower=True)
         alpha = scipy.linalg.solve_triangular(cholesky.T, temp, lower=False)
         mu = np.dot(k_star.T, alpha)

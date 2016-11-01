@@ -70,7 +70,7 @@ class TreePlan:
     # we use batch UCB version from Erik
     # todo check that we do not add noise twice
     def AcquizitionFunction(self, mu, sigma):
-        exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.noise_variance) ** (2) + sigma
+        exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.covariance_function.noise_variance) ** (2) + sigma
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     def Algorithm1(self, epsilon, gamma, x_0, H):
@@ -229,7 +229,8 @@ class TreePlan:
 
             # Reward is just the mean added to a multiple of the variance at that point
 
-            mean = self.gp.GPBatchMean(x_next.history.measurements, new_st.weights)
+            mean = self.gp.GPMean(locations=x_next.history.locations, measurements=x_next.history.measurements,
+                                  current_location=x_next.physical_state)
 
             # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state, weights=new_st.weights)
             var = new_st.variance
@@ -253,7 +254,8 @@ class TreePlan:
         if T == 1:
             return 0
 
-        mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
+        mu = self.gp.GPMean(measurements=x.history.measurements, locations=x.history.locations,
+                            current_location=x.physical_state)
 
         # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
@@ -441,7 +443,7 @@ class TreePlan:
         """
         cur_physical_state = node.ss.physical_state
         new_locations = np.append(node.ss.locations, np.atleast_2d(cur_physical_state), 0)
-        cholesky = self.gp.GPCholTraining(new_locations)
+        cholesky = self.gp.Cholesky(new_locations)
 
         # Add in new children for each valid action
         valid_actions = self.GetValidActionSet(node.ss.physical_state)
@@ -584,8 +586,8 @@ class TreePlan:
 
             # Reward is just the mean added to a multiple of the variance at that point
             # todo fix
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=new_st.weights)
+            mean = self.gp.GPMean(locations=x_next.history.locations, measurements=x_next.history.measurements,
+                                  current_location=x_next.physical_state)
             var = new_st.variance
             r = self.reward_analytical(mean, var)
 
@@ -801,7 +803,7 @@ class SemiTree:
     def __init__(self, semi_state, chol=None):
         self.ss = semi_state
         self.children = dict()
-        self.weights = None  # Weight space vector
+        # self.weights = None  # Weight space vector
         self.variance = None  # Precomputed posterior variance
         self.cholesky = chol
 
@@ -813,8 +815,8 @@ class SemiTree:
 
     def ComputeWeightsAndVariance(self, gp):
         """ Compute the weights for this semi_state ONLY"""
-        self.weights, self.variance = gp.GetBatchWeightsAndVariance(self.ss.locations, self.ss.physical_state,
-                                                                    self.cholesky)
+        # self.weights, self.variance = gp.GetBatchWeightsAndVariance(self.ss.locations, self.ss.physical_state, self.cholesky)
+        self.variance = gp.GPVariance(self.ss.locations, self.ss.physical_state, self.cholesky)
 
 
 # updated
@@ -1054,7 +1056,6 @@ class MCTSObservationNode:
 
         return lower, upper
 
-
     def UpdateChildrenBounds(self, index_updated):
         """ Update bounds of OTHER children while taking into account lipschitz constraints
         @param index_updated: index of child whose bound was just updated
@@ -1129,6 +1130,7 @@ class MCTSObservationNode:
             if not change == True:
                 break
         """
+
     def SkeletalExpand(self):
         """ Expand only using observations at the edges
         """
@@ -1144,17 +1146,17 @@ class MCTSObservationNode:
 
         # choose the center node
         # todo change coz ugly
-        list_observations= self.ObservationValue.tolist()
+        list_observations = self.ObservationValue.tolist()
         distances = [np.linalg.norm(observation - self.mu) for observation in list_observations]
         target = -1.0
         current_min = float('inf')
-        for i in  range(len(distances)):
+        for i in range(len(distances)):
             if distances[i] < current_min:
                 current_min = distances[i]
                 target = i
 
         assert target >= 0
-        #target = int(math.floor(self.num_samples / 2))
+        # target = int(math.floor(self.num_samples / 2))
         num_nodes_expanded += self.SkeletalExpandHere(target)
         self.UpdateChildrenBounds(target)
         return num_nodes_expanded

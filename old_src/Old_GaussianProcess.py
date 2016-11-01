@@ -2,11 +2,11 @@ import numpy as np
 from scipy import linalg
 from scipy.stats import multivariate_normal
 
-
-class GaussianProcess:
+"""
+class OldGaussianProcess:
     def __init__(self, covariance_function, noise_variance=0, mean_function=0.0):
-        """ @param mean_function: constant mean. TODO: Change to nonstatic mean function rather than a simple constant
-        """
+         @param mean_function: constant mean. TODO: Change to nonstatic mean function rather than a simple constant
+
         self.covariance_function = covariance_function
         self.noise_variance = noise_variance
         self.mean_function = mean_function
@@ -15,10 +15,9 @@ class GaussianProcess:
         return self.covariance_function.Cov(s1, s2)
 
     def CovarianceMesh(self, col_array, row_array):
-        """
-        @param col_array, row - array of shape (number of dimensions * number of data points)
-        @return covariance matrix between physical states presented by col and row
-        """
+
+        # @param col_array, row - array of shape (number of dimensions * number of data points)
+        # @return covariance matrix between physical states presented by col and row
         columns = col_array.shape[0]
         rows = row_array.shape[0]
         covMat = np.zeros((columns, rows), float)
@@ -29,11 +28,10 @@ class GaussianProcess:
 
     # old
     def GPMean(self, locations, measurements, current_location, weights=None):
-        """
-        Return the posterior mean for measurements while the robot is in a particular augmented state
 
-        @param weights - row vector of weight space interpretation of GP regression
-        """
+        # Return the posterior mean for measurements while the robot is in a particular augmented state
+
+        # @param weights - row vector of weight space interpretation of GP regression
 
         if weights == None: weights = self.GPWeights(locations, current_location)
 
@@ -91,7 +89,7 @@ class GaussianProcess:
 
     def GPCovQuery(self, locations, current_location):
         """
-        Return matrix of covariances between test point and training points
+        # Return matrix of covariances between test point and training points
         """
         # Covariance of query point to data points (row vector)
         cov_query = self.CovarianceMesh(np.atleast_2d(current_location), locations)
@@ -131,12 +129,11 @@ class GaussianProcess:
         return mean
 
     def GPBatchWeights(self, history, current_physical_state, cholesky):
-        """
         history_current - (n,k) matrix - covariances between history values and new points
         current_prior - (k,k) matrix
         cholesky - Cholesky decomposition of history_locations
         @ return (k, n) matrix
-        """
+
         # similar to Alg 2.1 of GPML book. Should be (n, k) matrix
         # todo avoid computation of v twice
         # print cholesky.shape
@@ -154,13 +151,12 @@ class GaussianProcess:
         return weights_transposed.T
 
     def GPBatchVariance(self, history, current_physical_state, cholesky):
-        """
+
          history_locations - (n,n) matix - prio
         history_current - (n,k) matrix
         current_prior - (k,k) matrix
         cholesky - Cholesky decomposition of history_locations
         @ return (k,k) covariance
-        """
         current_prior = self.CovarianceMesh(current_physical_state, current_physical_state)
         history_current = self.CovarianceMesh(history, current_physical_state)
 
@@ -178,13 +174,12 @@ class GaussianProcess:
         # return change
 
     def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857):
-        """
         Generates a draw from the gaussian process
 
         @param predict_range - map range for each dimension
         @param num_samples - number of samples for each dimension
         @return dict mapping locations to values
-        """
+
 
         assert (len(predict_range) == len(num_samples))
 
@@ -217,18 +212,16 @@ class GaussianProcess:
         return MapValueDict(points, drawn_vector)
 
 
-"""
+
 === Covariance Functions ===
 
 Defines the common covariance functions
 
-"""
 
 
 class CovarianceFunction:
-    """
     Just a dummy class to invoke more structure
-    """
+
 
     def __init__(self):
         pass
@@ -237,8 +230,8 @@ class CovarianceFunction:
 class SquareExponential(CovarianceFunction):
     def __init__(self, length_scale, signal_variance):
         """
-        @param: length_scale l - array or list containing the length scales for each dimension
-        @param: signal variance sigma_f_squared - float containing the signal variance
+        # @param: length_scale l - array or list containing the length scales for each dimension
+        # @param: signal variance sigma_f_squared - float containing the signal variance
         """
 
         self.length_scale = length_scale
@@ -274,9 +267,8 @@ class MapValueDict():
             self.epsilon[dim] = (min([temp[i] - temp[i - 1] for i in xrange(1, len(temp))])) / 4
 
     def __call__(self, query_location):
-        """
         Search for nearest grid point iteratively. Uses L1 norm as the distance metric
-        """
+
         bi = -1
         bd = None
         for i in xrange(self.locations.shape[0]):
@@ -292,7 +284,7 @@ class MapValueDict():
 
 
 if __name__ == "__main__":
-    """
+
     # Generation Tests
     covariance_function = SquareExponential(0.05, 1)
     gp1d = GaussianProcess(covariance_function)
@@ -321,7 +313,7 @@ if __name__ == "__main__":
 
     gp2d3 = GaussianProcess(covariance_function)
     gp2d3.GPRegressionTest("2dmixed")  # mixture of two functions
-    """
+
 
     l = map(float, range(1, 50))
 
@@ -343,3 +335,4 @@ if __name__ == "__main__":
         var_dif = np.linalg.norm(var_me - var_c)
         mean_dif = np.linalg.norm(mean_me - mean_c)
         print var_dif, mean_dif
+"""

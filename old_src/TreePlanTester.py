@@ -2,8 +2,8 @@ import os
 from SampleFunctionBuilder import GetSampleFunction
 
 from TreePlan import *
-from GaussianProcess import GaussianProcess
-from GaussianProcess import SquareExponential
+from Old_GaussianProcess import GaussianProcess
+from Old_GaussianProcess import SquareExponential
 from Vis2d import Vis2d
 
 
@@ -105,6 +105,7 @@ class TreePlanTester:
         # Compute measurements
         self.past_measurements = None if self.past_locations is None else np.apply_along_axis(self.model, 1,
                                                                                               past_locations)
+        
 
     def DoTest(self, num_timesteps_test, H, batch_size, alg_type, my_nodes_func, beta, bad_places, simulated_func_mean, debug=False,
                  save_per_step=True,

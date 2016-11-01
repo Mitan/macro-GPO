@@ -1,7 +1,7 @@
 import GPy
 import math
 import numpy as np
-from GaussianProcess import SquareExponential, GaussianProcess
+from Old_GaussianProcess import SquareExponential, GaussianProcess
 
 __author__ = 'a0134673'
 

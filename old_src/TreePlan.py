@@ -8,8 +8,8 @@ import numpy as np
 from scipy.stats import multivariate_normal
 
 from qEI import qEI
-from GaussianProcess import GaussianProcess
-from GaussianProcess import SquareExponential
+from Old_GaussianProcess import GaussianProcess
+from Old_GaussianProcess import SquareExponential
 from Vis2d import Vis2d
 
 

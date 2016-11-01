@@ -243,15 +243,11 @@ class TreePlanTester:
 
         ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
         posterior_mean_before = np.vectorize(
-            lambda x, y: self.gp.GPMean(state_history[-2].history.locations, state_history[-2].history.measurements,
-                                        [x, y]))
+            lambda x, y: self.gp.GPMean(locations=state_history[-2].history.locations,
+                                        measurements=state_history[-2].history.measurements, current_location=[x, y]))
         posterior_mean_after = np.vectorize(
-            lambda x, y: self.gp.GPMean(state_history[-1].history.locations, state_history[-1].history.measurements,
-                                        [x, y]))
-        posterior_variance_before = np.vectorize(
-            lambda x, y: self.gp.GPVariance2(state_history[-2].history.locations, [x, y]))
-        posterior_variance_after = np.vectorize(
-            lambda x, y: self.gp.GPVariance2(state_history[-1].history.locations, [x, y]))
+            lambda x, y: self.gp.GPMean(locations=state_history[-1].history.locations,
+                                        measurements=state_history[-1].history.measurements, current_location=[x, y]))
 
         # Plot graph of locations
         vis = Vis2d()
