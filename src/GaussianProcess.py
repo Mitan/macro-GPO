@@ -49,6 +49,7 @@ class GaussianProcess:
 
         return np.linalg.cholesky(K)
     # assert locations, current_location a 2-D arrays
+
     def GPVariance(self, locations, current_location, cholesky=None):
         if cholesky is None:
             cholesky = self.Cholesky(locations)
