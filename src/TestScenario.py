@@ -10,11 +10,13 @@ from GaussianProcess import GaussianProcess
 from MethodEnum import Methods
 
 
-def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed):
-    covariance_function = SquareExponential(length_scale, signal_variance=signal_variance, noise_variance=noise_variance)
+def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
+                           num_samples):
+    covariance_function = SquareExponential(length_scale, signal_variance=signal_variance,
+                                            noise_variance=noise_variance)
     # Generate a drawn vector from GP with noise
     gpgen = GaussianProcess(covariance_function)
-    m = gpgen.GPGenerate(predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=seed, noiseVariance=noise_variance)
+    m = gpgen.GPGenerate(predict_range=predict_range, num_samples=num_samples, seed=seed, noiseVariance=noise_variance)
     # write the dataset to file
     m.WriteToFile(save_folder + "dataset.txt")
     return m
@@ -42,13 +44,15 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     length_scale = (0.1, 0.1)
     signal_variance = 1.0
     noise_variance = 0.05
+    predict_range = ((0, 2), (0, 2))
+    num_samples_grid = (40, 40)
 
-    # this model contains noiseless values
     if filename is not None:
         m = GenerateModelFromFile(filename)
     else:
         m = GenerateSimulatedModel(length_scale=np.array(length_scale), signal_variance=signal_variance,
-                                   seed=seed, noise_variance=noise_variance, save_folder=save_folder)
+                                   seed=seed, noise_variance=noise_variance, save_folder=save_folder,
+                                   predict_range=predict_range, num_samples=num_samples_grid)
 
     myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
                                          save_folder=save_folder + "h1/",

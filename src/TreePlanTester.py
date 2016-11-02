@@ -275,6 +275,10 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     signalvariance = 1.0
     noisevariance = 0.05
 
+    grid_domain = ((0, 2), (0, 2))
+    initial_physical_state = np.array([[1.0, 1.0]])
+    past_locations = np.array([[1.0, 1.0]])
+
     # Unused
     noise_in_trials = True
 
@@ -283,9 +287,9 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance)
     # adds noise to observations
     TPT.InitEnvironment(environment_noise=noisevariance, model=model)
-    TPT.InitPlanner(grid_domain=((0, 1), (0, 1)), grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, horizon=horizon,
+    TPT.InitPlanner(grid_domain=grid_domain, grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, horizon=horizon,
                     batch_size=batch_size)
-    TPT.InitTestParameters(initial_physical_state=np.array([[0.5, 0.5]]), past_locations=np.array([[0.5, 0.5]]))
+    TPT.InitTestParameters(initial_physical_state=initial_physical_state, past_locations=past_locations)
 
     return TPT.Test(num_timesteps_test=num_timesteps_test, visualize=False,
                     save_folder=save_folder,
