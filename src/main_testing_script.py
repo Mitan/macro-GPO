@@ -6,18 +6,18 @@ if __name__ == '__main__':
 
     my_save_folder_root = "../tests/full/"
     # max horizon
-    h_max = 4
+    h_max = 5
     # time steps
-    t = 10
+    t = 5
 
-    batch_size = 2
+    batch_size = 4
 
     # number of samples per stage
     num_samples = 50
 
     args = sys.argv
 
-    start = 205
+    start = 239
     end = start+1
     assert start < end
 
