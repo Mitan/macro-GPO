@@ -135,7 +135,10 @@ class TreePlan:
             # go down the semitree node
             new_st = st.children[ToTuple(a)]
 
-            mean = self.gp.GPBatchMean(x_next.history.measurements, new_st.weights)
+            mean = self.gp.GPMean(locations=x_next.history.locations, measurements=x_next.history.measurements,
+                                  current_location=x_next.physical_state,
+                                  cholesky=new_st.cholesky)
+            # mean = self.gp.GPBatchMean(x_next.history.measurements, new_st.weights)
 
             # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
             #                      weights=new_st.weights)
@@ -156,9 +159,9 @@ class TreePlan:
         if T == 1:
             return 0
 
-        mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
+        # mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
 
-        # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
+        mu = self.gp.GPMean(locations=x.history.locations, measurements=x.history.measurements, current_location=x.physical_state, cholesky=new_st.cholesky)
         return self.ComputeVRandom(T - 1, self.TransitionH(x, mu), new_st)[0]
 
     def qEI(self, x_0, eps=10 ** (-5)):
@@ -230,7 +233,7 @@ class TreePlan:
             # Reward is just the mean added to a multiple of the variance at that point
 
             mean = self.gp.GPMean(locations=x_next.history.locations, measurements=x_next.history.measurements,
-                                  current_location=x_next.physical_state)
+                                  current_location=x_next.physical_state, cholesky=new_st.cholesky)
 
             # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state, weights=new_st.weights)
             var = new_st.variance
@@ -255,7 +258,7 @@ class TreePlan:
             return 0
 
         mu = self.gp.GPMean(measurements=x.history.measurements, locations=x.history.locations,
-                            current_location=x.physical_state)
+                            current_location=x.physical_state, cholesky=new_st.cholesky)
 
         # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
@@ -506,7 +509,7 @@ class TreePlan:
         if len(node.children) == 0:
             # now L_upper is a scalar
             # node.L_upper = np.zeros((nl + 1, 1))
-            node.L_upper = 0
+            lip = 0
 
         else:
             # Recursive case
@@ -519,11 +522,10 @@ class TreePlan:
                 alpha = np.linalg.norm(c.weights, ord='fro')
                 av = c.L_upper * math.sqrt(1 + alpha ** 2) + alpha * math.sqrt(self.batch_size)
                 vmax = np.maximum(vmax, av)
-
-                # node.L_upper = vmax
+                lip = vmax
 
         # node.lipchitz = node.L_upper[-1]
-        node.lipchitz = vmax
+        node.lipchitz = lip
 
     def PreprocessPartitions(self, node, err_allowed, isRoot=False):
         """
@@ -1211,7 +1213,8 @@ if __name__ == "__main__":
     length_scale = [1.5, 1.5]
     signal_variance = 1
     noise_variance = 0.1
-    covariance_function = SquareExponential(length_scale=np.array(length_scale), signal_variance=signal_variance, noise_variance=noise_variance)
+    covariance_function = SquareExponential(length_scale=np.array(length_scale), signal_variance=signal_variance,
+                                            noise_variance=noise_variance)
     gp = GaussianProcess(covariance_function)
 
     # Init environment model

@@ -30,9 +30,13 @@ class GaussianProcess:
         return covMat
 
     # assert locations, current_location a 2-D arrays
-    def GPMean(self, locations, current_location, measurements, cholesky=None):
+    def GPMean(self, locations, current_location, measurements, cholesky):
+        """
         if cholesky is None:
             cholesky = self.Cholesky(locations)
+        """
+        assert cholesky is not None
+
         k_star = self.CovarianceMesh(locations, np.atleast_2d(current_location))
         temp = scipy.linalg.solve_triangular(cholesky, measurements, lower=True)
         alpha = scipy.linalg.solve_triangular(cholesky.T, temp, lower=False)
@@ -50,9 +54,12 @@ class GaussianProcess:
         return np.linalg.cholesky(K)
     # assert locations, current_location a 2-D arrays
 
-    def GPVariance(self, locations, current_location, cholesky=None):
+    def GPVariance(self, locations, current_location, cholesky):
+        """
         if cholesky is None:
             cholesky = self.Cholesky(locations)
+        """
+        assert cholesky is not None
         k_star = self.CovarianceMesh(locations, current_location)
         K_current = self.CovarianceMesh(current_location, current_location)
         v = scipy.linalg.solve_triangular(cholesky, k_star, lower=True)
