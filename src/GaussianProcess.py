@@ -10,9 +10,10 @@ class GaussianProcess:
         self.covariance_function = covariance_function
         # self.noise_variance = noise_variance
         self.mean_function = mean_function
+        self.noise = self.covariance_function.noise_variance
 
-    def CovarianceFunction(self, s1, s2, kronecker):
-        return self.covariance_function.Cov(s1, s2, kronecker)
+    def CovarianceFunction(self, s1, s2):
+        return self.covariance_function.Cov(s1, s2)
 
     def CovarianceMesh(self, col, row):
         """
@@ -24,9 +25,7 @@ class GaussianProcess:
         covMat = np.zeros((cols, rows), float)
         for y in xrange(cols):
             for x in xrange(rows):
-                # compare indexes
-                kronecker = 1 if x == y else 0
-                covMat[y, x] = self.CovarianceFunction(row[x, :], col[y, :],kronecker)
+                covMat[y, x] = self.CovarianceFunction(row[x, :], col[y, :])
         return covMat
 
     # assert locations, current_location a 2-D arrays
@@ -46,13 +45,16 @@ class GaussianProcess:
     # assert locations, current_location a 2-D arrays
     def Cholesky(self, locations):
         K = self.CovarianceMesh(locations, locations)
-        d =  np.linalg.det(K)
-        if abs(d) < 10**-24:
-            print K
-            print locations
-
-        return np.linalg.cholesky(K)
+        return np.linalg.cholesky(K + self.noise * np.identity(K.shape[0]))
     # assert locations, current_location a 2-D arrays
+
+    def GPWeights(self, locations, current_location, cholesky=None):
+
+        cov_query = self.CovarianceMesh(locations, np.atleast_2d(current_location))
+        # Weights by matrix division using cholesky decomposition
+        weights = scipy.linalg.cho_solve((cholesky, True), cov_query).T
+
+        return weights
 
     def GPVariance(self, locations, current_location, cholesky):
         """
@@ -65,7 +67,7 @@ class GaussianProcess:
         v = scipy.linalg.solve_triangular(cholesky, k_star, lower=True)
         v_prodcut = np.dot(v.T, v)
         assert v_prodcut.shape == K_current.shape
-        var = K_current - v_prodcut
+        var = K_current - v_prodcut + self.noise * np.identity(K_current.shape[0])
         return var
 
     def GPGenerate(self, predict_range=((0, 1), (0, 1)), num_samples=(20, 20), seed=142857, noiseVariance=0):
@@ -124,14 +126,15 @@ class GaussianProcess:
 
 class CovarianceFunction:
     """
-	Just a dummy class to invoke more structure
-	"""
+    Just a dummy class to invoke more structure
+    """
 
     def __init__(self):
         pass
 
 
-# todo NB noise is inside of covariance function
+# noiseless fucnction
+# noise is stored as a field
 
 class SquareExponential(CovarianceFunction):
     def __init__(self, length_scale, signal_variance, noise_variance):
@@ -145,13 +148,11 @@ class SquareExponential(CovarianceFunction):
         # const
         self.eps_tolerance = 10 ** -10
 
-    def Cov(self, physical_state_1, physical_state_2, kronecker):
-        # kronecker = 1 if np.array_equal(physical_state_1, physical_state_2)  else 0
-        #  kronecker = 1 if np.linalg.norm(physical_state_1 - physical_state_2) < self.eps_tolerance else 0
+    def Cov(self, physical_state_1, physical_state_2):
         diff = np.atleast_2d(physical_state_1) - np.atleast_2d(physical_state_2)
         length_scale_squared = np.square(self.length_scale)
         squared = np.dot(diff, np.divide(diff, length_scale_squared).T)
-        return self.signal_variance * np.exp(-0.5 * squared) + kronecker * self.noise_variance
+        return self.signal_variance * np.exp(-0.5 * squared)
 
 
 # todo note that values  are normalized to have zero mean

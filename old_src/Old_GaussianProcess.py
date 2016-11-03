@@ -2,7 +2,7 @@ import numpy as np
 from scipy import linalg
 from scipy.stats import multivariate_normal
 
-"""
+
 class OldGaussianProcess:
     def __init__(self, covariance_function, noise_variance=0, mean_function=0.0):
          @param mean_function: constant mean. TODO: Change to nonstatic mean function rather than a simple constant
@@ -335,4 +335,3 @@ if __name__ == "__main__":
         var_dif = np.linalg.norm(var_me - var_c)
         mean_dif = np.linalg.norm(mean_me - mean_c)
         print var_dif, mean_dif
-"""

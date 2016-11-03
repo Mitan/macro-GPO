@@ -9,8 +9,9 @@ from src.GaussianProcess import SquareExponential, GaussianProcess
 def MyPredict(new_loc):
     covariance_function = SquareExponential(length_scale, signal_variance, noise_variance)
     gp = GaussianProcess(covariance_function)
-    var = gp.GPVariance(locations, new_loc)
-    mu = gp.GPMean(locations, new_loc, Y)
+    cholesky = gp.Cholesky(locations)
+    var = gp.GPVariance(locations=locations, current_location=new_loc, cholesky=cholesky)
+    mu = gp.GPMean(locations=locations, current_location=new_loc, measurements=Y, cholesky=cholesky)
     return mu, var
 
 
@@ -50,8 +51,9 @@ if __name__ == "__main__":
         eps_tolerance = 10 ** -5
 
         # compare
+        assert mu.shape == mu_gpy.shape
+        assert np.linalg.norm(mu - mu_gpy) < eps_tolerance, "difference is %r" % np.linalg.norm(mu - mu_gpy)
+        
         assert var.shape == var_gpy.shape
         assert np.linalg.norm(var - var_gpy) < eps_tolerance, "difference is %r" % np.linalg.norm(var - var_gpy)
 
-        assert mu.shape == mu_gpy.shape
-        assert np.linalg.norm(mu - mu_gpy) < eps_tolerance,  "difference is %r" % np.linalg.norm(mu - mu_gpy)
