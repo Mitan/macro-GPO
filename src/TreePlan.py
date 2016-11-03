@@ -329,7 +329,7 @@ class TreePlan:
                 best_lower = cc[0]
 
         # bestval, best_a = self.MCTSTraverseBest(root_action_node)
-        print best_lower, best_a
+        print best_lower, np.asarray(best_a)
 
         # Vreal, Areal, _ = self.Algorithm1(epsilon, gamma, x_0, H)
         # print Vreal, Areal
@@ -337,7 +337,7 @@ class TreePlan:
         # assert abs(Vreal-bestval) <= 0.001
 
         print "Total nodes expanded %d" % total_nodes_expanded
-        return root_action_node.BoundsChildren[best_a], best_a, total_nodes_expanded
+        return root_action_node.BoundsChildren[best_a], np.asarray(best_a), total_nodes_expanded
 
     # TODO unused
     def MCTSTraverseBest(self, action_node):
@@ -519,7 +519,7 @@ class TreePlan:
                 # do we need to count all the values L_upper if use only one?
                 # av = (c.L_upper[0:nl + 1] + ((c.L_upper[-1] + self.l1 + self.l2(math.sqrt(c.variance))) * (c.weights.T)))
                 alpha = np.linalg.norm(c.weights, ord='fro')
-                av = c.L_upper * math.sqrt(1 + alpha ** 2) + alpha * math.sqrt(self.batch_size)
+                av = c.lipchitz * math.sqrt(1 + alpha ** 2) + alpha * math.sqrt(self.batch_size)
                 vmax = np.maximum(vmax, av)
                 lip = vmax
 
@@ -887,8 +887,7 @@ class MCTSActionNode:
         # generate all children d_t + s_{t+1}
         num_nodes_expanded = 1
         for a, semi_child in self.semi_tree.children.iteritems():
-            # d_t + s_{t+1}
-            c = MCTSObservationNode(TransitionP(self.augmented_state, a), semi_child, self.treeplan, self.lamb,
+            c = MCTSObservationNode(TransitionP(self.augmented_state, np.asarray(a)), semi_child, self.treeplan, self.lamb,
                                     self.number_of_samples)
             num_nodes_expanded += c.SkeletalExpand()
             self.ChanceChildren[a] = c
@@ -951,7 +950,7 @@ class MCTSObservationNode:
 
         self.numchild_unsaturated = self.num_samples
 
-        self.mu = self.treeplan.gp.GPBatchMean(augmented_state.history.measurements, semi_tree.weights)
+        self.mu = self.treeplan.gp.GPMean(measurements=augmented_state.history.measurements, weights=semi_tree.weights)
 
         # self.mu = self.treeplan.gp.GPMean(augmented_state.history.locations, augmented_state.history.measurements,
         #                                  augmented_state.physical_state, weights=semi_tree.weights)
