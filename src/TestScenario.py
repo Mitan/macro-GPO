@@ -67,22 +67,24 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                                    num_samples=num_samples, batch_size=batch_size)
         result_graphs.append(['H = ' + str(h), current_h_result])
 
-
     mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
                                   save_folder=save_folder + "mle_h3/",
                                   num_samples=num_samples, batch_size=batch_size)
     result_graphs.append(['MLE H = 3', mle])
     """
+
+    if batch_size > 1:
+        qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
+                                      save_folder=save_folder + "qEI/",
+                                      num_samples=num_samples, batch_size=batch_size)
+        result_graphs.append(['qEI', qEI])
+
     anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=3, num_timesteps_test=time_steps,
                                       save_folder=save_folder + "anytime_h3/",
                                       num_samples=num_samples, batch_size=batch_size)
     result_graphs.append(['Anytime H = 3', anytime])
 
     # can't apply qEI to single-point
-    if batch_size > 1:
-        qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
-                                      save_folder=save_folder + "qEI/",
-                                      num_samples=num_samples, batch_size=batch_size)
-        result_graphs.append(['qEI', qEI])
+
 
     PlotData(result_graphs, save_folder)

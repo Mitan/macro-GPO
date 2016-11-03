@@ -29,11 +29,11 @@ class GaussianProcess:
         return covMat
 
     # assert locations, current_location a 2-D arrays
+    """
     def GPMean(self, locations, current_location, measurements, cholesky):
-        """
         if cholesky is None:
             cholesky = self.Cholesky(locations)
-        """
+
         assert cholesky is not None
 
         k_star = self.CovarianceMesh(locations, np.atleast_2d(current_location))
@@ -41,6 +41,14 @@ class GaussianProcess:
         alpha = scipy.linalg.solve_triangular(cholesky.T, temp, lower=False)
         mu = np.dot(k_star.T, alpha)
         return mu
+    """
+        # old
+
+    def GPMean(self, measurements, weights):
+
+        mean = np.dot(weights, measurements - np.ones(measurements.shape) * self.mean_function) + self.mean_function
+
+        return mean
 
     # assert locations, current_location a 2-D arrays
     def Cholesky(self, locations):
@@ -48,7 +56,7 @@ class GaussianProcess:
         return np.linalg.cholesky(K + self.noise * np.identity(K.shape[0]))
     # assert locations, current_location a 2-D arrays
 
-    def GPWeights(self, locations, current_location, cholesky=None):
+    def GPWeights(self, locations, current_location, cholesky):
 
         cov_query = self.CovarianceMesh(locations, np.atleast_2d(current_location))
         # Weights by matrix division using cholesky decomposition
@@ -114,6 +122,13 @@ class GaussianProcess:
         # print points
         # print drawn_vector
         return MapValueDict(points, drawn_vector_with_noise)
+
+    def GetBatchWeightsAndVariance(self, locations, current_location, cholesky):
+
+        variance = self.GPVariance(locations, current_location, cholesky)
+        weights = self.GPWeights(locations, current_location, cholesky)
+
+        return weights, variance
 
     @staticmethod
     def GPGenerateFromFile(filename):

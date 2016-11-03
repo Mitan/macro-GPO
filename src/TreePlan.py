@@ -135,10 +135,10 @@ class TreePlan:
             # go down the semitree node
             new_st = st.children[ToTuple(a)]
 
-            mean = self.gp.GPMean(locations=x_next.history.locations, measurements=x_next.history.measurements,
-                                  current_location=x_next.physical_state,
-                                  cholesky=new_st.cholesky)
-            # mean = self.gp.GPBatchMean(x_next.history.measurements, new_st.weights)
+            # mean = self.gp.GPMean(locations=x_next.history.locations, measurements=x_next.history.measurements,
+            #                     current_location=x_next.physical_state,
+            #                      cholesky=new_st.cholesky)
+            mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
 
             # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
             #                      weights=new_st.weights)
@@ -159,9 +159,8 @@ class TreePlan:
         if T == 1:
             return 0
 
-        # mu = self.gp.GPBatchMean(x.history.measurements, new_st.weights)
-
-        mu = self.gp.GPMean(locations=x.history.locations, measurements=x.history.measurements, current_location=x.physical_state, cholesky=new_st.cholesky)
+        mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
+        # mu = self.gp.GPMean(locations=x.history.locations, measurements=x.history.measurements, current_location=x.physical_state, cholesky=new_st.cholesky)
         return self.ComputeVRandom(T - 1, self.TransitionH(x, mu), new_st)[0]
 
     def qEI(self, x_0, eps=10 ** (-5)):
@@ -176,13 +175,15 @@ class TreePlan:
 
         valid_actions = self.GetValidActionSet(x_0.physical_state)
 
-        chol = self.gp.GPCholTraining(x_0.history.locations)
+        chol = self.gp.Cholesky(x_0.history.locations)
         for a in valid_actions:
             x_next = self.TransitionP(x_0, a)
 
-            Sigma = self.gp.GPBatchVariance(x_0.history.locations, x_next.physical_state, chol)
-            weights = self.gp.GPBatchWeights(x_0.history.locations, x_next.physical_state, chol)
-            mu = self.gp.GPBatchMean(x_next.history.measurements, weights)
+            Sigma = self.gp.GPVariance(locations=x_0.history.locations, current_location=x_next.physical_state,
+                                       cholesky=chol)
+            weights = self.gp.GPWeights(locations=x_0.history.locations, current_location=x_next.physical_state,
+                                        cholesky=chol)
+            mu = self.gp.GPMean(measurements=x_next.history.measurements, weights=weights)
 
             expectedImprov = qEI(Sigma, eps, mu, max_measurement, self.batch_size)
 
@@ -232,8 +233,7 @@ class TreePlan:
 
             # Reward is just the mean added to a multiple of the variance at that point
 
-            mean = self.gp.GPMean(locations=x_next.history.locations, measurements=x_next.history.measurements,
-                                  current_location=x_next.physical_state, cholesky=new_st.cholesky)
+            mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
 
             # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state, weights=new_st.weights)
             var = new_st.variance
@@ -257,8 +257,7 @@ class TreePlan:
         if T == 1:
             return 0
 
-        mu = self.gp.GPMean(measurements=x.history.measurements, locations=x.history.locations,
-                            current_location=x.physical_state, cholesky=new_st.cholesky)
+        mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
 
         # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
@@ -805,7 +804,7 @@ class SemiTree:
     def __init__(self, semi_state, chol=None):
         self.ss = semi_state
         self.children = dict()
-        # self.weights = None  # Weight space vector
+        self.weights = None  # Weight space vector
         self.variance = None  # Precomputed posterior variance
         self.cholesky = chol
 
@@ -817,8 +816,9 @@ class SemiTree:
 
     def ComputeWeightsAndVariance(self, gp):
         """ Compute the weights for this semi_state ONLY"""
-        # self.weights, self.variance = gp.GetBatchWeightsAndVariance(self.ss.locations, self.ss.physical_state, self.cholesky)
-        self.variance = gp.GPVariance(self.ss.locations, self.ss.physical_state, self.cholesky)
+        self.weights, self.variance = gp.GetBatchWeightsAndVariance(self.ss.locations, self.ss.physical_state,
+                                                                    self.cholesky)
+        # self.variance = gp.GPVariance(self.ss.locations, self.ss.physical_state, self.cholesky)
 
 
 # updated
