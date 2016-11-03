@@ -6,7 +6,7 @@ def qEI(Sigma, eps, mu, plugin, q):
         # hardcoded lower limit for multinormal pdf integration
         #todo
         # note that here we explicitly assume data is 2-d
-        low = np.array([-20, -20])
+        low = np.array([-20.0 for i in range(q)])
 
         pk = np.zeros((q,))
         first_term = np.zeros((q,))
@@ -21,12 +21,13 @@ def qEI(Sigma, eps, mu, plugin, q):
 
 
             # suspect that it is equal to pmnorm function of original R package
-            p, _ = mvn.mvnun(low, b_k - mu_k, np.array([0.0, 0.0]), Sigma_k)
+            zeros = np.array([0.0 for i in range(q)])
+            p, _ = mvn.mvnun(low, b_k - mu_k, zeros, Sigma_k)
             pk[k] = p
             first_term[k] = (mu[k] - plugin) * pk[k]
 
             upper_temp = b_k + eps * Sigma_k[:, k] - mu_k
-            p1, _ = mvn.mvnun(low, upper_temp, np.array([0.0, 0.0]), Sigma_k)
+            p1, _ = mvn.mvnun(low, upper_temp, zeros, Sigma_k)
             second_term[k] = 1 / eps * (p1 - pk[k])
         expectedImprov = np.sum(first_term) + np.sum(second_term)
         return expectedImprov
