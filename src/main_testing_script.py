@@ -8,16 +8,16 @@ if __name__ == '__main__':
     # max horizon
     h_max = 5
     # time steps
-    t = 5
+    t = 2
 
-    batch_size = 4
+    batch_size = 2
 
     # number of samples per stage
-    num_samples = 70
+    num_samples = 2
 
     args = sys.argv
 
-    start = 243
+    start = 13
     end = start+1
     assert start < end
 

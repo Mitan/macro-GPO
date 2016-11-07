@@ -3,15 +3,15 @@ import numpy as np
 from StringIO import StringIO
 
 
-seeds = range(31, 56)
+seeds = range(51, 56)
 
 #seeds = list(set(seeds) - set([17,28]))
-root_path = '../tests50/'
+root_path = '../tests/full/'
 
-methods = ['h1', 'h2', 'h3' ]
-method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4']
+methods = ['h1', 'h2', 'h3','h4', 'anytime_h3','mle_h3', 'qEI' ]
+method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime','MLE H = 3', 'qEI']
 
-steps = 20
+steps = 5
 
 results = []
 
@@ -22,8 +22,10 @@ for index, method in enumerate(methods):
         # counter
 
         file_path = root_path + 'seed' + str(seed) + '/' + method + '/summary.txt'
+        print file_path
         try:
             a = (open(file_path).readlines()[0])[1: -2]
+            print a
             number_of_location += 1
         except:
             continue

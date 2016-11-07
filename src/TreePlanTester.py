@@ -220,7 +220,7 @@ class TreePlanTester:
         f.write("Total accumulated reward = " + str(total_reward) + "\n")
         f.write("Nodes Expanded per stage\n")
         f.write(str(nodes_expanded_history) + "\n")
-        f.write("Total nodes expanded = " + str(total_nodes_expanded))
+        f.write("Total nodes expanded = " + str(total_nodes_expanded)+ "\n")
 
         f.write(str(total_reward_history))
         f.close()
