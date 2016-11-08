@@ -11,7 +11,7 @@ def DynamicHorizon(t, H_max,  t_max):
     return min(t_max - t, H_max)
 
 if __name__=="__main__":
-    T = 4
-    H = 5
+    T = 5
+    H = 2
     for i in range(T):
         print DynamicHorizon(i, H, T)

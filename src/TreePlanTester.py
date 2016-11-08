@@ -4,7 +4,7 @@ from GaussianProcess import MapValueDict
 from TreePlan import *
 from Vis2d import Vis2d
 from MethodEnum import Methods
-from src.DynamicHorizon import DynamicHorizon
+from DynamicHorizon import DynamicHorizon
 
 
 class TreePlanTester:

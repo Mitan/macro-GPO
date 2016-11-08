@@ -4,7 +4,7 @@ from TestScenario import TestScenario
 
 if __name__ == '__main__':
 
-    my_save_folder_root = "../tests/full/"
+    my_save_folder_root = "../tests/full_dynamic/"
     # max horizon
     h_max = 5
     # time steps
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     batch_size = 4
 
     # number of samples per stage
-    num_samples = 100
+    num_samples = 70
 
     args = sys.argv
 
