@@ -4,6 +4,7 @@ from GaussianProcess import MapValueDict
 from TreePlan import *
 from Vis2d import Vis2d
 from MethodEnum import Methods
+from src.DynamicHorizon import DynamicHorizon
 
 
 class TreePlanTester:
@@ -124,6 +125,7 @@ class TreePlanTester:
         nodes_expanded_history = []
         base_measurement_history = []
         for time in xrange(num_timesteps_test):
+            allowed_horizon = DynamicHorizon(t=time, H_max=self.H, t_max=num_timesteps_test)
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
                           macroaction_set=action_set,
                           beta=self.sd_bonus, bad_places=self.bad_places,
@@ -135,16 +137,16 @@ class TreePlanTester:
             """
             if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
-                bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, self.H, max_nodes=MCTSMaxNodes)
+                bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon, max_nodes=MCTSMaxNodes)
 
             elif method == Methods.Exact:
-                vBest, a, nodes_expanded = tp.StochasticFull(x_0, self.H)
+                vBest, a, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
 
             elif method == Methods.MyopicUCB:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
 
             elif method == Methods.MLE:
-                vBest, a, nodes_expanded = tp.MLE(x_0, self.H)
+                vBest, a, nodes_expanded = tp.MLE(x_0, allowed_horizon)
 
             elif method == Methods.qEI:
                 vBest, a, nodes_expanded = tp.qEI(x_0)
