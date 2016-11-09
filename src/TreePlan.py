@@ -65,6 +65,7 @@ class TreePlan:
 
 
         self.reward_analytical = lambda mu, sigma: self.AcquizitionFunction(mu, sigma)
+        # unused
         self.reward_sampled = lambda f: 0
 
     # heuristic
