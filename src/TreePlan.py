@@ -70,7 +70,9 @@ class TreePlan:
     # we use batch UCB version from Erik
     # todo check that we do not add noise twice
     def AcquizitionFunction(self, mu, sigma):
-        exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.covariance_function.noise_variance) ** (2) + sigma
+        if self.beta == 0:
+            return np.sum(mu)
+        exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.covariance_function.noise_variance) + sigma
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     def Algorithm1(self, epsilon, gamma, x_0, H):
