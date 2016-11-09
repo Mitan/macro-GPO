@@ -56,12 +56,13 @@ class TreePlan:
         self.bad_places = bad_places
 
         # Precomputed algo stuff
-        # todo do we need this?
+        # unused
         self.mathutil = TreePlan.static_mathutil
-
+        # unused
         self.l1 = 0
-        # todo chenge
+        # unused
         self.l2 = lambda sigma: 1
+
 
         self.reward_analytical = lambda mu, sigma: self.AcquizitionFunction(mu, sigma)
         self.reward_sampled = lambda f: 0
