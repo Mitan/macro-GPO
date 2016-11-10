@@ -56,6 +56,9 @@ class TreePlanTester:
         """
         self.environment_noise = environment_noise
         self.model = model
+        # the empirical mean of the dataset
+        # required for subtracting from measurements - gives better plotting
+        self.empirical_mean = model.mean
 
     def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, batch_size, horizon):
         """
@@ -118,12 +121,19 @@ class TreePlanTester:
             os.makedirs(save_folder)
 
         total_reward = 0
-        total_reward_history = []
-        total_nodes_expanded = 0
-        measurement_history = []
         reward_history = []
-        nodes_expanded_history = []
+        total_reward_history = []
+
+        normalized_total_reward = 0
+        normalized_reward_history = []
+        normalized_total_reward_history = []
+
         base_measurement_history = []
+        measurement_history = []
+
+        total_nodes_expanded = 0
+        nodes_expanded_history = []
+
         for time in xrange(num_timesteps_test):
             allowed_horizon = DynamicHorizon(t=time, H_max=self.H, t_max=num_timesteps_test)
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
@@ -178,11 +188,17 @@ class TreePlanTester:
             x_0 = x_next
 
             reward_obtained = self.reward_function(percieved_measurements)
+            normalized_reward = reward_obtained - self.batch_size * self.empirical_mean
 
             # Accumulated measurements
             reward_history.append(reward_obtained)
             total_reward += reward_obtained
             total_reward_history.append(total_reward)
+
+            normalized_reward_history.append(normalized_reward)
+            normalized_total_reward += normalized_reward
+            normalized_total_reward_history.append(normalized_total_reward)
+
             measurement_history.append(percieved_measurements)
             base_measurement_history.append(baseline_measurements)
             total_nodes_expanded += nodes_expanded
@@ -224,7 +240,8 @@ class TreePlanTester:
         f.write(str(nodes_expanded_history) + "\n")
         f.write("Total nodes expanded = " + str(total_nodes_expanded)+ "\n")
 
-        f.write(str(total_reward_history))
+        f.write("Reward history " + str(total_reward_history)+ "\n")
+        f.write("Normalized Reward history " + str(normalized_total_reward_history)+ "\n")
         f.close()
 
         """
@@ -234,7 +251,7 @@ class TreePlanTester:
         PlotData(result_data, save_folder)
         """
         # return state_history, reward_history, nodes_expanded_history, base_measurement_history, total_reward_history
-        return total_reward_history
+        return normalized_total_reward_history
 
     def Visualize(self, state_history, display=True, save_path=None):
         """ Visualize 2d environments

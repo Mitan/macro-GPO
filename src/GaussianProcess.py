@@ -170,8 +170,6 @@ class SquareExponential(CovarianceFunction):
         return self.signal_variance * np.exp(-0.5 * squared)
 
 
-# todo note that values  are normalized to have zero mean
-# see init
 class MapValueDict():
     def __init__(self, locations, values, epsilon=None):
         """
@@ -182,7 +180,9 @@ class MapValueDict():
         # the original mean of the values
         self.mean = np.mean(values)
 
-        self.values = values - self.mean
+        # self.values = values - self.mean
+        self.values = values
+
 
         if not epsilon == None:
             self.epsilon = epsilon
