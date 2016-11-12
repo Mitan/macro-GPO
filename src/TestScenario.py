@@ -57,6 +57,14 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         m = GenerateSimulatedModel(length_scale=np.array(length_scale), signal_variance=signal_variance,
                                    seed=seed, noise_variance=noise_variance, save_folder=save_folder,
                                    predict_range=predict_range, num_samples=num_samples_grid)
+    if batch_size > 1:
+        method_name = 'qEI'
+        qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
+                                      save_folder=save_folder + "qEI/",
+                                      num_samples=num_samples, batch_size=batch_size)
+        result_graphs.append([method_name, qEI])
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(qEI) + '\n')
 
     method_name = 'Myopic DB-GP-UCB'
     myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
@@ -86,15 +94,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
 
-
-    if batch_size > 1:
-        method_name = 'qEI'
-        qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
-                                      save_folder=save_folder + "qEI/",
-                                      num_samples=num_samples, batch_size=batch_size)
-        result_graphs.append([method_name, qEI])
-        output_rewards.write(method_name + '\n')
-        output_rewards.write(str(qEI) + '\n')
 
     method_name='Anytime H = 3'
     anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=3, num_timesteps_test=time_steps,
