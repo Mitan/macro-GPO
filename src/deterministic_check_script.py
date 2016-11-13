@@ -10,20 +10,20 @@ from MethodEnum import Methods
 
 if __name__ == '__main__':
 
-    my_save_folder_root = "../tests/full_dynamic_b2_dcheck/"
+    my_save_folder_root = "../tests/full_dynamic_b2_dcheck_10k/"
     # max horizon
-    h_max = 5
+    h_max = 3
     # time steps
     t = 10
 
     batch_size = 2
 
     # number of samples per stage
-    num_samples = 50
+    num_samples = 10000
 
     args = sys.argv
 
-    filename = "./debug_dataset.txt"
+    filename = "./dataset.txt"
 
     seed = int(args[1])
 

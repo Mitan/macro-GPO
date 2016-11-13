@@ -1,3 +1,4 @@
+
 import copy
 import itertools
 import math
@@ -8,7 +9,7 @@ import numpy as np
 from scipy.stats import multivariate_normal
 
 from qEI import qEI
-from Old_GaussianProcess import GaussianProcess
+#from Old_GaussianProcess import GaussianProcess
 from Old_GaussianProcess import SquareExponential
 from Vis2d import Vis2d
 
@@ -493,22 +494,24 @@ class SemiState:
         self.physical_state = physical_state
         self.locations = locations
 
-
+"""
 class History:
     def __init__(self, initial_locations, initial_measurements):
         self.locations = initial_locations
         self.measurements = initial_measurements
 
     def append(self, new_locations, new_measurements):
-        """
+
         new_measurements - 1D array
         new_locations - 2D array
         @modifies - self.locations, self.measurements
-        """
         self.locations = np.append(self.locations, new_locations, axis=0)
         # 1D array
+        print "from history"
+        print self.measurements
+        print new_measurements
         self.measurements = np.append(self.measurements, new_measurements)
-
+"""
 
 if __name__ == "__main__":
     pass
