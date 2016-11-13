@@ -1,6 +1,7 @@
 import copy
 import math
 
+import GPy
 import numpy as np
 from scipy.stats import multivariate_normal
 from scipy.stats import norm
@@ -268,9 +269,119 @@ class TreePlan:
         sd = new_st.variance
 
         sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
-
+        """
+        print "sams"
+        print sams
+        for sam in sams:
+            print "sample"
+            print sam
+        """
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
                                    new_st)[0] for sam in sams]
+        avg = np.mean(rrr)
+
+        return avg
+
+    def NewStochasticFull(self, x_0, H):
+        """
+                @param x_0 - augmented state
+                @return approximately optimal value, answer, and number of node expansions
+        """
+        Vapprox, Aapprox = self.ComputeNewVRandom(H, x_0)
+
+        return Vapprox, Aapprox, -1
+
+    def ComputeNewVRandom(self, T, x):
+
+        """
+                @return vBest - approximate value function computed
+                @return aBest - action at the root for the policy defined by alg1
+                @param st - root of the semi-tree to be used
+                """
+
+        valid_actions = self.GetValidActionSet(x.physical_state)
+        # not needed
+        if T == 0: return 0, valid_actions[0]
+
+        vBest = -self.INF
+        aBest = valid_actions[0]
+
+        locations = x.history.locations
+        measurements = x.history.measurements
+
+        lengthscale = (0.1, 0.1)
+        signalvariance = 1.0
+        noisevariance = 0.05
+
+        kernel = GPy.kern.RBF(input_dim=2, variance=signalvariance, lengthscale=lengthscale,
+                              ARD=True)
+
+        measurements_2d = np.atleast_2d(measurements)
+        if measurements_2d.shape[0]==1:
+            measurements_2d = measurements_2d.T
+
+        """
+        print locations.shape
+        print measurements_2d.shape
+        """
+        m = GPy.models.GPRegression(locations, measurements_2d , kernel, noise_var=noisevariance, normalizer=False)
+
+        for a in valid_actions:
+
+            # just physical state updated
+            x_next = self.TransitionP(x, a)
+            new_state = x_next.physical_state
+
+
+            # go down the semitree node
+            # new_st = st.children[ToTuple(a)]
+            assert np.array_equal(x_next.history.locations, locations)
+            assert np.array_equal(x_next.history.measurements, measurements)
+
+            mean, var = m.predict(new_state, full_cov=True)
+            # Reward is just the mean added to a multiple of the variance at that point
+
+            # mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
+
+            # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state, weights=new_st.weights)
+            # var = new_st.variance
+            # print np.linalg.det(var)
+            r = self.reward_analytical(mean, var)
+
+            # Future reward
+            f = self.ComputeNewQRandom(T, x_next, mean.flatten() , var) + r
+
+            if f > vBest:
+                aBest = a
+                vBest = f
+
+        return vBest, aBest
+
+    def ComputeNewQRandom(self, T, x, mean, var):
+
+        # sams = np.random.normal(mu, sd, self.samples_per_stage)
+
+        # no need to average over zeroes
+        if T == 1:
+            return 0
+
+        #mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
+
+        # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
+
+        #sd = new_st.variance
+        # print mean
+        # print var
+
+        sams = np.random.multivariate_normal(mean, var, self.samples_per_stage)
+        """
+        print "sams"
+        print sams
+        for sam in sams:
+            print "sample"
+            print sam
+        """
+        rrr = [self.ComputeNewVRandom(T - 1, self.TransitionH(x, sam))[0] for sam in sams]
         avg = np.mean(rrr)
 
         return avg
@@ -761,16 +872,19 @@ def PhysicalTransition(physical_state, macroaction):
         @return - new physical state after taking the action
         :param macroaction:
         """
-    # todo check dimensions
+
     current_location = physical_state[-1, :]
     batch_size = macroaction.shape[0]
-    # todo fix cause very ugly
+
     repeated_location = np.asarray([current_location for i in range(batch_size)])
     # repeated_location = np.tile(current_location, batch_size)
+
     assert repeated_location.shape == macroaction.shape
     # new physical state is a batch starting from the current location (the last element of batch)
     new_physical_state = np.add(repeated_location, macroaction)
 
+    # check that it is 2d
+    assert new_physical_state.ndim==2
     return new_physical_state
 
 
@@ -1205,8 +1319,14 @@ class History:
         new_locations - 2D array
         @modifies - self.locations, self.measurements
         """
+        assert new_locations.ndim==2
+        assert self.locations.ndim==2
         self.locations = np.append(self.locations, new_locations, axis=0)
         # 1D array
+
+        assert self.measurements.ndim==1
+        assert new_measurements.ndim==1
+
         self.measurements = np.append(self.measurements, new_measurements)
 
 

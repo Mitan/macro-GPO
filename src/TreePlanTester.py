@@ -113,6 +113,7 @@ class TreePlanTester:
     def Test(self, num_timesteps_test, method, num_samples, visualize=False, action_set=None, save_per_step=True,
              save_folder="default_results/", MCTSMaxNodes=10 ** 15):
 
+        # history includes currrent state
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
         state_history = [x_0]
@@ -150,7 +151,7 @@ class TreePlanTester:
                 bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon, max_nodes=MCTSMaxNodes)
 
             elif method == Methods.Exact:
-                vBest, a, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
+                vBest, a, nodes_expanded = tp.NewStochasticFull(x_0, allowed_horizon)
 
             elif method == Methods.MyopicUCB:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
@@ -295,6 +296,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
 
     grid_domain = ((0, 2), (0, 2))
     initial_physical_state = np.array([[1.0, 1.0]])
+    # includes current state
     past_locations = np.array([[1.0, 1.0]])
 
     # Unused

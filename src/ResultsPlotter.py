@@ -11,7 +11,7 @@ import matplotlib.patches as mpatches
 def PlotData(results, path_to_file):
     if not results:
         return
-    color_sequence = ['red', 'green', 'blue', '#e377c2', 'black', 'yellow', '#7f7f7f',
+    color_sequence = ['red', 'green', 'blue', '#e377c2', '#17becf', 'yellow', '#7f7f7f',
                       '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5',
                       '#8c564b', '#c49c94', '#7f7f7f',
                       '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
