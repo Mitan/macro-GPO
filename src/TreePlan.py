@@ -311,7 +311,7 @@ class TreePlan:
 
         lengthscale = (0.1, 0.1)
         signalvariance = 1.0
-        noisevariance = 0.05
+        noisevariance = 0.01
 
         kernel = GPy.kern.RBF(input_dim=2, variance=signalvariance, lengthscale=lengthscale,
                               ARD=True)
@@ -349,7 +349,10 @@ class TreePlan:
             r = self.reward_analytical(mean, var)
 
             # Future reward
-            f = self.ComputeNewQRandom(T, x_next, mean.flatten() , var) + r
+            if T == 1:
+                f = r
+            else:
+                f = self.ComputeNewQRandom(T, x_next, mean.flatten() , var) + r
 
             if f > vBest:
                 aBest = a

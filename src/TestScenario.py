@@ -43,9 +43,9 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     # this model is for observed values
     length_scale = (0.1, 0.1)
     signal_variance = 1.0
-    noise_variance = 0.05
-    predict_range = ((0, 2), (0, 2))
-    num_samples_grid = (40, 40)
+    noise_variance = 0.01
+    predict_range = ((-0.25, 2.25), (-0.25, 2.25))
+    num_samples_grid = (50, 50)
 
     # file for storing reward histories
     # so that later we can plot only some of them
@@ -57,6 +57,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         m = GenerateSimulatedModel(length_scale=np.array(length_scale), signal_variance=signal_variance,
                                    seed=seed, noise_variance=noise_variance, save_folder=save_folder,
                                    predict_range=predict_range, num_samples=num_samples_grid)
+
     if batch_size > 1:
         method_name = 'qEI'
         qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
@@ -73,7 +74,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, myopic_ucb])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(myopic_ucb) + '\n')
-
 
     for h in range(2, h_max):
         # print h

@@ -292,9 +292,9 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     # in case of real data these should be learned hypers
     lengthscale = (0.1, 0.1)
     signalvariance = 1.0
-    noisevariance = 0.05
+    noisevariance = 0.01
 
-    grid_domain = ((0, 2), (0, 2))
+    grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
     initial_physical_state = np.array([[1.0, 1.0]])
     # includes current state
     past_locations = np.array([[1.0, 1.0]])
