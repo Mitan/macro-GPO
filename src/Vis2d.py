@@ -114,9 +114,22 @@ class Vis2d:
                              cmap='Greys', vmin=mmin, vmax=mmax)
             if not path_points == None and path_points:
                 # batch size
-                k = path_points[0].shape[0]
-                # index by element in history
-                for i in xrange(1, len(path_points)):
+                # path points is a list
+                number_of_points = len(path_points)
+
+
+                for i in xrange(number_of_points - 1):
+                    # both are batches of points
+                    current = path_points[i]
+                    next = path_points[i+1]
+
+                    current_location = current[-1, :]
+                    next_location = next[-1, :]
+                    axes.arrow(current_location[0], current_location[1],
+                               next_location[0] - current_location[0],
+                               next_location[1] - current_location[1], edgecolor='red')
+
+                    """
                     # here we need to draw k arrows
                     # pathpoints[i] is a (k,2) nd-array
                     # iterate over k agents
@@ -126,7 +139,7 @@ class Vis2d:
                         axes.arrow(prev[j, 0], prev[j, 1],
                                    current[j, 0] - prev[j, 0],
                                    current[j, 1] - prev[j, 1], edgecolor='red')
-
+                    """
         if not save_path == None:
             plt.savefig(save_path + ".png")
         if display: plt.show()

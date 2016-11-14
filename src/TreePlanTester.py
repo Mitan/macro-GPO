@@ -295,6 +295,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     noisevariance = 0.01
 
     grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
+    # for consistency better make it in a form of a batch
     initial_physical_state = np.array([[1.0, 1.0]])
     # includes current state
     past_locations = np.array([[1.0, 1.0]])
