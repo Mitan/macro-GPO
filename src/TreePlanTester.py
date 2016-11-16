@@ -150,7 +150,7 @@ class TreePlanTester:
                 vBest, a, nodes_expanded = tp.NewStochasticFull(x_0, allowed_horizon)
 
             elif method == Methods.MyopicUCB:
-                vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
+                vBest, a, nodes_expanded = tp.NewStochasticFull(x_0, 1)
 
             elif method == Methods.MLE:
                 vBest, a, nodes_expanded = tp.MLE(x_0, allowed_horizon)
