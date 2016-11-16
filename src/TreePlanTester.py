@@ -140,12 +140,8 @@ class TreePlanTester:
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
                           macroaction_set=action_set,
                           beta=self.sd_bonus, bad_places=self.bad_places,
-                          num_samples=num_samples, batch_size=self.batch_size)
-            """
-            if time == 0 and cheat:
-                a = (0.0, 0.05)
-                nodes_expanded = cheatnum
-            """
+                          num_samples=num_samples, batch_size=self.batch_size, horizon=allowed_horizon)
+
             if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
                 bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon, max_nodes=MCTSMaxNodes)

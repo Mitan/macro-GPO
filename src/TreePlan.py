@@ -12,6 +12,7 @@ from Vis2d import Vis2d
 from mutil import mutil
 from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
+from src.SampleFunctionBuilder import GetNumberOfSamples
 
 
 class TreePlan:
@@ -26,7 +27,7 @@ class TreePlan:
 
     # static_mathutil.Init(25000)
 
-    def __init__(self, batch_size, grid_domain, grid_gap, num_samples, gaussian_process, macroaction_set=None,
+    def __init__(self, batch_size, grid_domain, horizon, grid_gap, num_samples, gaussian_process, macroaction_set=None,
                  max_nodes=None,
                  beta=0.0, bad_places=None):
         """
@@ -39,6 +40,7 @@ class TreePlan:
         # Preset constants
         self.INF = 10 ** 15
 
+        self.H = horizon
         # Number of observations/samples generated for every node
         self.samples_per_stage = num_samples
 
@@ -63,7 +65,6 @@ class TreePlan:
         self.l1 = 0
         # unused
         self.l2 = lambda sigma: 1
-
 
         self.reward_analytical = lambda mu, sigma: self.AcquizitionFunction(mu, sigma)
         # unused
@@ -198,12 +199,8 @@ class TreePlan:
                 best_action = a
 
         return best_expected_improv, best_action, len(valid_actions)
-
+    """
     def StochasticFull(self, x_0, H):
-        """
-                @param x_0 - augmented state
-                @return approximately optimal value, answer, and number of node expansions
-        """
         root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
@@ -217,13 +214,6 @@ class TreePlan:
         return Vapprox, Aapprox, -1
 
     def ComputeVRandom(self, T, x, st):
-
-        """
-                @return vBest - approximate value function computed
-                @return aBest - action at the root for the policy defined by alg1
-                @param st - root of the semi-tree to be used
-                """
-
         valid_actions = self.GetValidActionSet(x.physical_state)
         # not needed
         if T == 0: return 0, valid_actions[0]
@@ -268,20 +258,16 @@ class TreePlan:
 
         sd = new_st.variance
 
-        sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
-        """
-        print "sams"
-        print sams
-        for sam in sams:
-            print "sample"
-            print sam
-        """
+        number_of_samples = GetNumberOfSamples(self.H, T)
+        # sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
+        sams = np.random.multivariate_normal(mu, sd, number_of_samples)
+
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
                                    new_st)[0] for sam in sams]
         avg = np.mean(rrr)
 
         return avg
-
+        """
     def NewStochasticFull(self, x_0, H):
         """
                 @param x_0 - augmented state
@@ -317,21 +303,17 @@ class TreePlan:
                               ARD=True)
 
         measurements_2d = np.atleast_2d(measurements)
-        if measurements_2d.shape[0]==1:
+        if measurements_2d.shape[0] == 1:
             measurements_2d = measurements_2d.T
 
-        """
-        print locations.shape
-        print measurements_2d.shape
-        """
-        m = GPy.models.GPRegression(locations, measurements_2d , kernel, noise_var=noisevariance, normalizer=False)
+        m = GPy.models.GPRegression(X=locations, Y=measurements_2d, kernel=kernel, noise_var=noisevariance,
+                                    normalizer=False)
 
         for a in valid_actions:
 
             # just physical state updated
             x_next = self.TransitionP(x, a)
             new_state = x_next.physical_state
-
 
             # go down the semitree node
             # new_st = st.children[ToTuple(a)]
@@ -352,7 +334,7 @@ class TreePlan:
             if T == 1:
                 f = r
             else:
-                f = self.ComputeNewQRandom(T, x_next, mean.flatten() , var) + r
+                f = self.ComputeNewQRandom(T, x_next, mean.flatten(), var) + r
 
             if f > vBest:
                 aBest = a
@@ -368,38 +350,20 @@ class TreePlan:
         if T == 1:
             return 0
 
-        #mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
+        # mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
 
         # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
 
-        #sd = new_st.variance
-        # print mean
-        # print var
+        # sd = new_st.variance
 
-        sams = np.random.multivariate_normal(mean, var, self.samples_per_stage)
-        """
-        print "sams"
-        print sams
-        for sam in sams:
-            print "sample"
-            print sam
-        """
+        number_of_samples = GetNumberOfSamples(self.H, T)
+        # sams = np.random.multivariate_normal(mean, var, self.samples_per_stage)
+        sams = np.random.multivariate_normal(mean, var, number_of_samples)
+
         rrr = [self.ComputeNewVRandom(T - 1, self.TransitionH(x, sam))[0] for sam in sams]
         avg = np.mean(rrr)
 
         return avg
-
-    def FindMLEError(self, st):
-
-        if not st.children: return 0;
-
-        max_err = 0
-        for a, semi_child in st.children.iteritems():
-            new_err = math.sqrt(2 / math.pi) * (semi_child.lipchitz + self.l1) * math.sqrt(semi_child.variance)
-            rec_err = self.FindMLEError(semi_child)
-            max_err = max(max_err, new_err + rec_err)
-
-        return max_err
 
     def AnytimeAlgorithm(self, epsilon, x_0, H, max_nodes=10 ** 15):
         print "Preprocessing weight spaces..."
@@ -644,46 +608,6 @@ class TreePlan:
         # node.lipchitz = node.L_upper[-1]
         node.lipchitz = lip
 
-    def PreprocessPartitions(self, node, err_allowed, isRoot=False):
-        """
-        Computes number of partitions and k for stated node and all its descendents.
-        @param node - root node of the semi-tree. Assumed to have obtained variance and kxi.
-        @return number of node expansions required for this node and all other
-        """
-
-        if not isRoot:
-            if node.lipchitz == 0 and self.l1 == 0:
-                normalized_error = float('inf')
-            else:
-                normalized_error = err_allowed / (node.lipchitz + self.l1) / math.sqrt(node.variance)
-            num_partitions, k, true_error_bound = self.mathutil.FindSmallestPartition(normalized_error)
-
-            # Save to persistent
-            node.n = num_partitions
-            node.k = k
-            node.true_error = (node.lipchitz + self.l1) * math.sqrt(node.variance) * true_error_bound
-            assert node.true_error <= err_allowed
-        else:
-            # Dummy numbers that don't matter...
-            node.n = 0
-            node.k = 1
-
-        # print node.n
-        # if not node.n==0: print node.n+2, num_partitions
-
-        if node.n == 0:
-            translated = 1  # special case where we may double count both tail evaluations
-        else:
-            translated = node.n + 2  # taking into account both tail evaluations (2 of them)
-        if len(node.children) == 0: return translated
-
-        t = 0  # number of nodes that all descendents will have to expand (all the way to leaves)
-        for a, c in node.children.iteritems():
-            t += self.PreprocessPartitions(c, err_allowed)
-
-        else:
-            return t * translated + translated
-
     def EstimateV(self, T, l, gamma, x, st):
         """
         @return vBest - approximate value function computed
@@ -887,7 +811,7 @@ def PhysicalTransition(physical_state, macroaction):
     new_physical_state = np.add(repeated_location, macroaction)
 
     # check that it is 2d
-    assert new_physical_state.ndim==2
+    assert new_physical_state.ndim == 2
     return new_physical_state
 
 
@@ -1008,7 +932,8 @@ class MCTSActionNode:
         # generate all children d_t + s_{t+1}
         num_nodes_expanded = 1
         for a, semi_child in self.semi_tree.children.iteritems():
-            c = MCTSObservationNode(TransitionP(self.augmented_state, np.asarray(a)), semi_child, self.treeplan, self.lamb,
+            c = MCTSObservationNode(TransitionP(self.augmented_state, np.asarray(a)), semi_child, self.treeplan,
+                                    self.lamb,
                                     self.number_of_samples)
             num_nodes_expanded += c.SkeletalExpand()
             self.ChanceChildren[a] = c
@@ -1322,13 +1247,13 @@ class History:
         new_locations - 2D array
         @modifies - self.locations, self.measurements
         """
-        assert new_locations.ndim==2
-        assert self.locations.ndim==2
+        assert new_locations.ndim == 2
+        assert self.locations.ndim == 2
         self.locations = np.append(self.locations, new_locations, axis=0)
         # 1D array
 
-        assert self.measurements.ndim==1
-        assert new_measurements.ndim==1
+        assert self.measurements.ndim == 1
+        assert new_measurements.ndim == 1
 
         self.measurements = np.append(self.measurements, new_measurements)
 

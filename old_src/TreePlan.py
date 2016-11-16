@@ -14,7 +14,7 @@ from Old_GaussianProcess import SquareExponential
 from Vis2d import Vis2d
 
 
-class TreePlan:
+class OldTreePlan:
     def __init__(self, grid_domain, grid_gap, gaussian_process, bad_places, number_of_nodes_function=None,
                  batch_size=1, horizon=1, beta=0.0):
 
