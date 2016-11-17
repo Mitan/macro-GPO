@@ -12,7 +12,7 @@ from Vis2d import Vis2d
 from mutil import mutil
 from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
-from src.SampleFunctionBuilder import GetNumberOfSamples
+from SampleFunctionBuilder import GetNumberOfSamples
 
 
 class TreePlan:
