@@ -199,7 +199,7 @@ class TreePlan:
                 best_action = a
 
         return best_expected_improv, best_action, len(valid_actions)
-    """
+
     def StochasticFull(self, x_0, H):
         root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
         root_node = SemiTree(root_ss)
@@ -267,7 +267,7 @@ class TreePlan:
         avg = np.mean(rrr)
 
         return avg
-        """
+
     def NewStochasticFull(self, x_0, H):
         """
                 @param x_0 - augmented state

@@ -6,7 +6,7 @@ if __name__ == '__main__':
 
     my_save_folder_root = "../tests/full_dynamic_b4_samples/"
     # max horizon
-    h_max = 5
+    h_max = 4
     # time steps
     t = 5
 

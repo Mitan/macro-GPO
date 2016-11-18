@@ -27,3 +27,6 @@ for i in range(len(x) - 1):
 a = [1,2]
 b = [3,4]
 print a + b
+
+h_max = 4
+print range(h_max, 1,-1)

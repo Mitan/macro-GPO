@@ -41,9 +41,9 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
             raise
 
     # this model is for observed values
-    length_scale = (0.1, 0.1)
+    length_scale = (0.25, 0.25)
     signal_variance = 1.0
-    noise_variance = 0.01
+    noise_variance = 0.00001
     predict_range = ((-0.25, 2.25), (-0.25, 2.25))
     num_samples_grid = (50, 50)
 
@@ -75,7 +75,8 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(myopic_ucb) + '\n')
 
-    for h in range(2, h_max):
+    # for h in range(2, h_max+1):
+    for h in range(h_max, 1, -1):
         # print h
         method_name = 'H = ' + str(h)
         current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,

@@ -147,10 +147,10 @@ class TreePlanTester:
                 bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon, max_nodes=MCTSMaxNodes)
 
             elif method == Methods.Exact:
-                vBest, a, nodes_expanded = tp.NewStochasticFull(x_0, allowed_horizon)
+                vBest, a, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
 
             elif method == Methods.MyopicUCB:
-                vBest, a, nodes_expanded = tp.NewStochasticFull(x_0, 1)
+                vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
 
             elif method == Methods.MLE:
                 vBest, a, nodes_expanded = tp.MLE(x_0, allowed_horizon)
@@ -286,9 +286,9 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     """
     # parameters of GP for prediction
     # in case of real data these should be learned hypers
-    lengthscale = (0.1, 0.1)
+    lengthscale = (0.25, 0.25)
     signalvariance = 1.0
-    noisevariance = 0.01
+    noisevariance = 0.00001
 
     grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
     # for consistency better make it in a form of a batch
