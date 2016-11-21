@@ -108,7 +108,20 @@ class TreePlan:
                 @param x_0 - augmented state
                 @return approximately optimal value, answer, and number of node expansions
         """
-        root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
+
+
+        # by default physical state length is self.batch_size
+        # but for the first step it is equal to 1, since it is just agent's position
+
+        # x_0.history.locations includes current location
+
+        physical_state = x_0.physical_state
+        physical_state_size = physical_state.shape[0]
+        past_locations = x_0.history.locations[: -physical_state_size, :]
+
+        # root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
+        root_ss = SemiState(physical_state, past_locations)
+
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
 
@@ -201,7 +214,16 @@ class TreePlan:
         return best_expected_improv, best_action, len(valid_actions)
 
     def StochasticFull(self, x_0, H):
-        root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
+        # by default physical state length is self.batch_size
+        # but for the first step it is equal to 1, since it is just agent's position
+
+        # x_0.history.locations includes current location
+
+        physical_state = x_0.physical_state
+        physical_state_size = physical_state.shape[0]
+        past_locations = x_0.history.locations[: -physical_state_size, :]
+
+        root_ss = SemiState(physical_state, past_locations)
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
 
@@ -368,7 +390,19 @@ class TreePlan:
     def AnytimeAlgorithm(self, epsilon, x_0, H, max_nodes=10 ** 15):
         print "Preprocessing weight spaces..."
 
-        root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
+        # by default physical state length is self.batch_size
+        # but for the first step it is equal to 1, since it is just agent's position
+
+        # x_0.history.locations includes current location
+
+        physical_state = x_0.physical_state
+        physical_state_size = physical_state.shape[0]
+        past_locations = x_0.history.locations[: -physical_state_size, :]
+
+        root_ss = SemiState(physical_state, past_locations)
+
+        # root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
+
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
         self.PreprocessLipchitz(root_node)
@@ -871,9 +905,11 @@ class SemiState:
     """ State which only contains locations visited and its current location
     """
 
-    # TODO locations include current state?
     def __init__(self, physical_state, locations):
         self.physical_state = physical_state
+        # hsitory doesn't include current batch
+        # it is more convenient since we do not know mean and var in current batch
+        # and locations is history for predicting it
         self.locations = locations
 
 
