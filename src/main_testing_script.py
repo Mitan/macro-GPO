@@ -4,7 +4,7 @@ from TestScenario import TestScenario
 
 if __name__ == '__main__':
 
-    my_save_folder_root = "../tests/full_dynamic_b4_samples/"
+    my_save_folder_root = "../tests/b4_100/"
     # max horizon
     h_max = 4
     # time steps
@@ -15,7 +15,7 @@ if __name__ == '__main__':
     # number of samples per stage
     # todo note now it is only for anytime
     # for exact algorithms see SampleFunctionBuilder
-    num_samples = 150
+    num_samples = 100
 
     args = sys.argv
 

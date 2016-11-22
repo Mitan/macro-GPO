@@ -281,8 +281,8 @@ class TreePlan:
         sd = new_st.variance
 
         number_of_samples = GetNumberOfSamples(self.H, T)
-        # sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
-        sams = np.random.multivariate_normal(mu, sd, number_of_samples)
+        sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
+        # sams = np.random.multivariate_normal(mu, sd, number_of_samples)
 
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
                                    new_st)[0] for sam in sams]
@@ -379,8 +379,8 @@ class TreePlan:
         # sd = new_st.variance
 
         number_of_samples = GetNumberOfSamples(self.H, T)
-        # sams = np.random.multivariate_normal(mean, var, self.samples_per_stage)
-        sams = np.random.multivariate_normal(mean, var, number_of_samples)
+        sams = np.random.multivariate_normal(mean, var, self.samples_per_stage)
+        # sams = np.random.multivariate_normal(mean, var, number_of_samples)
 
         rrr = [self.ComputeNewVRandom(T - 1, self.TransitionH(x, sam))[0] for sam in sams]
         avg = np.mean(rrr)
@@ -1295,70 +1295,4 @@ class History:
 
 
 if __name__ == "__main__":
-
-    # Init GP: Init hyperparameters and covariance function
-    length_scale = [1.5, 1.5]
-    signal_variance = 1
-    noise_variance = 0.1
-    covariance_function = SquareExponential(length_scale=np.array(length_scale), signal_variance=signal_variance,
-                                            noise_variance=noise_variance)
-    gp = GaussianProcess(covariance_function)
-
-    # Init environment model
-    actual_noise_variance = 0.1
-    magnitude_scale = 1.0
-    # model = lambda xy: magnitude_scale * multivariate_normal(mean=[0,0], cov=[[64,0],[0,64]]).pdf(xy)
-    model = lambda xy: magnitude_scale * multivariate_normal(mean=[0, 0], cov=[[1, 0], [0, 1]]).pdf(xy)
-
-    # Planning parameters: domain and resolution
-    grid_domain = ((-10, 10), (-10, 10))
-    grid_gap = 0.2
-
-    # Planning parameters:
-    epsilon = 0.175  # Tolerance for policy loss
-    gamma = 1.0  # Discount factor
-    H = 3  # Search horizon
-
-    # TreePlan tester
-    num_timesteps_test = 20
-    # Initial augmented state
-    initial_physical_state = np.array([1.0, 1.0])
-    initial_locations = np.array([[-1.0, -1.0], [1.0, 1.0]])
-    initial_measurements = np.apply_along_axis(lambda xy: model(xy), 1, initial_locations)
-    x_0 = AugmentedState(initial_physical_state,
-                         initial_history=History(initial_locations, initial_measurements))
-
-    state_history = [x_0]
-    for time in xrange(num_timesteps_test):
-        tp = TreePlan(grid_domain, grid_gap, gp)
-
-        print tp.AnytimeAlgorithm(epsilon, gamma, x_0, H)
-
-        _, a, _ = tp.Algorithm1(epsilon, gamma, x_0, H)
-
-        # Take action a
-        x_temp = tp.TransitionP(x_0, a)
-        # Draw an actual observation from the underlying environment field and add it to the our measurements
-        measurement = model(x_temp.physical_state)
-        x_next = tp.TransitionH(x_temp, measurement)
-
-        # Update future state
-        x_0 = x_next
-
-        print "A = ", a
-        print "M = ", measurement
-        print "X = "
-        print x_0.to_str()
-
-        # Add to plot history
-        state_history.append(x_0)
-
-    XGrid = np.arange(grid_domain[0][0], grid_domain[0][1] + 1e-10, grid_gap)
-    YGrid = np.arange(grid_domain[1][0], grid_domain[1][1] + 1e-10, grid_gap)
-    XGrid, YGrid = np.meshgrid(XGrid, YGrid)
-    model_grid = np.vectorize(lambda x, y: model([x, y]))
-    # Plot graph of locations
-    vis = Vis2d()
-    vis.MapPlot(model_grid(XGrid, YGrid),  # Mesh grid
-                [grid_domain[0][0], grid_domain[0][1], grid_domain[1][0], grid_domain[1][1]],
-                [x.physical_state for x in state_history])
+    pass

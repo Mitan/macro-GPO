@@ -294,8 +294,8 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     # for consistency better make it in a form of a batch
     initial_physical_state = np.array([[1.0, 1.0]])
     # includes current state
-    past_locations = np.array([[1.0, 0.95], [1.0, 1.05], [1.0, 1.0]])
-    # past_locations = np.array([[1.0, 1.0]])
+    # past_locations = np.array([[1.0, 0.95], [1.0, 1.05], [1.0, 1.0]])
+    past_locations = np.array([[1.0, 1.0]])
 
     # Unused
     noise_in_trials = True

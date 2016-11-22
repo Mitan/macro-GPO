@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-for loc in  71 72 73 74 75
+for loc in  61 62 63 64 65 66 67 68 69 70
     do
         python  main_testing_script.py $loc &
     done
