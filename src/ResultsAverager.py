@@ -3,13 +3,16 @@ import numpy as np
 from StringIO import StringIO
 
 
-seeds = range(81, 85)
+seeds = range(77, 97)
 
-seeds = list(set(seeds) - set([84]))
-root_path = '../tests/full_dynamic/'
+# seeds = list(set(seeds) - set([84]))
+root_path = '../tests/b4_sAD_loc0_h3/'
 
-methods = ['h1', 'h2', 'h3','h4', 'anytime_h3','mle_h3', 'qEI' ]
-method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime','MLE H = 3', 'qEI']
+#methods = ['h1', 'h2', 'h3','h4', 'anytime_h3','mle_h3', 'qEI' ]
+#method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime','MLE H = 3', 'qEI']
+
+methods = ['h1', 'h2', 'h3', 'anytime_h3','mle_h3', 'qEI' ]
+method_names = ['H = 1', 'H = 2', 'H = 3', 'Anytime','MLE H = 3', 'qEI']
 
 steps = 5
 

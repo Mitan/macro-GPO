@@ -28,7 +28,7 @@ def __Sample_funciton_4(t):
 
 def __Sample_funciton_3(t):
     if t == 3:
-        return 150
+        return 500
     elif t == 2:
         return 100
     # case of myopic, no need to sample, should be held by upper lvl

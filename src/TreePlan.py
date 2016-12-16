@@ -281,8 +281,8 @@ class TreePlan:
         sd = new_st.variance
 
         number_of_samples = GetNumberOfSamples(self.H, T)
-        sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
-        # sams = np.random.multivariate_normal(mu, sd, number_of_samples)
+        # sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
+        sams = np.random.multivariate_normal(mu, sd, number_of_samples)
 
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
                                    new_st)[0] for sam in sams]
@@ -379,8 +379,8 @@ class TreePlan:
         # sd = new_st.variance
 
         number_of_samples = GetNumberOfSamples(self.H, T)
-        sams = np.random.multivariate_normal(mean, var, self.samples_per_stage)
-        # sams = np.random.multivariate_normal(mean, var, number_of_samples)
+        # sams = np.random.multivariate_normal(mean, var, self.samples_per_stage)
+        sams = np.random.multivariate_normal(mean, var, number_of_samples)
 
         rrr = [self.ComputeNewVRandom(T - 1, self.TransitionH(x, sam))[0] for sam in sams]
         avg = np.mean(rrr)

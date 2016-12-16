@@ -144,7 +144,8 @@ class TreePlanTester:
 
             if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
-                bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon, max_nodes=MCTSMaxNodes)
+                bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon,
+                                                                max_nodes=MCTSMaxNodes)
 
             elif method == Methods.Exact:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
@@ -235,10 +236,10 @@ class TreePlanTester:
         f.write("Total accumulated reward = " + str(total_reward) + "\n")
         f.write("Nodes Expanded per stage\n")
         f.write(str(nodes_expanded_history) + "\n")
-        f.write("Total nodes expanded = " + str(total_nodes_expanded)+ "\n")
+        f.write("Total nodes expanded = " + str(total_nodes_expanded) + "\n")
 
-        f.write("Reward history " + str(total_reward_history)+ "\n")
-        f.write("Normalized Reward history " + str(normalized_total_reward_history)+ "\n")
+        f.write("Reward history " + str(total_reward_history) + "\n")
+        f.write("Normalized Reward history " + str(normalized_total_reward_history) + "\n")
         f.close()
 
         """
@@ -294,7 +295,12 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     # for consistency better make it in a form of a batch
     initial_physical_state = np.array([[1.0, 1.0]])
     # includes current state
-    # past_locations = np.array([[1.0, 0.95], [1.0, 1.05], [1.0, 1.0]])
+    past_locations = np.array(
+        [[1.0, 0.85], [1.0, 1.15], [1.15, 1.0], [0.85, 1.0], [1.0, 0.65], [1.0, 1.35], [1.35, 1.0], [0.65, 1.0],
+         [1.0, 1.0]])
+    past_locations = np.array(
+        [[1.0, 0.5], [1.0, 1.5], [1.5, 1.0], [0.5, 1.0],[1.0, 1.0]])
+
     past_locations = np.array([[1.0, 1.0]])
 
     # Unused
