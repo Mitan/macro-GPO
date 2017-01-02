@@ -1,7 +1,6 @@
 import copy
 import math
 
-import GPy
 import numpy as np
 from scipy.stats import multivariate_normal
 from scipy.stats import norm
@@ -9,7 +8,7 @@ from scipy.stats import norm
 from GaussianProcess import GaussianProcess
 from GaussianProcess import SquareExponential
 from Vis2d import Vis2d
-from mutil import mutil
+# from mutil import mutil
 from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
 from SampleFunctionBuilder import GetNumberOfSamples
@@ -22,8 +21,8 @@ class TreePlan:
         pass
     """
 
-    static_mathutil = mutil()
-    static_mathutil.Init(200)
+    # static_mathutil = mutil()
+    # static_mathutil.Init(200)
 
     # static_mathutil.Init(25000)
 
@@ -60,7 +59,7 @@ class TreePlan:
 
         # Precomputed algo stuff
         # unused
-        self.mathutil = TreePlan.static_mathutil
+        # self.mathutil = TreePlan.static_mathutil
         # unused
         self.l1 = 0
         # unused
@@ -290,22 +289,16 @@ class TreePlan:
 
         return avg
 
+    """
     def NewStochasticFull(self, x_0, H):
-        """
-                @param x_0 - augmented state
-                @return approximately optimal value, answer, and number of node expansions
-        """
         Vapprox, Aapprox = self.ComputeNewVRandom(H, x_0)
 
         return Vapprox, Aapprox, -1
 
     def ComputeNewVRandom(self, T, x):
 
-        """
-                @return vBest - approximate value function computed
-                @return aBest - action at the root for the policy defined by alg1
-                @param st - root of the semi-tree to be used
-                """
+
+
 
         valid_actions = self.GetValidActionSet(x.physical_state)
         # not needed
@@ -386,6 +379,7 @@ class TreePlan:
         avg = np.mean(rrr)
 
         return avg
+    """
 
     def AnytimeAlgorithm(self, epsilon, x_0, H, max_nodes=10 ** 15):
         print "Preprocessing weight spaces..."
