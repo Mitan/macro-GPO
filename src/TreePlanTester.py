@@ -8,7 +8,7 @@ from DynamicHorizon import DynamicHorizon
 
 
 class TreePlanTester:
-    def __init__(self, simulate_noise_in_trials=True, sd_bonus=0.0, bad_places=None):
+    def __init__(self, simulate_noise_in_trials=True, beta=0.0, bad_places=None):
         """
         @param simulate_noise_in_trials: True if we want to add in noise artificially into measurements
         False if noise is already presumed to be present in the data model
@@ -29,7 +29,7 @@ class TreePlanTester:
             assert False, "Unknown reward type"
         """
         self.bad_places = bad_places
-        self.sd_bonus = sd_bonus
+        self.beta = beta
 
     # just sets the parameters
     def InitGP(self, length_scale, signal_variance, noise_variance, mean_function=0.0):
@@ -139,7 +139,7 @@ class TreePlanTester:
             allowed_horizon = DynamicHorizon(t=time, H_max=self.H, t_max=num_timesteps_test)
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
                           macroaction_set=action_set,
-                          beta=self.sd_bonus, bad_places=self.bad_places,
+                          beta=self.beta, bad_places=self.bad_places,
                           num_samples=num_samples, batch_size=self.batch_size, horizon=allowed_horizon)
 
             if method == Methods.Anytime:
@@ -281,7 +281,7 @@ class TreePlanTester:
 def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samples, batch_size, grid_gap_=0.05,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
-                            action_set=None, MCTSMaxNodes=10 ** 15, sd_bonus=0.0):
+                            action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
     """
     Assume a map size of [0, 1] for both axes
     """
@@ -306,7 +306,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     # Unused
     noise_in_trials = True
 
-    TPT = TreePlanTester(simulate_noise_in_trials=noise_in_trials, sd_bonus=sd_bonus)
+    TPT = TreePlanTester(simulate_noise_in_trials=noise_in_trials, beta=beta)
     # this GP is for prediction
     TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance)
     # adds noise to observations

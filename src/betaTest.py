@@ -8,13 +8,9 @@ if __name__ == '__main__':
 
     # os.system("taskset -p 0xff %d" % os.getpid())
 
-
-
-    my_save_folder_root = "../tests/b4_sAD_loc0_h3_x/"
-    my_save_folder_root = "../tests/"
     my_save_folder_root = "../testsBeta/"
-    # max horizon
-    h_max = 4
+
+
     # time steps
     t = 5
 
