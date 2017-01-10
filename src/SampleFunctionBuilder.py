@@ -15,11 +15,11 @@ def GetNumberOfSamples(horizon, t):
 
 def __Sample_funciton_4(t):
     if t == 4:
-        return 150
+        return 100
     elif t == 3:
         return 100
     elif t == 2:
-        return 50
+        return 100
     # case of myopic, no need to sample, should be held by upper lvl
     elif t == 1:
         return -1

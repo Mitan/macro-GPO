@@ -3,9 +3,9 @@ import numpy as np
 from StringIO import StringIO
 
 
-seeds = range(77, 97)
+seeds = range(66,102)
 
-# seeds = list(set(seeds) - set([84]))
+seeds = list(set(seeds) - set([92]))
 root_path = '../tests/b4_sAD_loc0_h3/'
 
 #methods = ['h1', 'h2', 'h3','h4', 'anytime_h3','mle_h3', 'qEI' ]
