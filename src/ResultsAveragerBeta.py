@@ -5,13 +5,13 @@ from StringIO import StringIO
 
 seeds = range(66,102)
 
-seeds = list(set(seeds) - set([92]))
-root_path = '../testsBeta/'
+# seeds = list(set(seeds) - set([92]))
+root_path = '../testBeta2/'
 
 #methods = ['h1', 'h2', 'h3','h4', 'anytime_h3','mle_h3', 'qEI' ]
 #method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime','MLE H = 3', 'qEI']
 
-beta_list = [0.0, 0.1, 1.0, 2.0, 5.0, 10.0]
+beta_list = [0.0, 0.1, 1.0, 2.0, 5.0, 10.0, 50.0, 100.0, 200.0]
 
 methods = ['h1', 'h2', 'h3', 'anytime_h3','mle_h3', 'qEI' ]
 method_names = ['H = 1', 'H = 2', 'H = 3', 'Anytime','MLE H = 3', 'qEI']

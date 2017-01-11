@@ -1,32 +1,13 @@
 import os
+
 import numpy as np
 
 from ResultsPlotter import PlotData
 from TreePlanTester import testWithFixedParameters
-from GaussianProcess import SquareExponential
 
-from GaussianProcess import GaussianProcess
 # from MethodEnum import MethodEnum
 from MethodEnum import Methods
-
-
-def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
-                           num_samples):
-    covariance_function = SquareExponential(length_scale, signal_variance=signal_variance,
-                                            noise_variance=noise_variance)
-    # Generate a drawn vector from GP with noise
-    gpgen = GaussianProcess(covariance_function)
-    m = gpgen.GPGenerate(predict_range=predict_range, num_samples=num_samples, seed=seed, noiseVariance=noise_variance)
-    # write the dataset to file
-    m.WriteToFile(save_folder + "dataset.txt")
-    return m
-
-
-def GenerateModelFromFile(filename):
-    m = GaussianProcess.GPGenerateFromFile(filename)
-
-    return m
-
+from DatasetUtils import GenerateModelFromFile, GenerateSimulatedModel
 
 
 def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):

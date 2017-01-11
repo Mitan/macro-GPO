@@ -1,10 +1,28 @@
 from StringIO import StringIO
 import numpy as np
-from src.DatasetUtils import GenerateModelFromFile
+
+from GaussianProcess import SquareExponential, GaussianProcess
 
 
-root_path = '../tests/b4_sAD_loc0_h3/seed71/'
-method = 'qEI'
+def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
+                           num_samples):
+
+
+    covariance_function = SquareExponential(length_scale, signal_variance=signal_variance,
+                                            noise_variance=noise_variance)
+    # Generate a drawn vector from GP with noise
+    gpgen = GaussianProcess(covariance_function)
+    m = gpgen.GPGenerate(predict_range=predict_range, num_samples=num_samples, seed=seed, noiseVariance=noise_variance)
+    # write the dataset to file
+    m.WriteToFile(save_folder + "dataset.txt")
+    return m
+
+
+def GenerateModelFromFile(filename):
+    m = GaussianProcess.GPGenerateFromFile(filename)
+
+    return m
+
 
 def GetGCoefficient(root_folder, method_name):
     summary_path = root_folder + method_name + '/summary.txt'
@@ -37,5 +55,3 @@ def GetGCoefficient(root_folder, method_name):
     true_max = model.GetMax()
     G = (max_found - initial_measurement) / (true_max - initial_measurement)
     return G
-
-print GetGCoefficient(root_path, method)

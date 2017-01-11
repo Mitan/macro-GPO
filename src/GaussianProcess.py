@@ -218,6 +218,9 @@ class MapValueDict():
         np.savetxt(filename, concatenated_dataset, fmt='%11.8f')
 
 
+    def GetMax(self):
+        return max(self.values)
+
 if __name__ == "__main__":
     # Generation Tests
     pass
