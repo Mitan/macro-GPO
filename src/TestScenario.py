@@ -134,11 +134,11 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
 
 
 
-def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, filename=None):
+def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon, filename=None):
     result_graphs = []
 
 
-    test_horizon = 3
+    # test_horizon = 3
 
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 

@@ -8,11 +8,13 @@ if __name__ == '__main__':
 
     # os.system("taskset -p 0xff %d" % os.getpid())
 
-    my_save_folder_root = "../testsBeta/"
+    my_save_folder_root = "../testBeta2/"
 
 
     # time steps
     t = 5
+
+    h = 2
 
     batch_size = 4
 
@@ -32,5 +34,5 @@ if __name__ == '__main__':
     #for seed in range(seed, seed+10):
     filename = my_save_folder_root + "seed" + str(seed) + "/dataset.txt"
     print filename
-    TestScenario_Beta(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t,
+    TestScenario_Beta(test_horizon= h, my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t,
                      num_samples=num_samples, batch_size=batch_size, filename=filename, beta_list=beta_list)
