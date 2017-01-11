@@ -25,8 +25,8 @@ if __name__ == '__main__':
     # for exact algorithms see SampleFunctionBuilder
     num_samples = 150
 
-    #seed = int(args[1])
-    seed = 66
+    seed = int(args[1])
+    # seed = 66
     #test_iteration = int(args[2])
     #my_save_folder_root = my_save_folder_root + str(test_iteration) + "/"
     #for seed in range(seed, seed+10):
