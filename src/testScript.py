@@ -38,4 +38,16 @@ def GetGCoefficient(root_folder, method_name):
     G = (max_found - initial_measurement) / (true_max - initial_measurement)
     return G
 
-print GetGCoefficient(root_path, method)
+# print GetGCoefficient(root_path, method)
+
+filename = './taxi18.dom'
+lines = open(filename).readlines()
+number_of_points = len(lines)
+
+"""
+data = np.genfromtxt(filename)
+print data.shape
+locs = data[:, :2]
+vals = data[:, 2]
+neighbours = data[:, 4:]
+"""

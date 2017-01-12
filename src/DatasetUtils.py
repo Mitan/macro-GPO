@@ -1,7 +1,7 @@
 from StringIO import StringIO
 import numpy as np
 
-from GaussianProcess import SquareExponential, GaussianProcess
+from GaussianProcess import SquareExponential, GaussianProcess, MapValueDict
 
 
 def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
@@ -19,9 +19,18 @@ def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_f
 
 
 def GenerateModelFromFile(filename):
-    m = GaussianProcess.GPGenerateFromFile(filename)
+    data = np.genfromtxt(filename)
+    locs = data[:, :-1]
+    vals = data[:, -1]
+    return MapValueDict(locs, vals)
 
-    return m
+
+def GenerateRoadModelFromFile(filename):
+    data = np.genfromtxt(filename)
+    locs = data[:, :2]
+    vals = data[:, 2]
+    neighbours = data[:, 4:]
+
 
 
 def GetGCoefficient(root_folder, method_name):

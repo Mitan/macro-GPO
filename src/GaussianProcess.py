@@ -130,14 +130,6 @@ class GaussianProcess:
 
         return weights, variance
 
-    @staticmethod
-    def GPGenerateFromFile(filename):
-        # file should be in for
-        data = np.genfromtxt(filename)
-        locs = data[:, :-1]
-        vals = data[:, -1]
-        return MapValueDict(locs, vals)
-
 
 class CovarianceFunction:
     """
@@ -178,7 +170,7 @@ class MapValueDict():
 
         self.locations = locations
         # the original mean of the values
-        self.mean = np.mean(values)
+        # self.mean = np.mean(values)
 
         # self.values = values - self.mean
         self.values = values
@@ -216,7 +208,6 @@ class MapValueDict():
         vals = np.atleast_2d(self.values).T
         concatenated_dataset = np.concatenate((self.locations, vals), axis=1)
         np.savetxt(filename, concatenated_dataset, fmt='%11.8f')
-
 
     def GetMax(self):
         return max(self.values)
