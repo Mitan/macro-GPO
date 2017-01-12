@@ -44,6 +44,23 @@ filename = './taxi18.dom'
 lines = open(filename).readlines()
 number_of_points = len(lines)
 
+locs = np.empty((number_of_points, 2))
+neighbours = np.empty((number_of_points, 9))
+vals = np.empty((number_of_points, ))
+
+for i, line in enumerate(lines):
+    l = line
+    a = StringIO(l)
+    current_point = np.genfromtxt(a)
+
+    current_neighbours = current_point[4:]
+    neighbours_len = len(current_neighbours)
+    assert neighbours_len < 10
+
+    np.copyto(locs[i, :], current_point[0:2])
+    np.copyto(neighbours[i, :neighbours_len], current_neighbours)
+    vals[0] = current_point[2]
+
 """
 data = np.genfromtxt(filename)
 print data.shape
