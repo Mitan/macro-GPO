@@ -5,16 +5,13 @@ from StringIO import StringIO
 
 seeds = range(66,102)
 
-# seeds = list(set(seeds) - set([92]))
-root_path = '../testBeta2/'
+root_path = '../testsBeta3/'
+# root_path = '../testBeta2/'
 
-#methods = ['h1', 'h2', 'h3','h4', 'anytime_h3','mle_h3', 'qEI' ]
-#method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime','MLE H = 3', 'qEI']
 
-beta_list = [0.0, 0.1, 1.0, 2.0, 5.0, 10.0, 50.0, 100.0, 200.0]
+beta_list = ['1e-05', '1e-06', '1e-07',10**-4, 10**-3, 5* 10**-3, 10**-2, 5* 10**-2,0.0, 0.1, 1.0, 2.0, 5.0, 10.0, 50.0, 100.0, 200.0]
+beta_list = [10**-3,0.0, 0.1, 1.0, 2.0, 10.0]
 
-methods = ['h1', 'h2', 'h3', 'anytime_h3','mle_h3', 'qEI' ]
-method_names = ['H = 1', 'H = 2', 'H = 3', 'Anytime','MLE H = 3', 'qEI']
 
 steps = 5
 
@@ -27,9 +24,9 @@ for beta in beta_list:
         # counter
 
         file_path = root_path + 'seed' + str(seed) + '/beta' + str(beta) + '/summary.txt'
-        # print file_path
         try:
             a = (open(file_path).readlines()[-1])[27: -2]
+            # print file_path
             # print a
             number_of_location += 1
         except:
@@ -39,8 +36,9 @@ for beta in beta_list:
         rewards = np.genfromtxt(a, delimiter=",")
         results_for_method = np.add(results_for_method, rewards)
     # check that we collected data for every location
-    assert number_of_location == len(seeds)
-    #print results_for_method
+    assert number_of_location == len(seeds), "%s %s" % (number_of_location, len(seeds))
+    # print number_of_location, len(seeds),
+    # print results_for_method
     results_for_method = results_for_method / number_of_location
 
     result = ["beta = " + str(beta), results_for_method.tolist()]

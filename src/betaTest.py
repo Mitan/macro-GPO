@@ -9,6 +9,7 @@ if __name__ == '__main__':
     # os.system("taskset -p 0xff %d" % os.getpid())
 
     my_save_folder_root = "../testBeta2/"
+    # my_save_folder_root = "../testsBeta/"
 
 
     # time steps
@@ -21,6 +22,7 @@ if __name__ == '__main__':
     args = sys.argv
 
     beta_list = [0.0, 0.1, 1.0, 2.0, 5.0, 10.0, 50.0, 100.0, 200.0]
+    beta_list = [10**-7, 10**-6, 10**-5, 10**-4, 10**-3, 5* 10**-3, 10**-2, 5* 10**-2, 0.0]
 
     # number of samples per stage
     # todo note now it is only for anytime
