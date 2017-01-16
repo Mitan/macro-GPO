@@ -140,7 +140,7 @@ class TreePlanTester:
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
                           macroaction_set=action_set,
                           beta=self.beta, bad_places=self.bad_places,
-                          num_samples=num_samples, batch_size=self.batch_size, horizon=allowed_horizon)
+                          num_samples=num_samples, batch_size=self.batch_size, horizon=allowed_horizon, model=self.model)
 
             if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)

@@ -21,12 +21,8 @@ class TreePlan:
         pass
     """
 
-    # static_mathutil = mutil()
-    # static_mathutil.Init(200)
-
-    # static_mathutil.Init(25000)
-
-    def __init__(self, batch_size, grid_domain, horizon, grid_gap, num_samples, gaussian_process, macroaction_set=None,
+    def __init__(self, batch_size, grid_domain, horizon, grid_gap, num_samples, gaussian_process, model,
+                 macroaction_set=None,
                  max_nodes=None,
                  beta=0.0, bad_places=None):
         """
@@ -107,7 +103,6 @@ class TreePlan:
                 @param x_0 - augmented state
                 @return approximately optimal value, answer, and number of node expansions
         """
-
 
         # by default physical state length is self.batch_size
         # but for the first step it is equal to 1, since it is just agent's position
