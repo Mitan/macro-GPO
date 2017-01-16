@@ -162,6 +162,9 @@ class SquareExponential(CovarianceFunction):
         return self.signal_variance * np.exp(-0.5 * squared)
 
 
+
+
+
 class MapValueDict():
     def __init__(self, locations, values, epsilon=None):
         """

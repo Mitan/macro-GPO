@@ -1,10 +1,11 @@
 from StringIO import StringIO
 import numpy as np
-from src.DatasetUtils import GenerateModelFromFile
-
+from src.DatasetUtils import GenerateModelFromFile, GenerateRoadModelFromFile
+from src.GaussianProcess import MapValueDict
 
 root_path = '../tests/b4_sAD_loc0_h3/seed71/'
 method = 'qEI'
+
 
 def GetGCoefficient(root_folder, method_name):
     summary_path = root_folder + method_name + '/summary.txt'
@@ -19,7 +20,7 @@ def GetGCoefficient(root_folder, method_name):
     # occupy different number of lines
     last_line_index = 31 if lines[31].strip()[-1] == ']' else 33
 
-    stripped_lines = map(lambda x: x.strip(), lines[first_line_index: last_line_index+1])
+    stripped_lines = map(lambda x: x.strip(), lines[first_line_index: last_line_index + 1])
     joined_lines = " ".join(stripped_lines)[1:-1]
     a = StringIO(joined_lines)
 
@@ -38,15 +39,18 @@ def GetGCoefficient(root_folder, method_name):
     G = (max_found - initial_measurement) / (true_max - initial_measurement)
     return G
 
+
 # print GetGCoefficient(root_path, method)
 
 filename = './taxi18.dom'
+
+"""
 lines = open(filename).readlines()
 number_of_points = len(lines)
 
 locs = np.empty((number_of_points, 2))
 neighbours = np.empty((number_of_points, 9))
-vals = np.empty((number_of_points, ))
+vals = np.empty((number_of_points,))
 
 for i, line in enumerate(lines):
     l = line
@@ -61,10 +65,22 @@ for i, line in enumerate(lines):
     np.copyto(neighbours[i, :neighbours_len], current_neighbours)
     vals[0] = current_point[2]
 
-"""
+
+
+a = RoadMapValueDict(locations=locs, values=vals, neighbours=neighbours)
+
+a.locations
+a.neighbours
+
+
 data = np.genfromtxt(filename)
 print data.shape
 locs = data[:, :2]
 vals = data[:, 2]
 neighbours = data[:, 4:]
 """
+
+m = GenerateRoadModelFromFile(filename)
+for i in m.locations:
+    # a = m.neighbours[tuple(i)] if tuple(i) in m.neighbours.keys() else 'None'
+    print i, m.GetNeighbours(i)

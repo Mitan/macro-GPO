@@ -2,12 +2,11 @@ from StringIO import StringIO
 import numpy as np
 
 from GaussianProcess import SquareExponential, GaussianProcess, MapValueDict
+from RoadMapValueDict import RoadMapValueDict
 
 
 def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
                            num_samples):
-
-
     covariance_function = SquareExponential(length_scale, signal_variance=signal_variance,
                                             noise_variance=noise_variance)
     # Generate a drawn vector from GP with noise
@@ -26,11 +25,7 @@ def GenerateModelFromFile(filename):
 
 
 def GenerateRoadModelFromFile(filename):
-    data = np.genfromtxt(filename)
-    locs = data[:, :2]
-    vals = data[:, 2]
-    neighbours = data[:, 4:]
-
+    return RoadMapValueDict(filename)
 
 
 def GetGCoefficient(root_folder, method_name):
@@ -46,7 +41,7 @@ def GetGCoefficient(root_folder, method_name):
     # occupy different number of lines
     last_line_index = 31 if lines[31].strip()[-1] == ']' else 33
 
-    stripped_lines = map(lambda x: x.strip(), lines[first_line_index: last_line_index+1])
+    stripped_lines = map(lambda x: x.strip(), lines[first_line_index: last_line_index + 1])
     joined_lines = " ".join(stripped_lines)[1:-1]
     a = StringIO(joined_lines)
 
