@@ -78,9 +78,43 @@ print data.shape
 locs = data[:, :2]
 vals = data[:, 2]
 neighbours = data[:, 4:]
-"""
+
 
 m = GenerateRoadModelFromFile(filename)
 for i in m.locations:
     # a = m.neighbours[tuple(i)] if tuple(i) in m.neighbours.keys() else 'None'
     print i, m.GetNeighbours(i)
+
+"""
+
+dict = {1: [2], 2: [3], 3: [4], 4: [5, 6, 1,2 ]}
+dict = {1: [2], 2: [3, 4], 3: [4], 4: [3]}
+
+
+
+
+# batch_size = 3
+
+#UGLY
+# TODO change into generators
+batch_road_macroactions = []
+def ExpandActions(start, batch_size):
+    # including the start, hence +1
+    if len(start) == batch_size+1:
+        # remove start state
+        batch_road_macroactions.append(start[1:])
+        return
+
+    current = start[-1]
+    for next_node in dict[current]:
+        if next_node in start:
+            continue
+        ExpandActions(start + [next_node], batch_size)
+
+
+def GenerateRoadMacroActions(current_state, batch_size):
+    ExpandActions([current_state], batch_size)
+    return batch_road_macroactions
+# print batch_road_macroactions
+
+print GenerateRoadMacroActions(1, 3)
