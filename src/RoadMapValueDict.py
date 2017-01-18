@@ -3,6 +3,7 @@ from StringIO import StringIO
 from GaussianProcess import MapValueDict
 import numpy as np
 
+batch_road_macroactions = []
 
 
 class RoadMapValueDict(MapValueDict):
@@ -51,6 +52,27 @@ class RoadMapValueDict(MapValueDict):
         tuple_loc = tuple(location)
         int_neighbours =  self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
         return map(lambda x: np.array([ x % self.dim_1, x / self.dim_1]), int_neighbours)
+
+    # UGLY
+    # TODO change into generators
+    def ExpandActions(self, start, batch_size):
+        # including the start, hence +1
+        if len(start) == batch_size + 1:
+            # remove start state
+            batch_road_macroactions.append(start[1:])
+            return
+
+        current = start[-1]
+        for next_node in self.GetNeighbours(current):
+            if next_node in start:
+                continue
+            self.ExpandActions(start + [next_node], batch_size)
+
+    def GenerateRoadMacroActions(self, current_state, batch_size):
+        self.ExpandActions([current_state], batch_size)
+        return batch_road_macroactions
+        # print batch_road_macroactions
+
 
 if __name__ == "__main__":
     """

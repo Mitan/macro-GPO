@@ -85,7 +85,7 @@ for i in m.locations:
     # a = m.neighbours[tuple(i)] if tuple(i) in m.neighbours.keys() else 'None'
     print i, m.GetNeighbours(i)
 
-"""
+
 
 dict = {1: [2], 2: [3], 3: [4], 4: [5, 6, 1,2 ]}
 dict = {(1,0): [(2,0)], (2,0): [(3,0), (4,0)], (3,0): [(4,0)], (4,0): [(3,0)]}
@@ -118,3 +118,10 @@ def GenerateRoadMacroActions(current_state, batch_size):
 # print batch_road_macroactions
 
 print GenerateRoadMacroActions((1,0), 3)
+"""
+
+
+m = GenerateRoadModelFromFile(filename)
+locs = m.locations
+for loc in locs:
+    print loc, m.GenerateRoadMacroActions(loc, 2)
