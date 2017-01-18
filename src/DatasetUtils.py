@@ -59,3 +59,11 @@ def GetGCoefficient(root_folder, method_name):
     true_max = model.GetMax()
     G = (max_found - initial_measurement) / (true_max - initial_measurement)
     return G
+
+
+if __name__ == "__main__":
+    # cannot use - cylcic linking
+    filename = './taxi18.dom'
+    m = GenerateRoadModelFromFile(filename)
+    for i in m.locations:
+        print i, m.GetNeighbours(i)

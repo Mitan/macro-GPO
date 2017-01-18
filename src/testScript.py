@@ -1,6 +1,6 @@
 from StringIO import StringIO
 import numpy as np
-from src.DatasetUtils import GenerateModelFromFile, GenerateRoadModelFromFile
+from DatasetUtils import GenerateModelFromFile, GenerateRoadModelFromFile
 from src.GaussianProcess import MapValueDict
 
 root_path = '../tests/b4_sAD_loc0_h3/seed71/'
@@ -88,7 +88,7 @@ for i in m.locations:
 """
 
 dict = {1: [2], 2: [3], 3: [4], 4: [5, 6, 1,2 ]}
-dict = {1: [2], 2: [3, 4], 3: [4], 4: [3]}
+dict = {(1,0): [(2,0)], (2,0): [(3,0), (4,0)], (3,0): [(4,0)], (4,0): [(3,0)]}
 
 
 
@@ -117,4 +117,4 @@ def GenerateRoadMacroActions(current_state, batch_size):
     return batch_road_macroactions
 # print batch_road_macroactions
 
-print GenerateRoadMacroActions(1, 3)
+print GenerateRoadMacroActions((1,0), 3)

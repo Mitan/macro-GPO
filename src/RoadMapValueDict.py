@@ -4,12 +4,17 @@ from GaussianProcess import MapValueDict
 import numpy as np
 
 
+
 class RoadMapValueDict(MapValueDict):
 
 
     # format of files is assumed to be
     # loc_x, loc_y, demand, supp, n_count, n_1, ....n_{n_count}
     def __init__(self, filename):
+        # TODO note hardcoded size of dataset
+        self.dim_1 = 50
+        self.dim_2 = 100
+
         # because of the file format have to do some ugly parsing
         lines = open(filename).readlines()
         number_of_points = len(lines)
@@ -22,6 +27,7 @@ class RoadMapValueDict(MapValueDict):
 
         for i, line in enumerate(lines):
             a = StringIO(line)
+            # get current point
             current_point = np.genfromtxt(a)
 
             current_loc = current_point[0:2]
@@ -43,5 +49,14 @@ class RoadMapValueDict(MapValueDict):
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
-        return self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
+        int_neighbours =  self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
+        return map(lambda x: np.array([ x % self.dim_1, x / self.dim_1]), int_neighbours)
 
+if __name__ == "__main__":
+    """
+    filename = './taxi18.dom'
+    # cannot use - cylcic linking
+     m = GenerateRoadModelFromFile(filename)
+    for i in m.locations:
+        print i, m.GetNeighbours(i)
+    """
