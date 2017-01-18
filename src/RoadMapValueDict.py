@@ -31,7 +31,7 @@ class RoadMapValueDict(MapValueDict):
             # get current point
             current_point = np.genfromtxt(a)
 
-            current_loc = current_point[0:2]
+            current_loc = tuple(current_point[0:2])
             current_neighbours = map(int, current_point[4:].tolist())
 
             # the first item is count
@@ -51,7 +51,7 @@ class RoadMapValueDict(MapValueDict):
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
         int_neighbours =  self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
-        return map(lambda x: np.array([ x % self.dim_1, x / self.dim_1]), int_neighbours)
+        return map(lambda x: (x % self.dim_1, x / self.dim_1), int_neighbours)
 
     # UGLY
     # TODO change into generators

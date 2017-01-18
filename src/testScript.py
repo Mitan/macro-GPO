@@ -124,4 +124,4 @@ print GenerateRoadMacroActions((1,0), 3)
 m = GenerateRoadModelFromFile(filename)
 locs = m.locations
 for loc in locs:
-    print loc, m.GenerateRoadMacroActions(loc, 2)
+    print loc, m.GenerateRoadMacroActions(tuple(loc), 2)
