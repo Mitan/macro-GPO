@@ -42,7 +42,8 @@ class GaussianProcess:
         mu = np.dot(k_star.T, alpha)
         return mu
     """
-        # old
+
+    # old
 
     def GPMean(self, measurements, weights):
 
@@ -54,6 +55,7 @@ class GaussianProcess:
     def Cholesky(self, locations):
         K = self.CovarianceMesh(locations, locations)
         return np.linalg.cholesky(K + self.noise * np.identity(K.shape[0]))
+
     # assert locations, current_location a 2-D arrays
 
     def GPWeights(self, locations, current_location, cholesky):
@@ -162,10 +164,10 @@ class SquareExponential(CovarianceFunction):
         return self.signal_variance * np.exp(-0.5 * squared)
 
 
-
-
-
 class MapValueDict():
+    # needed for rounding while adding into dict
+    ROUNDING_CONST = 2
+
     def __init__(self, locations, values, epsilon=None):
         """
         @param epsilon - minimum tolerance level to determine equivalence between two points
@@ -173,7 +175,7 @@ class MapValueDict():
 
         self.locations = locations
         # the original mean of the values
-        # self.mean = np.mean(values)
+        self.mean = np.mean(values)
 
         # self.values = values - self.mean
         self.values = values
@@ -192,7 +194,9 @@ class MapValueDict():
         """
         self.__vals_dict = {}
         for i in range(self.locations.shape[0]):
-            self.__vals_dict[tuple(locations[i])] = self.values[i]
+            rounded_location = np.around(locations[i], decimals=self.ROUNDING_CONST)
+            self.__vals_dict[tuple(rounded_location)] = self.values[i]
+        print self.__vals_dict
 
     def __call__(self, query_location):
         """
@@ -211,7 +215,9 @@ class MapValueDict():
 
         return self.values[bi]
         """
-        tuple_loc = tuple(query_location)
+
+        tuple_loc = (
+        round(query_location[0], ndigits=self.ROUNDING_CONST), round(query_location[1], ndigits=self.ROUNDING_CONST))
         assert tuple_loc in self.__vals_dict, "No close enough match found for query location " + str(query_location)
         return self.__vals_dict[tuple_loc]
 
@@ -222,6 +228,7 @@ class MapValueDict():
 
     def GetMax(self):
         return max(self.values)
+
 
 if __name__ == "__main__":
     # Generation Tests
