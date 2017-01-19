@@ -102,26 +102,36 @@ def ExpandActions(start, batch_size):
     # including the start, hence +1
     if len(start) == batch_size+1:
         # remove start state
-        batch_road_macroactions.append(start[1:])
-        return
-
-    current = start[-1]
-    for next_node in dict[current]:
-        if next_node in start:
-            continue
-        ExpandActions(start + [next_node], batch_size)
-
+        # batch_road_macroactions.append(start[1:])
+        # return
+        yield map(list, start[1:])
+    else:
+        current = start[-1]
+        for next_node in dict[current]:
+            if next_node in start:
+                continue
+            for state in ExpandActions(start + [next_node], batch_size):
+                yield state
 
 def GenerateRoadMacroActions(current_state, batch_size):
     ExpandActions([current_state], batch_size)
     return batch_road_macroactions
 # print batch_road_macroactions
 
-print GenerateRoadMacroActions((1,0), 3)
 """
-
+# for i in GenerateRoadMacroActions((1,0), 3):
+#l = list(ExpandActions([(1,0)], 3))
+# print l
 
 m = GenerateRoadModelFromFile(filename)
+
 locs = m.locations
+
+count = 0
 for loc in locs:
-    print loc, m.GenerateRoadMacroActions(tuple(loc), 2)
+    length = len(m.GenerateRoadMacroActions(tuple(loc), 3))
+    if length > 0:
+        print loc, length
+        count+=1
+print count
+        # m.GenerateRoadMacroActions(tuple(loc), 3)

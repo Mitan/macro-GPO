@@ -178,7 +178,7 @@ class MapValueDict():
         # self.values = values - self.mean
         self.values = values
 
-
+        """
         if not epsilon == None:
             self.epsilon = epsilon
             return
@@ -189,11 +189,15 @@ class MapValueDict():
             temp = list(set(np.squeeze(locations[:, dim]).tolist()))
             temp = sorted(temp)
             self.epsilon[dim] = (min([temp[i] - temp[i - 1] for i in xrange(1, len(temp))])) / 4
+        """
+        self.__vals_dict = {}
+        for i in range(self.locations.shape[0]):
+            self.__vals_dict[tuple(locations[i])] = self.values[i]
 
     def __call__(self, query_location):
         """
         Search for nearest grid point iteratively. Uses L1 norm as the distance metric
-        """
+
         bi = -1
         bd = None
         for i in xrange(self.locations.shape[0]):
@@ -206,6 +210,10 @@ class MapValueDict():
         assert bd is not None, "No close enough match found for query location " + str(query_location)
 
         return self.values[bi]
+        """
+        tuple_loc = tuple(query_location)
+        assert tuple_loc in self.__vals_dict, "No close enough match found for query location " + str(query_location)
+        return self.__vals_dict[tuple_loc]
 
     def WriteToFile(self, filename):
         vals = np.atleast_2d(self.values).T

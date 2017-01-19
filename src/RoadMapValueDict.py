@@ -53,25 +53,23 @@ class RoadMapValueDict(MapValueDict):
         int_neighbours =  self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
         return map(lambda x: (x % self.dim_1, x / self.dim_1), int_neighbours)
 
-    # UGLY
-    # TODO change into generators
-    def ExpandActions(self, start, batch_size):
+    def ___ExpandActions(self, start, batch_size):
         # including the start, hence +1
         if len(start) == batch_size + 1:
-            # remove start state
-            batch_road_macroactions.append(start[1:])
-            return
+            yield np.asarray(start[1:])
+        else:
+            current = start[-1]
 
-        current = start[-1]
-        for next_node in self.GetNeighbours(current):
-            if next_node in start:
-                continue
-            self.ExpandActions(start + [next_node], batch_size)
+            for next_node in self.GetNeighbours(current):
+                # Do we need the first condition?
+                if (next_node in start) or (self.__call__(next_node) == -1.0):
+                    continue
+                # print self.__call__(next_node)
+                for state in self.___ExpandActions(start + [next_node], batch_size):
+                    yield state
 
     def GenerateRoadMacroActions(self, current_state, batch_size):
-        self.ExpandActions([current_state], batch_size)
-        return batch_road_macroactions
-        # print batch_road_macroactions
+        return list(self.___ExpandActions([current_state], batch_size))
 
 
 if __name__ == "__main__":
