@@ -123,9 +123,9 @@ class TreePlan:
 
         # print "Performing search..."
         # Get answer
-        Vapprox, Aapprox = self.ComputeVMLE(H, x_0, root_node)
+        Vapprox, Xapprox = self.ComputeVMLE(H, x_0, root_node)
 
-        return Vapprox, Aapprox, -1
+        return Vapprox, Xapprox, -1
 
     def ComputeVMLE(self, T, x, st):
 
@@ -136,25 +136,29 @@ class TreePlan:
                 """
 
         valid_actions = self.GetValidActionSet(x.physical_state)
+
+        # these are augmented states
+        next_states = [self.TransitionP(x, a) for a in valid_actions]
+
+        #TODO for road create a fake action a = [0. 0. 0.] and then manually
+        # set physical state for every new augmented state
+        # or create a new function TransitionP for setting augmented state
+
         # not needed
-        if T == 0: return 0, valid_actions[0]
+        if T == 0: return 0, next_states[0]
 
         vBest = -self.INF
-        aBest = valid_actions[0]
-        for a in valid_actions:
+        xBest = next_states[0]
+        for x_next  in next_states:
 
-            x_next = self.TransitionP(x, a)
+            # x_next = self.TransitionP(x, a)
+            next_physical_state = x_next.physical_state
 
-            # go down the semitree node
-            new_st = st.children[ToTuple(a)]
+            # cannot tuple augmented state, need to use physical state here
+            new_st = st.children[ToTuple(next_physical_state)]
 
-            # mean = self.gp.GPMean(locations=x_next.history.locations, measurements=x_next.history.measurements,
-            #                     current_location=x_next.physical_state,
-            #                      cholesky=new_st.cholesky)
             mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
 
-            # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-            #                      weights=new_st.weights)
             var = new_st.variance
             r = self.reward_analytical(mean, var)
 
@@ -162,10 +166,10 @@ class TreePlan:
             f = self.ComputeQMLE(T, x_next, new_st) + r
 
             if f > vBest:
-                aBest = a
+                xBest = x_next
                 vBest = f
-
-        return vBest, aBest
+        # xBest is augmented state
+        return vBest, xBest
 
     def ComputeQMLE(self, T, x, new_st):
         # no need to average over zeroes
@@ -174,7 +178,7 @@ class TreePlan:
 
         mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
         # mu = self.gp.GPMean(locations=x.history.locations, measurements=x.history.measurements, current_location=x.physical_state, cholesky=new_st.cholesky)
-        return self.ComputeVRandom(T - 1, self.TransitionH(x, mu), new_st)[0]
+        return self.ComputeVMLE(T - 1, self.TransitionH(x, mu), new_st)[0]
 
     def qEI(self, x_0, eps=10 ** (-5)):
         """
@@ -554,15 +558,17 @@ class TreePlan:
 
         # Add in new children for each valid action
         valid_actions = self.GetValidActionSet(node.ss.physical_state)
-        for a in valid_actions:
+        new_physical_states = [self.PhysicalTransition(cur_physical_state, a) for a in valid_actions]
+
+        for new_physical_state in new_physical_states:
             # Get new semi state
 
-            new_physical_state = self.PhysicalTransition(cur_physical_state, a)
+            # new_physical_state = self.PhysicalTransition(cur_physical_state, a)
             new_ss = SemiState(new_physical_state, new_locations)
 
             # Build child subtree
             new_st = SemiTree(new_ss, chol=cholesky)
-            node.AddChild(a, new_st)
+            node.AddChild(new_physical_state, new_st)
             new_st.ComputeWeightsAndVariance(self.gp)
             self.BuildTree(new_st, H - 1)
 

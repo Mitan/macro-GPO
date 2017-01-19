@@ -154,7 +154,7 @@ class TreePlanTester:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
 
             elif method == Methods.MLE:
-                vBest, a, nodes_expanded = tp.MLE(x_0, allowed_horizon)
+                vBest, x_temp, nodes_expanded = tp.MLE(x_0, allowed_horizon)
 
             elif method == Methods.qEI:
                 vBest, a, nodes_expanded = tp.qEI(x_0)
@@ -163,7 +163,7 @@ class TreePlanTester:
                 raise Exception("Unknown method type")
 
             # Take action a
-            x_temp = tp.TransitionP(x_0, a)
+            # x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
 
             baseline_measurements = np.asarray(
