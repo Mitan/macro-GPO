@@ -118,7 +118,7 @@ def GenerateRoadMacroActions(current_state, batch_size):
     return batch_road_macroactions
 # print batch_road_macroactions
 
-"""
+
 # for i in GenerateRoadMacroActions((1,0), 3):
 #l = list(ExpandActions([(1,0)], 3))
 # print l
@@ -135,3 +135,8 @@ for loc in locs:
         count+=1
 print count
         # m.GenerateRoadMacroActions(tuple(loc), 3)
+"""
+
+print round(8.8333333333333339 , 2)
+
+print np.around([0.374, 1.6400000001], decimals=2)

@@ -196,7 +196,7 @@ class MapValueDict():
         for i in range(self.locations.shape[0]):
             rounded_location = np.around(locations[i], decimals=self.ROUNDING_CONST)
             self.__vals_dict[tuple(rounded_location)] = self.values[i]
-        print self.__vals_dict
+        # print self.__vals_dict
 
     def __call__(self, query_location):
         """

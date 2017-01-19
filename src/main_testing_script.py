@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     my_save_folder_root = "../tests/b4_sAD_loc0_h3_x/"
     my_save_folder_root = "../tests/"
-    my_save_folder_root = "../tests4/tests"
+    my_save_folder_root = "../tests/"
     # max horizon
     h_max = 4
     # time steps
@@ -43,7 +43,7 @@ if __name__ == '__main__':
             TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
                          num_samples=num_samples, batch_size=batch_size, filename=filename)
 
-            # no command line args => running locally with generating datasets
+    # no command line args => running locally with generating datasets
 
     elif len(args) == 1:
         for seed in range(start, end):
