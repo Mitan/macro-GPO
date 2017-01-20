@@ -144,8 +144,13 @@ class TreePlanTester:
 
             if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
-                bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon,
+                bounds, x_temp_physical, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon,
                                                                 max_nodes=MCTSMaxNodes)
+                # TODO fix this ugly hack
+                a = np.zeros(x_temp_physical.shape)
+                x_temp = tp.TransitionP(x_0, a)
+                x_temp.physical_state = x_temp_physical
+
 
             elif method == Methods.Exact:
                 vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
