@@ -191,7 +191,7 @@ class TreePlan:
         best_expected_improv = -1.0
 
         valid_actions = self.GetValidActionSet(x_0.physical_state)
-        next_states = [self.TransitionP(x, a) for a in valid_actions]
+        next_states = [self.TransitionP(x_0, a) for a in valid_actions]
 
         chol = self.gp.Cholesky(x_0.history.locations)
         for x_next in next_states:
@@ -246,7 +246,8 @@ class TreePlan:
 
             # x_next = self.TransitionP(x, a)
             # go down the semitree node
-            new_st = st.children[ToTuple(x_next)]
+            next_physical_state = x_next.physical_state
+            new_st = st.children[ToTuple(next_physical_state)]
 
             # Reward is just the mean added to a multiple of the variance at that point
 
