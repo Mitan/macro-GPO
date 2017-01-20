@@ -191,10 +191,11 @@ class TreePlan:
         best_expected_improv = -1.0
 
         valid_actions = self.GetValidActionSet(x_0.physical_state)
+        next_states = [self.TransitionP(x, a) for a in valid_actions]
 
         chol = self.gp.Cholesky(x_0.history.locations)
-        for a in valid_actions:
-            x_next = self.TransitionP(x_0, a)
+        for x_next in next_states:
+            # x_next = self.TransitionP(x_0, a)
 
             Sigma = self.gp.GPVariance(locations=x_0.history.locations, current_location=x_next.physical_state,
                                        cholesky=chol)
@@ -207,7 +208,7 @@ class TreePlan:
             # comparison
             if expectedImprov >= best_expected_improv:
                 best_expected_improv = expectedImprov
-                best_action = a
+                best_action = x_next
 
         return best_expected_improv, best_action, len(valid_actions)
 
@@ -229,22 +230,23 @@ class TreePlan:
 
         # print "Performing search..."
         # Get answer
-        Vapprox, Aapprox = self.ComputeVRandom(H, x_0, root_node)
+        Vapprox, Xapprox = self.ComputeVRandom(H, x_0, root_node)
 
-        return Vapprox, Aapprox, -1
+        return Vapprox, Xapprox, -1
 
     def ComputeVRandom(self, T, x, st):
         valid_actions = self.GetValidActionSet(x.physical_state)
+        next_states = [self.TransitionP(x, a) for a in valid_actions]
         # not needed
         if T == 0: return 0, valid_actions[0]
 
         vBest = -self.INF
-        aBest = valid_actions[0]
-        for a in valid_actions:
+        xBest = next_states[0]
+        for x_next in next_states:
 
-            x_next = self.TransitionP(x, a)
+            # x_next = self.TransitionP(x, a)
             # go down the semitree node
-            new_st = st.children[ToTuple(a)]
+            new_st = st.children[ToTuple(x_next)]
 
             # Reward is just the mean added to a multiple of the variance at that point
 
@@ -259,10 +261,10 @@ class TreePlan:
             f = self.ComputeQRandom(T, x_next, new_st) + r
 
             if f > vBest:
-                aBest = a
+                xBest = x_next
                 vBest = f
 
-        return vBest, aBest
+        return vBest, xBest
 
     def ComputeQRandom(self, T, x, new_st):
 

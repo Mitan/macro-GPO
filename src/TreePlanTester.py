@@ -148,16 +148,16 @@ class TreePlanTester:
                                                                 max_nodes=MCTSMaxNodes)
 
             elif method == Methods.Exact:
-                vBest, a, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
+                vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
 
             elif method == Methods.MyopicUCB:
-                vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
+                vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, 1)
 
             elif method == Methods.MLE:
                 vBest, x_temp, nodes_expanded = tp.MLE(x_0, allowed_horizon)
 
             elif method == Methods.qEI:
-                vBest, a, nodes_expanded = tp.qEI(x_0)
+                vBest, x_temp, nodes_expanded = tp.qEI(x_0)
 
             else:
                 raise Exception("Unknown method type")
