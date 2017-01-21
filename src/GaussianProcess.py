@@ -205,7 +205,7 @@ class MapValueDict():
         # print self.__vals_dict
 
     def GetRandomStartLocation(self, batch_size):
-        return choice(self.locations)
+        return choice(list(self.locations))
 
 
     def __call__(self, query_location):

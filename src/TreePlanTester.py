@@ -308,7 +308,8 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
         [[1.0, 0.5], [1.0, 1.5], [1.5, 1.0], [0.5, 1.0],[1.0, 1.0]])
 
     past_locations = np.array([[1.0, 1.0]])
-
+    past_locations = np.array([model.GetRandomStartLocation(batch_size=batch_size)])
+    print "Start location "  + str(past_locations)+ "\n"
     # Unused
     noise_in_trials = True
 

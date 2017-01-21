@@ -122,7 +122,7 @@ def GenerateRoadMacroActions(current_state, batch_size):
 # for i in GenerateRoadMacroActions((1,0), 3):
 #l = list(ExpandActions([(1,0)], 3))
 # print l
-"""
+
 m = GenerateRoadModelFromFile(filename)
 
 locs = m.locations
@@ -135,10 +135,10 @@ for loc in locs:
         count+=1
 print count
 
+a =  np.array([m.GetRandomStartLocation(3)])
+print a.shape
 
-print m.GetRandomStartLocation(3)
         # m.GenerateRoadMacroActions(tuple(loc), 3)
-"""
 
 print round(8.8333333333333339 , 2)
 
@@ -149,3 +149,6 @@ for x in a:
     print a
 
 """
+
+past_locations = np.array([[1.0, 1.0]])
+print past_locations.shape
