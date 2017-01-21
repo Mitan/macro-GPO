@@ -287,9 +287,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
-    """
-    Assume a map size of [0, 1] for both axes
-    """
+
     # parameters of GP for prediction
     # in case of real data these should be learned hypers
     lengthscale = (0.25, 0.25)
@@ -299,17 +297,21 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
 
     grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
     # for consistency better make it in a form of a batch
+
     initial_physical_state = np.array([[1.0, 1.0]])
+    initial_physical_state = np.array([model.GetRandomStartLocation(batch_size=batch_size)])
+
     # includes current state
     past_locations = np.array(
         [[1.0, 0.85], [1.0, 1.15], [1.15, 1.0], [0.85, 1.0], [1.0, 0.65], [1.0, 1.35], [1.35, 1.0], [0.65, 1.0],
          [1.0, 1.0]])
     past_locations = np.array(
         [[1.0, 0.5], [1.0, 1.5], [1.5, 1.0], [0.5, 1.0],[1.0, 1.0]])
-
     past_locations = np.array([[1.0, 1.0]])
-    past_locations = np.array([model.GetRandomStartLocation(batch_size=batch_size)])
+    past_locations = np.copy(initial_physical_state)
+
     print "Start location "  + str(past_locations)+ "\n"
+
     # Unused
     noise_in_trials = True
 
