@@ -62,6 +62,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                    seed=seed, noise_variance=noise_variance, save_folder=save_folder,
                                    predict_range=predict_range, num_samples=num_samples_grid)
 
+    """
     # can't apply qEI to single-point
     if batch_size > 1:
         method_name = 'qEI'
@@ -109,7 +110,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, anytime])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(anytime) + '\n')
-    """
+
     output_rewards.close()
     PlotData(result_graphs, save_folder)
 

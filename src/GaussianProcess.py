@@ -1,3 +1,5 @@
+from random import choice
+
 import numpy as np
 import scipy
 from scipy.stats import multivariate_normal
@@ -194,9 +196,17 @@ class MapValueDict():
         """
         self.__vals_dict = {}
         for i in range(self.locations.shape[0]):
-            rounded_location = np.around(locations[i], decimals=self.ROUNDING_CONST)
+            rounded_location = np.around(self.locations[i], decimals=self.ROUNDING_CONST)
             self.__vals_dict[tuple(rounded_location)] = self.values[i]
+
+        # locations available as start point
+
+        #self.StartLocations = list(self.locations)
         # print self.__vals_dict
+
+    def GetRandomStartLocation(self, batch_size):
+        return choice(self.locations)
+
 
     def __call__(self, query_location):
         """
