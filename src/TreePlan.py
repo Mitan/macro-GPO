@@ -75,11 +75,12 @@ class TreePlan:
         exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.covariance_function.noise_variance) + sigma
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
+    """
     def Algorithm1(self, epsilon, gamma, x_0, H):
-        """
+
                 @param x_0 - augmented state
                 @return approximately optimal value, answer, and number of node expansions
-                """
+
 
         # Obtain lambda
         # l = epsilon / (gamma * H * (H+1))
@@ -98,6 +99,7 @@ class TreePlan:
         return Vapprox, Aapprox, nodes_expanded
 
         return Vapprox, Aapprox, nodes_expanded
+        """
 
     def MLE(self, x_0, H):
         """
@@ -606,8 +608,8 @@ class TreePlan:
 
         # Add in new children for each valid action
         # this is for simulated
-        valid_actions = self.GetValidActionSet(node.ss.physical_state)
-        new_physical_states = [self.PhysicalTransition(cur_physical_state, a) for a in valid_actions]
+        # valid_actions = self.GetValidActionSet(node.ss.physical_state)
+        # new_physical_states = [self.PhysicalTransition(cur_physical_state, a) for a in valid_actions]
 
         # this is for real-world
         current_location = cur_physical_state[-1, :]
@@ -690,12 +692,12 @@ class TreePlan:
         # node.lipchitz = node.L_upper[-1]
         node.lipchitz = lip
 
+    """
     def EstimateV(self, T, l, gamma, x, st):
-        """
         @return vBest - approximate value function computed
         @return aBest - action at the root for the policy defined by alg1
         @param st - root of the semi-tree to be used
-        """
+
 
         valid_actions = self.GetValidActionSet(x.physical_state)
         if T == 0: return 0, valid_actions[0]
@@ -726,11 +728,10 @@ class TreePlan:
         return vBest, aBest
 
     def Q_det(self, T, l, gamma, x, new_st):
-        """
         Approximates the integration step derived from alg1
         @param new_st - semi-tree at this stage
         @return - approximate value of the integral/expectation
-        """
+
 
         # if T > 3: print T
         # Initialize variables
@@ -778,7 +779,7 @@ class TreePlan:
         return vAccum
 
         # return vAccum
-
+    """
     def ConstructTree(self, action_node, st, T, l):
 
         if T == 0: return 0, 0, 0
@@ -1016,7 +1017,13 @@ class MCTSActionNode:
         # generate all children d_t + s_{t+1}
         num_nodes_expanded = 1
         for a, semi_child in self.semi_tree.children.iteritems():
-            c = MCTSObservationNode(TransitionP(self.augmented_state, np.asarray(a)), semi_child, self.treeplan,
+            # TODO bad design
+            next_physical_state = np.asarray(a)
+            fake_action  = np.zeros(next_physical_state.shape)
+            next_augmented_state = TransitionP(self.augmented_state, fake_action)
+            next_augmented_state.physical_state = next_physical_state
+
+            c = MCTSObservationNode(next_augmented_state, semi_child, self.treeplan,
                                     self.lamb,
                                     self.number_of_samples)
             num_nodes_expanded += c.SkeletalExpand()
