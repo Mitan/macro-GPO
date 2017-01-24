@@ -49,7 +49,6 @@ class RoadMapValueDict(MapValueDict):
 
         MapValueDict.__init__(self, locations=locs, values=vals)
 
-
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
         int_neighbours =  self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
@@ -73,7 +72,6 @@ class RoadMapValueDict(MapValueDict):
     def GenerateRoadMacroActions(self, current_state, batch_size):
         current_state = tuple(current_state)
         return list(self.___ExpandActions([current_state], batch_size))
-
 
     def GetRandomStartLocation(self, batch_size):
         # now StartLocations point to all locations

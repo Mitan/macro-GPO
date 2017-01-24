@@ -294,13 +294,18 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     lengthscale = (0.25, 0.25)
     signalvariance = 1.0
     noisevariance = 0.00001
-    gridgap = 0.05
 
+    gridgap = 0.05
+    gridgap = 1.0
+
+    # upper values are not included
     grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
+    grid_domain = ((0.0, 50.0), (0.0, 100.0))
     # for consistency better make it in a form of a batch
 
     initial_physical_state = np.array([[1.0, 1.0]])
     initial_physical_state = np.array([model.GetRandomStartLocation(batch_size=batch_size)])
+    # print model.GenerateRoadMacroActions(initial_physical_state[-1], batch_size)
 
     # includes current state
     past_locations = np.array(

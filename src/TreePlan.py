@@ -34,7 +34,7 @@ class TreePlan:
 
         self.batch_size = batch_size
         # Preset constants
-        self.INF = 10 ** 15
+        # self.INF = 10 ** 15
 
         self.H = horizon
         # Number of observations/samples generated for every node
@@ -48,7 +48,7 @@ class TreePlan:
 
         self.grid_domain = grid_domain
         self.gp = gaussian_process
-        self.max_nodes = self.INF if max_nodes is None else max_nodes
+        self.max_nodes = float("inf") if max_nodes is None else max_nodes
         self.beta = beta
 
         # Obstacles
@@ -125,8 +125,42 @@ class TreePlan:
         # print "Performing search..."
         # Get answer
         Vapprox, Xapprox = self.ComputeVMLE(H, x_0, root_node)
+        if math.isinf(Vapprox):
+            raise Exception("Could not move from this location")
 
         return Vapprox, Xapprox, -1
+
+    def GetNextAugmentedStates(self, current_augmented_state):
+        #TODO for road create a fake action a = [0. 0. 0.] and then manually
+        #TODO fix bad design
+        # set physical state for every new augmented state
+        # or create a new function TransitionP for setting augmented state
+
+        # this is for real-world
+        current_location = current_augmented_state.physical_state[-1, :]
+        # print "H = " + str(T)
+        # print current_location
+
+        new_physical_states = self.model.GenerateRoadMacroActions(current_location, self.batch_size)
+
+        # if we can't move further in this direction, then stop and return
+        """
+        if not new_physical_states:
+            return -float("inf"), np.zeros((self.batch_size, 2))
+        """
+        if not new_physical_states:
+            return []
+
+        # print new_physical_states
+        fake_action = np.zeros(new_physical_states[0].shape)
+        next_states = []
+
+        for next_p_state in new_physical_states:
+            next_st = self.TransitionP(current_augmented_state, fake_action)
+            next_st.physical_state = next_p_state
+            next_states.append(next_st)
+
+        return next_states
 
     def ComputeVMLE(self, T, x, st):
 
@@ -135,32 +169,19 @@ class TreePlan:
                 @return aBest - action at the root for the policy defined by alg1
                 @param st - root of the semi-tree to be used
                 """
-
-        valid_actions = self.GetValidActionSet(x.physical_state)
-
-        # these are augmented states
-        next_states = [self.TransitionP(x, a) for a in valid_actions]
-
-        #TODO for road create a fake action a = [0. 0. 0.] and then manually
-        #TODO fix bad design
-        # set physical state for every new augmented state
-        # or create a new function TransitionP for setting augmented state
-
-        # this is for real-world
-        current_location = x.physical_state[-1, :]
-        new_physical_states = self.model.GenerateRoadMacroActions(current_location, self.batch_size)
-        fake_action = np.zeros(valid_actions[0].shape)
-        next_states = []
-
-        for next_p_state in new_physical_states:
-            next_st = self.TransitionP(x, fake_action)
-            next_st.physical_state = next_p_state
-            next_states.append(next_st)
-
         # not needed
-        if T == 0: return 0, next_states[0]
+        if T == 0: return 0, np.zeros((self.batch_size, 2))
 
-        vBest = -self.INF
+        # for simulated
+        # valid_actions = self.GetValidActionSet(x.physical_state)
+        # these are augmented states
+        # next_states = [self.TransitionP(x, a) for a in valid_actions]
+
+        next_states = self.GetNextAugmentedStates(x)
+        if not next_states:
+            return -float("inf"), np.zeros((self.batch_size, 2))
+
+        vBest = - float("inf")
         xBest = next_states[0]
         for x_next  in next_states:
 

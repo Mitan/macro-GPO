@@ -7,7 +7,7 @@ from TreePlanTester import testWithFixedParameters
 
 # from MethodEnum import MethodEnum
 from MethodEnum import Methods
-from DatasetUtils import GenerateModelFromFile, GenerateSimulatedModel
+from DatasetUtils import GenerateModelFromFile, GenerateSimulatedModel, GenerateRoadModelFromFile
 
 
 def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
@@ -27,8 +27,6 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
                                                num_timesteps_test=time_steps,
                                                save_folder=save_folder + "h" + str(h) + "/",
                                                num_samples=num_samples, batch_size=batch_size)
-
-
 
 
 def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
@@ -56,7 +54,8 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards = open(save_folder + "reward_histories.txt", 'w')
 
     if filename is not None:
-        m = GenerateModelFromFile(filename)
+        # m = GenerateModelFromFile(filename)
+        m = GenerateRoadModelFromFile(filename)
     else:
         m = GenerateSimulatedModel(length_scale=np.array(length_scale), signal_variance=signal_variance,
                                    seed=seed, noise_variance=noise_variance, save_folder=save_folder,
@@ -93,7 +92,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h_result) + '\n')
 
-
+    """
     method_name = 'MLE H = 3'
     mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
                                   save_folder=save_folder + "mle_h3/",
@@ -111,6 +110,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(anytime) + '\n')
 
+    """
     output_rewards.close()
     PlotData(result_graphs, save_folder)
 
