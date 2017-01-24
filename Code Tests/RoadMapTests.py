@@ -28,6 +28,24 @@ def GenerateMacroActionsFromeFile():
     print m.GenerateRoadMacroActions(current_location, batch_size)[0].shape
 
 
+def CheckNeighboursTest():
+    file_name = '../src/taxi18.dom'
+    m = GenerateRoadModelFromFile(file_name)
+
+    locs = m.locations
+
+    for loc in locs:
+        loc = tuple(loc)
+        # length = len(m.GenerateRoadMacroActions(tuple(loc), 3))
+        neighbours = m.GetNeighbours(loc)
+        # print loc, neighbours
+        for nei in neighbours:
+            n_neighbours = m.GetNeighbours(nei)
+
+            if loc in n_neighbours:
+                print loc, nei
+
 if __name__=='__main__':
     # IterateOverMacroActions()
-    GenerateMacroActionsFromeFile()
+    # GenerateMacroActionsFromeFile()
+    CheckNeighboursTest()
