@@ -126,7 +126,7 @@ class TreePlan:
         # Get answer
         Vapprox, Xapprox = self.ComputeVMLE(H, x_0, root_node)
         if math.isinf(Vapprox):
-            raise Exception("Could not move from this location")
+            raise Exception("MLE could not move from  location " + str(x_0.physical_state))
 
         return Vapprox, Xapprox, -1
 
@@ -215,19 +215,21 @@ class TreePlan:
         return self.ComputeVMLE(T - 1, self.TransitionH(x, mu), new_st)[0]
 
     def qEI(self, x_0, eps=10 ** (-5)):
-        """
-        @param x_0 - augmented state
-        @return approximately optimal value, answer, and number of node expansions
-        """
         # x_0 stores a 2D np array of k points with history
         max_measurement = max(x_0.history.measurements)
+
         best_action = None
         best_expected_improv = -1.0
 
-        valid_actions = self.GetValidActionSet(x_0.physical_state)
-        next_states = [self.TransitionP(x_0, a) for a in valid_actions]
+        # valid_actions = self.GetValidActionSet(x_0.physical_state)
+        # next_states = [self.TransitionP(x_0, a) for a in valid_actions]
+
+        next_states = self.GetNextAugmentedStates(x_0)
+        if not next_states:
+            raise Exception("qEI could not move from   location " + str(x_0.physical_state))
 
         chol = self.gp.Cholesky(x_0.history.locations)
+
         for x_next in next_states:
             # x_next = self.TransitionP(x_0, a)
 
@@ -244,7 +246,7 @@ class TreePlan:
                 best_expected_improv = expectedImprov
                 best_action = x_next
 
-        return best_expected_improv, best_action, len(valid_actions)
+        return best_expected_improv, best_action, len(next_states)
 
     def StochasticFull(self, x_0, H):
         # by default physical state length is self.batch_size
@@ -265,16 +267,25 @@ class TreePlan:
         # print "Performing search..."
         # Get answer
         Vapprox, Xapprox = self.ComputeVRandom(H, x_0, root_node)
+        if math.isinf(Vapprox):
+            raise Exception("Exact full H = " + str(H) + " could not move from  location " + str(x_0.physical_state))
 
         return Vapprox, Xapprox, -1
 
     def ComputeVRandom(self, T, x, st):
-        valid_actions = self.GetValidActionSet(x.physical_state)
-        next_states = [self.TransitionP(x, a) for a in valid_actions]
-        # not needed
-        if T == 0: return 0, valid_actions[0]
 
-        vBest = -self.INF
+        # simulated
+        # valid_actions = self.GetValidActionSet(x.physical_state)
+        # next_states = [self.TransitionP(x, a) for a in valid_actions]
+
+        # not needed
+        if T == 0: return 0, np.zeros((self.batch_size, 2))
+
+        next_states = self.GetNextAugmentedStates(x)
+        if not next_states:
+            return -float("inf"), np.zeros((self.batch_size, 2))
+
+        vBest = -float("inf")
         xBest = next_states[0]
         for x_next in next_states:
 
