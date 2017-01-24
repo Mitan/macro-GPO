@@ -30,6 +30,7 @@ class TreePlan:
         - Squared exponential covariance function
         - Characteristic length scale the same for both directions
         """
+        self.model = model
 
         self.batch_size = batch_size
         # Preset constants
@@ -141,8 +142,20 @@ class TreePlan:
         next_states = [self.TransitionP(x, a) for a in valid_actions]
 
         #TODO for road create a fake action a = [0. 0. 0.] and then manually
+        #TODO fix bad design
         # set physical state for every new augmented state
         # or create a new function TransitionP for setting augmented state
+
+        # this is for real-world
+        current_location = x.physical_state[-1, :]
+        new_physical_states = self.model.GenerateRoadMacroActions(current_location, self.batch_size)
+        fake_action = np.zeros(valid_actions[0].shape)
+        next_states = []
+
+        for next_p_state in new_physical_states:
+            next_st = self.TransitionP(x, fake_action)
+            next_st.physical_state = next_p_state
+            next_states.append(next_st)
 
         # not needed
         if T == 0: return 0, next_states[0]
@@ -560,8 +573,13 @@ class TreePlan:
         cholesky = self.gp.Cholesky(new_locations)
 
         # Add in new children for each valid action
+        # this is for simulated
         valid_actions = self.GetValidActionSet(node.ss.physical_state)
         new_physical_states = [self.PhysicalTransition(cur_physical_state, a) for a in valid_actions]
+
+        # this is for real-world
+        current_location = cur_physical_state[-1, :]
+        new_physical_states = self.model.GenerateRoadMacroActions(current_location, self.batch_size)
 
         for new_physical_state in new_physical_states:
             # Get new semi state

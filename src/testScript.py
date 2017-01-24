@@ -150,5 +150,12 @@ for x in a:
 
 """
 
+m = GenerateRoadModelFromFile(filename)
 past_locations = np.array([[1.0, 1.0]])
-print past_locations.shape
+#print past_locations.shape
+
+a =  np.array([m.GetRandomStartLocation(3)])
+current_location = a[-1, :]
+print current_location
+
+print m.GenerateRoadMacroActions(current_location, 3)[0].shape

@@ -151,7 +151,6 @@ class TreePlanTester:
                 x_temp = tp.TransitionP(x_0, a)
                 x_temp.physical_state = x_temp_physical
 
-
             elif method == Methods.Exact:
                 vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
 
@@ -166,6 +165,8 @@ class TreePlanTester:
 
             else:
                 raise Exception("Unknown method type")
+
+            # x_temp is already augmented state
 
             # Take action a
             # x_temp = tp.TransitionP(x_0, a)
