@@ -148,7 +148,7 @@ a = np.array([[1,2], [3,4], [5,6]])
 for x in a:
     print a
 
-"""
+
 
 m = GenerateRoadModelFromFile(filename)
 past_locations = np.array([[1.0, 1.0]])
@@ -159,3 +159,9 @@ current_location = a[-1, :]
 print current_location
 
 print m.GenerateRoadMacroActions(current_location, 3)[0].shape
+
+"""
+
+a =  - float("inf")
+print a
+print a + 1
