@@ -14,7 +14,7 @@ if __name__ == '__main__':
     my_save_folder_root = "../tests/"
     my_save_folder_root = "../tests/"
     # max horizon
-    h_max = 4
+    h_max = 2
     # time steps
     t = 5
 
@@ -52,9 +52,7 @@ if __name__ == '__main__':
         for seed in range(start, end):
             TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
                          num_samples=num_samples, batch_size=batch_size)
-
             # first argument is seed
-
 
     else:
         seed = int(args[1])

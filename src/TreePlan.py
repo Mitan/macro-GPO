@@ -479,6 +479,8 @@ class TreePlan:
         # 		best_a = a
         # 		bestavg = avg
 
+
+
         # Select according to maximum lower bound node
         best_lower = -float('inf')
         for a, cc in root_action_node.BoundsChildren.iteritems():
@@ -486,6 +488,9 @@ class TreePlan:
             if best_lower < cc[0]:
                 best_a = a
                 best_lower = cc[0]
+
+        if math.isinf(best_lower):
+            raise Exception("Anytime for " + str(H) + " could not move from  location " + str(x_0.physical_state))
 
         # bestval, best_a = self.MCTSTraverseBest(root_action_node)
         print best_lower, np.asarray(best_a)

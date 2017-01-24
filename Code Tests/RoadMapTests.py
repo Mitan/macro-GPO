@@ -17,15 +17,22 @@ def IterateOverMacroActions():
     print count
 
 
-def GenerateMacroActionsFromeFile():
-    filename = filename = '../src/taxi18.dom'
+def GenerateMacroActionsFromeFile(batch_size):
+    filename = '../src/taxi18.dom'
     m = GenerateRoadModelFromFile(filename)
-    batch_size = 3
+
     start_location = np.array([m.GetRandomStartLocation(batch_size)])
     current_location = start_location[-1, :]
     print current_location
 
     print m.GenerateRoadMacroActions(current_location, batch_size)[0].shape
+
+
+def GetMacroActionsOfLocation(loc, batch_size):
+    filename = '../src/taxi18.dom'
+    m = GenerateRoadModelFromFile(filename)
+    return m.GenerateRoadMacroActions(loc, batch_size)
+
 
 
 def CheckNeighboursTest():
@@ -48,4 +55,5 @@ def CheckNeighboursTest():
 if __name__=='__main__':
     # IterateOverMacroActions()
     # GenerateMacroActionsFromeFile()
-    CheckNeighboursTest()
+    # CheckNeighboursTest()
+    print GetMacroActionsOfLocation([29.0, 6.0], 4)

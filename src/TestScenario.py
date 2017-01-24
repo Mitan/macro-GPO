@@ -61,8 +61,10 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                    seed=seed, noise_variance=noise_variance, save_folder=save_folder,
                                    predict_range=predict_range, num_samples=num_samples_grid)
 
-    """
+
     # can't apply qEI to single-point
+
+    """
     if batch_size > 1:
         method_name = 'qEI'
         qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
@@ -92,7 +94,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h_result) + '\n')
 
-    """
+
     method_name = 'MLE H = 3'
     mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
                                   save_folder=save_folder + "mle_h3/",
@@ -100,7 +102,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, mle])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
-
     """
     method_name='Anytime H = 3'
     anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=3, num_timesteps_test=time_steps,
@@ -110,7 +111,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(anytime) + '\n')
 
-    """
+
     output_rewards.close()
     PlotData(result_graphs, save_folder)
 
