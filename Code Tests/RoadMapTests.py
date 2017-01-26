@@ -52,8 +52,17 @@ def CheckNeighboursTest():
             if loc in n_neighbours:
                 print loc, nei
 
+
+def LogTransformTest():
+    file_name = '../src/taxi18.dom'
+    m = GenerateRoadModelFromFile(file_name)
+    vals = m.values
+    for val in vals:
+        print val
+
 if __name__=='__main__':
     # IterateOverMacroActions()
     # GenerateMacroActionsFromeFile()
     # CheckNeighboursTest()
-    print GetMacroActionsOfLocation([29.0, 6.0], 4)
+    #print GetMacroActionsOfLocation([29.0, 6.0], 4)
+    LogTransformTest()

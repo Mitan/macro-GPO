@@ -3,6 +3,7 @@ from random import choice
 
 from GaussianProcess import MapValueDict
 import numpy as np
+import math
 
 batch_road_macroactions = []
 
@@ -19,11 +20,11 @@ class RoadMapValueDict(MapValueDict):
 
         # because of the file format have to do some ugly parsing
         lines = open(filename).readlines()
-        number_of_points = len(lines)
+        self.__number_of_points = len(lines)
 
-        locs = np.empty((number_of_points, 2))
+        locs = np.empty((self.__number_of_points, 2))
 
-        vals = np.empty((number_of_points,))
+        vals = np.empty((self.__number_of_points,))
 
         self.neighbours = {}
 
@@ -83,6 +84,16 @@ class RoadMapValueDict(MapValueDict):
             if self.GenerateRoadMacroActions(loc, batch_size):
                 start_Locations.append(loc)
         return choice(start_Locations)
+
+    def LogTransformValues(self):
+        for i in range(self.__number_of_points):
+            current_value = self.values[i]
+            if current_value != -1.0:
+                self.values[i] = math.log(current_value + 1.0)
+
+    def AddTwoSidedRoads(self):
+        pass
+
 
 if __name__ == "__main__":
     """

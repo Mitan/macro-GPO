@@ -25,7 +25,10 @@ def GenerateModelFromFile(filename):
 
 
 def GenerateRoadModelFromFile(filename):
-    return RoadMapValueDict(filename)
+    m = RoadMapValueDict(filename)
+    m.AddTwoSidedRoads()
+    m.LogTransformValues()
+    return m
 
 
 def GetGCoefficient(root_folder, method_name):
