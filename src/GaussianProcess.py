@@ -6,7 +6,7 @@ from scipy.stats import multivariate_normal
 
 
 class GaussianProcess:
-    def __init__(self, covariance_function, mean_function=0.0):
+    def __init__(self, covariance_function, mean_function):
         """ @param mean_function: constant mean. TODO: Change to nonstatic mean function rather than a simple constant
         """
         self.covariance_function = covariance_function
