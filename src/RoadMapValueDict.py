@@ -9,8 +9,6 @@ batch_road_macroactions = []
 
 
 class RoadMapValueDict(MapValueDict):
-
-
     # format of files is assumed to be
     # loc_x, loc_y, demand, supp, n_count, n_1, ....n_{n_count}
     def __init__(self, filename):
@@ -43,8 +41,12 @@ class RoadMapValueDict(MapValueDict):
             if count > 0:
                 self.neighbours[tuple(current_loc)] = current_neighbours[1:]
 
+            # todo NB here is data log
+            # vals[i] = current_point[2]
+
             # take only demand
-            vals[i] = current_point[2]
+            vals[i] = -1.0 if current_point[2] == -1.0 else math.log(current_point[2] + 1.0)
+
             # copy location
             np.copyto(locs[i, :], current_loc)
 
@@ -52,7 +54,7 @@ class RoadMapValueDict(MapValueDict):
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
-        int_neighbours =  self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
+        int_neighbours = self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
         return map(lambda x: (x % self.dim_1, x / self.dim_1), int_neighbours)
 
     def ___ExpandActions(self, start, batch_size):
@@ -85,11 +87,17 @@ class RoadMapValueDict(MapValueDict):
                 start_Locations.append(loc)
         return choice(start_Locations)
 
+    # the content is moved to class constructor
     def LogTransformValues(self):
+        pass
+        """
         for i in range(self.__number_of_points):
             current_value = self.values[i]
             if current_value != -1.0:
+
                 self.values[i] = math.log(current_value + 1.0)
+                # print current_value, self.values[i]
+        """
 
     def AddTwoSidedRoads(self):
         pass

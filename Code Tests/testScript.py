@@ -1,6 +1,6 @@
 from StringIO import StringIO
 import numpy as np
-from DatasetUtils import GenerateModelFromFile, GenerateRoadModelFromFile
+from src.DatasetUtils import GenerateModelFromFile, GenerateRoadModelFromFile
 from src.GaussianProcess import MapValueDict
 
 root_path = '../tests/b4_sAD_loc0_h3/seed71/'
@@ -165,3 +165,9 @@ print m.GenerateRoadMacroActions(current_location, 3)[0].shape
 a =  - float("inf")
 print a
 print a + 1
+
+a = np.asarray([1,2,3])
+print a.shape
+print a[0]
+a[0] = 44
+print a
