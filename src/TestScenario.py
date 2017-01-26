@@ -11,7 +11,6 @@ from DatasetUtils import GenerateModelFromFile, GenerateSimulatedModel, Generate
 
 
 def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
-
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -24,9 +23,9 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
     m = GenerateModelFromFile(filename)
     h = 4
     testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-                                               num_timesteps_test=time_steps,
-                                               save_folder=save_folder + "h" + str(h) + "/",
-                                               num_samples=num_samples, batch_size=batch_size)
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "h" + str(h) + "/",
+                            num_samples=num_samples, batch_size=batch_size)
 
 
 def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
@@ -45,6 +44,8 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     length_scale = (0.25, 0.25)
     signal_variance = 1.0
     noise_variance = 0.00001
+    mean_function = 0.0
+
     predict_range = ((-0.25, 2.25), (-0.25, 2.25))
     num_samples_grid = (50, 50)
 
@@ -59,8 +60,8 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     else:
         m = GenerateSimulatedModel(length_scale=np.array(length_scale), signal_variance=signal_variance,
                                    seed=seed, noise_variance=noise_variance, save_folder=save_folder,
-                                   predict_range=predict_range, num_samples=num_samples_grid)
-
+                                   predict_range=predict_range, num_samples=num_samples_grid,
+                                   mean_function=mean_function)
 
     # can't apply qEI to single-point
 
@@ -103,7 +104,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
     """
-    method_name='Anytime H = 3'
+    method_name = 'Anytime H = 3'
     anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=3, num_timesteps_test=time_steps,
                                       save_folder=save_folder + "anytime_h3/",
                                       num_samples=num_samples, batch_size=batch_size)
@@ -111,15 +112,13 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(anytime) + '\n')
 
-
     output_rewards.close()
     PlotData(result_graphs, save_folder)
 
 
-
-def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon, filename=None):
+def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,
+                      filename=None):
     result_graphs = []
-
 
     # test_horizon = 3
 
@@ -137,7 +136,7 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
 
     m = GenerateModelFromFile(filename)
 
-    for beta  in beta_list:
+    for beta in beta_list:
         method_name = 'beta = ' + str(beta)
         current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=test_horizon,
                                                    num_timesteps_test=time_steps,

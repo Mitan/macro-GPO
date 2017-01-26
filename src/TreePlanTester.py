@@ -140,12 +140,13 @@ class TreePlanTester:
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
                           macroaction_set=action_set,
                           beta=self.beta, bad_places=self.bad_places,
-                          num_samples=num_samples, batch_size=self.batch_size, horizon=allowed_horizon, model=self.model)
+                          num_samples=num_samples, batch_size=self.batch_size, horizon=allowed_horizon,
+                          model=self.model)
 
             if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
                 bounds, x_temp_physical, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon,
-                                                                max_nodes=MCTSMaxNodes)
+                                                                              max_nodes=MCTSMaxNodes)
                 # TODO fix this ugly hack
                 a = np.zeros(x_temp_physical.shape)
                 x_temp = tp.TransitionP(x_0, a)
@@ -288,12 +289,12 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
-
     # parameters of GP for prediction
     # in case of real data these should be learned hypers
     lengthscale = (0.25, 0.25)
     signalvariance = 1.0
     noisevariance = 0.00001
+    meanfunction = 0.0
 
     gridgap = 0.05
     gridgap = 1.0
@@ -312,18 +313,19 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
         [[1.0, 0.85], [1.0, 1.15], [1.15, 1.0], [0.85, 1.0], [1.0, 0.65], [1.0, 1.35], [1.35, 1.0], [0.65, 1.0],
          [1.0, 1.0]])
     past_locations = np.array(
-        [[1.0, 0.5], [1.0, 1.5], [1.5, 1.0], [0.5, 1.0],[1.0, 1.0]])
+        [[1.0, 0.5], [1.0, 1.5], [1.5, 1.0], [0.5, 1.0], [1.0, 1.0]])
     past_locations = np.array([[1.0, 1.0]])
     past_locations = np.copy(initial_physical_state)
 
-    print "Start location "  + str(past_locations)+ "\n"
+    print "Start location " + str(past_locations) + "\n"
 
     # Unused
     noise_in_trials = True
 
     TPT = TreePlanTester(simulate_noise_in_trials=noise_in_trials, beta=beta)
     # this GP is for prediction
-    TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance)
+    TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance,
+               mean_function=meanfunction)
     # adds noise to observations
     TPT.InitEnvironment(environment_noise=noisevariance, model=model)
     TPT.InitPlanner(grid_domain=grid_domain, grid_gap=gridgap, gamma=1, epsilon=epsilon_, horizon=horizon,
