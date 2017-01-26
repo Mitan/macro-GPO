@@ -32,14 +32,19 @@ class RoadMapValueDict(MapValueDict):
             current_point = np.genfromtxt(a)
 
             current_loc = tuple(current_point[0:2])
+            # cast neighbours to int list
             current_neighbours = map(int, current_point[4:].tolist())
 
             # the first item is count
             count = current_neighbours[0]
-            assert len(current_neighbours[1:]) == count
+
+            # this list contains INTEGERS
+            int_neighbours = current_neighbours[1:]
+            assert len(int_neighbours) == count
 
             if count > 0:
-                self.neighbours[tuple(current_loc)] = current_neighbours[1:]
+                tuple_neighbours = map(lambda x: (x % self.dim_1, x / self.dim_1), int_neighbours)
+                self.neighbours[tuple(current_loc)] = tuple_neighbours
 
             # todo NB here is data log
             # vals[i] = current_point[2]
@@ -54,9 +59,11 @@ class RoadMapValueDict(MapValueDict):
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
-        int_neighbours = self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
-        return map(lambda x: (x % self.dim_1, x / self.dim_1), int_neighbours)
+        # int_neighbours = self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
+        # return map(lambda x: (x % self.dim_1, x / self.dim_1), int_neighbours)
+        return self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
 
+    # list of 2D arrays
     def ___ExpandActions(self, start, batch_size):
         # including the start, hence +1
         if len(start) == batch_size + 1:
@@ -100,7 +107,17 @@ class RoadMapValueDict(MapValueDict):
         """
 
     def AddTwoSidedRoads(self):
-        pass
+        for loc in self.locations:
+            tuple_loc = tuple(loc)
+            for n in self.GetNeighbours(loc):
+                # list of n's neighbours is empty
+                n_neighbours = self.GetNeighbours(n)
+                if not n_neighbours:
+                    self.neighbours[tuple(n)] = [tuple_loc]
+                else:
+                    # list of n's neighbours is not empty, check if contains loc
+                    if not tuple_loc in n_neighbours:
+                        self.neighbours[tuple(n)].append(tuple_loc)
 
 
 if __name__ == "__main__":
