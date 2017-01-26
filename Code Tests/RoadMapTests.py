@@ -8,18 +8,19 @@ def IterateOverMacroActions(batch_size):
     m.AddTwoSidedRoads()
     locs = m.locations
 
+    sum = 0.0
     max = 0
     count = 0
     for loc in locs:
         length = len(m.GenerateRoadMacroActions(tuple(loc), batch_size))
-
+        sum+= length
         if length > max:
             max = length
 
         if length > 0:
             # print loc, length
             count += 1
-    print count, max
+    print count, max, sum / count
 
 
 def GenerateMacroActionsFromeFile(batch_size):
