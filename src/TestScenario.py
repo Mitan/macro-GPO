@@ -54,14 +54,24 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
 
     output_rewards = open(save_folder + "reward_histories.txt", 'w')
 
+    """
     if filename is not None:
         # m = GenerateModelFromFile(filename)
+        filename = './taxi18.dom'
         m = GenerateRoadModelFromFile(filename)
     else:
         m = GenerateSimulatedModel(length_scale=np.array(length_scale), signal_variance=signal_variance,
                                    seed=seed, noise_variance=noise_variance, save_folder=save_folder,
                                    predict_range=predict_range, num_samples=num_samples_grid,
                                    mean_function=mean_function)
+    """
+    filename = './taxi18.dom'
+    m = GenerateRoadModelFromFile(filename)
+    start_location = m.GetRandomStartLocation(batch_size=batch_size)
+
+    with  open(save_folder + "start_location.txt", 'w') as f:
+        f.write(str(start_location[0]) + " " + str(start_location[1]))
+
 
     # can't apply qEI to single-point
 
@@ -105,9 +115,9 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(str(mle) + '\n')
     """
     method_name = 'Anytime H = 3'
-    anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=3, num_timesteps_test=time_steps,
+    anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=1, num_timesteps_test=time_steps,
                                       save_folder=save_folder + "anytime_h3/",
-                                      num_samples=num_samples, batch_size=batch_size)
+                                      num_samples=num_samples, batch_size=batch_size, start_location=start_location)
     result_graphs.append([method_name, anytime])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(anytime) + '\n')

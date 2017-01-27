@@ -27,24 +27,19 @@ if __name__ == '__main__':
 
     args = sys.argv
 
-    start = 15
+    start = 21
     end = start + 1
     assert start < end
 
     filename = None
-    filename = './taxi18.dom'
     # filename = "./debug_dataset.txt"
 
 
     # load dataset locally from file, for debug
     if filename is not None:
-        """
         for seed in range(start, end):
             TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
                          num_samples=num_samples, batch_size=batch_size, filename=filename)
-        """
-        TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=0, time_steps=t,
-                     num_samples=num_samples, batch_size=batch_size, filename=filename)
 
     # no command line args => running locally with generating datasets
 

@@ -285,7 +285,7 @@ class TreePlanTester:
 
 
 # todo check noise variance
-def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samples, batch_size, grid_gap_=0.05,
+def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size, grid_gap_=0.05,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
@@ -305,7 +305,8 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     # for consistency better make it in a form of a batch
 
     initial_physical_state = np.array([[1.0, 1.0]])
-    initial_physical_state = np.array([model.GetRandomStartLocation(batch_size=batch_size)])
+
+    initial_physical_state = np.array([start_location])
     # print model.GenerateRoadMacroActions(initial_physical_state[-1], batch_size)
 
     # includes current state
