@@ -118,28 +118,33 @@ class Vis2d:
                 number_of_points = len(path_points)
 
 
-                for i in xrange(number_of_points - 1):
+                for i in xrange(1, number_of_points):
                     # both are batches of points
+                    prev = path_points[i-1]
                     current = path_points[i]
-                    next = path_points[i+1]
 
-                    current_location = current[-1, :]
-                    next_location = next[-1, :]
-                    axes.arrow(current_location[0], current_location[1],
-                               next_location[0] - current_location[0],
-                               next_location[1] - current_location[1], edgecolor='red')
+                    prev_end = prev[-1, :]
+                    current_start = current[0, :]
+                    axes.arrow(prev_end[0], prev_end[1],
+                               current_start[0] - prev_end[0],
+                               current_start[1] - prev_end[1], edgecolor='green')
 
-                    """
-                    # here we need to draw k arrows
-                    # pathpoints[i] is a (k,2) nd-array
-                    # iterate over k agents
-                    for j in xrange(k):
-                        prev = path_points[i - 1]
-                        current = path_points[i]
-                        axes.arrow(prev[j, 0], prev[j, 1],
-                                   current[j, 0] - prev[j, 0],
-                                   current[j, 1] - prev[j, 1], edgecolor='red')
-                    """
+
+                    # here we need to draw k - 1 arrows
+                    # coz in total there will be k and the first on is already drawn
+
+                    # k should always be equal to batch_size though
+                    k = current.shape[0]
+
+                    for j in xrange(0, k-1):
+                        # both a locations [x,y]
+                        current_point = current[j, :]
+                        next_point = current[j+1, :]
+                        axes.arrow(current_point[0], current_point[1],
+                                   next_point[0] - current_point[0],
+                                   next_point[1] - current_point[1], edgecolor='red')
+
+
         if not save_path == None:
             plt.savefig(save_path + ".png")
         if display: plt.show()
