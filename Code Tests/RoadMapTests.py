@@ -1,5 +1,8 @@
+import scipy
+
 from src.DatasetUtils import GenerateRoadModelFromFile
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def IterateOverMacroActions(batch_size):
@@ -65,6 +68,25 @@ def LogTransformTest():
     for val in vals:
         print val
 
+def HistTests():
+    file_name = '../src/taxi18.dom'
+    m = GenerateRoadModelFromFile(file_name)
+
+    hypers_file = open('hyerps.txt', 'w')
+    locs = m.locations
+    vals = m.values
+    for i in range(locs.shape[0]):
+        if vals[i] != -1.0:
+            loc = locs[i, :]
+            hypers_file.write(str(loc[0]) + ' ' + str(loc[1]) + ' ' + str(vals[i]) + '\n')
+    hypers_file.close()
+
+    list_vals = [v for v in vals.tolist() if v!=-1.0]
+    updated_vals = np.asarray(list_vals)
+    print scipy.stats.skew(updated_vals)
+    plt.hist(updated_vals, bins=50)
+
+    plt.show()
 
 if __name__ == '__main__':
     IterateOverMacroActions(4)
@@ -72,7 +94,7 @@ if __name__ == '__main__':
     # CheckNeighboursTest()
     # print GetMacroActionsOfLocation([29.0, 6.0], 4)
     # LogTransformTest()
-
+    HistTests()
     """
     filename = '../src/taxi18.dom'
     m = GenerateRoadModelFromFile(filename)

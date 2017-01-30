@@ -47,10 +47,10 @@ class RoadMapValueDict(MapValueDict):
                 self.neighbours[tuple(current_loc)] = tuple_neighbours
 
             # todo NB here is data log
-            # vals[i] = current_point[2]
+            vals[i] = current_point[2]
 
             # take only demand
-            vals[i] = -1.0 if current_point[2] == -1.0 else math.log(current_point[2] + 1.0)
+            # vals[i] = -1.0 if current_point[2] == -1.0 else math.log(current_point[2] + 1.0)
 
             # copy location
             np.copyto(locs[i, :], current_loc)
@@ -90,7 +90,7 @@ class RoadMapValueDict(MapValueDict):
             loc = self.locations[i]
 
             # if we have at least one macroaction
-            if self.GenerateRoadMacroActions(loc, batch_size):
+            if self.GenerateRoadMacroActions(loc, batch_size) and self.__call__(loc) != -1.0:
                 start_Locations.append(loc)
         return choice(start_Locations)
 
