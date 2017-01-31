@@ -4,6 +4,12 @@ import matplotlib.pyplot as plt
 import scipy
 from numpy.random import normal
 
+def TestPrediction():
+    # choice 10
+    # 10 to learn 10 to test
+    pass
+
+
 
 # required to provide initial guess for hypers
 def InferHypers(X, Y, noise, signal, l_1, l_2):
