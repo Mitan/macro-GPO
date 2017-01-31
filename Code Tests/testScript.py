@@ -160,7 +160,7 @@ print current_location
 
 print m.GenerateRoadMacroActions(current_location, 3)[0].shape
 
-"""
+
 
 a =  - float("inf")
 print a
@@ -171,3 +171,9 @@ print a.shape
 print a[0]
 a[0] = 44
 print a
+"""
+
+import scipy.io
+mat = scipy.io.loadmat('../src/taxi44.mat')['taxi']
+b =  mat[0][0]
+print b[4]

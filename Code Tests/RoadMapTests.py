@@ -69,10 +69,10 @@ def LogTransformTest():
         print val
 
 def HistTests():
-    file_name = '../src/taxi18.dom'
+    file_name = '../src/taxi44.dom'
     m = GenerateRoadModelFromFile(file_name)
 
-    hypers_file = open('hyerps.txt', 'w')
+    hypers_file = open('hypers44.txt', 'w')
     locs = m.locations
     vals = m.values
     for i in range(locs.shape[0]):
