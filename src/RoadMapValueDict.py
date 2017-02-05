@@ -43,7 +43,8 @@ class RoadMapValueDict(MapValueDict):
             assert len(int_neighbours) == count
 
             if count > 0:
-                tuple_neighbours = map(lambda x: (x % self.dim_1, x / self.dim_1), int_neighbours)
+                # x-1 because matlab numerates strings from 1, but locations are from 0
+                tuple_neighbours = map(lambda x: (float((x - 1) / self.dim_2) , float((x - 1) % self.dim_2)), int_neighbours)
                 self.neighbours[tuple(current_loc)] = tuple_neighbours
 
             # todo NB here is data log

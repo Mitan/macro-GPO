@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 def IterateOverMacroActions(batch_size):
     file_name = file_name = '../src/taxi18.dom'
     m = GenerateRoadModelFromFile(file_name)
-    m.AddTwoSidedRoads()
+    # m.AddTwoSidedRoads()
     locs = m.locations
 
     sum = 0.0
@@ -20,6 +20,7 @@ def IterateOverMacroActions(batch_size):
         if length > max:
             max = length
 
+        # count the number of locations where we have macroactions
         if length > 0:
             # print loc, length
             count += 1
@@ -94,7 +95,7 @@ if __name__ == '__main__':
     # CheckNeighboursTest()
     # print GetMacroActionsOfLocation([29.0, 6.0], 4)
     # LogTransformTest()
-    HistTests()
+    # HistTests()
     """
     filename = '../src/taxi18.dom'
     m = GenerateRoadModelFromFile(filename)
@@ -120,3 +121,4 @@ if __name__ == '__main__':
     for loc in locs:
         print loc, old_neighbours[tuple(loc)], len(m.GetNeighbours(loc))
     """
+
