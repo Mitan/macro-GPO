@@ -172,13 +172,9 @@ print a[0]
 a[0] = 44
 print a
 """
-"""
+
 import scipy.io
 mat = scipy.io.loadmat('../src/taxi44.mat')['taxi']
 b =  mat[0][0]
 print b[4]
-"""
 
-a = np.array([[1,2,0 ], [3,4,5], [6,7,8]])
-b = a[[0,1], :]
-print b

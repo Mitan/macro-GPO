@@ -4,36 +4,55 @@ import matplotlib.pyplot as plt
 import scipy
 from numpy.random import normal
 from random import choice
-from math import sqrt
+from math import sqrt, exp
 
 
 def TestPrediction(locs, vals):
+
     test_num_point = 20
-    signal = 1.0
-    noise = 0.1
-    mu = 0.0
-    l_1 = 1.0
-    l_2 = 1.0
+    # l_1, l_2, signal, noise
+    params = np.array([-2.525728644308256,-3.218875824868201,1.827078296982567, -0.165623872912252])
+    params = np.exp(params)
+
+    mu = -4.638786853251777
+
+    signal = params[2]
+    noise = params[3]
+
+    l_1 = params[0]
+    l_2 = params[1]
+    print signal, noise,  l_2
 
     vals = vals - mu
 
     number_of_points = locs.shape[0]
     array_range = np.arange(number_of_points)
+    # lists
     indexes = np.random.choice(array_range, test_num_point).tolist()
-    train = indexes[:test_num_point / 2]
-    test = indexes[test_num_point / 2:]
+    half_points = test_num_point / 2
+    train = indexes[:half_points]
+    test = indexes[half_points:]
+    # 2d array
     locs_train = locs[train, :]
-    vals_train = vals[train, :]
+    # print locs_train
+    1# d array
+    vals_train = vals[train]
+    # print vals_train
+    vals_train = np.atleast_2d(vals_train).T
 
     kernel = GPy.kern.RBF(input_dim=2, variance=signal, lengthscale=[l_1, l_2], ARD=True)
     m = GPy.models.GPRegression(locs_train, vals_train, kernel, noise_var=noise, normalizer=False)
+    point = np.array([[1,2]])
+    print m.predict(point)
     error = 0
     for test_p in test:
-        predict =  m.predict(locs[test_p, :], full_cov=True) + mu
+        point = locs[test_p: test_p + 1, :]
+        predict = m.predict(point, full_cov=False)
+        predict_mean = (predict[0])[0,0] + mu
         truth = vals[test_p]
-        error += (predict - truth)**2
+        error += (predict_mean - truth)**2
 
-    print sqrt(error/ (test_num_point / 2))
+    print sqrt(error / (half_points))
 
 
 # required to provide initial guess for hypers
@@ -53,7 +72,7 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
     # print m
 
     # m.optimize(messages=True)
-    m.optimize(messages=False)
+    m.optimize(messages=True)
     m.optimize_restarts(num_restarts=10)
 
     # lengthscales go indexes 1 and 2
@@ -80,27 +99,30 @@ def InferHypers(X, Y, noise, signal, l_1, l_2):
 
 
 if __name__ == "__main__":
-    filename = './hypers18.txt'
+    filename = './hypers44.txt'
     data = np.genfromtxt(filename)
     # print data
     locs = data[:, :2]
     vals = data[:, 2]
     number_of_points = vals.shape[0]
-    print scipy.stats.skew(vals), np.mean(vals), np.std(vals)
+    # print scipy.stats.skew(vals), np.mean(vals), np.std(vals)
 
     normals = np.random.normal(scale=0.1, size=number_of_points)
     normals = np.abs(normals)
 
-    print max(normals), np.mean(normals)
+    # print max(normals), np.mean(normals)
     assert normals.shape == vals.shape
 
-    vals = np.add(vals, normals)
-    print scipy.stats.skew(vals)
+    # vals = np.add(vals, normals)
+    # print scipy.stats.skew(vals)
 
-    vals = np.log(vals + 0.1)
+    f = 0.00001
+    vals = np.log(vals + f)
+    # print "f = " + str(f)
 
-    print scipy.stats.skew(vals)
-
+    # print scipy.stats.skew(vals)
+    # print np.mean(vals), np.std(vals)
+    """
     plt.hist(vals, bins=100)
 
     # plt.show()
@@ -108,8 +130,15 @@ if __name__ == "__main__":
 
     vals = np.atleast_2d(vals).T
 
-    signal = (max(vals) - min(vals)) / 2
+    signal = ((max(vals) - min(vals)) / 2)[0]
+    print
+    print signal
+    print np.mean(vals)
     l_1 = 2.0 / 25.0
     l_2 = 2.0 / 50.0
     noise = 0.1 * signal
-    print InferHypers(X=locs, Y=vals, noise=noise, signal=signal, l_1=l_1, l_2=l_2)
+    # print InferHypers(X=locs, Y=vals, noise=noise, signal=signal, l_1=l_1, l_2=l_2)
+    """
+    print
+    for i in range(1):
+        TestPrediction(locs, vals)
