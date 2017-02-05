@@ -50,6 +50,7 @@ class RoadMapValueDict(MapValueDict):
             # todo NB here is data log
             vals[i] = current_point[2]
 
+
             # take only demand
             # vals[i] = -1.0 if current_point[2] == -1.0 else math.log(current_point[2] + 1.0)
 
@@ -57,6 +58,12 @@ class RoadMapValueDict(MapValueDict):
             np.copyto(locs[i, :], current_loc)
 
         MapValueDict.__init__(self, locations=locs, values=vals)
+
+        # TODO change mean so that it doesn't include -1
+        list_vals = [v for v in self.values.tolist() if v != -1.0]
+        updated_vals = np.asarray(list_vals)
+        self.mean = np.mean(updated_vals)
+        print self.mean
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
