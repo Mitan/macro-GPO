@@ -5,6 +5,7 @@ from TreePlan import *
 from Vis2d import Vis2d
 from MethodEnum import Methods
 from DynamicHorizon import DynamicHorizon
+from HypersStorer import RoadHypersStorer_18
 
 
 class TreePlanTester:
@@ -284,29 +285,15 @@ class TreePlanTester:
                     save_path=save_path)
 
 
-# todo check noise variance
-def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size, grid_gap_=0.05,
+def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
-    # parameters of GP for prediction
-    # in case of real data these should be learned hypers
-    lengthscale = (0.25, 0.25)
-    signalvariance = 1.0
-    noisevariance = 0.00001
-    meanfunction = 0.0
 
-    gridgap = 0.05
-    gridgap = 1.0
+    hyper_storer = RoadHypersStorer_18()
 
-    # upper values are not included
-    grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
-    grid_domain = ((0.0, 50.0), (0.0, 100.0))
-    # for consistency better make it in a form of a batch
+    initial_physical_state = hyper_storer.GetInitialPhysicalState(start_location)
 
-    initial_physical_state = np.array([[1.0, 1.0]])
-
-    initial_physical_state = np.array([start_location])
     # print model.GenerateRoadMacroActions(initial_physical_state[-1], batch_size)
 
     # includes current state
@@ -325,11 +312,13 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
 
     TPT = TreePlanTester(simulate_noise_in_trials=noise_in_trials, beta=beta)
     # this GP is for prediction
-    TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance,
-               mean_function=meanfunction)
+    TPT.InitGP(length_scale=hyper_storer.length_scale, signal_variance=hyper_storer.signal_variance,
+               noise_variance=hyper_storer.noise_variance,
+               mean_function=hyper_storer.mean_function)
     # adds noise to observations
-    TPT.InitEnvironment(environment_noise=noisevariance, model=model)
-    TPT.InitPlanner(grid_domain=grid_domain, grid_gap=gridgap, gamma=1, epsilon=epsilon_, horizon=horizon,
+    TPT.InitEnvironment(environment_noise=hyper_storer.noise_variance, model=model)
+    TPT.InitPlanner(grid_domain=hyper_storer.grid_domain, grid_gap=hyper_storer.grid_gap, gamma=1, epsilon=epsilon_,
+                    horizon=horizon,
                     batch_size=batch_size)
     TPT.InitTestParameters(initial_physical_state=initial_physical_state, past_locations=past_locations)
 

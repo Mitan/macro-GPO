@@ -8,6 +8,7 @@ from TreePlanTester import testWithFixedParameters
 # from MethodEnum import MethodEnum
 from MethodEnum import Methods
 from DatasetUtils import GenerateModelFromFile, GenerateSimulatedModel, GenerateRoadModelFromFile
+from HypersStorer import SimulatedHyperStorer
 
 
 def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
@@ -40,38 +41,30 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         if not os.path.isdir(save_folder):
             raise
 
-    # this model is for observed values
-    length_scale = (0.25, 0.25)
-    signal_variance = 1.0
-    noise_variance = 0.00001
-    mean_function = 0.0
-
-    predict_range = ((-0.25, 2.25), (-0.25, 2.25))
-    num_samples_grid = (50, 50)
-
     # file for storing reward histories
     # so that later we can plot only some of them
-
     output_rewards = open(save_folder + "reward_histories.txt", 'w')
 
+    # Generation of simulated model
     """
     if filename is not None:
-        # m = GenerateModelFromFile(filename)
-        filename = './taxi18.dom'
-        m = GenerateRoadModelFromFile(filename)
+        m = GenerateModelFromFile(filename)
+
     else:
-        m = GenerateSimulatedModel(length_scale=np.array(length_scale), signal_variance=signal_variance,
-                                   seed=seed, noise_variance=noise_variance, save_folder=save_folder,
-                                   predict_range=predict_range, num_samples=num_samples_grid,
-                                   mean_function=mean_function)
+        hyper_storer = SimulatedHyperStorer()
+        m = GenerateSimulatedModel(length_scale=np.array(hyper_storer.length_scale),
+                                   signal_variance=hyper_storer.signal_variance,
+                                   seed=seed, noise_variance=hyper_storer.noise_variance, save_folder=save_folder,
+                                   predict_range=hyper_storer.grid_domain, num_samples=hyper_storer.num_samples_grid,
+                                   mean_function=hyper_storer.mean_function)
     """
+
     filename = './taxi18.dom'
     m = GenerateRoadModelFromFile(filename)
     start_location = m.GetRandomStartLocation(batch_size=batch_size)
 
     with  open(save_folder + "start_location.txt", 'w') as f:
         f.write(str(start_location[0]) + " " + str(start_location[1]))
-
 
     # can't apply qEI to single-point
 
