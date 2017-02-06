@@ -62,4 +62,8 @@ if __name__ == "__main__":
     locs = m.locations[allowed_indexes, :]
     vals = m.values[allowed_indexes]
 
-    TestPrediction(locs, vals)
+    #TestPrediction(locs, vals)
+
+    g = np.meshgrid(range(10, 12), range(110,114))
+    pairs = np.append(g[0].reshape(-1, 1), g[1].reshape(-1, 1), axis=1)
+    print pairs
