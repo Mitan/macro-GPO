@@ -20,7 +20,7 @@ class RoadMapValueDict(MapValueDict):
         self.dim_2 = 100
 
         # const for represanting that no data is available for this region
-        self.NO_DATA_CONST = -2.0
+        self.NO_DATA_CONST = -1.0
 
         # because of the file format have to do some ugly parsing
         lines = open(filename).readlines()
@@ -57,10 +57,13 @@ class RoadMapValueDict(MapValueDict):
                 self.neighbours[tuple(current_loc)] = tuple_neighbours
 
             raw_value = current_point[2]
-            # vals[i] = raw_value + 1.0 if raw_value < 0 else raw_value
-            vals[i] = raw_value
 
-            if raw_value != self.NO_DATA_CONST:
+            # TODO need to fix points with negative value
+            adjusted_raw_value = raw_value + 1.0
+
+            vals[i] = adjusted_raw_value if raw_value < 0 else raw_value
+
+            if adjusted_raw_value != self.NO_DATA_CONST:
                 self.informative_locations_indexes.append(i)
 
             # take only demand
