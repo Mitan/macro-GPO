@@ -9,12 +9,16 @@ batch_road_macroactions = []
 
 
 class RoadMapValueDict(MapValueDict):
+
     # format of files is assumed to be
     # loc_x, loc_y, demand, supp, n_count, n_1, ....n_{n_count}
     def __init__(self, filename):
         # TODO note hardcoded size of dataset
         self.dim_1 = 50
         self.dim_2 = 100
+
+        # const for represanting that no data is available for this region
+        self.NO_DATA_CONST = -1.0
 
         # because of the file format have to do some ugly parsing
         lines = open(filename).readlines()
@@ -48,11 +52,12 @@ class RoadMapValueDict(MapValueDict):
                 self.neighbours[tuple(current_loc)] = tuple_neighbours
 
             # todo NB here is data log
-            vals[i] = current_point[2]
-
+            raw_value = current_point[2]
+            vals[i] = raw_value + 1.0 if raw_value < 0 else raw_value
+            vals[i] = raw_value
 
             # take only demand
-            # vals[i] = -1.0 if current_point[2] == -1.0 else math.log(current_point[2] + 1.0)
+            # vals[i] = self.NO_DATA_CONST if current_point[2] == self.NO_DATA_CONST else math.log(current_point[2] + 1.0)
 
             # copy location
             np.copyto(locs[i, :], current_loc)
@@ -60,10 +65,9 @@ class RoadMapValueDict(MapValueDict):
         MapValueDict.__init__(self, locations=locs, values=vals)
 
         # TODO change mean so that it doesn't include -1
-        list_vals = [v for v in self.values.tolist() if v != -1.0]
+        list_vals = [v for v in self.values.tolist() if v != self.NO_DATA_CONST]
         updated_vals = np.asarray(list_vals)
         self.mean = np.mean(updated_vals)
-        print self.mean
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
@@ -81,7 +85,7 @@ class RoadMapValueDict(MapValueDict):
 
             for next_node in self.GetNeighbours(current):
                 # Do we need the first condition?
-                if (next_node in start) or (self.__call__(next_node) == -1.0):
+                if (next_node in start) or (self.__call__(next_node) == self.NO_DATA_CONST):
                     continue
                 # print self.__call__(next_node)
                 for state in self.___ExpandActions(start + [next_node], batch_size):
@@ -98,7 +102,7 @@ class RoadMapValueDict(MapValueDict):
             loc = self.locations[i]
 
             # if we have at least one macroaction
-            if self.GenerateRoadMacroActions(loc, batch_size) and self.__call__(loc) != -1.0:
+            if self.GenerateRoadMacroActions(loc, batch_size) and self.__call__(loc) != self.NO_DATA_CONST:
                 start_Locations.append(loc)
         return choice(start_Locations)
 
