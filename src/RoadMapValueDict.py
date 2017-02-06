@@ -5,6 +5,8 @@ from GaussianProcess import MapValueDict
 import numpy as np
 import math
 
+from src.Utils import LineToTuple
+
 batch_road_macroactions = []
 
 
@@ -51,7 +53,7 @@ class RoadMapValueDict(MapValueDict):
 
             if count > 0:
                 # x-1 because matlab numerates strings from 1, but locations are from 0
-                tuple_neighbours = map(lambda x: (float((x - 1) / self.dim_2) , float((x - 1) % self.dim_2)), int_neighbours)
+                tuple_neighbours = map(lambda x: LineToTuple(x, self.dim_1, self.dim_2), int_neighbours)
                 self.neighbours[tuple(current_loc)] = tuple_neighbours
 
             raw_value = current_point[2]
