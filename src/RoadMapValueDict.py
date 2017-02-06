@@ -18,7 +18,7 @@ class RoadMapValueDict(MapValueDict):
         self.dim_2 = 100
 
         # const for represanting that no data is available for this region
-        self.NO_DATA_CONST = -1.0
+        self.NO_DATA_CONST = -2.0
 
         # because of the file format have to do some ugly parsing
         lines = open(filename).readlines()

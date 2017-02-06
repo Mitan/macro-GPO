@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 def IterateOverMacroActions(batch_size):
-    file_name = file_name = '../src/taxi18.dom'
+    file_name = '../datasets/slot18/tlog18.dom'
     m = GenerateRoadModelFromFile(file_name)
     # m.AddTwoSidedRoads()
     locs = m.locations
@@ -62,6 +62,11 @@ def CheckNeighboursTest():
                 print loc, nei
 
 
+def NewDatasetTest():
+    file_name = '../datasets/slot18/tlog18.dom'
+    m = GenerateRoadModelFromFile(file_name)
+    print m.mean
+
 def LogTransformTest():
     file_name = '../src/taxi18.dom'
     m = GenerateRoadModelFromFile(file_name)
@@ -90,7 +95,8 @@ def HistTests():
     plt.show()
 
 if __name__ == '__main__':
-    IterateOverMacroActions(4)
+    # IterateOverMacroActions(4)
+    NewDatasetTest()
     # GenerateMacroActionsFromeFile()
     # CheckNeighboursTest()
     # print GetMacroActionsOfLocation([29.0, 6.0], 4)
