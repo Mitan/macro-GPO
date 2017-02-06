@@ -30,6 +30,9 @@ class RoadMapValueDict(MapValueDict):
 
         self.neighbours = {}
 
+        # locations, where we have data
+        self.informative_locations_indexes = []
+
         for i, line in enumerate(lines):
             a = StringIO(line)
             # get current point
@@ -56,6 +59,9 @@ class RoadMapValueDict(MapValueDict):
             vals[i] = raw_value + 1.0 if raw_value < 0 else raw_value
             vals[i] = raw_value
 
+            if raw_value != self.NO_DATA_CONST:
+                self.informative_locations_indexes.append(i)
+
             # take only demand
             # vals[i] = self.NO_DATA_CONST if current_point[2] == self.NO_DATA_CONST else math.log(current_point[2] + 1.0)
 
@@ -64,10 +70,8 @@ class RoadMapValueDict(MapValueDict):
 
         MapValueDict.__init__(self, locations=locs, values=vals)
 
-        # TODO change mean so that it doesn't include -1
-        list_vals = [v for v in self.values.tolist() if v != self.NO_DATA_CONST]
-        updated_vals = np.asarray(list_vals)
-        self.mean = np.mean(updated_vals)
+        # TODO change mean so that it doesn't include self.NO_DATA locations
+        self.mean = np.mean(vals[self.informative_locations_indexes])
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
