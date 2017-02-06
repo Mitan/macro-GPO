@@ -54,9 +54,8 @@ class RoadMapValueDict(MapValueDict):
                 tuple_neighbours = map(lambda x: (float((x - 1) / self.dim_2) , float((x - 1) % self.dim_2)), int_neighbours)
                 self.neighbours[tuple(current_loc)] = tuple_neighbours
 
-            # todo NB here is data log
             raw_value = current_point[2]
-            vals[i] = raw_value + 1.0 if raw_value < 0 else raw_value
+            # vals[i] = raw_value + 1.0 if raw_value < 0 else raw_value
             vals[i] = raw_value
 
             if raw_value != self.NO_DATA_CONST:

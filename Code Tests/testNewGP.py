@@ -8,7 +8,7 @@ from src.GaussianProcess import SquareExponential, GaussianProcess
 
 def MyPredict(new_loc):
     covariance_function = SquareExponential(length_scale, signal_variance, noise_variance)
-    gp = GaussianProcess(covariance_function)
+    gp = GaussianProcess(covariance_function=covariance_function, mean_function=0.0)
     cholesky = gp.Cholesky(locations)
     weights = gp.GPWeights(locations=locations, current_location=new_loc, cholesky=cholesky)
     var = gp.GPVariance(locations=locations, current_location=new_loc, cholesky=cholesky)
