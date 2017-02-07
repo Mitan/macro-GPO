@@ -143,7 +143,8 @@ class TreePlan:
         # print "H = " + str(T)
         # print current_location
 
-        new_physical_states = self.model.GenerateAllRoadMacroActions(current_location, self.batch_size)
+        # new_physical_states = self.model.GenerateAllRoadMacroActions(current_location, self.batch_size)
+        new_physical_states = self.model.GetSelectedMacroActions(current_location)
 
         # if we can't move further in this direction, then stop and return
         """
@@ -620,7 +621,9 @@ class TreePlan:
 
         # this is for real-world
         current_location = cur_physical_state[-1, :]
-        new_physical_states = self.model.GenerateAllRoadMacroActions(current_location, self.batch_size)
+
+        # new_physical_states = self.model.GenerateAllRoadMacroActions(current_location, self.batch_size)
+        new_physical_states = self.model.GetSelectedMacroActions(current_location)
 
         for new_physical_state in new_physical_states:
             # Get new semi state
