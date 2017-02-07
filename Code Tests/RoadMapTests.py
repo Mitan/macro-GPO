@@ -22,7 +22,7 @@ def IterateOverMacroActions(batch_size):
 
         # count the number of locations where we have macroactions
         if length > 0:
-            # print loc, length
+            print loc, length
             count += 1
     print count, max, sum / count
 
@@ -95,7 +95,7 @@ def HistTests():
     plt.show()
 
 if __name__ == '__main__':
-    # IterateOverMacroActions(4)
+    IterateOverMacroActions(4)
     NewDatasetTest()
     # GenerateMacroActionsFromeFile()
     # CheckNeighboursTest()

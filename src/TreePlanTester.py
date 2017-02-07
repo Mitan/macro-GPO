@@ -290,7 +290,7 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
 
-    hyper_storer = RoadHypersStorer_Log18()
+    hyper_storer = RoadHypersStorer_Log44()
 
     initial_physical_state = hyper_storer.GetInitialPhysicalState(start_location)
 

@@ -59,7 +59,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                    mean_function=hyper_storer.mean_function)
     """
 
-    filename = '../datasets/slot18/tlog18.dom'
+    filename = '../datasets/slot44/tlog44.dom'
     m = GenerateRoadModelFromFile(filename)
     start_location = m.GetRandomStartLocation(batch_size=batch_size)
 
