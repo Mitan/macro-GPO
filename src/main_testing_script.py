@@ -13,6 +13,9 @@ if __name__ == '__main__':
     my_save_folder_root = "../tests/b4_sAD_loc0_h3_x/"
     my_save_folder_root = "../tests/"
     my_save_folder_root = "../testsRoad/44_log_true/"
+
+    filename = '../datasets/slot44/tlog44.dom'
+
     # max horizon
     h_max = 3
     # time steps
@@ -31,10 +34,15 @@ if __name__ == '__main__':
     end = start + 1
     assert start < end
 
-    filename = None
+    #filename = None
     # filename = "./debug_dataset.txt"
 
 
+    seed = int(args[1])
+    TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
+                 num_samples=num_samples, batch_size=batch_size, filename= filename)
+
+    """
     # load dataset locally from file, for debug
     if filename is not None:
         for seed in range(start, end):
@@ -51,7 +59,7 @@ if __name__ == '__main__':
                          num_samples=num_samples, batch_size=batch_size)
             # first argument is seed
 
-    """
+
     else:
         seed = int(args[1])
         # test_iteration = int(args[2])

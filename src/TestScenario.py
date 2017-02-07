@@ -59,7 +59,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                    mean_function=hyper_storer.mean_function)
     """
 
-    filename = '../datasets/slot44/tlog44.dom'
     m = GenerateRoadModelFromFile(filename)
 
     # todo note
