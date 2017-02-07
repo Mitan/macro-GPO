@@ -62,7 +62,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     m = GenerateRoadModelFromFile(filename)
 
     # todo note
-    m.SelectMacroActions(batch_size)
+    m.SelectMacroActions(batch_size, save_folder)
 
     start_location = m.GetRandomStartLocation(batch_size=batch_size)
 
