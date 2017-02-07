@@ -5,7 +5,7 @@ from GaussianProcess import MapValueDict
 import numpy as np
 import math
 
-from src.Utils import LineToTuple
+from Utils import LineToTuple
 
 batch_road_macroactions = []
 

@@ -464,12 +464,13 @@ class TreePlan:
         # TODO: Set a proper termination condition
         # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
-            print counter
+            # print counter
             lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
             if counter > 1000:
                 break
+        print "counter is " + str(counter)
         # TODO: Set action selection scheme
         # Current: Selection based on the action with the highest average bound
         # bestavg = -float('inf')

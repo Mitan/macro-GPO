@@ -5,9 +5,14 @@ class AbstarctHypersStorer:
     def __init__(self):
         pass
 
+    def PrintParams(self):
+        print self.length_scale, self.signal_variance, self.noise_variance, self.mean_function
+
+
 
 class SimulatedHyperStorer(AbstarctHypersStorer):
     def __init__(self):
+        AbstarctHypersStorer.__init__(self)
         self.length_scale = (0.25, 0.25)
         self.signal_variance = 1.0
         self.noise_variance = 0.00001
@@ -21,12 +26,15 @@ class SimulatedHyperStorer(AbstarctHypersStorer):
         # upper values are not included
         self.grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
 
+        self.PrintParams()
+
     def GetInitialPhysicalState(self, start_location):
         return np.array([[1.0, 1.0]])
 
 
 class RoadHypersStorer_44(AbstarctHypersStorer):
     def __init__(self):
+        AbstarctHypersStorer.__init__(self)
         self.length_scale = (0.5767, 0.5941)
         self.signal_variance = 8.1167
         self.noise_variance = 0.0100
@@ -37,12 +45,15 @@ class RoadHypersStorer_44(AbstarctHypersStorer):
         # upper values are not included
         self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
 
+        self.PrintParams()
+
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
 
 
 class RoadHypersStorer_18(AbstarctHypersStorer):
     def __init__(self):
+        AbstarctHypersStorer.__init__(self)
         self.length_scale = (0.5205, 0.5495)
         self.signal_variance = 6.0016
         self.noise_variance = 0.0100
@@ -53,12 +64,15 @@ class RoadHypersStorer_18(AbstarctHypersStorer):
         # upper values are not included
         self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
 
+        self.PrintParams()
+
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
 
 
 class RoadHypersStorer_Log18(AbstarctHypersStorer):
     def __init__(self):
+        AbstarctHypersStorer.__init__(self)
         self.length_scale = (0.5249, 0.5687)
         self.signal_variance = 0.7486
         self.noise_variance = 0.0111
@@ -69,12 +83,15 @@ class RoadHypersStorer_Log18(AbstarctHypersStorer):
         # upper values are not included
         self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
 
+        self.PrintParams()
+
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
 
 
 class RoadHypersStorer_Log44(AbstarctHypersStorer):
     def __init__(self):
+        AbstarctHypersStorer.__init__(self)
         self.length_scale = (0.6276, 0.6490)
         self.signal_variance = 0.7969
         self.noise_variance = 0.0117
@@ -84,6 +101,8 @@ class RoadHypersStorer_Log44(AbstarctHypersStorer):
 
         # upper values are not included
         self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
+
+        self.PrintParams()
 
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
