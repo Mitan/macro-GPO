@@ -59,7 +59,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                    mean_function=hyper_storer.mean_function)
     """
 
-    filename = './taxi18.dom'
+    filename = '../datasets/slot18/tlog18.dom'
     m = GenerateRoadModelFromFile(filename)
     start_location = m.GetRandomStartLocation(batch_size=batch_size)
 
@@ -106,7 +106,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, mle])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
-    """
+
     method_name = 'Anytime H = 3'
     anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=1, num_timesteps_test=time_steps,
                                       save_folder=save_folder + "anytime_h3/",
@@ -114,9 +114,45 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, anytime])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(anytime) + '\n')
+    """
 
-    output_rewards.close()
-    PlotData(result_graphs, save_folder)
+    if batch_size > 1:
+        method_name = 'qEI'
+        qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
+                                      save_folder=save_folder + "qEI/",
+                                      num_samples=num_samples, batch_size=batch_size, start_location=start_location)
+        result_graphs.append([method_name, qEI])
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(qEI) + '\n')
+
+    method_name = 'Myopic DB-GP-UCB'
+    myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
+                                         save_folder=save_folder + "h1/",
+                                         num_samples=num_samples, batch_size=batch_size, start_location=start_location)
+    result_graphs.append([method_name, myopic_ucb])
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(myopic_ucb) + '\n')
+
+    # for h in range(2, h_max+1):
+    for h in range(h_max, 1, -1):
+        # print h
+        method_name = 'Anytime H = ' + str(h)
+        current_h_result = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                                                   num_timesteps_test=time_steps,
+                                                   save_folder=save_folder + "anytime_h" + str(h) + "/",
+                                                   num_samples=num_samples, batch_size=batch_size,
+                                                   start_location=start_location)
+        result_graphs.append([method_name, current_h_result])
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(current_h_result) + '\n')
+
+    method_name = 'MLE H = 3'
+    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
+                                  save_folder=save_folder + "mle_h3/",
+                                  num_samples=num_samples, batch_size=batch_size, start_location=start_location)
+    result_graphs.append([method_name, mle])
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(mle) + '\n')
 
 
 def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,

@@ -12,9 +12,9 @@ if __name__ == '__main__':
 
     my_save_folder_root = "../tests/b4_sAD_loc0_h3_x/"
     my_save_folder_root = "../tests/"
-    my_save_folder_root = "../tests/"
+    my_save_folder_root = "../testsRoad/"
     # max horizon
-    h_max = 2
+    h_max = 3
     # time steps
     t = 5
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # number of samples per stage
     # todo note now it is only for anytime
     # for exact algorithms see SampleFunctionBuilder
-    num_samples = 150
+    num_samples = 3
 
     args = sys.argv
 
