@@ -112,10 +112,12 @@ class RoadMapValueDict(MapValueDict):
                 continue
             elif length < treshhold:
                 self.selected_actions_dict[tuple(loc)] = all_macro_actions
+                actions_file.write(str(loc[0]) + ' ' + str(loc[1]) + ' ' + str(range(length)) + '\n')
             else:
                 generated_indexes = sample(xrange(length), treshhold)
                 self.selected_actions_dict[tuple(loc)] = [all_macro_actions[i] for i in generated_indexes]
-            actions_file.write(str(loc[0]) + ' ' + str(loc[1]) + ' ' + str(generated_indexes) + '\n')
+                actions_file.write(str(loc[0]) + ' ' + str(loc[1]) + ' ' + str(generated_indexes) + '\n')
+
         actions_file.close()
 
     # for given state
