@@ -64,7 +64,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
 
     # todo note
     m.SelectMacroActions(batch_size)
-    
+
     start_location = m.GetRandomStartLocation(batch_size=batch_size)
 
     with  open(save_folder + "start_location.txt", 'w') as f:
@@ -137,8 +137,16 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(myopic_ucb) + '\n')
 
+    method_name = 'MLE H = 3'
+    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
+                                  save_folder=save_folder + "mle_h3/",
+                                  num_samples=num_samples, batch_size=batch_size, start_location=start_location)
+    result_graphs.append([method_name, mle])
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(mle) + '\n')
+
     # for h in range(2, h_max+1):
-    for h in range(h_max, 1, -1):
+    for h in range(2, h_max + 1):
         # print h
         method_name = 'Anytime H = ' + str(h)
         current_h_result = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
@@ -149,14 +157,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         result_graphs.append([method_name, current_h_result])
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h_result) + '\n')
-
-    method_name = 'MLE H = 3'
-    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "mle_h3/",
-                                  num_samples=num_samples, batch_size=batch_size, start_location=start_location)
-    result_graphs.append([method_name, mle])
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(mle) + '\n')
 
 
 def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,
