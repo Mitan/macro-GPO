@@ -15,16 +15,35 @@ def IterateOverMacroActions(batch_size):
     max = 0
     count = 0
     for loc in locs:
-        length = len(m.GenerateRoadMacroActions(tuple(loc), batch_size))
+        length = len(m.GenerateAllRoadMacroActions(tuple(loc), batch_size))
         sum+= length
         if length > max:
             max = length
 
         # count the number of locations where we have macroactions
         if length > 0:
-            print loc, length
+            # print loc, length
             count += 1
     print count, max, sum / count
+
+    print "Selecting macroactions"
+    m.SelectMacroActions(batch_size)
+    sum = 0.0
+    max = 0
+    count = 0
+
+    for loc in locs:
+        length = len(m.GetSelectedMacroActions(tuple(loc)))
+        sum+= length
+        if length > max:
+            max = length
+        # count the number of locations where we have macroactions
+        if length > 0:
+            # print loc, length
+            count += 1
+    print count, max, sum / count
+
+
 
 
 def GenerateMacroActionsFromeFile(batch_size):
@@ -35,13 +54,13 @@ def GenerateMacroActionsFromeFile(batch_size):
     current_location = start_location[-1, :]
     print current_location
 
-    print m.GenerateRoadMacroActions(current_location, batch_size)[0].shape
+    print m.GenerateAllRoadMacroActions(current_location, batch_size)[0].shape
 
 
 def GetMacroActionsOfLocation(loc, batch_size):
     filename = '../src/taxi18.dom'
     m = GenerateRoadModelFromFile(filename)
-    return m.GenerateRoadMacroActions(loc, batch_size)
+    return m.GenerateAllRoadMacroActions(loc, batch_size)
 
 
 def CheckNeighboursTest():
@@ -96,7 +115,7 @@ def HistTests():
 
 if __name__ == '__main__':
     IterateOverMacroActions(4)
-    NewDatasetTest()
+    # NewDatasetTest()
     # GenerateMacroActionsFromeFile()
     # CheckNeighboursTest()
     # print GetMacroActionsOfLocation([29.0, 6.0], 4)

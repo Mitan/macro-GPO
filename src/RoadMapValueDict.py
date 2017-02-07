@@ -1,5 +1,5 @@
 from StringIO import StringIO
-from random import choice
+from random import choice, sample
 
 from GaussianProcess import MapValueDict
 import numpy as np
@@ -99,7 +99,30 @@ class RoadMapValueDict(MapValueDict):
                 for state in self.___ExpandActions(start + [next_node], batch_size):
                     yield state
 
-    def GenerateRoadMacroActions(self, current_state, batch_size):
+    def SelectMacroActions(self, batch_size):
+        self.selected_actions_dict = {}
+        treshhold = 40
+
+        for loc in self.locations:
+            all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)
+            length = len(all_macro_actions)
+
+            if length == 0:
+                # do nothing
+                continue
+            elif length < treshhold:
+                self.selected_actions_dict[tuple(loc)] = all_macro_actions
+            else:
+                generated_indexes = sample(xrange(length), treshhold)
+                self.selected_actions_dict[tuple(loc)] = [all_macro_actions[i] for i in generated_indexes]
+
+    # for given state
+    def GetSelectedMacroActions(self, current_state):
+        current_state = tuple(current_state)
+        return self.selected_actions_dict[current_state] if current_state in self.selected_actions_dict.keys() else []
+
+    # for given state
+    def GenerateAllRoadMacroActions(self, current_state, batch_size):
         current_state = tuple(current_state)
         return list(self.___ExpandActions([current_state], batch_size))
 
@@ -110,7 +133,7 @@ class RoadMapValueDict(MapValueDict):
             loc = self.locations[i]
 
             # if we have at least one macroaction
-            if self.GenerateRoadMacroActions(loc, batch_size) and self.__call__(loc) != self.NO_DATA_CONST:
+            if self.GenerateAllRoadMacroActions(loc, batch_size) and self.__call__(loc) != self.NO_DATA_CONST:
                 start_Locations.append(loc)
         return choice(start_Locations)
 
