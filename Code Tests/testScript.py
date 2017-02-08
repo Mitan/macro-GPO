@@ -173,8 +173,8 @@ a[0] = 44
 print a
 """
 
-import scipy.io
-mat = scipy.io.loadmat('../src/taxi44.mat')['taxi']
-b =  mat[0][0]
-print b[4]
+
+
+a = [1,2,3]
+print str(a)
 

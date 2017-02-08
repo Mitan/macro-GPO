@@ -26,7 +26,7 @@ if __name__ == '__main__':
     # number of samples per stage
     # todo note now it is only for anytime
     # for exact algorithms see SampleFunctionBuilder
-    num_samples = 400
+    num_samples = 200
 
     args = sys.argv
 
@@ -38,8 +38,9 @@ if __name__ == '__main__':
     # filename = "./debug_dataset.txt"
 
 
-    seed = int(args[1])
-    TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
+    seed_0 = int(args[1])
+    for seed in range(seed_0, seed_0+10):
+        TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
                  num_samples=num_samples, batch_size=batch_size, filename= filename)
 
     """

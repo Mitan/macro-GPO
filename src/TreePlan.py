@@ -432,6 +432,7 @@ class TreePlan:
     """
 
     def AnytimeAlgorithm(self, epsilon, x_0, H, max_nodes=10 ** 15):
+        print "ANYTIME " + str(H)
         print "Preprocessing weight spaces..."
 
         # by default physical state length is self.batch_size
@@ -465,11 +466,11 @@ class TreePlan:
         # TODO: Set a proper termination condition
         # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
-            # print counter
+            print counter, H
             lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
-            if counter > 1000:
+            if counter > 500:
                 break
         print "counter is " + str(counter)
         # TODO: Set action selection scheme
