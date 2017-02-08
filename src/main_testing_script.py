@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # max horizon
     h_max = 3
 
-    t, batch_size, num_samples, time_slot = (5,4, 150, 44)
+    t, batch_size, num_samples, time_slot = (4,5, 250, 18)
 
     filename = '../datasets/slot' + str(time_slot) + '/tlog'+ str(time_slot) +'.dom'
 

@@ -32,6 +32,9 @@ class RoadMapValueDict(MapValueDict):
 
         self.neighbours = {}
 
+        # dict of selected macroactions
+        self.selected_actions_dict = None
+
         # locations, where we have data
         self.informative_locations_indexes = []
 
@@ -142,6 +145,7 @@ class RoadMapValueDict(MapValueDict):
         return choice(start_Locations)
 
     # the content is moved to class constructor
+    # unused
     def LogTransformValues(self):
         pass
         """
@@ -153,6 +157,7 @@ class RoadMapValueDict(MapValueDict):
                 # print current_value, self.values[i]
         """
 
+    # unused
     def AddTwoSidedRoads(self):
         for loc in self.locations:
             tuple_loc = tuple(loc)
@@ -165,6 +170,20 @@ class RoadMapValueDict(MapValueDict):
                     # list of n's neighbours is not empty, check if contains loc
                     if not tuple_loc in n_neighbours:
                         self.neighbours[tuple(n)].append(tuple_loc)
+
+    # todo
+    def LoadSelectedMacroactions(self, folder_name):
+        actions_file_name = folder_name + 'actions_selected.txt'
+        lines = open(actions_file_name).readlines()
+
+    def LoadRandomLocation(self, folder_name):
+        location_file_name = folder_name + 'start_location.txt'
+        # should contain only one line
+        string_locations = open(location_file_name).readline().split()
+        location = map(float, string_locations)
+        assert len(location) == 2
+        return np.array(location)
+
 
 
 if __name__ == "__main__":

@@ -27,7 +27,7 @@ def GenerateModelFromFile(filename):
 def GenerateRoadModelFromFile(filename):
     m = RoadMapValueDict(filename)
     # m.AddTwoSidedRoads()
-    m.LogTransformValues()
+    # m.LogTransformValues()
     return m
 
 
