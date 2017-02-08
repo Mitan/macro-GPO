@@ -12,21 +12,21 @@ if __name__ == '__main__':
 
     my_save_folder_root = "../tests/b4_sAD_loc0_h3_x/"
     my_save_folder_root = "../tests/"
-    my_save_folder_root = "../testsRoad/44_log_true/"
+    my_save_folder_root = "../testsRoad/h5/44_log_true/"
 
     filename = '../datasets/slot44/tlog44.dom'
 
     # max horizon
     h_max = 3
     # time steps
-    t = 5
+    t = 4
 
-    batch_size = 4
+    batch_size = 5
 
     # number of samples per stage
     # todo note now it is only for anytime
     # for exact algorithms see SampleFunctionBuilder
-    num_samples = 150
+    num_samples = 250
 
     args = sys.argv
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
 
     seed_0 = int(args[1])
-    for seed in range(seed_0, seed_0+10):
+    for seed in range(seed_0, seed_0+20):
         TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
                  num_samples=num_samples, batch_size=batch_size, filename= filename)
 
