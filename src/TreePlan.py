@@ -461,6 +461,7 @@ class TreePlan:
         print "MCTS max nodes:", max_nodes, "Skeletal Expansion"
         # Expand tree
         total_nodes_expanded = root_action_node.SkeletalExpand()
+        gc.collect()
         print "Performing search..."
 
         counter = 0
@@ -471,6 +472,8 @@ class TreePlan:
             lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
+            gc.collect()
+            gc.collect()
             gc.collect()
             if counter > 500:
                 break
