@@ -47,7 +47,7 @@ class TreePlanTester:
         self.gp = GaussianProcess(self.covariance_function, mean_function=mean_function)
         self.noise_variance = noise_variance
 
-    def InitEnvironment(self, environment_noise, model):
+    def InitEnvironment(self, environment_noise, model, hyper_storer):
         """
         @param environment noise - float for variance of zero mean gaussian noise present in the actual environment
         @param model - function taking in a numpy array of appropriate dimension and returns the actual (deterministic) reading
@@ -60,6 +60,7 @@ class TreePlanTester:
         # the empirical mean of the dataset
         # required for subtracting from measurements - gives better plotting
         self.empirical_mean = model.mean
+        self.hyper_storer = hyper_storer
 
     def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, batch_size, horizon):
         """
@@ -250,6 +251,9 @@ class TreePlanTester:
         f.write("Normalized Reward history " + str(normalized_total_reward_history) + "\n")
         f.close()
 
+        self.hyper_storer.PrintParamsToFile(save_folder + "hypers_used.txt")
+
+
         """
         name_label = "test"
         result_data = []
@@ -316,7 +320,7 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                noise_variance=hyper_storer.noise_variance,
                mean_function=hyper_storer.mean_function)
     # adds noise to observations
-    TPT.InitEnvironment(environment_noise=hyper_storer.noise_variance, model=model)
+    TPT.InitEnvironment(environment_noise=hyper_storer.noise_variance, model=model, hyper_storer=hyper_storer)
     TPT.InitPlanner(grid_domain=hyper_storer.grid_domain, grid_gap=hyper_storer.grid_gap, gamma=1, epsilon=epsilon_,
                     horizon=horizon,
                     batch_size=batch_size)

@@ -101,7 +101,7 @@ class RoadMapValueDict(MapValueDict):
 
     def SelectMacroActions(self, batch_size, folder_name):
         self.selected_actions_dict = {}
-        treshhold = 25
+        treshhold = 20
         actions_file  = open(folder_name + 'actions_selected.txt', 'w')
         for loc in self.locations:
             all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)

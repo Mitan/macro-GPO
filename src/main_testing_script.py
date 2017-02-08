@@ -26,7 +26,7 @@ if __name__ == '__main__':
     # number of samples per stage
     # todo note now it is only for anytime
     # for exact algorithms see SampleFunctionBuilder
-    num_samples = 200
+    num_samples = 150
 
     args = sys.argv
 

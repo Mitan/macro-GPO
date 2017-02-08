@@ -8,6 +8,14 @@ class AbstarctHypersStorer:
     def PrintParams(self):
         print self.length_scale, self.signal_variance, self.noise_variance, self.mean_function
 
+    def PrintParamsToFile(self, file_name):
+        f = open(file_name, 'w')
+        f.write("mean = " +str(self.mean_function) + '\n')
+        f.write("lengthscale = " +str(self.length_scale) + '\n')
+        f.write("noise = " +str(self.noise_variance) + '\n')
+        f.write("signal = " +str(self.signal_variance) + '\n')
+        f.close()
+
 
 
 class SimulatedHyperStorer(AbstarctHypersStorer):
