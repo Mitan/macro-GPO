@@ -1,6 +1,7 @@
 import copy
 import math
 
+import gc
 import numpy as np
 from scipy.stats import multivariate_normal
 from scipy.stats import norm
@@ -470,6 +471,7 @@ class TreePlan:
             lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
+            gc.collect()
             if counter > 500:
                 break
         print "counter is " + str(counter)
