@@ -3,20 +3,30 @@ import numpy as np
 from StringIO import StringIO
 from DatasetUtils import GetGCoefficient
 
+"""
 seeds = range(66, 102)
 
 # seeds = list(set(seeds) - set([92]))
 # seeds = list(set(seeds) - set([88]))
 
 root_path = '../tests/b4_sAD_loc0_h3/'
-
 methods = ['h1', 'h2', 'h3','h4', 'anytime_h3','mle_h3', 'qEI' ]
 method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime','MLE H = 3', 'qEI']
+"""
 
-# methods = ['h1', 'h2', 'h3', 'anytime_h3', 'mle_h3', 'qEI']
-# method_names = ['H = 1', 'H = 2', 'H = 3', 'Anytime', 'MLE H = 3', 'qEI']
+batch_size = 4
 
-steps = 5
+seeds = [0,1,2,5,6,7, 10, 11, 12,15,16,17]
+seeds = [0, 1, 5, 6, 10, 11, 15, 16,]
+
+root_path = '../testsRoad/b' + str(batch_size) + '/44/'
+
+methods = ['h1', 'anytime_h2', 'anytime_h3','mle_h3', 'qEI' ]
+method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3','MLE H = 3', 'qEI']
+
+
+
+steps = 20 / batch_size
 
 results = []
 
@@ -33,6 +43,7 @@ for index, method in enumerate(methods):
         file_path = seed_folder + method + '/summary.txt'
         # print file_path
         try:
+            # normalized
             a = (open(file_path).readlines()[-1])[27: -2]
             # print a
             # print file_path
@@ -45,7 +56,9 @@ for index, method in enumerate(methods):
         rewards = np.genfromtxt(a, delimiter=",")
         results_for_method = np.add(results_for_method, rewards)
 
-        g_coefficient = GetGCoefficient(seed_folder, method)
+        # todo need to adjust coefficient
+        # g_coefficient = GetGCoefficient(seed_folder, method)
+        g_coefficient = 0
         sum_coefficients += g_coefficient
 
     # check that we collected data for every location
