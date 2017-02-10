@@ -19,7 +19,13 @@ if __name__ == '__main__':
     # max horizon
     h_max = 3
 
-    t, batch_size, num_samples, time_slot = (4,5, 250, 18)
+    args = sys.argv
+    seed_0 = int(args[1])
+    time_slot = int(args[2])
+
+    #t, batch_size, num_samples, time_slot = (4,5, 250, 18)
+
+    t, batch_size, num_samples = (4, 5, 250)
 
     filename = '../datasets/slot' + str(time_slot) + '/tlog'+ str(time_slot) +'.dom'
 
@@ -30,13 +36,13 @@ if __name__ == '__main__':
     # todo note now num_samples is only for anytime
     # for exact algorithms see SampleFunctionBuilder
 
-    args = sys.argv
+
 
     #filename = None
     # filename = "./debug_dataset.txt"
 
 
-    seed_0 = int(args[1])
+
     for seed in range(seed_0, seed_0 + 3):
         TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
                  num_samples=num_samples, batch_size=batch_size, filename= filename, time_slot=time_slot)
