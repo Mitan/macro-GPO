@@ -82,8 +82,10 @@ class RoadHypersStorer_Log18(AbstarctHypersStorer):
     def __init__(self):
         AbstarctHypersStorer.__init__(self)
         self.length_scale = (0.5249, 0.5687)
-        self.signal_variance = 0.7486
-        self.noise_variance = 0.0111
+        signal_cov = 0.7486
+        self.signal_variance = signal_cov**2
+        noise_cov = 0.0111
+        self.noise_variance = noise_cov**2
         self.mean_function = 1.5673
 
         self.grid_gap = 1.0

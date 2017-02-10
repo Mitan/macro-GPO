@@ -176,5 +176,8 @@ print a
 """
 a = '0.0 29.0 [0, 1, 2, 3, 4]'
 
-b = a.replace(',',' ').replace('[',' ').replace(']',' ').split()
-print map(int, b)
+
+
+
+a = 0.2
+print a**2
