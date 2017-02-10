@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     filename = '../datasets/slot' + str(time_slot) + '/tlog'+ str(time_slot) +'.dom'
 
-    my_save_folder_root = "../testsRoad/b" + str(batch_size) + "/"+ str(time_slot) + "/"
+    my_save_folder_root = "../testsRoad2/b" + str(batch_size) + "/"+ str(time_slot) + "/"
 
 
     # number of samples per stage
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
 
 
-    for seed in range(seed_0, seed_0 + 3):
+    for seed in range(seed_0, seed_0 + 2):
         TestScenario(my_save_folder_root=my_save_folder_root, h_max=h_max, seed=seed, time_steps=t,
                  num_samples=num_samples, batch_size=batch_size, filename= filename, time_slot=time_slot)
 

@@ -20,16 +20,25 @@ slot = 18
 seeds = [0,1,2,3, 5,6,7,8, 10, 11, 12, 13, 15,16,17, 18]
 seeds = range(20)
 
-# seeds = list(set(seeds) - set([4,19]))
-seeds = list(set(seeds) - set([4, 10, 14]))
-# seeds = [0, 1, 5, 6, 10, 11, 15, 16,]
+# 4, 44
+# seeds = list(set(seeds) - set([19]))
 
-root_path = '../testsRoad/b' + str(batch_size) + '/'+ str(slot) + '/'
+
+# 5 44 - stopped
+#seeds = list(set(seeds) - set([9]))
+
+# 5 18 remove 16
+# seeds = list(set(seeds) - set([16]))
+
+
+method_names = ['Myopic UCB', 'Anytime H = 2', 'MLE H = 3', 'qEI']
+methods = ['h1', 'anytime_h2','mle_h3', 'qEI' ]
 
 methods = ['h1', 'anytime_h2', 'anytime_h3','mle_h3', 'qEI' ]
 method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3','MLE H = 3', 'qEI']
 
 
+root_path = '../testsRoad/b' + str(batch_size) + '/'+ str(slot) + '/'
 
 steps = 20 / batch_size
 
