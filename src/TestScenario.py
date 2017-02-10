@@ -29,7 +29,7 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
                             num_samples=num_samples, batch_size=batch_size)
 
 
-def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
+def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, time_slot, filename=None):
     result_graphs = []
 
     # eps = 10 ** 10
@@ -123,13 +123,15 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         method_name = 'qEI'
         qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
                                       save_folder=save_folder + "qEI/",
-                                      num_samples=num_samples, batch_size=batch_size, start_location=start_location)
+                                      num_samples=num_samples, batch_size=batch_size, start_location=start_location,
+                                      time_slot=time_slot)
         result_graphs.append([method_name, qEI])
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(qEI) + '\n')
 
     method_name = 'Myopic DB-GP-UCB'
-    myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
+    myopic_ucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MyopicUCB, horizon=1,
+                                         num_timesteps_test=time_steps,
                                          save_folder=save_folder + "h1/",
                                          num_samples=num_samples, batch_size=batch_size, start_location=start_location)
     result_graphs.append([method_name, myopic_ucb])
@@ -137,7 +139,8 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(str(myopic_ucb) + '\n')
 
     method_name = 'MLE H = 3'
-    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
+    mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=3,
+                                  num_timesteps_test=time_steps,
                                   save_folder=save_folder + "mle_h3/",
                                   num_samples=num_samples, batch_size=batch_size, start_location=start_location)
     result_graphs.append([method_name, mle])
@@ -148,7 +151,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     for h in range(2, h_max + 1):
         # print h
         method_name = 'Anytime H = ' + str(h)
-        current_h_result = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+        current_h_result = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
                                                    num_timesteps_test=time_steps,
                                                    save_folder=save_folder + "anytime_h" + str(h) + "/",
                                                    num_samples=num_samples, batch_size=batch_size,

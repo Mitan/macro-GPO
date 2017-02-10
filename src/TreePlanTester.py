@@ -253,7 +253,6 @@ class TreePlanTester:
 
         self.hyper_storer.PrintParamsToFile(save_folder + "hypers_used.txt")
 
-
         """
         name_label = "test"
         result_data = []
@@ -290,11 +289,17 @@ class TreePlanTester:
 
 
 def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size,
+                            time_slot,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
 
-    hyper_storer = RoadHypersStorer_Log44()
+    if time_slot == 44:
+        hyper_storer = RoadHypersStorer_Log44()
+    elif time_slot == 18:
+        hyper_storer = RoadHypersStorer_Log18()
+    else:
+        raise Exception("wrong tzxi time slot")
     # hyper_storer = RoadHypersStorer_18()
 
     initial_physical_state = hyper_storer.GetInitialPhysicalState(start_location)
