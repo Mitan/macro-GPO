@@ -113,14 +113,23 @@ def HistTests():
 
     plt.show()
 
+
+def LoadActionsFromFileTest(folder_name, batch_size):
+    filename = '../datasets/slot18/taxi18.dom'
+    m = GenerateRoadModelFromFile(filename)
+    m.LoadSelectedMacroactions(folder_name, batch_size)
+
+
+
 if __name__ == '__main__':
-    IterateOverMacroActions(4)
+    # IterateOverMacroActions(4)
     # NewDatasetTest()
     # GenerateMacroActionsFromeFile()
     # CheckNeighboursTest()
     # print GetMacroActionsOfLocation([29.0, 6.0], 4)
     # LogTransformTest()
     # HistTests()
+    LoadActionsFromFileTest('./', 4)
     """
     filename = '../src/taxi18.dom'
     m = GenerateRoadModelFromFile(filename)

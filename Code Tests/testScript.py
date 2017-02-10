@@ -1,5 +1,7 @@
 from StringIO import StringIO
 import numpy as np
+import re
+
 from src.DatasetUtils import GenerateModelFromFile, GenerateRoadModelFromFile
 from src.GaussianProcess import MapValueDict
 
@@ -172,9 +174,7 @@ print a[0]
 a[0] = 44
 print a
 """
+a = '0.0 29.0 [0, 1, 2, 3, 4]'
 
-
-
-a = [1,2,3]
-print str(a)
-
+b = a.replace(',',' ').replace('[',' ').replace(']',' ').split()
+print map(int, b)

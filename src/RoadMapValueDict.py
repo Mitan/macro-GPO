@@ -157,7 +157,7 @@ class RoadMapValueDict(MapValueDict):
                 # print current_value, self.values[i]
         """
 
-    # unused
+    """
     def AddTwoSidedRoads(self):
         for loc in self.locations:
             tuple_loc = tuple(loc)
@@ -170,11 +170,26 @@ class RoadMapValueDict(MapValueDict):
                     # list of n's neighbours is not empty, check if contains loc
                     if not tuple_loc in n_neighbours:
                         self.neighbours[tuple(n)].append(tuple_loc)
+    """
 
-    # todo
-    def LoadSelectedMacroactions(self, folder_name):
+    def LoadSelectedMacroactions(self, folder_name, batch_size):
+
+        self.selected_actions_dict = {}
+
         actions_file_name = folder_name + 'actions_selected.txt'
         lines = open(actions_file_name).readlines()
+
+        for line in lines:
+            string_numbers = line.replace(',',' ').replace('[',' ').replace(']',' ').split()
+            numbers = map(float, string_numbers)
+            loc = ( numbers[0], numbers[1])
+            indexes = map(int, numbers[2:])
+            print loc, indexes
+            all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)
+            length = len(indexes)
+            assert length <= 20
+
+            self.selected_actions_dict[tuple(loc)] = [all_macro_actions[i] for i in indexes]
 
     def LoadRandomLocation(self, folder_name):
         location_file_name = folder_name + 'start_location.txt'
