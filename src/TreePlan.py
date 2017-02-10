@@ -475,7 +475,7 @@ class TreePlan:
             gc.collect()
             gc.collect()
             gc.collect()
-            if counter > 1000:
+            if counter > 750:
                 break
         print "counter is " + str(counter)
         # TODO: Set action selection scheme

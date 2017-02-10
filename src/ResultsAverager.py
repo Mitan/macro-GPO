@@ -16,8 +16,11 @@ method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime','MLE H = 3', 'qEI'
 
 batch_size = 4
 
-seeds = [0,1,2,5,6,7, 10, 11, 12,15,16,17]
-seeds = [0, 1, 5, 6, 10, 11, 15, 16,]
+seeds = [0,1,2,3, 5,6,7,8, 10, 11, 12, 13, 15,16,17, 18]
+# seeds = range(20)
+
+# seeds = list(set(seeds) - set([9]))
+# seeds = [0, 1, 5, 6, 10, 11, 15, 16,]
 
 root_path = '../testsRoad/b' + str(batch_size) + '/44/'
 
@@ -49,6 +52,7 @@ for index, method in enumerate(methods):
             # print file_path
             number_of_location += 1
         except:
+            # print file_path
             continue
 
         a = StringIO(a)
