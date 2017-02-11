@@ -11,7 +11,7 @@ from DatasetUtils import GenerateModelFromFile, GenerateSimulatedModel, Generate
 from HypersStorer import SimulatedHyperStorer
 
 
-def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
+def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -20,13 +20,18 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
         if not os.path.isdir(save_folder):
             raise
 
-    assert filename is not None
-    m = GenerateModelFromFile(filename)
+    m = GenerateRoadModelFromFile(filename)
+    m.LoadSelectedMacroactions(save_folder, batch_size)
+
+    start_location = m.LoadRandomLocation(save_folder)
+
     h = 4
-    testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+
+    testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "h" + str(h) + "/",
-                            num_samples=num_samples, batch_size=batch_size)
+                            save_folder=save_folder + "anytime_h" + str(h) + "/",
+                            num_samples=num_samples, batch_size=batch_size,
+                            start_location=start_location)
 
 
 def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, time_slot, filename=None):
@@ -163,7 +168,8 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     PlotData(result_graphs, save_folder)
 
 
-def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,time_slot,
+def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,
+                      time_slot,
                       filename):
     result_graphs = []
 

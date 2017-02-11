@@ -184,7 +184,7 @@ class RoadMapValueDict(MapValueDict):
             numbers = map(float, string_numbers)
             loc = ( numbers[0], numbers[1])
             indexes = map(int, numbers[2:])
-            print loc, indexes
+            # print loc, indexes
             all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)
             length = len(indexes)
             assert length <= 20
