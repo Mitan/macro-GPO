@@ -160,9 +160,11 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h_result) + '\n')
 
+    PlotData(result_graphs, save_folder)
 
-def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,
-                      filename=None):
+
+def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,time_slot,
+                      filename):
     result_graphs = []
 
     # test_horizon = 3
@@ -179,14 +181,25 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
 
     assert filename is not None
 
-    m = GenerateModelFromFile(filename)
+    # m = GenerateModelFromFile(filename)
+    m = GenerateRoadModelFromFile(filename)
+
+    # todo note
+    m.SelectMacroActions(batch_size, save_folder)
+
+    start_location = m.GetRandomStartLocation(batch_size=batch_size)
+
+    with  open(save_folder + "start_location.txt", 'w') as f:
+        f.write(str(start_location[0]) + " " + str(start_location[1]))
 
     for beta in beta_list:
         method_name = 'beta = ' + str(beta)
-        current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=test_horizon,
+        current_h_result = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=test_horizon,
                                                    num_timesteps_test=time_steps,
                                                    save_folder=save_folder + "beta" + str(beta) + "/",
-                                                   num_samples=num_samples, batch_size=batch_size, beta=beta)
+                                                   num_samples=num_samples, batch_size=batch_size, beta=beta,
+                                                   start_location=start_location, time_slot=time_slot)
+
         result_graphs.append([method_name, current_h_result])
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h_result) + '\n')
