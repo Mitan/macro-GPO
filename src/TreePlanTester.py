@@ -33,7 +33,7 @@ class TreePlanTester:
         self.beta = beta
 
     # just sets the parameters
-    def InitGP(self, length_scale, signal_variance, noise_variance, mean_function=0.0):
+    def InitGP(self, length_scale, signal_variance, noise_variance, mean_function):
         """
         @param length_scale: list/nparray containing length scales of each axis respectively
         @param signal_variance
