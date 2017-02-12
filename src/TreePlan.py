@@ -73,7 +73,8 @@ class TreePlan:
     def AcquizitionFunction(self, mu, sigma):
         if self.beta == 0:
             return np.sum(mu)
-        exploration_matrix = np.identity(sigma.shape[0]) * (self.gp.covariance_function.noise_variance) + sigma
+        exploration_matrix = np.identity(sigma.shape[0]) + (1 / self.gp.covariance_function.noise_variance) * sigma
+        # print np.sum(mu), math.log(np.linalg.det(exploration_matrix))
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     """
