@@ -3,13 +3,10 @@ import numpy as np
 from StringIO import StringIO
 from DatasetUtils import GetGCoefficient
 
-"""
+# simulated
 seeds = range(66, 102)
-
-# seeds = list(set(seeds) - set([92]))
-# seeds = list(set(seeds) - set([88]))
-
-root_path = '../tests/b4_sAD_loc0_h3/'
+batch_size = 4
+root_path = '../releaseTests/simulated/rewards-sAD/'
 methods = ['h1', 'h2', 'h3','h4', 'anytime_h3','mle_h3', 'qEI' ]
 method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime','MLE H = 3', 'qEI']
 """
@@ -39,12 +36,12 @@ method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3','MLE H = 3', 'qEI
 
 
 root_path = '../testsRoad/b' + str(batch_size) + '/'+ str(slot) + '/'
-
+"""
 steps = 20 / batch_size
 
 results = []
 
-coeff_file = open(root_path + 'g_coefficients.txt', 'w')
+# coeff_file = open(root_path + 'g_coefficients.txt', 'w')
 
 for index, method in enumerate(methods):
     number_of_location = 0
@@ -86,7 +83,7 @@ for index, method in enumerate(methods):
     results.append(result)
 
     mean_coefficient = sum_coefficients / number_of_location
-    coeff_file.write(method_names[index] + ' ' + str(mean_coefficient) + '\n')
+    # coeff_file.write(method_names[index] + ' ' + str(mean_coefficient) + '\n')
 
 PlotData(results, root_path)
-coeff_file.close()
+# coeff_file.close()

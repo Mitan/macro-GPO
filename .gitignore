@@ -17,7 +17,7 @@ ChunKai/testsBeta
 testsBeta_0204
 ChunKai/new_tests/
 ChunKai/old_tests/
-tests
+tests_old
 src/tests_2
 src/testsBetaCosines
 src/testsBetaNew
@@ -30,9 +30,9 @@ tests50
 tests50_4
 src/test.txt
 d150_log.txt
-tests4
+tests4-simulated-AD
 testsBeta3
-testBeta2
+releaseTests/simulated/testsBeta2
 testBeta2_10k
 hypers_log_18.txt
 testsRoad/
@@ -43,3 +43,5 @@ testsRoadBeta2
 testsRoadBeta1
 testsRoadBeta22
 testsRoadBeta2_upd
+releaseTests
+testsRoad_4
