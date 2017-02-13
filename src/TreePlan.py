@@ -465,6 +465,7 @@ class TreePlan:
         gc.collect()
         print "Performing search..."
 
+        number_of_iterations = 200 if H == 4 else 750
         counter = 0
         # TODO: Set a proper termination condition
         # whilre resources permit
@@ -476,7 +477,7 @@ class TreePlan:
             gc.collect()
             gc.collect()
             gc.collect()
-            if counter > 750:
+            if counter > number_of_iterations:
                 break
         print "counter is " + str(counter)
         # TODO: Set action selection scheme
