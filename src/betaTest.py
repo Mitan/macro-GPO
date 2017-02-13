@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     filename = '../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
 
-    my_save_folder_root = "../testsRoadBeta2_upd/b" + str(batch_size) + "/" + str(time_slot) + "/"
+    my_save_folder_root = "../testsRoadBeta3/b" + str(batch_size) + "/" + str(time_slot) + "/"
 
     for seed in range(seed_0, seed_0 + 2):
         TestScenario_Beta(my_save_folder_root=my_save_folder_root, test_horizon=h, seed=seed, time_steps=t,
