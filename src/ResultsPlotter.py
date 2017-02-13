@@ -8,7 +8,7 @@ import matplotlib.patches as mpatches
 
 # for each result, result[0] is the name, result[1] is the data as list of rewards
 
-def PlotData(results, path_to_file):
+def PlotData(results, folder_name, file_name='total_rewards.png', add_zero=True):
     if not results:
         return
     color_sequence = ['red', 'green', 'blue', '#e377c2', '#17becf', '#7f7f7f', 'orange',
@@ -18,19 +18,23 @@ def PlotData(results, path_to_file):
 
     # number of steps is the length of the first list of rewards
     number_of_steps = len((results[0])[1])
-    t = range(number_of_steps + 1)
+
+    # todo handle properly
+    add_zero_step = 1 if add_zero else 0
+    t = range(number_of_steps + add_zero_step)
     # for legends
     handles = []
     for i, result in enumerate(results):
         name = result[0]
+
         # add zero at first step
-        # assert len(result[1]) == number_of_steps
-        rewards = [0.0] + result[1]
+        rewards = [0.0] + result[1] if add_zero else result[1]
+
         plt.plot(t, rewards, lw=1.0, color=color_sequence[i])
         patch = mpatches.Patch(color=color_sequence[i], label=name)
         handles.append(patch)
     plt.legend(handles=handles, loc=2)
-    plt.savefig(path_to_file + 'comparison.png', bbox_inches='tight')
+    plt.savefig(folder_name + file_name, bbox_inches='tight')
     plt.clf()
     plt.close()
     # plt.show()
@@ -44,4 +48,4 @@ if __name__ == "__main__":
     fif = ['lev3', [1, 6, 3, 5, 11]]
     six = ['lev3', [1, 6, 3, 2, 1]]
     results = [first, second, third, foru, fif, six]
-    PlotData(results, "./")
+    # PlotData(results, "./")

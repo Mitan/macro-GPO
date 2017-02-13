@@ -35,7 +35,7 @@ def CalculateAverageRegret(model_max, root_path, seeds, methods, method_names, b
         results.append(result)
         print result
 
-        # PlotData(results, root_path)
+        PlotData(results=results, folder_name=root_path, file_name='regrets.png', add_zero=False)
 
 
 def CalculateMethodMaxValues(root_folder, method_name, batch_size):
@@ -55,7 +55,9 @@ def CalculateMethodMaxValues(root_folder, method_name, batch_size):
         # all measurements obtained by the robot till that step
         measurements = np.genfromtxt(a)
 
-        assert measurements.shape[0] == 1 + batch_size * (i + 1)
+        # do not count the first element
+        measurements = measurements[1:]
+        assert measurements.shape[0] == batch_size * (i + 1)
         # assert we parsed them all as numbers
         assert not np.isnan(measurements).any()
 
@@ -69,8 +71,8 @@ if __name__ == "__main__":
     folder_name = '../testsRoad/b5/18/'
     seeds = range(20)
     b = 5
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h3', 'qEI']
-    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3', 'qEI']
+    methods = ['qEI', 'h1', 'anytime_h2', 'anytime_h3', 'mle_h3']
+    method_names = [ 'qEI', 'Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3']
 
     file_name = '../datasets/slot18/tlog18.dom'
     m = GenerateRoadModelFromFile(file_name)
