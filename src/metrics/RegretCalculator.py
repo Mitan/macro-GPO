@@ -7,18 +7,19 @@ from src.ResultsPlotter import PlotData
 
 def CalculateRoadRegret():
     # cannot use - cylcic linking
-    root_path = '../releaseTests/road/b5-18-log/'
+    root_path = '../../releaseTests/road/b5-18-log/'
     seeds = range(35)
     seeds = list(set(seeds) - set([31]))
     batch_size = 5
     methods = ['qEI', 'h1', 'anytime_h2', 'anytime_h3', 'mle_h3']
     method_names = ['qEI', 'Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3']
 
+    len_seeds = len(seeds)
+    steps = 20 / batch_size
+
     dataset_file_name = '../datasets/slot18/tlog18.dom'
     m = GenerateRoadModelFromFile(dataset_file_name)
     model_max = m.GetMax()
-    len_seeds = len(seeds)
-    steps = 20 / batch_size
 
     results = []
 
@@ -47,7 +48,7 @@ def CalculateRoadRegret():
 def CalculateSimulatedRegret():
     seeds = range(66, 102)
     batch_size = 4
-    root_path = '../releaseTests/simulated/rewards-sAD/'
+    root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
     method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
 

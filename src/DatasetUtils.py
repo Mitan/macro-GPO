@@ -63,7 +63,7 @@ def GetGCoefficient(root_folder, method_name):
     G = (max_found - initial_measurement) / (true_max - initial_measurement)
     return G
 
-
+# todo refact this and next method in one
 def GetMaxValues(measurements, batch_size):
     assert len(measurements) == 21
     number_of_steps = 20 / batch_size
@@ -77,6 +77,22 @@ def GetMaxValues(measurements, batch_size):
         current_max = max(measurements[:after_i_step_points])
         max_values.append(current_max)
     return np.array(max_values)
+
+
+def GetAccumulatedRewards(measurements, batch_size):
+    assert len(measurements) == 21
+    number_of_steps = 20 / batch_size
+    acc_rewards = []
+    # initial value before planning
+    acc_rewards.append(measurements[0])
+    for i in range(number_of_steps):
+        # first batch_size * i + 1 (initial) point
+        # since i starts from zero, need to take i+1
+        after_i_step_points = batch_size * (i + 1) + 1
+        current_reward = sum(measurements[:after_i_step_points])
+        acc_rewards.append(current_reward)
+    return np.array(acc_rewards)
+
 
 # get all the measurements collected by the method including initial value
 # these values are not normalized

@@ -7,7 +7,7 @@ seeds = range(0, 35)
 seeds = list(set(seeds) - set([30]))
 
 seeds = range(16)
-
+seeds = list(set(seeds) - set([11]))
 root_path = '../releaseTests/road/beta2/'
 root_path = '../testsRoadBeta3/b5/18/'
 beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]

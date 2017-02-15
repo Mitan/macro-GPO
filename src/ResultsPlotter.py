@@ -16,7 +16,7 @@ def PlotData(results, folder_name, file_name='total_rewards.png', isTotalReward 
                       '#8c564b', '#c49c94', '#7f7f7f',
                       '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5', 'yellow']
 
-    markers = ["o", "v", "^", "s", "*", "1", "2"]
+    markers = ["o", "v", "^", "s", "*", "1", "2", "3"]
 
     # number of steps is the length of the first list of rewards
     number_of_steps = len((results[0])[1])
