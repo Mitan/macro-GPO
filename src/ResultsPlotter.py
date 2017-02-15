@@ -16,11 +16,15 @@ def PlotData(results, folder_name, file_name='total_rewards.png', add_zero=True)
                       '#8c564b', '#c49c94', '#7f7f7f',
                       '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5', 'yellow']
 
+    markers = ["o", "v", "^", "s", "*", "1", "2"]
+
     # number of steps is the length of the first list of rewards
     number_of_steps = len((results[0])[1])
 
     # todo handle properly
     add_zero_step = 1 if add_zero else 0
+    legend_loc = 2 if add_zero else 1
+
     t = range(number_of_steps + add_zero_step)
     # for legends
     handles = []
@@ -30,11 +34,21 @@ def PlotData(results, folder_name, file_name='total_rewards.png', add_zero=True)
         # add zero at first step
         rewards = [0.0] + result[1] if add_zero else result[1]
 
-        plt.plot(t, rewards, lw=1.0, color=color_sequence[i])
+        # plt.plot(t, rewards, lw=1.0, color=color_sequence[i])
+        plt.plot(t, rewards, lw=0.5, marker=markers[i], color=color_sequence[i])
+
         patch = mpatches.Patch(color=color_sequence[i], label=name)
         handles.append(patch)
-    plt.legend(handles=handles, loc=2)
+
+    plt.xticks(range(number_of_steps + 1))
+    plt.legend(handles=handles, loc=legend_loc)
+    # plt.savefig(folder_name + file_name)
+    axes = plt.axes()
+    # margins on x side
+    axes.margins(x=0.01)
     plt.savefig(folder_name + file_name, bbox_inches='tight')
+    #plt.savefig(folder_name + file_name, bbox_inches=1.0)
+
     plt.clf()
     plt.close()
     # plt.show()
