@@ -38,6 +38,7 @@ def CalculateAverageRegret(model_max, root_path, seeds, methods, method_names, b
         PlotData(results=results, folder_name=root_path, file_name='regrets.png', add_zero=False)
 
 
+# return list of 1 + number_of_steps values (first is initial value)
 def CalculateMethodMaxValues(root_folder, method_name, batch_size):
     n_steps = 20 / batch_size
     max_found_values = []
@@ -55,14 +56,17 @@ def CalculateMethodMaxValues(root_folder, method_name, batch_size):
         # all measurements obtained by the robot till that step
         measurements = np.genfromtxt(a)
 
-        # do not count the first element
-        measurements = measurements[1:]
-        assert measurements.shape[0] == batch_size * (i + 1)
+        assert measurements.shape[0] == batch_size * (i + 1) + 1
         # assert we parsed them all as numbers
         assert not np.isnan(measurements).any()
 
         max_found = max(measurements)
         max_found_values.append(max_found)
+
+    # now measurement var stores all measurements obtained
+    initial_value = measurements[0:]
+    # add it at the begining
+    max_found_values = [initial_value] + max_found_values
     return max_found_values
 
 
