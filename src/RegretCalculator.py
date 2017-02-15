@@ -1,9 +1,93 @@
 from StringIO import StringIO
 import numpy as np
 
-from src.DatasetUtils import GenerateRoadModelFromFile
+from src.DatasetUtils import GenerateRoadModelFromFile, GetAllMeasurements, GetMaxValues, GenerateModelFromFile
 from src.ResultsPlotter import PlotData
 
+
+def CalculateRoadRegret():
+    # cannot use - cylcic linking
+    root_path = '../releaseTests/road/b5-18-log/'
+    seeds = range(35)
+    seeds = list(set(seeds) - set([31]))
+    batch_size = 5
+    methods = ['qEI', 'h1', 'anytime_h2', 'anytime_h3', 'mle_h3']
+    method_names = ['qEI', 'Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3']
+
+    dataset_file_name = '../datasets/slot18/tlog18.dom'
+    m = GenerateRoadModelFromFile(dataset_file_name)
+    model_max = m.GetMax()
+    len_seeds = len(seeds)
+    steps = 20 / batch_size
+
+    results = []
+
+    # for every method
+    for index, method in enumerate(methods):
+
+        # +1 for initial stage
+        results_for_method = np.zeros((steps + 1,))
+
+        for seed in seeds:
+            seed_folder = root_path + 'seed' + str(seed) + '/'
+            measurements =  GetAllMeasurements(seed_folder, method, batch_size)
+            max_found_values = GetMaxValues(measurements, batch_size)
+
+            results_for_method = np.add(results_for_method, max_found_values)
+
+        results_for_method = results_for_method / len_seeds
+        regrets = [model_max - res for res in results_for_method.tolist()]
+        result = [method_names[index], regrets]
+        results.append(result)
+        print result
+
+    PlotData(results=results, folder_name=root_path, file_name='regrets.png',  isTotalReward=False)
+
+
+def CalculateSimulatedRegret():
+    seeds = range(66, 102)
+    batch_size = 4
+    root_path = '../releaseTests/simulated/rewards-sAD/'
+    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
+    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
+
+    len_seeds = len(seeds)
+    steps = 20 / batch_size
+
+    results = []
+
+    # average regret is average max - average reward
+    # average max is sum over all max seeds / len
+    sum_model_max = 0
+    for seed in seeds:
+        seed_dataset_path = root_path + 'seed' + str(seed) + '/dataset.txt'
+        m = GenerateModelFromFile(seed_dataset_path)
+        sum_model_max += m.GetMax()
+
+    average_model_max = sum_model_max / len_seeds
+
+    # for every method
+    for index, method in enumerate(methods):
+
+        # +1 for initial stage
+        results_for_method = np.zeros((steps + 1,))
+
+        for seed in seeds:
+            seed_folder = root_path + 'seed' + str(seed) + '/'
+            measurements = GetAllMeasurements(seed_folder, method, batch_size)
+            max_found_values = GetMaxValues(measurements, batch_size)
+
+            results_for_method = np.add(results_for_method, max_found_values)
+
+        results_for_method = results_for_method / len_seeds
+        regrets = [average_model_max - res for res in results_for_method.tolist()]
+        result = [method_names[index], regrets]
+        results.append(result)
+        print result
+
+    PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False)
+
+#todo UNUSED
 
 def CalculateAverageRegret(model_max, root_path, seeds, methods, method_names, batch_size):
     # seeds = range(36)
@@ -35,9 +119,10 @@ def CalculateAverageRegret(model_max, root_path, seeds, methods, method_names, b
         results.append(result)
         print result
 
-        PlotData(results=results, folder_name=root_path, file_name='regrets.png', add_zero=False)
+    PlotData(results=results, folder_name=root_path, file_name='regrets.png', add_zero=False)
 
 
+#todo UNUSED
 # return list of 1 + number_of_steps values (first is initial value)
 def CalculateMethodMaxValues(root_folder, method_name, batch_size):
     n_steps = 20 / batch_size
@@ -71,6 +156,7 @@ def CalculateMethodMaxValues(root_folder, method_name, batch_size):
 
 
 if __name__ == "__main__":
+    """
     # cannot use - cylcic linking
     folder_name = '../testsRoad/b5/18/'
     seeds = range(20)
@@ -83,3 +169,6 @@ if __name__ == "__main__":
     model_max = m.GetMax()
     CalculateAverageRegret(model_max=model_max, root_path=folder_name, seeds=seeds, methods=methods, method_names=method_names,
                            batch_size=b)
+    """
+    # CalculateRoadRegret()
+    CalculateSimulatedRegret()

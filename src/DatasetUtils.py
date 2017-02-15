@@ -64,6 +64,47 @@ def GetGCoefficient(root_folder, method_name):
     return G
 
 
+def GetMaxValues(measurements, batch_size):
+    assert len(measurements) == 21
+    number_of_steps = 20 / batch_size
+    max_values = []
+    # initial value before planning
+    max_values.append(measurements[0])
+    for i in range(number_of_steps):
+        # first batch_size * i + 1 (initial) point
+        # since i starts from zero, need to take i+1
+        after_i_step_points = batch_size * (i + 1) + 1
+        current_max = max(measurements[:after_i_step_points])
+        max_values.append(current_max)
+    return np.array(max_values)
+
+# get all the measurements collected by the method including initial value
+# these values are not normalized
+def GetAllMeasurements(root_folder, method_name, batch_size):
+    n_steps = 20 / batch_size
+    i = n_steps - 1
+
+    step_file_name = root_folder + method_name + '/step' + str(i) + '.txt'
+    lines = open(step_file_name).readlines()
+    first_line_index = 1 + batch_size + 1 + (1 + batch_size * (i + 1)) + 1
+    last_line_index = -1
+    stripped_lines = map(lambda x: x.strip(), lines[first_line_index: last_line_index])
+    joined_lines = " ".join(stripped_lines)
+    assert joined_lines[0] == '['
+    assert joined_lines[-1] == ']'
+    a = StringIO(joined_lines[1:-1])
+
+    # all measurements obtained by the robot till that step
+    measurements = np.genfromtxt(a)
+
+    assert measurements.shape[0] == 21
+
+    # assert we parsed them all as numbers
+    assert not np.isnan(measurements).any()
+
+    return measurements.tolist()
+
+
 if __name__ == "__main__":
     # cannot use - cylcic linking
     file_name = './taxi18.dom'
