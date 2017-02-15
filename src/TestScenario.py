@@ -188,7 +188,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         output_rewards.write(str(current_h_result) + '\n')
 
     output_rewards.close()
-    PlotData(result_graphs, save_folder)
+    # PlotData(result_graphs, save_folder)
 
 
 def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,
@@ -236,4 +236,4 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
         output_rewards.write(str(current_h_result) + '\n')
 
     output_rewards.close()
-    PlotData(result_graphs, save_folder)
+    # PlotData(result_graphs, save_folder)
