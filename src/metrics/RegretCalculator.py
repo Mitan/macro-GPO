@@ -88,6 +88,7 @@ def CalculateSimulatedRegret():
 
     PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False)
 
+"""
 #todo UNUSED
 
 def CalculateAverageRegret(model_max, root_path, seeds, methods, method_names, batch_size):
@@ -154,7 +155,7 @@ def CalculateMethodMaxValues(root_folder, method_name, batch_size):
     # add it at the begining
     max_found_values = [initial_value] + max_found_values
     return max_found_values
-
+"""
 
 if __name__ == "__main__":
     """
