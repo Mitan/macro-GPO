@@ -58,12 +58,14 @@ def GetTotalRoadRewards():
         results.append(result)
     PlotData(results, root_path)
 
-def GetTotalSimulatedRewards():
+def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
+    """
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
     method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
+    """
     steps = 20 / batch_size
 
     len_seeds = len(seeds)
@@ -157,14 +159,23 @@ def CalculateTotalRewards(batch_size, root_path, methods, method_names, seeds):
 
     PlotData(results, root_path)
 
-# todo unused
 def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
-    root_path = '../releaseTests/simulated/rewards-sAD/'
+    root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
     method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
-    CalculateTotalRewards(batch_size, root_path, methods, method_names, seeds)
+    SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
+
+def GetSimulatedBetaRewards():
+    seeds = range(66, 102)
+    batch_size = 4
+    root_path = '../../releaseTests/simulated/testsBeta2/'
+    beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
+    str_beta = map(str, beta_list)
+    methods =  map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
 
 # todo unused
 def GetRoadTotalRewards():
@@ -181,5 +192,6 @@ def GetRoadTotalRewards():
 
 if __name__ == "__main__":
     # GetRoadTotalRewards()
-    GetTotalSimulatedRewards()
-    GetTotalRoadRewards()
+    # GetSimulatedTotalRewards()
+    # GetTotalRoadRewards()
+    GetSimulatedBetaRewards()
