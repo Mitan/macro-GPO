@@ -176,7 +176,10 @@ def GetSimulatedBeta2Rewards():
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/testsBeta2/'
+    root_path = '../../simulatedBeta2/'
     beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5]
     str_beta = map(str, beta_list)
     methods =  map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
@@ -234,6 +237,7 @@ def GetRoadTotalRewards():
 
 
 if __name__ == "__main__":
+    """
     GetSimulatedTotalRewards()
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
@@ -241,3 +245,5 @@ if __name__ == "__main__":
     GetRoadBeta2Rewards()
     GetRoadBeta3Rewards()
     GetRoadTotalRewards()
+    """
+    GetSimulatedBeta2Rewards()
