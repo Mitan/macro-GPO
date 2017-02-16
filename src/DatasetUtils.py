@@ -30,7 +30,7 @@ def GenerateRoadModelFromFile(filename):
     # m.LogTransformValues()
     return m
 
-
+"""
 def GetGCoefficient(root_folder, method_name):
     summary_path = root_folder + method_name + '/summary.txt'
     dataset_path = root_folder + 'dataset.txt'
@@ -62,6 +62,8 @@ def GetGCoefficient(root_folder, method_name):
     true_max = model.GetMax()
     G = (max_found - initial_measurement) / (true_max - initial_measurement)
     return G
+    """
+
 
 # todo refact this and next method in one
 def GetMaxValues(measurements, batch_size):

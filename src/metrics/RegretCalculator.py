@@ -5,19 +5,19 @@ from src.DatasetUtils import GenerateRoadModelFromFile, GetAllMeasurements, GetM
 from src.ResultsPlotter import PlotData
 
 
-def CalculateRoadRegret():
-    # cannot use - cylcic linking
+def RoadRegrets(batch_size, root_path, methods, method_names, seeds):
+    """
     root_path = '../../releaseTests/road/b5-18-log/'
     seeds = range(35)
     seeds = list(set(seeds) - set([31]))
     batch_size = 5
     methods = ['qEI', 'h1', 'anytime_h2', 'anytime_h3', 'mle_h3']
     method_names = ['qEI', 'Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3']
-
+    """
     len_seeds = len(seeds)
     steps = 20 / batch_size
 
-    dataset_file_name = '../datasets/slot18/tlog18.dom'
+    dataset_file_name = '../../datasets/slot18/tlog18.dom'
     m = GenerateRoadModelFromFile(dataset_file_name)
     model_max = m.GetMax()
 
@@ -31,8 +31,9 @@ def CalculateRoadRegret():
 
         for seed in seeds:
             seed_folder = root_path + 'seed' + str(seed) + '/'
-            measurements =  GetAllMeasurements(seed_folder, method, batch_size)
+            measurements = GetAllMeasurements(seed_folder, method, batch_size)
             max_found_values = GetMaxValues(measurements, batch_size)
+            assert max_found_values.shape == results_for_method.shape
 
             results_for_method = np.add(results_for_method, max_found_values)
 
@@ -42,16 +43,17 @@ def CalculateRoadRegret():
         results.append(result)
         print result
 
-    PlotData(results=results, folder_name=root_path, file_name='regrets.png',  isTotalReward=False)
+    PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False)
 
 
-def CalculateSimulatedRegret():
+def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds):
+    """
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
     method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
-
+    """
     len_seeds = len(seeds)
     steps = 20 / batch_size
 
@@ -87,6 +89,7 @@ def CalculateSimulatedRegret():
         print result
 
     PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False)
+
 
 """
 #todo UNUSED
@@ -157,6 +160,80 @@ def CalculateMethodMaxValues(root_folder, method_name, batch_size):
     return max_found_values
 """
 
+
+### Road ###
+def GetRoadBeta2Regrets():
+    seeds = range(0, 35)
+    seeds = list(set(seeds) - set([30]))
+    root_path = '../../releaseTests/road/beta2/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
+
+
+def GetRoadBeta3Regrets():
+    seeds = range(0, 32)
+    seeds = list(set(seeds) - set([27, 31]))
+    root_path = '../../testsRoadBeta3/b5/18/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
+
+
+def GetRoadTotalRegrets():
+    seeds = range(36)
+    seeds = list(set(seeds) - set([31]))
+    batch_size = 5
+
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h3', 'qEI']
+    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3', 'qEI']
+
+    root_path = '../../releaseTests/road/b5-18-log/'
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
+
+
+#### Simulated ####
+
+def GetSimulatedTotalRegrets():
+    seeds = range(66, 102)
+    batch_size = 4
+    root_path = '../../releaseTests/simulated/rewards-sAD/'
+    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
+    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds)
+
+
+def GetSimulatedBeta2Regrets():
+    seeds = range(66, 102)
+    batch_size = 4
+    root_path = '../../releaseTests/simulated/testsBeta2/'
+    beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
+    str_beta = map(str, beta_list)
+    methods =  map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds)
+
+
+def GetSimulatedBeta3Regrets():
+    seeds = range(66, 102)
+    batch_size = 4
+    root_path = '../../releaseTests/simulated/testsBeta3/'
+    beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
+    str_beta = map(str, beta_list)
+    methods =  map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds)
+
+
 if __name__ == "__main__":
     """
     # cannot use - cylcic linking
@@ -172,5 +249,7 @@ if __name__ == "__main__":
     CalculateAverageRegret(model_max=model_max, root_path=folder_name, seeds=seeds, methods=methods, method_names=method_names,
                            batch_size=b)
     """
-    # CalculateRoadRegret()
-    CalculateSimulatedRegret()
+    GetRoadTotalRegrets()
+    GetRoadBeta2Regrets()
+    GetRoadBeta3Regrets()
+    GetSimulatedTotalRegrets()
