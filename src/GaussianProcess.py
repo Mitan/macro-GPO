@@ -173,7 +173,7 @@ class MapValueDict():
 
         self.locations = locations
         # the original mean of the values
-        # self.mean = np.mean(values)
+        self.mean = np.mean(values)
 
         # self.values = values - self.mean
         self.values = values
