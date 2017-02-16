@@ -217,6 +217,7 @@ def GetSimulatedBeta2Regrets():
     batch_size = 4
     root_path = '../../releaseTests/simulated/testsBeta2/'
     beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0]
     str_beta = map(str, beta_list)
     methods =  map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
