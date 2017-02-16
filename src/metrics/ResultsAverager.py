@@ -1,11 +1,11 @@
 from src.ResultsPlotter import PlotData
 import numpy as np
-from StringIO import StringIO
 
 from src.DatasetUtils import GetAllMeasurements, GetAccumulatedRewards, GenerateModelFromFile, GenerateRoadModelFromFile
 
 
-def GetTotalRoadRewards():
+def RoadRewards(batch_size, root_path, methods, method_names, seeds):
+    """
     seeds = range(36)
     seeds = list(set(seeds) - set([31]))
     batch_size = 5
@@ -14,7 +14,7 @@ def GetTotalRoadRewards():
     method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3', 'qEI']
 
     root_path = '../../releaseTests/road/b5-18-log/'
-
+    """
     steps = 20 / batch_size
 
     len_seeds = len(seeds)
@@ -57,6 +57,7 @@ def GetTotalRoadRewards():
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
     PlotData(results, root_path)
+
 
 def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
     """
@@ -111,7 +112,7 @@ def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
     PlotData(results, root_path)
-
+"""
 # todo unused
 def CalculateTotalRewards(batch_size, root_path, methods, method_names, seeds):
     steps = 20 / batch_size
@@ -158,7 +159,10 @@ def CalculateTotalRewards(batch_size, root_path, methods, method_names, seeds):
         results.append(result)
 
     PlotData(results, root_path)
+"""
 
+
+##### Simulated ####
 def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
@@ -167,7 +171,8 @@ def GetSimulatedTotalRewards():
     method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
     SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
 
-def GetSimulatedBetaRewards():
+
+def GetSimulatedBeta2Rewards():
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/testsBeta2/'
@@ -177,7 +182,45 @@ def GetSimulatedBetaRewards():
     method_names = map(lambda x: 'beta = ' + x, str_beta)
     SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
 
-# todo unused
+
+def GetSimulatedBeta3Rewards():
+    seeds = range(66, 102)
+    batch_size = 4
+    root_path = '../../releaseTests/simulated/testsBeta3/'
+    beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
+    str_beta = map(str, beta_list)
+    methods =  map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
+
+####### Road ########
+def GetRoadBeta2Rewards():
+    seeds = range(0, 35)
+    seeds = list(set(seeds) - set([30]))
+    root_path = '../../releaseTests/road/beta2/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods =  map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    RoadRewards(batch_size, root_path, methods, method_names, seeds)
+
+
+def GetRoadBeta3Rewards():
+    seeds = range(0, 32)
+    seeds = list(set(seeds) - set([27,31]))
+    root_path = '../../testsRoadBeta3/b5/18/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods =  map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    RoadRewards(batch_size, root_path, methods, method_names, seeds)
+
+
 def GetRoadTotalRewards():
     seeds = range(36)
     seeds = list(set(seeds) - set([31]))
@@ -186,12 +229,15 @@ def GetRoadTotalRewards():
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h3', 'qEI']
     method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3', 'qEI']
 
-    root_path = '../releaseTests/road/b5-18-log/'
-    CalculateTotalRewards(batch_size, root_path, methods, method_names, seeds)
+    root_path = '../../releaseTests/road/b5-18-log/'
+    RoadRewards(batch_size, root_path, methods, method_names, seeds)
 
 
 if __name__ == "__main__":
-    # GetRoadTotalRewards()
-    # GetSimulatedTotalRewards()
-    # GetTotalRoadRewards()
-    GetSimulatedBetaRewards()
+    GetSimulatedTotalRewards()
+    GetSimulatedBeta2Rewards()
+    GetSimulatedBeta3Rewards()
+
+    GetRoadBeta2Rewards()
+    GetRoadBeta3Rewards()
+    GetRoadTotalRewards()

@@ -34,7 +34,7 @@ def PlotData(results, folder_name, file_name='total_rewards.png', isTotalReward 
         rewards = result[1]
 
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i])
-        plt.plot(time_steps, rewards, lw=0.5, marker=markers[i], color=color_sequence[i])
+        plt.plot(time_steps, rewards, lw=1.0, marker=markers[i], color=color_sequence[i])
 
         patch = mpatches.Patch(color=color_sequence[i], label=name)
         handles.append(patch)
