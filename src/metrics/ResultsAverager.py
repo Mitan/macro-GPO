@@ -24,7 +24,7 @@ def RoadRewards(batch_size, root_path, methods, method_names, seeds):
     m = GenerateRoadModelFromFile(dataset_file_name)
     model_mean = m.mean
 
-    scaled_model_mean = np.array([(1 + batch_size* i) * model_mean for i in range(steps+1)])
+    scaled_model_mean = np.array([(1 + batch_size * i) * model_mean for i in range(steps + 1)])
     print scaled_model_mean
 
     for index, method in enumerate(methods):
@@ -45,7 +45,6 @@ def RoadRewards(batch_size, root_path, methods, method_names, seeds):
 
             rewards = GetAccumulatedRewards(measurements, batch_size)
             results_for_method = np.add(results_for_method, rewards)
-
 
         # check that we collected data for every location
         # print method
@@ -79,7 +78,7 @@ def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
         sum_model_mean += m.mean
 
     average_model_mean = sum_model_mean / len_seeds
-    scaled_model_mean = np.array([(1 + batch_size* i) * average_model_mean for i in range(steps+1)])
+    scaled_model_mean = np.array([(1 + batch_size * i) * average_model_mean for i in range(steps + 1)])
     print scaled_model_mean
 
     for index, method in enumerate(methods):
@@ -101,7 +100,6 @@ def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
             rewards = GetAccumulatedRewards(measurements, batch_size)
             results_for_method = np.add(results_for_method, rewards)
 
-
         # check that we collected data for every location
         # print method
         # print number_of_location, len(seeds)
@@ -112,6 +110,8 @@ def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
     PlotData(results, root_path)
+
+
 """
 # todo unused
 def CalculateTotalRewards(batch_size, root_path, methods, method_names, seeds):
@@ -175,13 +175,11 @@ def GetSimulatedTotalRewards():
 def GetSimulatedBeta2Rewards():
     seeds = range(66, 102)
     batch_size = 4
-    root_path = '../../releaseTests/simulated/testsBeta2/'
-    root_path = '../../simulatedBeta2/'
-    beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
+    root_path = '../../releaseTests/simulated/simulatedBeta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
-    beta_list = [0.0, 0.05, 0.1, 0.5]
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     str_beta = map(str, beta_list)
-    methods =  map(lambda x: 'beta' + x, str_beta)
+    methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
     SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
 
@@ -189,12 +187,13 @@ def GetSimulatedBeta2Rewards():
 def GetSimulatedBeta3Rewards():
     seeds = range(66, 102)
     batch_size = 4
-    root_path = '../../releaseTests/simulated/testsBeta3/'
-    beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
+    root_path = '../../releaseTests/simulated/simulatedBeta3/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     str_beta = map(str, beta_list)
-    methods =  map(lambda x: 'beta' + x, str_beta)
+    methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
     SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
+
 
 ####### Road ########
 def GetRoadBeta2Rewards():
@@ -202,24 +201,27 @@ def GetRoadBeta2Rewards():
     seeds = list(set(seeds) - set([30]))
     root_path = '../../releaseTests/road/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
 
     str_beta = map(str, beta_list)
-    methods =  map(lambda x: 'beta' + x, str_beta)
+    methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
     RoadRewards(batch_size, root_path, methods, method_names, seeds)
 
 
 def GetRoadBeta3Rewards():
     seeds = range(0, 32)
-    seeds = list(set(seeds) - set([27,31]))
-    root_path = '../../testsRoadBeta3/b5/18/'
+    # seeds = list(set(seeds) - set([27,31]))
+    # seeds = list(set(seeds) - set([0,14]))
+    seeds = list(set(seeds) - set([5]))
+    root_path = '../../releaseTests/road/beta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
-    beta_list = [0.0, 0.05, 0.1, 0.5]
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
 
     str_beta = map(str, beta_list)
-    methods =  map(lambda x: 'beta' + x, str_beta)
+    methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
     RoadRewards(batch_size, root_path, methods, method_names, seeds)
 
@@ -246,4 +248,7 @@ if __name__ == "__main__":
     GetRoadBeta3Rewards()
     GetRoadTotalRewards()
     """
-    GetSimulatedBeta2Rewards()
+    #GetSimulatedBeta2Rewards()
+    # GetSimulatedBeta3Rewards()
+    GetRoadBeta3Rewards()
+    GetRoadBeta2Rewards()
