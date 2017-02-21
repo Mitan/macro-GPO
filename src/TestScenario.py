@@ -146,6 +146,16 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(str(anytime) + '\n')
     """
 
+    method_name = 'BUCB-PE'
+    bucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
+                                         num_timesteps_test=time_steps,
+                                         save_folder=save_folder + "bucb-pe/",
+                                         num_samples=num_samples, batch_size=batch_size, start_location=start_location)
+    result_graphs.append([method_name, bucb])
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(bucb) + '\n')
+
+    """
     if batch_size > 1:
         method_name = 'qEI'
         qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
@@ -186,7 +196,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         result_graphs.append([method_name, current_h_result])
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h_result) + '\n')
-
+    """
     output_rewards.close()
     # PlotData(result_graphs, save_folder)
 
