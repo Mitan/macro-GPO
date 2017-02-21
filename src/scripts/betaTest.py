@@ -1,8 +1,6 @@
-import os
 import sys
-import numpy as np
 
-from TestScenario import TestScenario, TestScenario_Beta
+from src.TestScenario import TestScenario_Beta
 
 if __name__ == '__main__':
 

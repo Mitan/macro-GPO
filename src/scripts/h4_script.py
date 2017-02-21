@@ -1,6 +1,6 @@
 import sys
 
-from TestScenario import TestScenario_H4
+from src.TestScenario import TestScenario_H4
 
 if __name__ == '__main__':
 
