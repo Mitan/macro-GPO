@@ -1,15 +1,8 @@
 import copy
+import gc
 import math
 
-import gc
 import numpy as np
-from scipy.stats import multivariate_normal
-from scipy.stats import norm
-
-from GaussianProcess import GaussianProcess
-from GaussianProcess import SquareExponential
-from Vis2d import Vis2d
-# from mutil import mutil
 from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
 from SampleFunctionBuilder import GetNumberOfSamples
@@ -77,32 +70,6 @@ class TreePlan:
         # print np.sum(mu), math.log(np.linalg.det(exploration_matrix))
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
-    """
-    def Algorithm1(self, epsilon, gamma, x_0, H):
-
-                @param x_0 - augmented state
-                @return approximately optimal value, answer, and number of node expansions
-
-
-        # Obtain lambda
-        # l = epsilon / (gamma * H * (H+1))
-        # l = epsilon / sum([gamma ** i for i in xrange(1, H+1)])
-
-        print "Preprocessing weight spaces..."
-        # Obtain Lipchitz lookup tree
-        st, new_epsilon, l, nodes_expanded = self.Preprocess(x_0.physical_state,
-                                                             x_0.history.locations[: -self.batch_size, :], H,
-                                                             epsilon)
-
-        print "Performing search..."
-        # Get answer
-        Vapprox, Aapprox = self.EstimateV(H, l, gamma, x_0, st)
-
-        return Vapprox, Aapprox, nodes_expanded
-
-        return Vapprox, Aapprox, nodes_expanded
-        """
-
     def MLE(self, x_0, H):
         """
                 @param x_0 - augmented state
@@ -135,8 +102,8 @@ class TreePlan:
         return Vapprox, Xapprox, -1
 
     def GetNextAugmentedStates(self, current_augmented_state):
-        #TODO for road create a fake action a = [0. 0. 0.] and then manually
-        #TODO fix bad design
+        # TODO for road create a fake action a = [0. 0. 0.] and then manually
+        # TODO fix bad design
         # set physical state for every new augmented state
         # or create a new function TransitionP for setting augmented state
 
@@ -188,7 +155,7 @@ class TreePlan:
 
         vBest = - float("inf")
         xBest = next_states[0]
-        for x_next  in next_states:
+        for x_next in next_states:
 
             # x_next = self.TransitionP(x, a)
             next_physical_state = x_next.physical_state
@@ -341,98 +308,6 @@ class TreePlan:
 
         return avg
 
-    """
-    def NewStochasticFull(self, x_0, H):
-        Vapprox, Aapprox = self.ComputeNewVRandom(H, x_0)
-
-        return Vapprox, Aapprox, -1
-
-    def ComputeNewVRandom(self, T, x):
-
-
-
-
-        valid_actions = self.GetValidActionSet(x.physical_state)
-        # not needed
-        if T == 0: return 0, valid_actions[0]
-
-        vBest = -self.INF
-        aBest = valid_actions[0]
-
-        locations = x.history.locations
-        measurements = x.history.measurements
-
-        lengthscale = (0.1, 0.1)
-        signalvariance = 1.0
-        noisevariance = 0.01
-
-        kernel = GPy.kern.RBF(input_dim=2, variance=signalvariance, lengthscale=lengthscale,
-                              ARD=True)
-
-        measurements_2d = np.atleast_2d(measurements)
-        if measurements_2d.shape[0] == 1:
-            measurements_2d = measurements_2d.T
-
-        m = GPy.models.GPRegression(X=locations, Y=measurements_2d, kernel=kernel, noise_var=noisevariance,
-                                    normalizer=False)
-
-        for a in valid_actions:
-
-            # just physical state updated
-            x_next = self.TransitionP(x, a)
-            new_state = x_next.physical_state
-
-            # go down the semitree node
-            # new_st = st.children[ToTuple(a)]
-            assert np.array_equal(x_next.history.locations, locations)
-            assert np.array_equal(x_next.history.measurements, measurements)
-
-            mean, var = m.predict(new_state, full_cov=True)
-            # Reward is just the mean added to a multiple of the variance at that point
-
-            # mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
-
-            # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state, weights=new_st.weights)
-            # var = new_st.variance
-            # print np.linalg.det(var)
-            r = self.reward_analytical(mean, var)
-
-            # Future reward
-            if T == 1:
-                f = r
-            else:
-                f = self.ComputeNewQRandom(T, x_next, mean.flatten(), var) + r
-
-            if f > vBest:
-                aBest = a
-                vBest = f
-
-        return vBest, aBest
-
-    def ComputeNewQRandom(self, T, x, mean, var):
-
-        # sams = np.random.normal(mu, sd, self.samples_per_stage)
-
-        # no need to average over zeroes
-        if T == 1:
-            return 0
-
-        # mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
-
-        # mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
-
-        # sd = new_st.variance
-
-        number_of_samples = GetNumberOfSamples(self.H, T)
-        # sams = np.random.multivariate_normal(mean, var, self.samples_per_stage)
-        sams = np.random.multivariate_normal(mean, var, number_of_samples)
-
-        rrr = [self.ComputeNewVRandom(T - 1, self.TransitionH(x, sam))[0] for sam in sams]
-        avg = np.mean(rrr)
-
-        return avg
-    """
-
     def AnytimeAlgorithm(self, epsilon, x_0, H, max_nodes=10 ** 15):
         print "ANYTIME " + str(H)
         print "Preprocessing weight spaces..."
@@ -513,65 +388,6 @@ class TreePlan:
 
         print "Total nodes expanded %d" % total_nodes_expanded
         return root_action_node.BoundsChildren[best_a], np.asarray(best_a), total_nodes_expanded
-
-    # TODO unused
-    def MCTSTraverseBest(self, action_node):
-        """
-        """
-
-        if not action_node.ChanceChildren: return 0, None
-
-        best_a = None
-        best_a_val = -float('inf')
-        # all  nodes d_t + s
-        for a, cc in action_node.ChanceChildren.iteritems():
-            # next level d_{t+1}
-            v = [None] * len(cc.ActionChildren)
-            for i in xrange(len(v)):
-                if cc.ActionChildren[i] == None: continue
-                # some of the nodes are empty
-                v[i], _ = self.MCTSTraverseBest(cc.ActionChildren[i])
-
-            # nearest neighbour
-            left = [None] * len(cc.ActionChildren)
-            right = [None] * len(cc.ActionChildren)
-
-            curdist = -999999999999999999999999999999
-            curval = float('inf')
-            for i in xrange(len(v)):
-                if not v[i] == None:
-                    # Z value
-                    curdist = cc.ObservationValue[i]
-                    curval = v[i]
-                left[i] = (curval, cc.ObservationValue[i] - curdist)
-
-            curdist = 999999999999999999999999999999
-            curval = float('inf')
-            for i in reversed(xrange(len(v))):
-                if not v[i] == None:
-                    curdist = cc.ObservationValue[i]
-                    curval = v[i]
-                right[i] = (curval, curdist - cc.ObservationValue[i])
-
-            # todo How do we get a nearest neighbour?
-            # Set to nearest neighbour if none
-            for i in xrange(len(v)):
-                if not v[i] == None: continue
-                v[i] = right[i][0]
-                if left[i][1] < right[i][1]:
-                    v[i] = left[i][0]
-
-            for i in xrange(len(v)):
-                # Add in sampled reward
-                v[i] += self.reward_sampled(cc.ObservationValue[i])
-                v[i] *= cc.IntervalWeights[i]
-
-            sumval = sum(v) + self.reward_analytical(cc.mu, cc.semi_tree.variance)
-            if sumval > best_a_val:
-                best_a_val = sumval
-                best_a = a
-
-        return best_a_val, best_a
 
     def Preprocess(self, physical_state, locations, H, suggested_epsilon):
         """
@@ -710,94 +526,6 @@ class TreePlan:
         # node.lipchitz = node.L_upper[-1]
         node.lipchitz = lip
 
-    """
-    def EstimateV(self, T, l, gamma, x, st):
-        @return vBest - approximate value function computed
-        @return aBest - action at the root for the policy defined by alg1
-        @param st - root of the semi-tree to be used
-
-
-        valid_actions = self.GetValidActionSet(x.physical_state)
-        if T == 0: return 0, valid_actions[0]
-
-        vBest = -self.INF
-        aBest = valid_actions[0]
-        for a in valid_actions:
-
-            x_next = self.TransitionP(x, a)
-
-            # go down the semitree node
-            new_st = st.children[ToTuple(a)]
-
-            # Reward is just the mean added to a multiple of the variance at that point
-            # todo fix
-            mean = self.gp.GPMean(locations=x_next.history.locations, measurements=x_next.history.measurements,
-                                  current_location=x_next.physical_state)
-            var = new_st.variance
-            r = self.reward_analytical(mean, var)
-
-            # Future reward
-            f = self.Q_det(T, l, gamma, x_next, new_st) + r
-
-            if (f > vBest):
-                aBest = a
-                vBest = f
-
-        return vBest, aBest
-
-    def Q_det(self, T, l, gamma, x, new_st):
-        Approximates the integration step derived from alg1
-        @param new_st - semi-tree at this stage
-        @return - approximate value of the integral/expectation
-
-
-        # if T > 3: print T
-        # Initialize variables
-        kxi = new_st.lipchitz
-        # todo fix to batch
-        mu = self.gp.GPMean(x.history.locations, x.history.measurements, x.physical_state, weights=new_st.weights)
-
-        sd = math.sqrt(new_st.variance)
-        k = new_st.k
-        num_partitions = new_st.n + 2  # number of partitions INCLUDING the tail ends
-
-        if new_st.n > 0: width = 2.0 * k * sd / new_st.n
-        vAccum = 0
-
-        testsum = 0
-        for i in xrange(2, num_partitions):
-            # Compute boundary points
-            zLower = mu - sd * k + (i - 2) * width
-            zUpper = mu - sd * k + (i - 1) * width
-
-            # Compute evaluation points
-            zPoints = 0.5 * (zLower + zUpper)
-            v, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, zPoints), new_st)
-            # v += self.reward_sampled(zPoints)
-
-            # Recursively compute values
-            vAccum += v * (norm.cdf(x=zUpper, loc=mu, scale=sd) - norm.cdf(x=zLower, loc=mu, scale=sd))
-            testsum += (norm.cdf(x=zUpper, loc=mu, scale=sd) - norm.cdf(x=zLower, loc=mu, scale=sd))
-
-        # Weight values
-        rightLimit = mu + k * sd
-        leftLimit = mu - k * sd
-        vRightTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, rightLimit), new_st)
-        # vRightTailVal += self.reward_sampled(rightLimit)
-        if num_partitions == 2:
-            vLeftTailVal = vRightTailVal  # Quick hack for cases where the algo only requires us to us MLE (don't need to repeat measurement at mean of gaussian pdf)
-        else:
-            vLeftTailVal, _ = self.EstimateV(T - 1, l, gamma, self.TransitionH(x, leftLimit), new_st)  # usual case
-            # vLeftTailVal += self.reward_sampled(leftLimit)
-        vAccum += vRightTailVal * (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + \
-                  vLeftTailVal * norm.cdf(x=leftLimit, loc=mu, scale=sd)
-        testsum += (1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)) + norm.cdf(x=leftLimit, loc=mu, scale=sd)
-        assert abs(testsum - 1.0) < 0.0001, "Area != 1, %f instead" % testsum
-
-        return vAccum
-
-        # return vAccum
-    """
     def ConstructTree(self, action_node, st, T, l):
 
         if T == 0: return 0, 0, 0
@@ -916,7 +644,7 @@ def PhysicalTransition(physical_state, macroaction):
     return new_physical_state
 
 
-# updated
+# TODO note history includes current state
 # just state and history
 class AugmentedState:
     def __init__(self, physical_state, initial_history):
@@ -1037,7 +765,7 @@ class MCTSActionNode:
         for a, semi_child in self.semi_tree.children.iteritems():
             # TODO bad design
             next_physical_state = np.asarray(a)
-            fake_action  = np.zeros(next_physical_state.shape)
+            fake_action = np.zeros(next_physical_state.shape)
             next_augmented_state = TransitionP(self.augmented_state, fake_action)
             next_augmented_state.physical_state = next_physical_state
 
@@ -1129,57 +857,6 @@ class MCTSObservationNode:
         # cannot sort
         # self.ObservationValue = np.sort(samples, axis=None)
         self.ObservationValue = samples
-        """
-        # todo remove
-        # Weight of each interval
-        # self.IntervalWeights = [None] * self.num_samples
-
-        #################################################
-        # Compute partition information when NOT mle
-        #################################################
-        if self.num_samples > 1:
-
-            # Initialize variables
-            # kxi = semi_tree.lipchitz
-
-            k = semi_tree.k
-
-            if semi_tree.n > 0: width = 2.0 * k * sd / semi_tree.n
-            for i in xrange(2, self.num_samples):
-                # Compute boundary points
-                zLower = mu - sd * k + (i - 2) * width
-                zUpper = mu - sd * k + (i - 1) * width
-                self.ObservationBounds[i - 1] = (zLower, zUpper)
-
-                # Compute evaluation points
-                self.ObservationValue[i - 1] = 0.5 * (zLower + zUpper)
-
-                # Compute weights
-                self.IntervalWeights[i - 1] = norm.cdf(x=zUpper, loc=mu, scale=sd) - norm.cdf(x=zLower, loc=mu,
-                                                                                              scale=sd)
-
-            # Values for extremes
-            rightLimit = mu + k * sd
-            leftLimit = mu - k * sd
-            self.ObservationBounds[0] = (-float('inf'), leftLimit)
-            self.ObservationBounds[-1] = (rightLimit, float('inf'))
-            self.ObservationValue[0] = leftLimit
-            self.ObservationValue[-1] = rightLimit
-            self.IntervalWeights[0] = norm.cdf(x=leftLimit, loc=mu, scale=sd)
-            self.IntervalWeights[-1] = 1 - norm.cdf(x=rightLimit, loc=mu, scale=sd)
-
-            assert abs(sum(self.IntervalWeights) - 1) < 0.0001, "Area != 1, %f instead\n With number: %s " % (
-                sum(self.IntervalWeights), str(self.IntervalWeights))
-
-        else:
-            #################################################
-            # Compute partition information when using mle
-            #################################################
-
-            self.ObservationBounds[0] = (-float('inf'), float('inf'))
-            self.ObservationValue[0] = self.mu
-            self.IntervalWeights[0] = 1.0
-        """
 
     def Eval(self):
         """
@@ -1212,6 +889,7 @@ class MCTSObservationNode:
 
         return lower, upper
 
+
     def UpdateChildrenBounds(self, index_updated):
         """ Update bounds of OTHER children while taking into account lipschitz constraints
         @param index_updated: index of child whose bound was just updated
@@ -1241,51 +919,6 @@ class MCTSObservationNode:
                 self.BoundsChildren[i][0] <= self.BoundsChildren[i][
                     1]), "lower bound greater than upper bound %f, %f" % (
                 self.BoundsChildren[i][0], self.BoundsChildren[i][1])
-        """
-        # todo no more left and right!
-        # Intervals lying to the left of just updated interval
-        for i in reversed(xrange(index_updated)):
-            change = False
-            testLower = self.BoundsChildren[i + 1][0] - lip * (self.ObservationValue[i + 1] - self.ObservationValue[i])
-            testUpper = self.BoundsChildren[i + 1][1] + lip * (self.ObservationValue[i + 1] - self.ObservationValue[i])
-            # print self.BoundsChildren[i], testLower, testUpper
-            if self.BoundsChildren[i][0] < testLower:
-                change = True
-                self.BoundsChildren[i] = (testLower, self.BoundsChildren[i][1])
-
-            if self.BoundsChildren[i][1] > testUpper:
-                change = True
-                self.BoundsChildren[i] = (self.BoundsChildren[i][0], testUpper)
-
-            assert (
-                self.BoundsChildren[i][0] <= self.BoundsChildren[i][
-                    1]), "lower bound greater than upper bound %f, %f" % (
-                self.BoundsChildren[i][0], self.BoundsChildren[i][1])
-
-            if not change == True:
-                break
-
-        # Intervals lying to the right of just updated interval
-        for i in xrange(index_updated + 1, len(self.ActionChildren)):
-            change = False
-            testLower = self.BoundsChildren[i - 1][0] - lip * (self.ObservationValue[i] - self.ObservationValue[i - 1])
-            testUpper = self.BoundsChildren[i - 1][1] + lip * (self.ObservationValue[i] - self.ObservationValue[i - 1])
-            if self.BoundsChildren[i][0] < testLower:
-                change = True
-                self.BoundsChildren[i] = (testLower, self.BoundsChildren[i][1])
-
-            if self.BoundsChildren[i][1] > testUpper:
-                change = True
-                self.BoundsChildren[i] = (self.BoundsChildren[i][0], testUpper)
-
-            assert (
-                self.BoundsChildren[i][0] <= self.BoundsChildren[i][
-                    1]), "lower bound greater than upper bound %f, %f" % (
-                self.BoundsChildren[i][0], self.BoundsChildren[i][1])
-
-            if not change == True:
-                break
-        """
 
     def SkeletalExpand(self):
         """ Expand only using observations at the edges
@@ -1344,7 +977,7 @@ class MCTSObservationNode:
         return num_nodes_expanded
 
 
-# updated
+# TODO note history locations includes current state
 class History:
     def __init__(self, initial_locations, initial_measurements):
         self.locations = initial_locations
