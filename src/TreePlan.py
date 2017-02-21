@@ -221,7 +221,7 @@ class TreePlan:
 
         next_states = self.GetNextAugmentedStates(x_0)
         if not next_states:
-            raise Exception("qEI could not move from   location " + str(x_0.physical_state))
+            raise Exception("BUCB-PE could not move from   location " + str(x_0.physical_state))
 
         # list of possible first points in all the batches
         first_points = set([next_state.physical_state[0, :] for next_state in next_states])
@@ -231,7 +231,7 @@ class TreePlan:
         delta = 0.1
         t_squared = 1
 
-        beta_0 = 2 * math.log(domain_size * t_squared * math.pi**2 / (6 * delta))
+        beta_0 = 2 * math.log(domain_size * t_squared * math.pi ** 2 / (6 * delta))
 
         best_first_state = None
         best_predicted_first_measurement = - float("inf")
@@ -247,7 +247,14 @@ class TreePlan:
                 best_predicted_first_measurement = predicted_val
                 best_first_state = first_state
 
-        first_state_next_states = [next_state in next_states if next_state.physical_state[0, :]==best_first_state]
+        current_state_next_states = [next_state for next_state in next_states if
+                                   next_state.physical_state[0, :] == best_first_state]
+        if len(current_state_next_states) == 1:
+            return -1.0, current_state_next_states[0], -1.0
+
+        for num_steps in range(1, self.batch_size):
+            pass
+
 
 
         for x_next in next_states:
