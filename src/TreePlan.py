@@ -209,72 +209,76 @@ class TreePlan:
         return best_expected_improv, best_action, len(next_states)
 
     def BUCB_PE(self, x_0):
-        # x_0 stores a 2D np array of k points with history
-        max_measurement = max(x_0.history.measurements)
-
-        best_action = None
-        best_expected_improv = -1.0
 
         # valid_actions = self.GetValidActionSet(x_0.physical_state)
         # next_states = [self.TransitionP(x_0, a) for a in valid_actions]
-        chol = self.gp.Cholesky(x_0.history.locations)
 
-        next_states = self.GetNextAugmentedStates(x_0)
-        if not next_states:
+        # available actions to go
+        available_states = self.GetNextAugmentedStates(x_0)
+        if not available_states:
             raise Exception("BUCB-PE could not move from   location " + str(x_0.physical_state))
 
         # list of possible first points in all the batches
-        first_points = set([next_state.physical_state[0, :] for next_state in next_states])
+        first_points = set([next_state.physical_state[0, :] for next_state in available_states])
 
         domain_size = self.grid_domain[0][1] * self.grid_domain[1][1]
         assert domain_size == 5000
         delta = 0.1
         t_squared = 1
-
         beta_0 = 2 * math.log(domain_size * t_squared * math.pi ** 2 / (6 * delta))
 
-        best_first_state = None
-        best_predicted_first_measurement = - float("inf")
+        best_current_point = None
+        best_current_measurement = - float("inf")
+        current_locations = x_0.history.locations
+        current_chol = self.gp.Cholesky(x_0.history.locations)
 
+        # first step is ucb
         for first_state in first_points:
-            Sigma = self.gp.GPVariance(locations=x_0.history.locations, current_location=first_state,
-                                       cholesky=chol)
-            weights = self.gp.GPWeights(locations=x_0.history.locations, current_location=first_state,
-                                        cholesky=chol)
+
+            Sigma = self.gp.GPVariance(locations=current_locations, current_location=first_state,
+                                       cholesky=current_chol)
+            weights = self.gp.GPWeights(locations=current_locations, current_location=first_state,
+                                        cholesky=current_chol)
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
             predicted_val = mu + beta_0 * Sigma
-            if predicted_val > best_predicted_first_measurement:
-                best_predicted_first_measurement = predicted_val
-                best_first_state = first_state
+            if predicted_val > best_current_measurement:
+                best_current_measurement = predicted_val
+                best_current_point = first_state
 
-        current_state_next_states = [next_state for next_state in next_states if
-                                   next_state.physical_state[0, :] == best_first_state]
-        if len(current_state_next_states) == 1:
-            return -1.0, current_state_next_states[0], -1.0
+        # the states with selected several points according to batch construction
+        print available_states
+        available_states = [next_state for next_state in available_states if
+                            next_state.physical_state[0, :] == best_current_point]
+        print available_states
+        # if only one macroaction satisfies, just return it
+        if len(available_states) == 1:
+            return -1.0, available_states[0], -1.0
 
+        # Pure exploration part
         for num_steps in range(1, self.batch_size):
-            pass
+            # add point from the previous stage
+            current_locations = np.append(current_locations, best_current_point, axis=0)
+            current_chol = self.gp.Cholesky(current_locations)
+            current_points = set([next_state.physical_state[num_steps, :] for next_state in available_states])
 
+            best_current_point = None
+            best_current_sigma = - float("inf")
 
+            # find the most uncertain point
+            for current_point in current_points:
+                sigma = self.gp.GPVariance(locations=current_locations, current_location=current_point,
+                                           cholesky=current_chol)
+                if sigma > best_current_sigma:
+                    best_current_point = current_point
+                    best_current_sigma = sigma
 
-        for x_next in next_states:
-            # x_next = self.TransitionP(x_0, a)
+            print available_states
+            available_states = [next_state for next_state in available_states if
+                                next_state.physical_state[num_steps, :] == best_current_point]
+            print available_states
 
-            Sigma = self.gp.GPVariance(locations=x_0.history.locations, current_location=x_next.physical_state,
-                                       cholesky=chol)
-            weights = self.gp.GPWeights(locations=x_0.history.locations, current_location=x_next.physical_state,
-                                        cholesky=chol)
-            mu = self.gp.GPMean(measurements=x_next.history.measurements, weights=weights)
-
-            # expectedImprov = qEI(Sigma, eps, mu, max_measurement, self.batch_size)
-            expectedImprov = 0
-
-            # comparison
-            if expectedImprov >= best_expected_improv:
-                best_expected_improv = expectedImprov
-                best_action = x_next
-
-        return best_expected_improv, best_action, len(next_states)
+            if len(available_states) == 1:
+                return -1.0, available_states[0], -1.0
 
     def StochasticFull(self, x_0, H):
         # by default physical state length is self.batch_size
