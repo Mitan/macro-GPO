@@ -12,7 +12,7 @@ class TreePlan:
     def __init__(self, batch_size, grid_domain, horizon, grid_gap, num_samples, gaussian_process, model,
                  macroaction_set=None,
                  max_nodes=None,
-                 beta=0.0, bad_places=None):
+                 beta=0.0):
 
         self.model = model
 
@@ -33,13 +33,6 @@ class TreePlan:
         self.max_nodes = float("inf") if max_nodes is None else max_nodes
         self.beta = beta
 
-        # Obstacles
-        self.bad_places = bad_places
-
-        # Precomputed algo stuff
-        # unused
-        # self.mathutil = TreePlan.static_mathutil
-        # unused
         self.l1 = 0
         # unused
         self.l2 = lambda sigma: 1

@@ -1,6 +1,6 @@
 import os
 
-from GaussianProcess import MapValueDict
+from GaussianProcess import SquareExponential, GaussianProcess
 from TreePlan import *
 from Vis2d import Vis2d
 from MethodEnum import Methods
@@ -9,39 +9,14 @@ from HypersStorer import *
 
 
 class TreePlanTester:
-    def __init__(self, simulate_noise_in_trials=True, beta=0.0, bad_places=None):
-        """
-        @param simulate_noise_in_trials: True if we want to add in noise artificially into measurements
-        False if noise is already presumed to be present in the data model
-        """
-        self.simulate_noise_in_trials = simulate_noise_in_trials
-
+    def __init__(self, beta):
         self.reward_function = lambda z: sum(z)
-        """
-        if reward_model == "Linear":
-            self.reward_function = lambda z: z
-        elif reward_model == "Positive_log":
-            self.reward_function = lambda z: math.log(z) if z > 1 else 0.0
-        elif reward_model == "Step1mean":  # Step function with mean 0
-            self.reward_function = lambda z: 1.0 if z > 1 else 0.0
-        elif reward_model == "Step15mean":
-            self.reward_function = lambda z: 1.0 if z > 1.5 else 0.0
-        else:
-            assert False, "Unknown reward type"
-        """
-        self.bad_places = bad_places
+
         self.beta = beta
 
     # just sets the parameters
     def InitGP(self, length_scale, signal_variance, noise_variance, mean_function):
-        """
-        @param length_scale: list/nparray containing length scales of each axis respectively
-        @param signal_variance
-        @param noise_variance
-        @param mean_function
 
-        Example usage: InitGP([1.5, 1.5], 1, 0.1)
-        """
         self.covariance_function = SquareExponential(np.array(length_scale), signal_variance=signal_variance,
                                                      noise_variance=noise_variance)
         self.gp = GaussianProcess(self.covariance_function, mean_function=mean_function)
@@ -141,7 +116,7 @@ class TreePlanTester:
             allowed_horizon = DynamicHorizon(t=time, H_max=self.H, t_max=num_timesteps_test)
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
                           macroaction_set=action_set,
-                          beta=self.beta, bad_places=self.bad_places,
+                          beta=self.beta,
                           num_samples=num_samples, batch_size=self.batch_size, horizon=allowed_horizon,
                           model=self.model)
 
@@ -178,13 +153,6 @@ class TreePlanTester:
             baseline_measurements = np.asarray(
                 [self.model(single_agent_state) for single_agent_state in x_temp.physical_state])
 
-            # for simulated case, noise is incorporated into model
-            """
-            if self.simulate_noise_in_trials:
-                noise_components = np.random.normal(0, math.sqrt(self.noise_variance), self.batch_size)
-            else:
-                noise_components = np.asarray([0 for i in range(self.batch_size)])
-            """
             # NB shift measurements by mean
             # percieved_measurements = np.add(baseline_measurements, noise_components)
             percieved_measurements = baseline_measurements
@@ -317,10 +285,8 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
 
     print "Start location " + str(past_locations) + "\n"
 
-    # Unused
-    noise_in_trials = True
 
-    TPT = TreePlanTester(simulate_noise_in_trials=noise_in_trials, beta=beta)
+    TPT = TreePlanTester(beta=beta)
     # this GP is for prediction
     TPT.InitGP(length_scale=hyper_storer.length_scale, signal_variance=hyper_storer.signal_variance,
                noise_variance=hyper_storer.noise_variance,
@@ -337,34 +303,6 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                     action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
                     num_samples=num_samples)
 
-
-"""
-def TestRealData(locations, values, length_scale, signal_variance, noise_variance, mean_function, grid_domain,
-                 start_location,
-                 grid_gap=1.0, epsilon=1.0, depth=5, num_timesteps_test=20, save_folder=None, save_per_step=True,
-                 MCTS=True, MCTSMaxNodes=10 ** 15, Randomized=False,
-                 reward_model="Linear", sd_bonus=0.0, special=None, bad_places=[]):
-
-
-    m = MapValueDict(locations, values)
-
-    TPT = TreePlanTester(simulate_noise_in_trials=False, reward_model=reward_model, sd_bonus=sd_bonus,
-                         bad_places=bad_places)
-    TPT.InitGP(length_scale=length_scale, signal_variance=signal_variance, noise_variance=noise_variance,
-               mean_function=mean_function)
-    TPT.InitEnvironment(environment_noise=noise_variance, model=m)
-    TPT.InitPlanner(grid_domain=grid_domain, grid_gap=grid_gap, gamma=1, epsilon=epsilon, H=depth)
-    TPT.InitTestParameters(initial_physical_state=np.array(start_location), past_locations=np.array([start_location]))
-
-    # For transect-type sampling
-    # For normal
-    return TPT.Test(num_timesteps_test=num_timesteps_test, debug=True, visualize=False, action_set=None,
-                    save_folder=save_folder, save_per_step=save_per_step, MCTS=MCTS, MCTSMaxNodes=MCTSMaxNodes,
-                    Randomized=Randomized, special=special)
-
-
-300
-"""
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
     print "bla"
