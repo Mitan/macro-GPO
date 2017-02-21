@@ -224,17 +224,31 @@ class TreePlan:
             raise Exception("qEI could not move from   location " + str(x_0.physical_state))
 
         # list of possible first points in all the batches
-        first_states = set([next_state[0, :] for next_state in next_states])
+        first_points = set([next_state.physical_state[0, :] for next_state in next_states])
+
+        domain_size = self.grid_domain[0][1] * self.grid_domain[1][1]
+        assert domain_size == 5000
+        delta = 0.1
+        t_squared = 1
+
+        beta_0 = 2 * math.log(domain_size * t_squared * math.pi**2 / (6 * delta))
 
         best_first_state = None
         best_predicted_first_measurement = - float("inf")
 
-        for first_state in first_states:
+        for first_state in first_points:
             Sigma = self.gp.GPVariance(locations=x_0.history.locations, current_location=first_state,
                                        cholesky=chol)
             weights = self.gp.GPWeights(locations=x_0.history.locations, current_location=first_state,
                                         cholesky=chol)
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
+            predicted_val = mu + beta_0 * Sigma
+            if predicted_val > best_predicted_first_measurement:
+                best_predicted_first_measurement = predicted_val
+                best_first_state = first_state
+
+        first_state_next_states = [next_state in next_states if next_state.physical_state[0, :]==best_first_state]
+
 
         for x_next in next_states:
             # x_next = self.TransitionP(x_0, a)
