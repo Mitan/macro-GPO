@@ -9,26 +9,16 @@ from SampleFunctionBuilder import GetNumberOfSamples
 
 
 class TreePlan:
-    """
-    TODO: allow for more flexible initialization
-    def __init__(self, states, actions, transition, reward, GP):
-        pass
-    """
 
     def __init__(self, batch_size, grid_domain, horizon, grid_gap, num_samples, gaussian_process, model,
                  macroaction_set=None,
                  max_nodes=None,
                  beta=0.0, bad_places=None):
-        """
-        - Gradularity given by grid_gap
-        - Squared exponential covariance function
-        - Characteristic length scale the same for both directions
-        """
+
         self.model = model
 
         self.batch_size = batch_size
-        # Preset constants
-        # self.INF = 10 ** 15
+
 
         self.H = horizon
         # Number of observations/samples generated for every node
@@ -390,14 +380,6 @@ class TreePlan:
         return root_action_node.BoundsChildren[best_a], np.asarray(best_a), total_nodes_expanded
 
     def Preprocess(self, physical_state, locations, H, suggested_epsilon):
-        """
-        Builds the preprocessing tree and performs the necessary precalculations
-        @return root node, epsilon, lambda and number of nodes expanded required of the semi-tree built
-
-        root node: root node of the semi tree
-        epsilon: the suggested epsilon that we use so that we do not exceed the maximum number of nodes
-        lambda: amount of error allowed per level
-        """
 
         root_ss = SemiState(physical_state, locations)
         root_node = SemiTree(root_ss)
@@ -486,23 +468,9 @@ class TreePlan:
                 if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
                         self.grid_domain[dim][1]:
                     return False
-
-        # Check for obstacles
-        """
-        if self.bad_places:
-            for j in xrange(len(self.bad_places)):
-                if abs(current_agent_postion[0] - (self.bad_places[j])[0]) < eps and abs(
-                                current_agent_postion[1] - (self.bad_places[j])[1]) < eps:
-                    return False
-        """
-        # print "state is " + str(new_state)
         return True
 
     def PreprocessLipchitz(self, node):
-        """
-        Obtain Lipchitz vector and Lipchitz constant for each node.
-        @param node - root node of the semi-tree (assumed to be already constructed)
-        """
 
         # Base case
         if len(node.children) == 0:
@@ -623,11 +591,6 @@ def TransitionH(augmented_state, measurements):
 
 
 def PhysicalTransition(physical_state, macroaction):
-    """
-        @param - physical_state: numpy array with same size as action
-        @return - new physical state after taking the action
-        :param macroaction:
-        """
 
     current_location = physical_state[-1, :]
     batch_size = macroaction.shape[0]
@@ -821,14 +784,7 @@ class MCTSObservationNode:
         self.lamb = l
 
         self.num_samples = number_of_samples
-        """
-        # todo need to change to stochastic samples
-        # Number of partitions INCLUDING tails
-        if self.semi_tree.n == 0:
-            self.num_samples = 1  # MLE case
-        else:
-            self.num_samples = self.semi_tree.n + 2
-        """
+
         self.saturated = False
 
         self.numchild_unsaturated = self.num_samples
@@ -872,11 +828,6 @@ class MCTSObservationNode:
         lower = sum([childBound[0] for childBound in self.BoundsChildren]) / number_of_children
         upper = sum([childBound[1] for childBound in self.BoundsChildren]) / number_of_children
 
-        """
-        for i in xrange(len(self.BoundsChildren)):
-            lower += self.BoundsChildren[i][0] * self.IntervalWeights[i]
-            upper += self.BoundsChildren[i][1] * self.IntervalWeights[i]
-        """
         # Update reward
         # lower += self.mu - self.semi_tree.true_error
         # upper += self.mu + self.semi_tree.true_error
@@ -925,13 +876,6 @@ class MCTSObservationNode:
         """
 
         num_nodes_expanded = 0
-        # # Note Special case of MLE where only one expansion is done
-        # num_nodes_expanded += self.SkeletalExpandHere(0)
-        # self.UpdateChildrenBounds(0)
-
-        # if self.num_partitions > 1:
-        # 	num_nodes_expanded += self.SkeletalExpandHere(self.num_partitions-1)
-        # 	self.UpdateChildrenBounds(self.num_partitions-1)
 
         # choose the center node
         # todo change coz ugly
