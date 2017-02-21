@@ -9,7 +9,6 @@ from SampleFunctionBuilder import GetNumberOfSamples
 
 
 class TreePlan:
-
     def __init__(self, batch_size, grid_domain, horizon, grid_gap, num_samples, gaussian_process, model,
                  macroaction_set=None,
                  max_nodes=None,
@@ -18,7 +17,6 @@ class TreePlan:
         self.model = model
 
         self.batch_size = batch_size
-
 
         self.H = horizon
         # Number of observations/samples generated for every node
@@ -181,7 +179,7 @@ class TreePlan:
         max_measurement = max(x_0.history.measurements)
 
         best_action = None
-        best_expected_improv = -1.0
+        best_expected_improv = - float("inf")
 
         # valid_actions = self.GetValidActionSet(x_0.physical_state)
         # next_states = [self.TransitionP(x_0, a) for a in valid_actions]
@@ -219,12 +217,24 @@ class TreePlan:
 
         # valid_actions = self.GetValidActionSet(x_0.physical_state)
         # next_states = [self.TransitionP(x_0, a) for a in valid_actions]
+        chol = self.gp.Cholesky(x_0.history.locations)
 
         next_states = self.GetNextAugmentedStates(x_0)
         if not next_states:
             raise Exception("qEI could not move from   location " + str(x_0.physical_state))
 
-        chol = self.gp.Cholesky(x_0.history.locations)
+        # list of possible first points in all the batches
+        first_states = set([next_state[0, :] for next_state in next_states])
+
+        best_first_state = None
+        best_predicted_first_measurement = - float("inf")
+
+        for first_state in first_states:
+            Sigma = self.gp.GPVariance(locations=x_0.history.locations, current_location=first_state,
+                                       cholesky=chol)
+            weights = self.gp.GPWeights(locations=x_0.history.locations, current_location=first_state,
+                                        cholesky=chol)
+            mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
 
         for x_next in next_states:
             # x_next = self.TransitionP(x_0, a)
@@ -626,7 +636,6 @@ def TransitionH(augmented_state, measurements):
 
 
 def PhysicalTransition(physical_state, macroaction):
-
     current_location = physical_state[-1, :]
     batch_size = macroaction.shape[0]
 
@@ -874,7 +883,6 @@ class MCTSObservationNode:
         assert (lower <= upper), "Lower > Upper!, %s, %s" % (lower, upper)
 
         return lower, upper
-
 
     def UpdateChildrenBounds(self, index_updated):
         """ Update bounds of OTHER children while taking into account lipschitz constraints
