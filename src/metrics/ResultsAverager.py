@@ -231,10 +231,8 @@ def GetRoadTotalRewards():
     seeds = list(set(seeds) - set([31]))
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h3', 'qEI']
-    methods = ['h1', 'anytime_h2', 'anytime_h3','anytime_h4', 'mle_h3', 'qEI']
-    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3', 'qEI']
-    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4', 'MLE H = 3', 'qEI']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h3', 'qEI', 'pe']
+    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4', 'MLE H = 3', 'qEI', 'BUCB-PE']
 
     root_path = '../../releaseTests/road/b5-18-log/'
     RoadRewards(batch_size, root_path, methods, method_names, seeds)
@@ -250,8 +248,8 @@ if __name__ == "__main__":
     GetRoadBeta3Rewards()
     GetRoadTotalRewards()
     """
-    #GetSimulatedBeta2Rewards()
+    # GetSimulatedBeta2Rewards()
     # GetSimulatedBeta3Rewards()
-    #GetRoadBeta3Rewards()
-    #GetRoadBeta2Rewards()
+    # GetRoadBeta3Rewards()
+    # GetRoadBeta2Rewards()
     GetRoadTotalRewards()

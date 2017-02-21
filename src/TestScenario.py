@@ -36,7 +36,7 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
     method_name = 'newQEI'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(qEI) + '\n')
-
+    """
     PE = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
                                  num_timesteps_test=time_steps,
                                  save_folder=save_folder + "pe/",
@@ -47,6 +47,7 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
 
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(PE) + '\n')
+    """
     output_rewards.close()
 
 

@@ -173,6 +173,7 @@ class TreePlan:
 
         best_action = None
         best_expected_improv = - float("inf")
+        best_expected_improv = -1.0
 
         # valid_actions = self.GetValidActionSet(x_0.physical_state)
         # next_states = [self.TransitionP(x_0, a) for a in valid_actions]
@@ -186,9 +187,9 @@ class TreePlan:
         for x_next in next_states:
             # x_next = self.TransitionP(x_0, a)
 
-            Sigma = self.gp.GPVariance(locations=x_0.history.locations, current_location=x_next.physical_state,
+            Sigma = self.gp.GPVariance(locations=x_next.history.locations, current_location=x_next.physical_state,
                                        cholesky=chol)
-            weights = self.gp.GPWeights(locations=x_0.history.locations, current_location=x_next.physical_state,
+            weights = self.gp.GPWeights(locations=x_next.history.locations, current_location=x_next.physical_state,
                                         cholesky=chol)
             mu = self.gp.GPMean(measurements=x_next.history.measurements, weights=weights)
 

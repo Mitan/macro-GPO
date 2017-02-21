@@ -2,7 +2,7 @@ from src.TestScenario import TestScenario_PE_qEI
 
 if __name__ == '__main__':
 
-    seeds = range(10)
+    seeds = range(36)
 
     # note hardcoded
     time_slot = 18
