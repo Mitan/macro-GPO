@@ -23,13 +23,7 @@ class TreePlanTester:
         self.noise_variance = noise_variance
 
     def InitEnvironment(self, environment_noise, model, hyper_storer):
-        """
-        @param environment noise - float for variance of zero mean gaussian noise present in the actual environment
-        @param model - function taking in a numpy array of appropriate dimension and returns the actual (deterministic) reading
 
-        Example usage: InitEnvironment(0.1, lambda xy: multivariate_normal(mean=[0,0], cov=[[1,0],[0,1]]).pdf(xy))
-        Makes the environment with 0.1 noise variance with a mean following that of a standard multivariate normal
-        """
         self.environment_noise = environment_noise
         self.model = model
         # the empirical mean of the dataset
@@ -38,27 +32,6 @@ class TreePlanTester:
         self.hyper_storer = hyper_storer
 
     def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, batch_size, horizon):
-        """
-        Creates a planner. For now, we only allow gridded/latticed domains.
-
-        @param grid_domain - 2-tuple of 2-tuples; Each tuple for a dimension, each containing (min, max) for that dimension
-        @param grid_gap - float, resolution of our domain
-        @param epsilon - maximum allowed policy loss
-        @param gamma - discount factor
-        @param H - int, horizon
-
-        Example usage:
-        InitPlanner(((-10, 10), (-10, 10)), 0.2, 100.0, 1.0, 5)
-
-        for the following desired parameters:
-        ----------------------------------------
-        grid_domain = ((-10, 10), (-10, 10))
-        grid_gap = 0.2
-        epsilon = 100.0
-        gamma = 1.0
-        H = 5
-        ----------------------------------------
-        """
 
         self.grid_domain = grid_domain
         self.grid_gap = grid_gap
@@ -68,18 +41,6 @@ class TreePlanTester:
         self.batch_size = batch_size
 
     def InitTestParameters(self, initial_physical_state, past_locations):
-        """
-        Defines the initial state and other testing parameters.
-        Use only after the environment model has been defined
-        Initial measurements are drawn from the previously defined environment model
-        Though not an enforced requirement, it is generally sensible to have the initial_physical_state as one of the past locations
-        @param initial_physical_state - numpy array of appropriate dimension
-        @param past_locations - numpy array of shape |D| * |N| where D is the number of locations already visited and N is the number of dimensions
-        Example Usage:
-        initial_physical_state = np.array([1.0, 1.0])
-        past_locations = np.array([[-1.0, -1.0], [1.0, 1.0]])
-        InitTestParameters(initial_physical_state, past_locations)
-        """
 
         self.initial_physical_state = initial_physical_state
         self.past_locations = past_locations
@@ -131,6 +92,9 @@ class TreePlanTester:
 
             elif method == Methods.Exact:
                 vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
+
+            elif method == Methods.BucbPE:
+                _, x_temp, nodes_expanded = tp.BUCB_PE(x_0)
 
             elif method == Methods.MyopicUCB:
                 vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, 1)
@@ -221,12 +185,6 @@ class TreePlanTester:
 
         self.hyper_storer.PrintParamsToFile(save_folder + "hypers_used.txt")
 
-        """
-        name_label = "test"
-        result_data = []
-        result_data.append([name_label, total_reward_history])
-        PlotData(result_data, save_folder)
-        """
         # return state_history, reward_history, nodes_expanded_history, base_measurement_history, total_reward_history
         return normalized_total_reward_history
 
@@ -238,14 +196,7 @@ class TreePlanTester:
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
         ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
-        """
-        posterior_mean_before = np.vectorize(
-            lambda x, y: self.gp.GPMean(locations=state_history[-2].history.locations,
-                                        measurements=state_history[-2].history.measurements, current_location=[x, y]))
-        posterior_mean_after = np.vectorize(
-            lambda x, y: self.gp.GPMean(locations=state_history[-1].history.locations,
-                                        measurements=state_history[-1].history.measurements, current_location=[x, y]))
-        """
+
         # Plot graph of locations
         vis = Vis2d()
         vis.MapPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
