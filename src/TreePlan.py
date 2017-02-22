@@ -285,6 +285,80 @@ class TreePlan:
 
         return avg
 
+    def BUCB_PE(self, x_0):
+
+        # valid_actions = self.GetValidActionSet(x_0.physical_state)
+        # next_states = [self.TransitionP(x_0, a) for a in valid_actions]
+
+        # available actions to go
+        # available_states = self.GetNextAugmentedStates(x_0)
+        valid_actions = self.GetValidActionSet(x_0.physical_state)
+        available_states = [self.TransitionP(x_0, a) for a in valid_actions]
+
+        if not available_states:
+            raise Exception("BUCB-PE could not move from  location " + str(x_0.physical_state))
+
+        first_points = self.GetSetOfNextPoints(available_states, 0)
+
+        domain_size = self.grid_domain[0][1] * self.grid_domain[1][1]
+        delta = 0.1
+        t_squared = 1
+        beta_0 = 2 * math.log(domain_size * t_squared * math.pi ** 2 / (6 * delta))
+
+        best_current_point = None
+        best_current_measurement = - float("inf")
+        current_locations = x_0.history.locations
+        current_chol = self.gp.Cholesky(x_0.history.locations)
+
+        # first step is ucb
+        for first_point in first_points:
+
+            Sigma = self.gp.GPVariance(locations=current_locations, current_location=first_point,
+                                       cholesky=current_chol)
+            weights = self.gp.GPWeights(locations=current_locations, current_location=first_point,
+                                        cholesky=current_chol)
+            mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
+
+            predicted_val = mu[0] + beta_0 * Sigma[0, 0]
+            if predicted_val > best_current_measurement:
+                best_current_measurement = predicted_val
+                best_current_point = first_point
+
+        # the states with selected several points according to batch construction
+        available_states = [next_state for next_state in available_states if
+                            np.array_equal(next_state.physical_state[0:1, :], best_current_point)]
+
+        assert len(available_states) == 1
+        if len(available_states) == 1:
+            return -1.0, available_states[0], -1.0
+
+        # Pure exploration part
+        for num_steps in range(1, self.batch_size):
+            # add point from the previous stage
+            current_locations = np.append(current_locations, best_current_point, axis=0)
+            current_chol = self.gp.Cholesky(current_locations)
+
+            current_points = self.GetSetOfNextPoints(available_states, num_steps)
+
+            best_current_point = None
+            best_current_sigma = - float("inf")
+
+            # find the most uncertain point
+            for current_point in current_points:
+                sigma = self.gp.GPVariance(locations=current_locations, current_location=current_point,
+                                           cholesky=current_chol)[0, 0]
+                if sigma > best_current_sigma:
+                    best_current_point = current_point
+                    best_current_sigma = sigma
+
+            available_states = [next_state for next_state in available_states if
+                                np.array_equal(next_state.physical_state[num_steps: num_steps + 1, :],
+                                               best_current_point)]
+
+            if len(available_states) == 1:
+                return -1.0, available_states[0], -1.0
+
+
     """
     def NewStochasticFull(self, x_0, H):
         Vapprox, Aapprox = self.ComputeNewVRandom(H, x_0)
