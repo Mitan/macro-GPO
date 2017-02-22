@@ -166,7 +166,8 @@ class TreePlanTester:
                 raise Exception("Unknown method type")
 
             # Take action a
-            x_temp = tp.TransitionP(x_0, a)
+            x_temp  = a
+            # x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
 
             baseline_measurements = np.asarray(

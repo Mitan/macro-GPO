@@ -14,10 +14,11 @@ if __name__ == '__main__':
 
     args = sys.argv
 
-    start = 15
-    end = start + 1
+    start = 66
+    end = 102
 
     for seed in range(start, end):
         filename = my_save_folder_root + "seed" + str(seed) + "/dataset.txt"
+        print seed
         TestScenario_PE(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t,
                         num_samples=num_samples, batch_size=batch_size, filename=filename)

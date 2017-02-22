@@ -285,6 +285,14 @@ class TreePlan:
 
         return avg
 
+    # given a list of macroactions, find the set of unique points at step i
+    def GetSetOfNextPoints(self, available_states, step):
+        # available states should be a list of type AugmentedState
+        next_points_tuples = map(tuple, [next_state.physical_state[step, :] for next_state in available_states])
+        # a set of tuples
+        next_points = set(next_points_tuples)
+        return map(lambda x: np.atleast_2d(x), list(next_points))
+
     def BUCB_PE(self, x_0):
 
         # valid_actions = self.GetValidActionSet(x_0.physical_state)
@@ -293,6 +301,7 @@ class TreePlan:
         # available actions to go
         # available_states = self.GetNextAugmentedStates(x_0)
         valid_actions = self.GetValidActionSet(x_0.physical_state)
+        print valid_actions
         available_states = [self.TransitionP(x_0, a) for a in valid_actions]
 
         if not available_states:
@@ -320,6 +329,7 @@ class TreePlan:
                                         cholesky=current_chol)
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
 
+            print mu, Sigma
             predicted_val = mu[0] + beta_0 * Sigma[0, 0]
             if predicted_val > best_current_measurement:
                 best_current_measurement = predicted_val
@@ -331,8 +341,11 @@ class TreePlan:
 
         assert len(available_states) == 1
         if len(available_states) == 1:
+            print "return"
+            print available_states[0].physical_state
             return -1.0, available_states[0], -1.0
 
+        print "aaaa"
         # Pure exploration part
         for num_steps in range(1, self.batch_size):
             # add point from the previous stage
