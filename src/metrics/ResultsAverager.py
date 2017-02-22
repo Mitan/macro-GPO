@@ -167,8 +167,8 @@ def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
-    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
-    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
+    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI', 'pe']
+    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI', 'BUCB-PE']
     SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
 
 
@@ -252,4 +252,5 @@ if __name__ == "__main__":
     # GetSimulatedBeta3Rewards()
     # GetRoadBeta3Rewards()
     # GetRoadBeta2Rewards()
-    GetRoadTotalRewards()
+    # GetRoadTotalRewards()
+    GetSimulatedTotalRewards()
