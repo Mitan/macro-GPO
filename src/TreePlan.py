@@ -300,7 +300,8 @@ class TreePlan:
 
         first_points = self.GetSetOfNextPoints(available_states, 0)
 
-        domain_size = self.grid_domain[0][1] * self.grid_domain[1][1]
+        domain_size = (self.grid_domain[0][1] - self.grid_domain[0][0]) * (
+            self.grid_domain[1][1] - self.grid_domain[1][0]) / self.grid_gap ** 2
         delta = 0.1
         t_squared = 1
         beta_0 = 2 * math.log(domain_size * t_squared * math.pi ** 2 / (6 * delta))
@@ -357,7 +358,6 @@ class TreePlan:
 
             if len(available_states) == 1:
                 return -1.0, available_states[0], -1.0
-
 
     """
     def NewStochasticFull(self, x_0, H):

@@ -156,6 +156,9 @@ class TreePlanTester:
             elif method == Methods.MLE:
                 vBest, a, nodes_expanded = tp.MLE(x_0, allowed_horizon)
 
+            elif method == Methods.BUCB_PE:
+                vBest, a, nodes_expanded = tp.BUCB_PE(x_0)
+
             elif method == Methods.qEI:
                 vBest, a, nodes_expanded = tp.qEI(x_0)
 
