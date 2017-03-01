@@ -90,83 +90,12 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds):
 
     PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False)
 
-
-"""
-#todo UNUSED
-
-def CalculateAverageRegret(model_max, root_path, seeds, methods, method_names, batch_size):
-    # seeds = range(36)
-
-    len_seeds = len(seeds)
-
-    # methods = ['h1', 'anytime_h2', 'anytime_h3','mle_h3', 'qEI' ]
-    # method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3','MLE H = 3', 'qEI']
-
-    # root_path = '../testsRoad/b' + str(batch_size) + '/'+ str(slot) + '/'
-
-    steps = 20 / batch_size
-
-    results = []
-
-    for index, method in enumerate(methods):
-
-        results_for_method = np.zeros((steps,))
-
-        for seed in seeds:
-            seed_folder = root_path + 'seed' + str(seed) + '/'
-            max_found_values = CalculateMethodMaxValues(seed_folder, method, batch_size)
-            assert max_found_values is not None
-            results_for_method = np.add(results_for_method, max_found_values)
-
-        results_for_method = results_for_method / len_seeds
-        regrets = [model_max - res for res in results_for_method.tolist()]
-        result = [method_names[index], regrets]
-        results.append(result)
-        print result
-
-    PlotData(results=results, folder_name=root_path, file_name='regrets.png', add_zero=False)
-
-
-#todo UNUSED
-# return list of 1 + number_of_steps values (first is initial value)
-def CalculateMethodMaxValues(root_folder, method_name, batch_size):
-    n_steps = 20 / batch_size
-    max_found_values = []
-    for i in range(n_steps):
-        step_file_name = root_folder + method_name + '/step' + str(i) + '.txt'
-        lines = open(step_file_name).readlines()
-        first_line_index = 1 + batch_size + 1 + (1 + batch_size * (i + 1)) + 1
-        last_line_index = -1
-        stripped_lines = map(lambda x: x.strip(), lines[first_line_index: last_line_index])
-        joined_lines = " ".join(stripped_lines)
-        assert joined_lines[0] == '['
-        assert joined_lines[-1] == ']'
-        a = StringIO(joined_lines[1:-1])
-
-        # all measurements obtained by the robot till that step
-        measurements = np.genfromtxt(a)
-
-        assert measurements.shape[0] == batch_size * (i + 1) + 1
-        # assert we parsed them all as numbers
-        assert not np.isnan(measurements).any()
-
-        max_found = max(measurements)
-        max_found_values.append(max_found)
-
-    # now measurement var stores all measurements obtained
-    initial_value = measurements[0:]
-    # add it at the begining
-    max_found_values = [initial_value] + max_found_values
-    return max_found_values
-"""
-
-
 ### Road ###
 def GetRoadBeta2Regrets():
     seeds = range(0, 35)
     seeds = list(set(seeds) - set([30]))
     root_path = '../../releaseTests/road/beta2/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
 
     str_beta = map(str, beta_list)
@@ -177,10 +106,10 @@ def GetRoadBeta2Regrets():
 
 def GetRoadBeta3Regrets():
     seeds = range(0, 32)
-    seeds = list(set(seeds) - set([27, 31]))
-    root_path = '../../testsRoadBeta3/b5/18/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
-    beta_list = [0.0, 0.05, 0.1, 0.5]
+    # seeds = list(set(seeds) - set([27, 31]))
+    seeds = list(set(seeds) - set([5]))
+    root_path = '../../releaseTests/road/beta3/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
 
     str_beta = map(str, beta_list)
@@ -190,12 +119,11 @@ def GetRoadBeta3Regrets():
 
 
 def GetRoadTotalRegrets():
-    seeds = range(36)
-    seeds = list(set(seeds) - set([31]))
+    seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h3', 'qEI']
-    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3', 'qEI']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h3', 'qEI', 'pe']
+    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4', 'MLE H = 3', 'qEI', 'BUCB-PE']
 
     root_path = '../../releaseTests/road/b5-18-log/'
     RoadRegrets(batch_size, root_path, methods, method_names, seeds)
@@ -215,9 +143,8 @@ def GetSimulatedTotalRegrets():
 def GetSimulatedBeta2Regrets():
     seeds = range(66, 102)
     batch_size = 4
-    root_path = '../../releaseTests/simulated/testsBeta2/'
-    beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0]
+    root_path = '../../releaseTests/simulated/simulatedBeta2/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     str_beta = map(str, beta_list)
     methods =  map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
@@ -227,8 +154,8 @@ def GetSimulatedBeta2Regrets():
 def GetSimulatedBeta3Regrets():
     seeds = range(66, 102)
     batch_size = 4
-    root_path = '../../releaseTests/simulated/testsBeta3/'
-    beta_list = [0.001, 0.1, 1.0, 2.0, 10.0]
+    root_path = '../../releaseTests/simulated/simulatedBeta3/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     str_beta = map(str, beta_list)
     methods =  map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
@@ -236,21 +163,10 @@ def GetSimulatedBeta3Regrets():
 
 
 if __name__ == "__main__":
-    """
-    # cannot use - cylcic linking
-    folder_name = '../testsRoad/b5/18/'
-    seeds = range(20)
-    b = 5
-    methods = ['qEI', 'h1', 'anytime_h2', 'anytime_h3', 'mle_h3']
-    method_names = [ 'qEI', 'Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3']
 
-    file_name = '../datasets/slot18/tlog18.dom'
-    m = GenerateRoadModelFromFile(file_name)
-    model_max = m.GetMax()
-    CalculateAverageRegret(model_max=model_max, root_path=folder_name, seeds=seeds, methods=methods, method_names=method_names,
-                           batch_size=b)
-    """
-    GetRoadTotalRegrets()
-    GetRoadBeta2Regrets()
-    GetRoadBeta3Regrets()
+    # GetRoadTotalRegrets()
+    # GetRoadBeta2Regrets()
+    # GetRoadBeta3Regrets()
     GetSimulatedTotalRegrets()
+    GetSimulatedBeta2Regrets()
+    GetSimulatedBeta3Regrets()
