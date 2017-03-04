@@ -8,7 +8,6 @@ ChunKai/.idea/modules.xml
 ChunKai/.idea/vcs.xml
 ChunKai/.idea/workspace.xml
 ChunKai/tests/
-*.png
 .idea/modules.xml
 .idea/
 *.pyc
@@ -52,3 +51,4 @@ simulatedBeta2/
 simulatedBeta3/
 old_simulated_beta_tests/
 testsRoad_44/
+testsRoadBeta3_new/

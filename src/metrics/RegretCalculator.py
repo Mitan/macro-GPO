@@ -164,9 +164,9 @@ def GetSimulatedBeta3Regrets():
 
 if __name__ == "__main__":
 
-    # GetRoadTotalRegrets()
+    GetRoadTotalRegrets()
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
     GetSimulatedTotalRegrets()
-    GetSimulatedBeta2Regrets()
-    GetSimulatedBeta3Regrets()
+    #GetSimulatedBeta2Regrets()
+    #GetSimulatedBeta3Regrets()
