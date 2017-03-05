@@ -5,7 +5,7 @@ from src.DatasetUtils import GenerateRoadModelFromFile, GetAllMeasurements, GetM
 from src.ResultsPlotter import PlotData
 
 
-def RoadRegrets(batch_size, root_path, methods, method_names, seeds):
+def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename):
     """
     root_path = '../../releaseTests/road/b5-18-log/'
     seeds = range(35)
@@ -43,10 +43,10 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds):
         results.append(result)
         print result
 
-    PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False, isRoad=True)
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=False, isRoad=True)
 
 
-def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds):
+def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename):
     """
     seeds = range(66, 102)
     batch_size = 4
@@ -88,7 +88,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds):
         results.append(result)
         print result
 
-    PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False, isRoad=False)
+    PlotData(results=results,  output_file_name=output_filename, isTotalReward=False, isRoad=False)
 
 ### Road ###
 def GetRoadBeta2Regrets():
@@ -125,8 +125,9 @@ def GetRoadTotalRegrets():
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h3', 'qEI', 'pe']
     method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4', 'MLE H = 3', 'qEI', 'BUCB-PE']
 
+    output_file = '../../result_graphs/simulated_road_regrets.png'
     root_path = '../../releaseTests/road/b5-18-log/'
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
 
 #### Simulated ####
@@ -137,7 +138,9 @@ def GetSimulatedTotalRegrets():
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
     method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
-    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds)
+
+    output_file = '../../result_graphs/simulated_total_regrets.png'
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
 
 def GetSimulatedBeta2Regrets():

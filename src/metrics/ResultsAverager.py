@@ -4,7 +4,7 @@ import numpy as np
 from src.DatasetUtils import GetAllMeasurements, GetAccumulatedRewards, GenerateModelFromFile, GenerateRoadModelFromFile
 
 
-def RoadRewards(batch_size, root_path, methods, method_names, seeds):
+def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename):
     """
     seeds = range(36)
     seeds = list(set(seeds) - set([31]))
@@ -34,7 +34,7 @@ def RoadRewards(batch_size, root_path, methods, method_names, seeds):
         results_for_method = np.zeros((steps + 1,))
         for seed in seeds:
 
-            seed_folder = root_path + 'seed' + str(seed) + '/'
+            seed_folder = tests_source_path + 'seed' + str(seed) + '/'
             try:
                 # all measurements, unnormalized
                 measurements = GetAllMeasurements(seed_folder, method, batch_size)
@@ -56,10 +56,10 @@ def RoadRewards(batch_size, root_path, methods, method_names, seeds):
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
 
-    PlotData(results=results, folder_name=root_path, isRoad=True)
+    PlotData(results=results, output_file_name=output_filename, isTotalReward= True, isRoad=True)
 
 
-def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
+def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename):
     """
     seeds = range(66, 102)
     batch_size = 4
@@ -74,7 +74,7 @@ def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
 
     sum_model_mean = 0
     for seed in seeds:
-        seed_dataset_path = root_path + 'seed' + str(seed) + '/dataset.txt'
+        seed_dataset_path = tests_source_path + 'seed' + str(seed) + '/dataset.txt'
         m = GenerateModelFromFile(seed_dataset_path)
         sum_model_mean += m.mean
 
@@ -89,7 +89,7 @@ def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
         results_for_method = np.zeros((steps + 1,))
         for seed in seeds:
 
-            seed_folder = root_path + 'seed' + str(seed) + '/'
+            seed_folder = tests_source_path + 'seed' + str(seed) + '/'
             try:
                 # all measurements, unnormalized
                 measurements = GetAllMeasurements(seed_folder, method, batch_size)
@@ -110,7 +110,7 @@ def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
         scaled_results = results_for_method - scaled_model_mean
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
-    PlotData(results=results, folder_name=root_path, isRoad=False)
+    PlotData(results=results, output_file_name=output_filename, isRoad=False, isTotalReward=True)
 
 
 ##### Simulated ####
@@ -120,7 +120,11 @@ def GetSimulatedTotalRewards():
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI', 'pe']
     method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI', 'BUCB-PE']
-    SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
+
+    output_file = '../../result_graphs/simulated_total_rewards.png'
+
+    SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                     seeds=seeds, output_filename=output_file)
 
 
 def GetSimulatedBeta2Rewards():
@@ -131,7 +135,11 @@ def GetSimulatedBeta2Rewards():
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-    SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
+
+    output_file = '../../result_graphs/simulated_beta2_rewards.png'
+
+    SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                     seeds=seeds,  output_filename=output_file)
 
 
 def GetSimulatedBeta3Rewards():
@@ -142,12 +150,15 @@ def GetSimulatedBeta3Rewards():
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-    SimulatedRewards(batch_size, root_path, methods, method_names, seeds)
+
+    output_file = '../../result_graphs/simulated_beta3_rewards.png'
+
+    SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                     seeds=seeds,  output_filename=output_file)
 
 
 ####### Road ########
 def GetRoadBeta2Rewards():
-
     seeds = range(35)
     root_path = '../../releaseTests/road/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
@@ -156,7 +167,11 @@ def GetRoadBeta2Rewards():
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-    RoadRewards(batch_size, root_path, methods, method_names, seeds)
+
+    output_file = '../../result_graphs/road_beta2_rewards.png'
+
+    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file)
 
 
 def GetRoadBeta3Rewards():
@@ -168,7 +183,11 @@ def GetRoadBeta3Rewards():
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-    RoadRewards(batch_size, root_path, methods, method_names, seeds)
+
+    output_file = '../../result_graphs/road_beta3_rewards.png'
+
+    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file)
 
 
 def GetRoadTotalRewards():
@@ -179,7 +198,11 @@ def GetRoadTotalRewards():
     method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4', 'MLE H = 3', 'qEI', 'BUCB-PE']
 
     root_path = '../../releaseTests/road/b5-18-log/'
-    RoadRewards(batch_size, root_path, methods, method_names, seeds)
+
+    output_file = '../../result_graphs/road_total_rewards.png'
+
+    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file)
 
 
 if __name__ == "__main__":
