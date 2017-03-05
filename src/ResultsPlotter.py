@@ -4,14 +4,15 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
 
 
 # for each result, result[0] is the name, result[1] is the data as list of rewards
 
-def PlotData(results, folder_name, file_name='total_rewards.png', isTotalReward = True):
+def PlotData(results, folder_name, file_name='total_rewards.png', isTotalReward=True):
     if not results:
         return
-    color_sequence = ['red', 'green', 'blue', '#e377c2', '#17becf',  'orange',
+    color_sequence = ['red', 'green', 'blue', '#e377c2', '#17becf', 'orange',
                       '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#7f7f7f',
                       '#8c564b', '#c49c94', '#7f7f7f',
                       '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5', 'yellow']
@@ -33,20 +34,32 @@ def PlotData(results, folder_name, file_name='total_rewards.png', isTotalReward 
         # add zero at first step
         rewards = result[1]
 
-        # plt.plot(t, rewards, lw=1.0, color=color_sequence[i])
-        plt.plot(time_steps, rewards, lw=1.0, marker=markers[i], color=color_sequence[i])
+        # previous version with small filled markers
+        # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])
 
-        patch = mpatches.Patch(color=color_sequence[i], label=name)
+        # dirty hack to make it unfilled
+        plt.plot(time_steps, rewards, lw=1.0, marker=markers[i], markersize=15, markerfacecolor="None",
+                 markeredgewidth=1, markeredgecolor=color_sequence[i], color=color_sequence[i])
+
+        # patch = mpatches.Patch(color=color_sequence[i], label=name)
+        patch = mlines.Line2D([], [], color=color_sequence[i], marker=markers[i], markerfacecolor="None",
+                              markeredgewidth=1, markeredgecolor=color_sequence[i], markersize=10, label=name)
+
         handles.append(patch)
 
     plt.xticks(range(number_of_steps + 1))
+    # for road total_rewards
+    # plt.yticks(range(-1, 9))
+    # for simulated
+    plt.yticks(range(-4, 13, 2))
+
     plt.legend(handles=handles, loc=legend_loc)
     # plt.savefig(folder_name + file_name)
     axes = plt.axes()
     # margins on x side
     axes.margins(x=0.01)
     plt.savefig(folder_name + file_name, bbox_inches='tight')
-    #plt.savefig(folder_name + file_name, bbox_inches=1.0)
+    # plt.savefig(folder_name + file_name, bbox_inches=1.0)
 
     plt.clf()
     plt.close()
