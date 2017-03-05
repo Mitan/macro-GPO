@@ -5,9 +5,9 @@ from StringIO import StringIO
 from src.DatasetUtils import GetAllMeasurements, GetAccumulatedRewards, GenerateModelFromFile, GenerateRoadModelFromFile
 
 
-def CalculateExpandedNodes(root_path, methods, method_names, seeds):
+def CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file):
 
-    nodes_file = open(root_path + 'anytime_expanded_roads.txt', 'w')
+    nodes_file = open(output_file, 'w')
 
     for index, method in enumerate(methods):
         number_of_location = 0
@@ -36,24 +36,24 @@ def CalculateExpandedNodes(root_path, methods, method_names, seeds):
     nodes_file.close()
 
 
-
 def ExpandedNodesSimulated():
     seeds = range(66, 102)
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['anytime_h3']
     method_names = ['Anytime 3']
-    CalculateExpandedNodes(root_path, methods, method_names, seeds)
+    output_file =  '../../result_graphs/nodes_simulated.txt'
+    CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
 
 
 def ExpandedNodesRoads():
-    seeds = range(36)
-    seeds = list(set(seeds) - set([31]))
+    seeds = range(35)
 
-    methods = ['anytime_h2', 'anytime_h3']
-    method_names = ['Anytime H = 2', 'Anytime H = 3']
+    methods = ['anytime_h2', 'anytime_h3', 'anytime_h4']
+    method_names = ['Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4']
 
     root_path = '../../releaseTests/road/b5-18-log/'
-    CalculateExpandedNodes(root_path, methods, method_names, seeds)
+    output_file = '../../result_graphs/nodes_roads.txt'
+    CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
 
 
 if __name__ == "__main__":
