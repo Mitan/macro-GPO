@@ -55,8 +55,8 @@ def RoadRewards(batch_size, root_path, methods, method_names, seeds):
         scaled_results = results_for_method - scaled_model_mean
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
-    
-    PlotData(results, root_path)
+
+    PlotData(results=results, folder_name=root_path, isRoad=True)
 
 
 def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
@@ -110,57 +110,7 @@ def SimulatedRewards(batch_size, root_path, methods, method_names, seeds):
         scaled_results = results_for_method - scaled_model_mean
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
-    PlotData(results, root_path)
-
-
-"""
-# todo unused
-def CalculateTotalRewards(batch_size, root_path, methods, method_names, seeds):
-    steps = 20 / batch_size
-
-    results = []
-
-    # coeff_file = open(root_path + 'g_coefficients.txt', 'w')
-
-    for index, method in enumerate(methods):
-        number_of_location = 0
-
-        results_for_method = np.zeros((steps,))
-        for seed in seeds:
-            # counter
-
-            seed_folder = root_path + 'seed' + str(seed) + '/'
-            file_path = seed_folder + method + '/summary.txt'
-            # print file_path
-            try:
-                # normalized
-                a = (open(file_path).readlines()[-1])
-                # print a
-                a = a[27: -2]
-                # print a
-                # print file_path
-                number_of_location += 1
-            except:
-                print file_path
-                continue
-
-            a = StringIO(a)
-
-            rewards = np.genfromtxt(a, delimiter=",")
-            results_for_method = np.add(results_for_method, rewards)
-
-
-        # check that we collected data for every location
-        # print method
-        # print number_of_location, len(seeds)
-        assert number_of_location == len(seeds)
-        # print results_for_method
-        results_for_method = results_for_method / number_of_location
-        result = [method_names[index], results_for_method.tolist()]
-        results.append(result)
-
-    PlotData(results, root_path)
-"""
+    PlotData(results=results, folder_name=root_path, isRoad=False)
 
 
 ##### Simulated ####

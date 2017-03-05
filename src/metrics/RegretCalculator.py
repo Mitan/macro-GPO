@@ -43,7 +43,7 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds):
         results.append(result)
         print result
 
-    PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False)
+    PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False, isRoad=True)
 
 
 def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds):
@@ -88,7 +88,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds):
         results.append(result)
         print result
 
-    PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False)
+    PlotData(results=results, folder_name=root_path, file_name='regrets.png', isTotalReward=False, isRoad=False)
 
 ### Road ###
 def GetRoadBeta2Regrets():

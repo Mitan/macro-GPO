@@ -3,13 +3,12 @@ import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 
 
 # for each result, result[0] is the name, result[1] is the data as list of rewards
 
-def PlotData(results, folder_name, file_name='total_rewards.png', isTotalReward=True):
+def PlotData(results, folder_name, isRoad,  file_name='total_rewards.png', isTotalReward=True):
     if not results:
         return
     color_sequence = ['red', 'green', 'blue', '#e377c2', '#17becf', 'orange',
@@ -48,16 +47,20 @@ def PlotData(results, folder_name, file_name='total_rewards.png', isTotalReward=
         handles.append(patch)
 
     plt.xticks(range(number_of_steps + 1))
-    # for road total_rewards
-    # plt.yticks(range(-1, 9))
-    # for simulated
-    plt.yticks(range(-4, 13, 2))
+
+    if isTotalReward:
+        if isRoad:
+            plt.yticks(range(-1, 9))
+        else:
+            plt.yticks(range(-4, 13, 2))
 
     plt.legend(handles=handles, loc=legend_loc)
     # plt.savefig(folder_name + file_name)
+
+    # margins on x and y side
     axes = plt.axes()
-    # margins on x side
-    axes.margins(x=0.01)
+    axes.margins(x=0.02)
+
     plt.savefig(folder_name + file_name, bbox_inches='tight')
     # plt.savefig(folder_name + file_name, bbox_inches=1.0)
 
