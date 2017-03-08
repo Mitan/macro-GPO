@@ -61,7 +61,8 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
     axes = plt.axes()
     axes.margins(x=0.02)
 
-    plt.savefig(output_file_name, bbox_inches='tight')
+    # plt.savefig(output_file_name, bbox_inches='tight')
+    plt.savefig(output_file_name, format='eps', dpi=1000, bbox_inches='tight')
     # plt.savefig(folder_name + file_name, bbox_inches=1.0)
 
     plt.clf()
