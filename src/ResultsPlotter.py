@@ -5,8 +5,22 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 
+from matplotlib import rc
+#rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+## for Palatino and other serif fonts use:
+rc('font',**{'family':'serif','serif':['Times']})
+rc('text', usetex=True)
+
 
 # for each result, result[0] is the name, result[1] is the data as list of rewards
+
+def ParseName(method_name):
+    method_items = method_name.split()
+    if method_items[0] == 'beta':
+        number = float(method_items[2])
+        method_name = r'$\beta = {}$'.format(number)
+    return method_name
+
 
 def PlotData(results, isRoad,  output_file_name, isTotalReward):
     if not results:
@@ -28,9 +42,9 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
     # for legends
     handles = []
     for i, result in enumerate(results):
-        name = result[0]
 
-        # add zero at first step
+        name = ParseName(result[0])
+
         rewards = result[1]
 
         # previous version with small filled markers
