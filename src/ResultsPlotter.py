@@ -63,12 +63,16 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
         handles.append(patch)
 
     plt.xticks(time_steps)
+    plt.xlabel("No. of samples collected")
 
     if isTotalReward:
+        plt.ylabel("Total Rewards")
         if isRoad:
             plt.yticks(range(-1, 9))
         else:
             plt.yticks(range(-4, 13, 2))
+    else:
+        plt.ylabel("Simple regret")
 
     plt.legend(handles=handles, loc=legend_loc)
     # plt.savefig(folder_name + file_name)
