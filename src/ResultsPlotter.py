@@ -32,13 +32,15 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
 
     markers = ["o", "v", "^", "s", "*", "1", "2", "3"]
 
-    # number of steps is the length of the first list of rewards
+    # include first step before planning
     number_of_steps = len((results[0])[1])
+    batch_size = 20 / (number_of_steps -1)
 
-    # todo handle properly
     legend_loc = 2 if isTotalReward else 1
 
-    time_steps = range(number_of_steps)
+    # time_steps = range(number_of_steps)
+    # show samples obtained instead
+    time_steps = [i * batch_size for i in range(number_of_steps)]
     # for legends
     handles = []
     for i, result in enumerate(results):
@@ -60,7 +62,7 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
 
         handles.append(patch)
 
-    plt.xticks(range(number_of_steps + 1))
+    plt.xticks(time_steps)
 
     if isTotalReward:
         if isRoad:

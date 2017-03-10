@@ -176,11 +176,11 @@ def GetRoadBeta2Rewards():
 
 def GetRoadBeta3Rewards():
     seeds = range(35)
-    # seeds = list(set(seeds) - set([6, 8]))
-    # seeds = list(set(seeds) - set([6]))
+    seeds = list(set(seeds) - set([6, 8]))
+    seeds = list(set(seeds) - set([6]))
     root_path = '../../releaseTests/road/beta3/'
     #root_path = '../../last_Beta3/'
-    # root_path = '../../last_Beta3/'
+    root_path = '../../old_last_Beta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     # beta_list = [0.0, 0.05]
     batch_size = 5
@@ -213,6 +213,7 @@ def GetRoadTotalRewards():
 if __name__ == "__main__":
 
     GetRoadBeta3Rewards()
+
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
 
