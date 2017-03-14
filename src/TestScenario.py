@@ -45,6 +45,33 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
                             num_samples=num_samples, batch_size=batch_size)
 
 
+def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, num_samples, batch_size, filename=None):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    assert filename is not None
+    m = GenerateModelFromFile(filename)
+    h = 4
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "anytime_h" + str(h) + "/",
+                            num_samples=num_samples, batch_size=batch_size)
+
+    testWithFixedParameters(model=m, method=Methods.MLE, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "mle_h" + str(h) + "/",
+                            num_samples=num_samples, batch_size=batch_size)
+
+
+
+
+
 def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
     result_graphs = []
 
