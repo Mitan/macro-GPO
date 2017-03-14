@@ -118,10 +118,17 @@ def GenerateRoadMacroActions(current_state, batch_size):
 # print batch_road_macroactions
 
 print GenerateRoadMacroActions((1,0), 3)
-"""
+
 
 
 m = GenerateRoadModelFromFile(filename)
 locs = m.locations
 for loc in locs:
     print loc, m.GenerateRoadMacroActions(tuple(loc), 2)
+"""
+mean = [0, 0]
+cov = [[1, 0], [0, 100]]  # diagonal covariance
+
+samples = np.random.multivariate_normal(mean, cov, 6)
+print samples
+print np.array([mean])

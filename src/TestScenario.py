@@ -57,17 +57,18 @@ def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, num_samples,
     assert filename is not None
     m = GenerateModelFromFile(filename)
     h = 4
+    # h = 2
 
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "anytime_h" + str(h) + "/",
+                            save_folder=save_folder + "new_anytime_h" + str(h) + "/",
                             num_samples=num_samples, batch_size=batch_size)
-
+    """
     testWithFixedParameters(model=m, method=Methods.MLE, horizon=h,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "mle_h" + str(h) + "/",
                             num_samples=num_samples, batch_size=batch_size)
-
+    """
 
 
 
