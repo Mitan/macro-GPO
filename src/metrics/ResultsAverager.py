@@ -118,10 +118,12 @@ def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
+    root_path = '../../4anytime/'
     methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI', 'pe']
+    methods = ['anytime_h4']
     method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI', 'BUCB-PE']
 
-    output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/test_simulated_total_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file)
@@ -211,12 +213,12 @@ def GetRoadTotalRewards():
 
 
 if __name__ == "__main__":
-
+    """
     GetRoadBeta3Rewards()
-
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
 
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
+    """
     GetSimulatedTotalRewards()
