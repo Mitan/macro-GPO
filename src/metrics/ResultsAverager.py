@@ -119,9 +119,9 @@ def GetSimulatedTotalRewards():
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     # root_path = '../../4anytime/'
-    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'mle_h4', 'qEI', 'pe']
+    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h4', 'qEI', 'pe']
     # methods = ['anytime_h4']
-    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'MLE H = 4', 'qEI', 'BUCB-PE']
+    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime H = 3', 'MLE H = 4', 'qEI', 'BUCB-PE']
 
     output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
 
