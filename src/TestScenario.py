@@ -5,6 +5,43 @@ from MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
 
 
+def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    m = GenerateRoadModelFromFile(filename)
+    m.LoadSelectedMacroactions(save_folder, batch_size)
+
+    start_location = m.LoadRandomLocation(save_folder)
+
+    h = 4
+
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+
+    mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=h,
+                                 num_timesteps_test=time_steps,
+                                 save_folder=save_folder + "mle_h" + str(h) + "/",
+                                 num_samples=num_samples, batch_size=batch_size,
+                                 start_location=start_location)
+
+    method_name = 'MLE H = ' + str(h)
+
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(mle) + '\n')
+    output_rewards.close()
+
+
 def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 

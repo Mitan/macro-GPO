@@ -56,7 +56,7 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward= True, isRoad=True)
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, isRoad=True)
 
 
 def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename):
@@ -118,12 +118,12 @@ def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
-    root_path = '../../4anytime/'
-    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI', 'pe']
-    methods = ['anytime_h4']
-    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI', 'BUCB-PE']
+    # root_path = '../../4anytime/'
+    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'mle_h4', 'qEI', 'pe']
+    # methods = ['anytime_h4']
+    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'MLE H = 4', 'qEI', 'BUCB-PE']
 
-    output_file = '../../result_graphs/eps/test_simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file)
@@ -141,7 +141,7 @@ def GetSimulatedBeta2Rewards():
     output_file = '../../result_graphs/eps/simulated_beta2_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds,  output_filename=output_file)
+                     seeds=seeds, output_filename=output_file)
 
 
 def GetSimulatedBeta3Rewards():
@@ -156,7 +156,7 @@ def GetSimulatedBeta3Rewards():
     output_file = '../../result_graphs/eps/simulated_beta3_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds,  output_filename=output_file)
+                     seeds=seeds, output_filename=output_file)
 
 
 ####### Road ########
@@ -181,7 +181,7 @@ def GetRoadBeta3Rewards():
     seeds = list(set(seeds) - set([6, 8]))
     seeds = list(set(seeds) - set([6]))
     root_path = '../../releaseTests/road/beta3/'
-    #root_path = '../../last_Beta3/'
+    # root_path = '../../last_Beta3/'
     root_path = '../../old_last_Beta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     # beta_list = [0.0, 0.05]
@@ -201,8 +201,9 @@ def GetRoadTotalRewards():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h3', 'qEI', 'pe']
-    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4', 'MLE H = 3', 'qEI', 'BUCB-PE']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'pe']
+    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4', 'MLE H = 4', 'qEI',
+                    'BUCB-PE']
 
     root_path = '../../releaseTests/road/b5-18-log/'
 
@@ -213,12 +214,11 @@ def GetRoadTotalRewards():
 
 
 if __name__ == "__main__":
-    """
-    GetRoadBeta3Rewards()
-    GetRoadBeta2Rewards()
+    #GetRoadBeta3Rewards()
+    #GetRoadBeta2Rewards()
     GetRoadTotalRewards()
 
-    GetSimulatedBeta2Rewards()
-    GetSimulatedBeta3Rewards()
-    """
+    #GetSimulatedBeta2Rewards()
+    #GetSimulatedBeta3Rewards()
+
     GetSimulatedTotalRewards()
