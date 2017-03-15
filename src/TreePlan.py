@@ -496,7 +496,7 @@ class TreePlan:
             lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
-            if counter > 1200:
+            if counter > 5000:
                 break
         # TODO: Set action selection scheme
         # Current: Selection based on the action with the highest average bound
