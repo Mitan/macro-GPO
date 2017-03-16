@@ -300,9 +300,11 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
     m = GenerateRoadModelFromFile(filename)
 
     # todo note
-    m.SelectMacroActions(batch_size, save_folder)
+    # m.SelectMacroActions(batch_size, save_folder)
+    m.LoadSelectedMacroactions(save_folder, batch_size)
 
-    start_location = m.GetRandomStartLocation(batch_size=batch_size)
+    # start_location = m.GetRandomStartLocation(batch_size=batch_size)
+    start_location = m.LoadRandomLocation(save_folder)
 
     with  open(save_folder + "start_location.txt", 'w') as f:
         f.write(str(start_location[0]) + " " + str(start_location[1]))
