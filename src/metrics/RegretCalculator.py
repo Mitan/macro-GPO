@@ -122,8 +122,8 @@ def GetRoadTotalRegrets():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h3', 'qEI', 'pe']
-    method_names = ['Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4', 'MLE H = 3', 'qEI', 'BUCB-PE']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'pe']
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
     output_file = '../../result_graphs/eps/road_simple_regrets.eps'
     root_path = '../../releaseTests/road/b5-18-log/'
@@ -136,8 +136,9 @@ def GetSimulatedTotalRegrets():
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
-    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
-    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
+
+    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h4', 'qEI', 'pe']
+    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
     output_file = '../../result_graphs/eps/simulated_simple_regrets.eps'
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
