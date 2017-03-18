@@ -459,7 +459,7 @@ class TreePlan:
         return avg
     """
 
-    def AnytimeAlgorithm(self, epsilon, x_0, H, max_nodes=10 ** 15):
+    def AnytimeAlgorithm(self, epsilon, x_0, H, iterations, max_nodes=10 ** 15):
         print "Preprocessing weight spaces..."
 
         # by default physical state length is self.batch_size
@@ -496,7 +496,7 @@ class TreePlan:
             lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
-            if counter > 5000:
+            if counter > iterations:
                 break
         # TODO: Set action selection scheme
         # Current: Selection based on the action with the highest average bound

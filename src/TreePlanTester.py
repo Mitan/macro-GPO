@@ -111,7 +111,7 @@ class TreePlanTester:
         self.past_measurements = np.apply_along_axis(self.model, 1, past_locations)
 
     def Test(self, num_timesteps_test, method, num_samples, visualize=False, action_set=None, save_per_step=True,
-             save_folder="default_results/", MCTSMaxNodes=10 ** 15):
+             save_folder="default_results/", MCTSMaxNodes=10 ** 15, anytime_iterations=None):
 
         # history includes currrent state
         x_0 = AugmentedState(self.initial_physical_state,
@@ -145,7 +145,7 @@ class TreePlanTester:
             if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
                 bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon,
-                                                                max_nodes=MCTSMaxNodes)
+                                                                max_nodes=MCTSMaxNodes, iterations=anytime_iterations)
                 # make a transition
                 # a = tp.TransitionP(x_0, a)
 
@@ -286,9 +286,9 @@ class TreePlanTester:
 
 # todo check noise variance
 def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samples, batch_size, grid_gap_=0.05,
-                            epsilon_=5.0,
+                            epsilon_=1.0,
                             save_folder=None, save_per_step=True,
-                            action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
+                            action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0, anytime_iterations=None):
     """
     Assume a map size of [0, 1] for both axes
     """
@@ -325,7 +325,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     return TPT.Test(num_timesteps_test=num_timesteps_test, visualize=False,
                     save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
-                    num_samples=num_samples)
+                    num_samples=num_samples, anytime_iterations=anytime_iterations)
 
 
 """

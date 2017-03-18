@@ -45,7 +45,7 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
                             num_samples=num_samples, batch_size=batch_size)
 
 
-def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, num_samples, batch_size, filename=None):
+def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, batch_size, filename=None):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -60,8 +60,108 @@ def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, num_samples,
 
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "new_anytime_h" + str(h) + "/",
-                            num_samples=num_samples, batch_size=batch_size)
+                            save_folder=save_folder + "s150_750_anytime_h" + str(h) + "/",
+                            num_samples=150, batch_size=batch_size, anytime_iterations=750)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s200_750_anytime_h" + str(h) + "/",
+                            num_samples=200, batch_size=batch_size, anytime_iterations=750)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s250_750_anytime_h" + str(h) + "/",
+                            num_samples=250, batch_size=batch_size, anytime_iterations=750)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s300_750_anytime_h" + str(h) + "/",
+                            num_samples=300, batch_size=batch_size, anytime_iterations=750)
+    # 1000
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s150_1000_anytime_h" + str(h) + "/",
+                            num_samples=150, batch_size=batch_size, anytime_iterations=1000)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s200_1000_anytime_h" + str(h) + "/",
+                            num_samples=200, batch_size=batch_size, anytime_iterations=1000)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s250_1000_anytime_h" + str(h) + "/",
+                            num_samples=250, batch_size=batch_size, anytime_iterations=1000)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s300_1000_anytime_h" + str(h) + "/",
+                            num_samples=300, batch_size=batch_size, anytime_iterations=1000)
+
+    # 1200
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s150_1200_anytime_h" + str(h) + "/",
+                            num_samples=150, batch_size=batch_size, anytime_iterations=1200)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s200_1200_anytime_h" + str(h) + "/",
+                            num_samples=200, batch_size=batch_size, anytime_iterations=1200)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s250_1200_anytime_h" + str(h) + "/",
+                            num_samples=250, batch_size=batch_size, anytime_iterations=1200)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s300_1200_anytime_h" + str(h) + "/",
+                            num_samples=300, batch_size=batch_size, anytime_iterations=1200)
+
+    # 1500
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s150_1500_anytime_h" + str(h) + "/",
+                            num_samples=150, batch_size=batch_size, anytime_iterations=1500)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s200_1500_anytime_h" + str(h) + "/",
+                            num_samples=200, batch_size=batch_size, anytime_iterations=1500)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s250_1500_anytime_h" + str(h) + "/",
+                            num_samples=250, batch_size=batch_size, anytime_iterations=1500)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s300_1500_anytime_h" + str(h) + "/",
+                            num_samples=300, batch_size=batch_size, anytime_iterations=1500)
+
+    # 2000
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s150_2000_anytime_h" + str(h) + "/",
+                            num_samples=150, batch_size=batch_size, anytime_iterations=2000)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s200_2000_anytime_h" + str(h) + "/",
+                            num_samples=200, batch_size=batch_size, anytime_iterations=2000)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s250_2000_anytime_h" + str(h) + "/",
+                            num_samples=250, batch_size=batch_size, anytime_iterations=2000)
+
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s300_2000_anytime_h" + str(h) + "/",
+                            num_samples=300, batch_size=batch_size, anytime_iterations=2000)
 
     """
     testWithFixedParameters(model=m, method=Methods.MLE, horizon=h,
@@ -69,9 +169,6 @@ def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, num_samples,
                             save_folder=save_folder + "mle_h" + str(h) + "/",
                             num_samples=num_samples, batch_size=batch_size)
     """
-
-
-
 
 
 def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
