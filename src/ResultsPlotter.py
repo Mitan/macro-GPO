@@ -52,12 +52,15 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
         # previous version with small filled markers
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])
 
+        marker_index = i if i < 8 else 0
+
         # dirty hack to make it unfilled
-        plt.plot(time_steps, rewards, lw=1.0, marker=markers[i], markersize=15, markerfacecolor="None",
+        plt.plot(time_steps, rewards, lw=1.0, marker=markers[marker_index], markersize=15, markerfacecolor="None",
                  markeredgewidth=1, markeredgecolor=color_sequence[i], color=color_sequence[i])
 
         # patch = mpatches.Patch(color=color_sequence[i], label=name)
-        patch = mlines.Line2D([], [], color=color_sequence[i], marker=markers[i], markerfacecolor="None",
+
+        patch = mlines.Line2D([], [], color=color_sequence[i], marker=markers[marker_index], markerfacecolor="None",
                               markeredgewidth=1, markeredgecolor=color_sequence[i], markersize=10, label=name)
 
         handles.append(patch)

@@ -119,10 +119,27 @@ def GetSimulatedTotalRewards():
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
 
+
     methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h4', 'qEI', 'pe']
+
     method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 3$',  r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
     output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
+
+    methods = ['s150_750_anytime_h4', 's200_750_anytime_h4', 's250_750_anytime_h4', 's300_750_anytime_h4',
+               's150_1000_anytime_h4', 's200_1000_anytime_h4', 's250_1000_anytime_h4', 's300_1000_anytime_h4',
+               's150_1200_anytime_h4', 's200_1200_anytime_h4', 's250_1200_anytime_h4', 's300_1200_anytime_h4',
+               's150_1500_anytime_h4', 's200_1500_anytime_h4', 's250_1500_anytime_h4', 's300_1500_anytime_h4',
+               's150_2000_anytime_h4', 's200_2000_anytime_h4']
+
+
+    method_names = [r'$150-750$', r'$200-750$', r'$250-750$', r'$300-750$',
+                    r'$150-1000$', r'$200-1000$', r'$250-1000$', r'$300-1000$',
+                    r'$150-1200$', r'$200-1200$', r'$250-1200$', r'$300-1200$',
+                    r'$150-1500$', r'$200-1500$', r'$250-1500$', r'$300-1500$',
+                    r'$150-2000$', r'$200-2000$', r'$250-2000$', r'$300-2000$']
+    root_path = '../../5anytime/'
+    output_file = '../../result_graphs/eps/anytime.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file)
@@ -210,10 +227,12 @@ def GetRoadTotalRewards():
 
 
 if __name__ == "__main__":
+    """
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
 
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
+    """
     GetSimulatedTotalRewards()
