@@ -461,7 +461,7 @@ class TreePlan:
 
     def AnytimeAlgorithm(self, epsilon, x_0, H, iterations, max_nodes=10 ** 15):
         print "Preprocessing weight spaces..."
-
+        print "Anytime " + str(H)
         # by default physical state length is self.batch_size
         # but for the first step it is equal to 1, since it is just agent's position
 
@@ -480,7 +480,7 @@ class TreePlan:
         self.PreprocessLipchitz(root_node)
 
         # st, new_epsilon, l, nodes_expanded=self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,epsilon)
-        lamb = epsilon
+        lamb = 5.0
         print "lambda is " + str(lamb)
         # node d_0, where we have actions
         root_action_node = MCTSActionNode(x_0, root_node, self, lamb)
@@ -496,6 +496,7 @@ class TreePlan:
             lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
+            print counter, num_nodes_expanded
             if counter > iterations:
                 break
         # TODO: Set action selection scheme

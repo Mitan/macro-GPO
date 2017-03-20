@@ -4,7 +4,7 @@ from TestScenario import *
 
 if __name__ == '__main__':
 
-    my_save_folder_root = "../5anytime/"
+    my_save_folder_root = "../7anytime/"
 
     t = 5
 
@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     start = int(args[1])
 
-    for seed in range(start, start + 1):
+    for seed in range(start, start + 2):
         filename = my_save_folder_root + "seed" + str(seed) + "/dataset.txt"
         print seed
         TestScenario_AnytimeMLE4(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t,

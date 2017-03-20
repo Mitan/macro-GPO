@@ -60,6 +60,13 @@ def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, batch_size, 
 
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
                             num_timesteps_test=time_steps,
+                            save_folder=save_folder + "s250_10k_anytime_h" + str(h) + "/",
+                            num_samples=250, batch_size=batch_size, anytime_iterations=10000)
+
+    #####################
+    """
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
                             save_folder=save_folder + "s150_750_anytime_h" + str(h) + "/",
                             num_samples=150, batch_size=batch_size, anytime_iterations=750)
 
@@ -162,6 +169,7 @@ def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, batch_size, 
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "s300_2000_anytime_h" + str(h) + "/",
                             num_samples=300, batch_size=batch_size, anytime_iterations=2000)
+    """
 
     """
     testWithFixedParameters(model=m, method=Methods.MLE, horizon=h,
