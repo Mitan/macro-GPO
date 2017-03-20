@@ -138,7 +138,7 @@ def GetSimulatedTotalRewards():
                     r'$150-1200$', r'$200-1200$', r'$250-1200$', r'$300-1200$',
                     r'$150-1500$', r'$200-1500$', r'$250-1500$', r'$300-1500$',
                     r'$150-2000$', r'$200-2000$', r'$250-2000$', r'$300-2000$']
-    root_path = '../../5anytime/'
+    root_path = '../../6anytime/'
     output_file = '../../result_graphs/eps/anytime.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
