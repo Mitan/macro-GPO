@@ -6,7 +6,6 @@ from src.DatasetUtils import GetAllMeasurements, GetAccumulatedRewards, Generate
 
 
 def CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file):
-
     nodes_file = open(output_file, 'w')
 
     for index, method in enumerate(methods):
@@ -41,7 +40,7 @@ def ExpandedNodesSimulated():
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['anytime_h3']
     method_names = ['Anytime 3']
-    output_file =  '../../result_graphs/nodes_simulated.txt'
+    output_file = '../../result_graphs/nodes_simulated.txt'
     CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
 
 
@@ -56,6 +55,45 @@ def ExpandedNodesRoads():
     CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
 
 
+def CountExpandedNodesForSingleSeed(m, seed):
+    seed_folder = '../../releaseTests/road/b5-18-log/seed' + str(seed) + '/'
+    seed_file = seed_folder + 'h1/summary.txt'
+
+    all_summary_lines = open(seed_file).readlines()
+    location_lines = all_summary_lines[7: 28]
+    # for line in location_lines:
+    expanded_nodes = 0
+    for i in range(0, 20, 5):
+        string_numbers = location_lines[i].replace(',', ' ').replace('[', ' ').replace(']', ' ').split()
+        loc = map(float, string_numbers)
+        # print loc, len(m.GetSelectedMacroActions(loc))
+        expanded_nodes += len(m.GetSelectedMacroActions(loc))
+    return expanded_nodes
+
+
+def ExpandedNodesForH1():
+    seeds = range(35)
+    total_expanded_nodes = 0
+
+    filename = '../../datasets/slot18/tlog18.dom'
+    m = GenerateRoadModelFromFile(filename)
+
+    for seed in seeds:
+        seed_folder = '../../releaseTests/road/b5-18-log/seed' + str(seed) + '/'
+        m.LoadSelectedMacroactions(folder_name=seed_folder, batch_size=5)
+        current = CountExpandedNodesForSingleSeed(m, seed)
+        print current
+        total_expanded_nodes += current
+
+    average_nodes = float(total_expanded_nodes) / len(seeds)
+    print average_nodes
+    output_file = '../../result_graphs/nodes_road_h1.txt'
+    nodes_file = open(output_file, 'w')
+    nodes_file.write(str(average_nodes))
+    nodes_file.close()
+
+
 if __name__ == "__main__":
-    ExpandedNodesRoads()
-    ExpandedNodesSimulated()
+    # ExpandedNodesRoads()
+    # ExpandedNodesSimulated()
+    ExpandedNodesForH1()
