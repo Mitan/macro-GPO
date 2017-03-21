@@ -211,6 +211,40 @@ class TreePlan:
         return map(lambda x: np.atleast_2d(x), list(next_points))
 
 
+    def EI(self, x_0):
+
+        """
+        *Myopic* implementation of EI (Expected improvement)
+        """
+
+        best_observation = max(x_0.history.measurements)
+        best_action = None
+        best_expected_improv = 0.0
+
+        valid_actions = self.GetValidActionSet(x_0.physical_state)
+
+        for a in valid_actions:
+            x_next = self.TransitionP(x_0, a)
+
+            chol = self.gp.GPCholTraining(x_0.history.locations)
+            cov_query = self.gp.GPCovQuery(x_0.history.locations, x_next.physical_state)
+            weights = self.gp.GPWeights(x_0.history.locations, x_next.physical_state, chol, cov_query)
+            var = self.gp.GPVariance2(x_0.history.locations, x_next.physical_state, chol, cov_query)
+
+            sigma = math.sqrt(var)
+            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
+                                  weights=weights)
+
+            Z = (mean - best_observation) / sigma
+            expectedImprov = (mean - best_observation) * norm.cdf(x=Z, loc=0, scale=1.0) + sigma * norm.pdf(x=Z, loc=0,
+                                                                                                            scale=1.0)
+
+            if expectedImprov >= best_expected_improv:
+                best_expected_improv = expectedImprov
+                best_action = a
+
+        return best_expected_improv, best_action, len(valid_actions)
+
     def BUCB_PE(self, x_0):
 
         # valid_actions = self.GetValidActionSet(x_0.physical_state)
