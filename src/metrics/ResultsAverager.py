@@ -131,6 +131,7 @@ def GetSimulatedTotalRewards():
                's150_1200_anytime_h4', 's200_1200_anytime_h4', 's250_1200_anytime_h4', 's300_1200_anytime_h4',
                's150_1500_anytime_h4', 's200_1500_anytime_h4', 's250_1500_anytime_h4', 's300_1500_anytime_h4',
                's150_2000_anytime_h4', 's200_2000_anytime_h4']
+
     methods = ['s300_100k_anytime_h4']
 
     method_names = [r'$150-750$', r'$200-750$', r'$250-750$', r'$300-750$',

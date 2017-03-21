@@ -88,6 +88,43 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
     output_rewards.close()
 
 
+def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    m = GenerateRoadModelFromFile(filename)
+    m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
+
+    start_location = m.LoadRandomLocation(save_folder)
+
+    h = 2
+
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+
+    h2 = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
+                                 num_timesteps_test=time_steps,
+                                 save_folder=save_folder + "anytime_h" + str(h) + "_full/",
+                                 num_samples=num_samples, batch_size=batch_size,
+                                 start_location=start_location)
+
+    method_name = 'Anytime Full H = ' + str(h)
+
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(h2) + '\n')
+    output_rewards.close()
+
+
 def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
@@ -99,6 +136,7 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
 
     m = GenerateRoadModelFromFile(filename)
     m.LoadSelectedMacroactions(save_folder, batch_size)
+    # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
 
     start_location = m.LoadRandomLocation(save_folder)
 
