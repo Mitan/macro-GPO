@@ -102,12 +102,19 @@ class RoadMapValueDict(MapValueDict):
                 for state in self.___ExpandActions(start + [next_node], batch_size):
                     yield state
 
-    def SelectMacroActions(self, batch_size, folder_name):
+    def SelectMacroActions(self, batch_size, folder_name, select_all=False):
         self.selected_actions_dict = {}
+
         treshhold = 20
         actions_file  = open(folder_name + 'actions_selected.txt', 'w')
+
         for loc in self.locations:
             all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)
+
+            if select_all:
+                self.selected_actions_dict[tuple(loc)] = all_macro_actions
+                continue
+
             length = len(all_macro_actions)
 
             if length == 0:
