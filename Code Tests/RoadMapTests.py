@@ -25,7 +25,7 @@ def IterateOverMacroActions(batch_size):
             # print loc, length
             count += 1
     print count, max, sum / count
-
+    """
     print "Selecting macroactions"
     m.SelectMacroActions(batch_size)
     sum = 0.0
@@ -42,6 +42,7 @@ def IterateOverMacroActions(batch_size):
             # print loc, length
             count += 1
     print count, max, sum / count
+    """
 
 
 
@@ -122,14 +123,14 @@ def LoadActionsFromFileTest(folder_name, batch_size):
 
 
 if __name__ == '__main__':
-    # IterateOverMacroActions(4)
+    IterateOverMacroActions(1)
     # NewDatasetTest()
     # GenerateMacroActionsFromeFile()
     # CheckNeighboursTest()
     # print GetMacroActionsOfLocation([29.0, 6.0], 4)
     # LogTransformTest()
     # HistTests()
-    LoadActionsFromFileTest('./', 4)
+    # LoadActionsFromFileTest('./', 4)
     """
     filename = '../src/taxi18.dom'
     m = GenerateRoadModelFromFile(filename)

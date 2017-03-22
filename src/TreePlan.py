@@ -215,7 +215,6 @@ class TreePlan:
     def EI(self, x_0):
 
         best_observation = max(x_0.history.measurements)
-        print "best " + str(best_observation)
 
         next_states = self.GetNextAugmentedStates(x_0)
 
@@ -228,16 +227,13 @@ class TreePlan:
         for x_next in next_states:
 
             next_physical_state = x_next.physical_state
-            print "next state " + str(next_physical_state)
             var = self.gp.GPVariance(locations=current_locations, current_location=next_physical_state,
                                      cholesky=current_chol)
-            print "var " + str(var)
             sigma = math.sqrt(var[0, 0])
 
             weights = self.gp.GPWeights(locations=current_locations, current_location=next_physical_state,
                                         cholesky=current_chol)
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)[0]
-            print "mu " + str(mu)
 
             Z = (mu - best_observation) / sigma
             expectedImprov = (mu - best_observation) * norm.cdf(x=Z, loc=0, scale=1.0) + sigma * norm.pdf(x=Z, loc=0,
@@ -246,7 +242,7 @@ class TreePlan:
                 vBest = expectedImprov
                 xBest = x_next
 
-        return vBest, xBest
+        return vBest, xBest, -1
 
     def BUCB_PE(self, x_0):
 
