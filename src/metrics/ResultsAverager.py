@@ -217,6 +217,7 @@ def GetRoadTotalRewards():
     batch_size = 5
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'pe']
+
     method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
     root_path = '../../releaseTests/road/b5-18-log/'
@@ -227,6 +228,21 @@ def GetRoadTotalRewards():
                 seeds=seeds, output_filename=output_file)
 
 
+def GetRoad_H2Full_TotalRewards():
+    seeds = range(35)
+    seeds = list(set(seeds) - set([5,22,34]))
+    batch_size = 5
+
+    methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
+    method_names = [ r'$H^* = 2$ (all)', r'$H^* = 2$', r'$H^* = 4$']
+
+    root_path = '../../releaseTests/road/tests2full/'
+
+    output_file = '../../result_graphs/eps/h2_full_total_rewards.eps'
+
+    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file)
+
 if __name__ == "__main__":
     """
     GetRoadBeta3Rewards()
@@ -235,5 +251,7 @@ if __name__ == "__main__":
 
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
-    """
     GetSimulatedTotalRewards()
+    """
+
+    GetRoad_H2Full_TotalRewards()
