@@ -210,18 +210,33 @@ class TreePlan:
         next_points = set(next_points_tuples)
         return map(lambda x: np.atleast_2d(x), list(next_points))
 
-
+    """
     def EI(self, x_0):
-
-        """
-        *Myopic* implementation of EI (Expected improvement)
-        """
 
         best_observation = max(x_0.history.measurements)
         best_action = None
         best_expected_improv = 0.0
 
         valid_actions = self.GetValidActionSet(x_0.physical_state)
+
+        next_states = self.GetNextAugmentedStates(x)
+
+        vBest = -float("inf")
+        xBest = next_states[0]
+        for x_next in next_states:
+
+            # x_next = self.TransitionP(x, a)
+            # go down the semitree node
+            next_physical_state = x_next.physical_state
+            new_st = st.children[ToTuple(next_physical_state)]
+
+            # Reward is just the mean added to a multiple of the variance at that point
+
+            mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
+
+            # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state, weights=new_st.weights)
+            var = new_st.variance
+
 
         for a in valid_actions:
             x_next = self.TransitionP(x_0, a)
@@ -243,7 +258,8 @@ class TreePlan:
                 best_expected_improv = expectedImprov
                 best_action = a
 
-        return best_expected_improv, best_action, len(valid_actions)
+        return vBest, xBest
+    """
 
     def BUCB_PE(self, x_0):
 
@@ -277,7 +293,8 @@ class TreePlan:
                                         cholesky=current_chol)
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
 
-            predicted_val = mu[0] + beta_0 * Sigma[0, 0]
+            #predicted_val = mu[0] + beta_0 * Sigma[0, 0]
+            predicted_val = mu[0] + beta_0 * math.sqrt(Sigma[0, 0])
             if predicted_val > best_current_measurement:
                 best_current_measurement = predicted_val
                 best_current_point = first_point

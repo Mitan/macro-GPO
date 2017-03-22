@@ -63,7 +63,7 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
         append_write = 'w'
 
     output_rewards = open(filename_rewards, append_write)
-
+    """
     qEI = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.qEI, horizon=1,
                                   num_timesteps_test=time_steps,
                                   save_folder=save_folder + "newqEI/",
@@ -76,15 +76,15 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
     """
     PE = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
                                  num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "pe/",
+                                 save_folder=save_folder + "new_pe/",
                                  num_samples=num_samples, batch_size=batch_size,
                                  start_location=start_location)
 
-    method_name = 'BUCB-PE'
+    method_name = 'NEW-BUCB-PE'
 
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(PE) + '\n')
-    """
+
     output_rewards.close()
 
 
