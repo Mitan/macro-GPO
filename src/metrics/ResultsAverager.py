@@ -216,7 +216,7 @@ def GetRoadTotalRewards():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'pe']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI',  'new_pe']
 
     method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
@@ -244,7 +244,7 @@ def GetRoad_H2Full_TotalRewards():
                 seeds=seeds, output_filename=output_file)
 
 if __name__ == "__main__":
-    """
+
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
@@ -252,6 +252,7 @@ if __name__ == "__main__":
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
-    """
 
-    GetRoad_H2Full_TotalRewards()
+    GetRoadTotalRewards()
+
+    # GetRoad_H2Full_TotalRewards()

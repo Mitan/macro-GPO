@@ -122,7 +122,7 @@ def GetRoadTotalRegrets():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'pe']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
     method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
     output_file = '../../result_graphs/eps/road_simple_regrets.eps'

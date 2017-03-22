@@ -26,7 +26,7 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
     if not results:
         return
     color_sequence = ['red', 'green', 'blue', '#e377c2', '#17becf', 'orange',
-                      '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#7f7f7f',
+                       '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#7f7f7f',
                       '#8c564b', '#c49c94', '#7f7f7f',
                       '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5', 'yellow']
 
