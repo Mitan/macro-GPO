@@ -105,6 +105,9 @@ class TreePlanTester:
             elif method == Methods.qEI:
                 vBest, x_temp, nodes_expanded = tp.qEI(x_0)
 
+            elif method == Methods.EI:
+                vBest, x_temp, nodes_expanded = tp.EI(x_0)
+
             else:
                 raise Exception("Unknown method type")
 

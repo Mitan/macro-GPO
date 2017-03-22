@@ -3,6 +3,8 @@ import gc
 import math
 
 import numpy as np
+from scipy.stats import norm
+
 from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
 from SampleFunctionBuilder import GetNumberOfSamples
@@ -210,56 +212,41 @@ class TreePlan:
         next_points = set(next_points_tuples)
         return map(lambda x: np.atleast_2d(x), list(next_points))
 
-    """
     def EI(self, x_0):
 
         best_observation = max(x_0.history.measurements)
-        best_action = None
-        best_expected_improv = 0.0
+        print "best " + str(best_observation)
 
-        valid_actions = self.GetValidActionSet(x_0.physical_state)
+        next_states = self.GetNextAugmentedStates(x_0)
 
-        next_states = self.GetNextAugmentedStates(x)
-
-        vBest = -float("inf")
+        vBest = 0.0
         xBest = next_states[0]
+
+        current_locations = x_0.history.locations
+        current_chol = self.gp.Cholesky(x_0.history.locations)
+
         for x_next in next_states:
 
-            # x_next = self.TransitionP(x, a)
-            # go down the semitree node
             next_physical_state = x_next.physical_state
-            new_st = st.children[ToTuple(next_physical_state)]
+            print "next state " + str(next_physical_state)
+            var = self.gp.GPVariance(locations=current_locations, current_location=next_physical_state,
+                                     cholesky=current_chol)
+            print "var " + str(var)
+            sigma = math.sqrt(var[0, 0])
 
-            # Reward is just the mean added to a multiple of the variance at that point
+            weights = self.gp.GPWeights(locations=current_locations, current_location=next_physical_state,
+                                        cholesky=current_chol)
+            mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)[0]
+            print "mu " + str(mu)
 
-            mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
-
-            # mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state, weights=new_st.weights)
-            var = new_st.variance
-
-
-        for a in valid_actions:
-            x_next = self.TransitionP(x_0, a)
-
-            chol = self.gp.GPCholTraining(x_0.history.locations)
-            cov_query = self.gp.GPCovQuery(x_0.history.locations, x_next.physical_state)
-            weights = self.gp.GPWeights(x_0.history.locations, x_next.physical_state, chol, cov_query)
-            var = self.gp.GPVariance2(x_0.history.locations, x_next.physical_state, chol, cov_query)
-
-            sigma = math.sqrt(var)
-            mean = self.gp.GPMean(x_next.history.locations, x_next.history.measurements, x_next.physical_state,
-                                  weights=weights)
-
-            Z = (mean - best_observation) / sigma
-            expectedImprov = (mean - best_observation) * norm.cdf(x=Z, loc=0, scale=1.0) + sigma * norm.pdf(x=Z, loc=0,
-                                                                                                            scale=1.0)
-
-            if expectedImprov >= best_expected_improv:
-                best_expected_improv = expectedImprov
-                best_action = a
+            Z = (mu - best_observation) / sigma
+            expectedImprov = (mu - best_observation) * norm.cdf(x=Z, loc=0, scale=1.0) + sigma * norm.pdf(x=Z, loc=0,
+                                                                                                          scale=1.0)
+            if expectedImprov >= vBest:
+                vBest = expectedImprov
+                xBest = x_next
 
         return vBest, xBest
-    """
 
     def BUCB_PE(self, x_0):
 
@@ -293,7 +280,7 @@ class TreePlan:
                                         cholesky=current_chol)
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
 
-            #predicted_val = mu[0] + beta_0 * Sigma[0, 0]
+            # predicted_val = mu[0] + beta_0 * Sigma[0, 0]
             predicted_val = mu[0] + beta_0 * math.sqrt(Sigma[0, 0])
             if predicted_val > best_current_measurement:
                 best_current_measurement = predicted_val
@@ -312,7 +299,7 @@ class TreePlan:
             current_locations = np.append(current_locations, best_current_point, axis=0)
             current_chol = self.gp.Cholesky(current_locations)
 
-            current_points  = self.GetSetOfNextPoints(available_states, num_steps)
+            current_points = self.GetSetOfNextPoints(available_states, num_steps)
 
             best_current_point = None
             best_current_sigma = - float("inf")

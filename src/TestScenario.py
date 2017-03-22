@@ -30,10 +30,10 @@ def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_s
     output_rewards = open(filename_rewards, append_write)
 
     mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=h,
-                                 num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "mle_h" + str(h) + "/",
-                                 num_samples=num_samples, batch_size=batch_size,
-                                 start_location=start_location)
+                                  num_timesteps_test=time_steps,
+                                  save_folder=save_folder + "mle_h" + str(h) + "/",
+                                  num_samples=num_samples, batch_size=batch_size,
+                                  start_location=start_location)
 
     method_name = 'MLE H = ' + str(h)
 
@@ -86,6 +86,29 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
     output_rewards.write(str(PE) + '\n')
 
     output_rewards.close()
+
+
+def TestScenario_EI(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    m = GenerateRoadModelFromFile(filename)
+    m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
+
+    start_location = m.LoadRandomLocation(save_folder)
+
+    h = -1
+
+    testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.EI, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "ei/",
+                            num_samples=num_samples, batch_size=batch_size,
+                            start_location=start_location)
 
 
 def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
