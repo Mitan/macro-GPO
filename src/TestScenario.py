@@ -88,7 +88,7 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
     output_rewards.close()
 
 
-def TestScenario_EI(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
+def TestScenario_EI_PI(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -104,11 +104,18 @@ def TestScenario_EI(my_save_folder_root, seed, time_steps, num_samples, batch_si
 
     h = -1
 
+    testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.PI, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "pi/",
+                            num_samples=num_samples, batch_size=batch_size,
+                            start_location=start_location)
+    """
     testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.EI, horizon=h,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "ei/",
                             num_samples=num_samples, batch_size=batch_size,
                             start_location=start_location)
+    """
 
 
 def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
