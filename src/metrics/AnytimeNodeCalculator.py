@@ -54,6 +54,16 @@ def ExpandedNodesRoads():
     output_file = '../../result_graphs/nodes_roads.txt'
     CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
 
+def ExpandedNodesRoads_H2Full():
+    seeds = range(35)
+
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
+    method_names = ['Anytime H = 2 Full', 'Anytime H = 2', 'Anytime H = 4']
+
+    root_path = '../../releaseTests/road/tests2full/'
+    output_file = '../../result_graphs/nodes_roads_h2_full.txt'
+    CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
+
 
 def CountExpandedNodesForSingleSeed(m, seed):
     seed_folder = '../../releaseTests/road/b5-18-log/seed' + str(seed) + '/'
@@ -96,4 +106,5 @@ def ExpandedNodesForH1():
 if __name__ == "__main__":
     # ExpandedNodesRoads()
     # ExpandedNodesSimulated()
-    ExpandedNodesForH1()
+    #ExpandedNodesForH1()
+    ExpandedNodesRoads_H2Full()
