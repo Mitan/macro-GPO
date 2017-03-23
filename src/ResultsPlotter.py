@@ -25,6 +25,11 @@ def ParseName(method_name):
 def PlotData(results, isRoad,  output_file_name, isTotalReward):
     if not results:
         return
+
+
+    # 0 is width, 1 is height
+    plt.rcParams["figure.figsize"] = [6, 9]
+
     color_sequence = ['red', 'green', 'blue', '#e377c2', '#17becf', 'orange',
                        '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#7f7f7f',
                       '#8c564b', '#c49c94', '#7f7f7f',
