@@ -212,8 +212,6 @@ class TreePlan:
         next_points = set(next_points_tuples)
         return map(lambda x: np.atleast_2d(x), list(next_points))
 
-
-
     def PI(self, x_0):
 
         best_observation = max(x_0.history.measurements)
@@ -240,8 +238,8 @@ class TreePlan:
             Z = (mu - best_observation) / sigma
 
             probImprovement = norm.cdf(x=Z, loc=0, scale=1.0)
-            assert probImprovement == 1.0 - norm.cdf(x=best_observation, loc=mu, scale=sigma)
-
+            # probImprovement = 1.0 - norm.cdf(x=best_observation, loc=mu, scale=sigma)
+            
             if probImprovement >= vBest:
                 vBest = probImprovement
                 xBest = x_next
