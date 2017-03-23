@@ -137,11 +137,11 @@ def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch
 
     h2 = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
                                  num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "anytime_h" + str(h) + "_full/",
+                                 save_folder=save_folder + "anytime_h" + str(h) + "_full_2121/",
                                  num_samples=num_samples, batch_size=batch_size,
                                  start_location=start_location)
 
-    method_name = 'Anytime Full H = ' + str(h)
+    method_name = 'Anytime Full 21 H = ' + str(h)
 
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(h2) + '\n')

@@ -230,17 +230,20 @@ def GetRoadTotalRewards():
 
 def GetRoad_H2Full_TotalRewards():
     seeds = range(35)
-    seeds = list(set(seeds) - set([22]))
-    batch_size = 1
+    seeds = list(set(seeds) - set([27,  1]))
+    batch_size = 5
 
     methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
-    methods = ['ei']
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
+    #methods = ['anytime_h2_full_2121']
+    #methods = ['ei']
     method_names = [ r'$H^* = 2$ (all)', r'$H^* = 2$', r'$H^* = 4$']
 
     root_path = '../../releaseTests/road/tests2full/'
+    #root_path = '../../21testsfull/'
 
     output_file = '../../result_graphs/eps/h2_full_total_rewards.eps'
-    output_file = '../../result_graphs/eps/test_h2_full_total_rewards.eps'
+    #output_file = '../../result_graphs/eps/test_h2_full_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file)
