@@ -328,7 +328,7 @@ class TreePlan:
                                         cholesky=current_chol)
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
 
-            predicted_val = mu[0] + beta_0 * Sigma[0, 0]
+            predicted_val = mu[0] + beta_0 * math.sqrt(Sigma[0, 0])
             if predicted_val > best_current_measurement:
                 best_current_measurement = predicted_val
                 best_current_point = first_point

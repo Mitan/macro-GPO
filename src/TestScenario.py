@@ -23,7 +23,7 @@ def TestScenario_PE(my_save_folder_root, seed, time_steps, num_samples, batch_si
     m = GenerateModelFromFile(filename)
     testWithFixedParameters(model=m, method=Methods.BUCB_PE, horizon=1,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "pe/",
+                            save_folder=save_folder + "new_pe/",
                             num_samples=num_samples, batch_size=batch_size)
 
 

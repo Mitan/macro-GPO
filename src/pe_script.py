@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     args = sys.argv
 
-    start = 76
+    start = 66
     end = 102
 
     for seed in range(start, end):
