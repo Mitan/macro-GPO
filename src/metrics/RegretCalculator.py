@@ -5,6 +5,25 @@ from src.DatasetUtils import GenerateRoadModelFromFile, GetAllMeasurements, GetM
 from src.ResultsPlotter import PlotData
 
 
+def GetRoadResultsForMethod(seeds, batch_size, method, root_path, model_max):
+    len_seeds = len(seeds)
+    steps = 20 / batch_size
+    # +1 for initial stage
+    results_for_method = np.zeros((steps + 1,))
+
+    for seed in seeds:
+        seed_folder = root_path + 'seed' + str(seed) + '/'
+        measurements = GetAllMeasurements(seed_folder, method, batch_size)
+        max_found_values = GetMaxValues(measurements, batch_size)
+        assert max_found_values.shape == results_for_method.shape
+
+        results_for_method = np.add(results_for_method, max_found_values)
+
+    results_for_method = results_for_method / len_seeds
+    regrets = [model_max - res for res in results_for_method.tolist()]
+    return regrets
+    # result = [method_names[index], regrets]
+
 def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename):
     """
     root_path = '../../releaseTests/road/b5-18-log/'
@@ -14,8 +33,7 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
     methods = ['qEI', 'h1', 'anytime_h2', 'anytime_h3', 'mle_h3']
     method_names = ['qEI', 'Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3']
     """
-    len_seeds = len(seeds)
-    steps = 20 / batch_size
+
 
     dataset_file_name = '../../datasets/slot18/tlog18.dom'
     m = GenerateRoadModelFromFile(dataset_file_name)
@@ -25,20 +43,9 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
 
     # for every method
     for index, method in enumerate(methods):
-
-        # +1 for initial stage
-        results_for_method = np.zeros((steps + 1,))
-
-        for seed in seeds:
-            seed_folder = root_path + 'seed' + str(seed) + '/'
-            measurements = GetAllMeasurements(seed_folder, method, batch_size)
-            max_found_values = GetMaxValues(measurements, batch_size)
-            assert max_found_values.shape == results_for_method.shape
-
-            results_for_method = np.add(results_for_method, max_found_values)
-
-        results_for_method = results_for_method / len_seeds
-        regrets = [model_max - res for res in results_for_method.tolist()]
+        # todo hack
+        adjusted_batch_size = 1 if method == 'ei' else batch_size
+        regrets = GetRoadResultsForMethod(seeds, adjusted_batch_size, method, root_path, model_max)
         result = [method_names[index], regrets]
         results.append(result)
         print result
@@ -129,6 +136,18 @@ def GetRoadTotalRegrets():
     root_path = '../../releaseTests/road/b5-18-log/'
     RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
+def GetRoadTotalRegrets_H2Full():
+    seeds = range(35)
+    batch_size = 5
+
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
+    method_names = [r'$H^* = 2$ (all)', r'$H^* = 2$', r'$H^* = 4$', 'EI']
+
+    output_file = '../../result_graphs/eps/h2_full_simple_regrets.eps'
+    root_path = '../../releaseTests/road/tests2full/'
+
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+
 
 #### Simulated ####
 
@@ -172,5 +191,4 @@ if __name__ == "__main__":
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
     GetSimulatedTotalRegrets()
-    #GetSimulatedBeta2Regrets()
-    #GetSimulatedBeta3Regrets()
+    GetRoadTotalRegrets_H2Full()
