@@ -49,13 +49,16 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
 
         rewards = result[1]
 
+        # hack for EI
+        adjusted_time_steps = range(21) if name=='EI' else time_steps
+
         # previous version with small filled markers
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])
 
         marker_index = i if i < 8 else 0
 
         # dirty hack to make it unfilled
-        plt.plot(time_steps, rewards, lw=1.0, marker=markers[marker_index], markersize=15, markerfacecolor="None",
+        plt.plot(adjusted_time_steps, rewards, lw=1.0, marker=markers[marker_index], markersize=15, markerfacecolor="None",
                  markeredgewidth=1, markeredgecolor=color_sequence[i], color=color_sequence[i])
 
         # patch = mpatches.Patch(color=color_sequence[i], label=name)

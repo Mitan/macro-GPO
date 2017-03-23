@@ -4,6 +4,42 @@ import numpy as np
 from src.DatasetUtils import GetAllMeasurements, GetAccumulatedRewards, GenerateModelFromFile, GenerateRoadModelFromFile
 
 
+def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, tests_source_path):
+    len_seeds = len(seeds)
+
+    steps = 20 / batch_size
+    scaled_model_mean = np.array([(1 + batch_size * i) * model_mean for i in range(steps + 1)])
+    print scaled_model_mean
+
+    number_of_location = 0
+
+    # +1 initial point
+    results_for_method = np.zeros((steps + 1,))
+    for seed in seeds:
+
+        seed_folder = tests_source_path + 'seed' + str(seed) + '/'
+        try:
+            # all measurements, unnormalized
+            measurements = GetAllMeasurements(seed_folder, method, batch_size)
+            number_of_location += 1
+        except:
+            print seed_folder, method
+            continue
+
+        rewards = GetAccumulatedRewards(measurements, batch_size)
+        results_for_method = np.add(results_for_method, rewards)
+
+    # check that we collected data for every location
+    # print method
+    # print number_of_location, len(seeds)
+    assert number_of_location == len(seeds)
+    # print results_for_method
+    results_for_method = results_for_method / len_seeds
+    scaled_results = results_for_method - scaled_model_mean
+    # result = [method_names[index], scaled_results.tolist()]
+    return scaled_results.tolist()
+
+
 def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename):
     """
     seeds = range(36)
@@ -15,45 +51,18 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
 
     root_path = '../../releaseTests/road/b5-18-log/'
     """
-    steps = 20 / batch_size
-
-    len_seeds = len(seeds)
     results = []
 
     dataset_file_name = '../../datasets/slot18/tlog18.dom'
     m = GenerateRoadModelFromFile(dataset_file_name)
     model_mean = m.mean
 
-    scaled_model_mean = np.array([(1 + batch_size * i) * model_mean for i in range(steps + 1)])
-    print scaled_model_mean
-
     for index, method in enumerate(methods):
-        number_of_location = 0
-
-        # +1 initial point
-        results_for_method = np.zeros((steps + 1,))
-        for seed in seeds:
-
-            seed_folder = tests_source_path + 'seed' + str(seed) + '/'
-            try:
-                # all measurements, unnormalized
-                measurements = GetAllMeasurements(seed_folder, method, batch_size)
-                number_of_location += 1
-            except:
-                print seed_folder, method
-                continue
-
-            rewards = GetAccumulatedRewards(measurements, batch_size)
-            results_for_method = np.add(results_for_method, rewards)
-
-        # check that we collected data for every location
-        # print method
-        # print number_of_location, len(seeds)
-        assert number_of_location == len(seeds)
-        # print results_for_method
-        results_for_method = results_for_method / len_seeds
-        scaled_results = results_for_method - scaled_model_mean
-        result = [method_names[index], scaled_results.tolist()]
+        # todo hack
+        adjusted_batch_size = 1 if method == 'ei' else batch_size
+        scaled_results = CalculateRoadResultsForOneMethod(adjusted_batch_size, model_mean, seeds, method,
+                                                          tests_source_path)
+        result = [method_names[index], scaled_results]
         results.append(result)
 
     PlotData(results=results, output_file_name=output_filename, isTotalReward=True, isRoad=True)
@@ -119,10 +128,9 @@ def GetSimulatedTotalRewards():
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
 
-
     methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h4', 'qEI', 'pe']
 
-    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 3$',  r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
     output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
 
@@ -197,8 +205,8 @@ def GetRoadBeta3Rewards():
     seeds = range(35)
     root_path = '../../releaseTests/road/beta3/'
     # root_path = '../../last_Beta3/'
-    #root_path = '../../zero_last_Beta3/'
-    #root_path = '../../copy_beta3/'
+    # root_path = '../../zero_last_Beta3/'
+    # root_path = '../../copy_beta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
 
@@ -216,7 +224,7 @@ def GetRoadTotalRewards():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI',  'new_pe']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
 
     method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
@@ -230,23 +238,19 @@ def GetRoadTotalRewards():
 
 def GetRoad_H2Full_TotalRewards():
     seeds = range(35)
-    seeds = list(set(seeds) - set([27,  1]))
     batch_size = 5
 
-    methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
-    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
-    #methods = ['anytime_h2_full_2121']
-    #methods = ['ei']
-    method_names = [ r'$H^* = 2$ (all)', r'$H^* = 2$', r'$H^* = 4$']
+    # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
+    method_names = [r'$H^* = 2$ (all)', r'$H^* = 2$', r'$H^* = 4$', 'EI']
 
     root_path = '../../releaseTests/road/tests2full/'
-    #root_path = '../../21testsfull/'
 
     output_file = '../../result_graphs/eps/h2_full_total_rewards.eps'
-    #output_file = '../../result_graphs/eps/test_h2_full_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file)
+
 
 if __name__ == "__main__":
     """

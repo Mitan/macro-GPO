@@ -239,7 +239,7 @@ class TreePlan:
 
             probImprovement = norm.cdf(x=Z, loc=0, scale=1.0)
             # probImprovement = 1.0 - norm.cdf(x=best_observation, loc=mu, scale=sigma)
-            
+
             if probImprovement >= vBest:
                 vBest = probImprovement
                 xBest = x_next
