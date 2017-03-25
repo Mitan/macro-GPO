@@ -147,7 +147,7 @@ class TreePlanTester:
                 bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon,
                                                                 max_nodes=MCTSMaxNodes, iterations=anytime_iterations)
                 # make a transition
-                # a = tp.TransitionP(x_0, a)
+                a = tp.TransitionP(x_0, a)
 
             elif method == Methods.Exact:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
