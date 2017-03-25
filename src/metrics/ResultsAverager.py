@@ -128,7 +128,7 @@ def GetSimulatedTotalRewards():
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
 
-    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h4', 'qEI', 'pe']
+    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h4', 'qEI', 'new_pe']
 
     method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
@@ -244,7 +244,7 @@ def GetRoad_H2Full_TotalRewards():
 
     # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
     methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
-    method_names = [r'$H^* = 2$ (all)', r'$H^* = 2$', r'$H^* = 4$', 'EI']
+    method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)', 'EI']
 
     root_path = '../../releaseTests/road/tests2full/'
 
