@@ -126,11 +126,12 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
 def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
+
     root_path = '../../releaseTests/simulated/rewards-sAD/'
 
-    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h4', 'qEI', 'new_pe']
+    methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'qEI', 'new_pe']
 
-    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
     output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
 
@@ -141,16 +142,19 @@ def GetSimulatedTotalRewards():
                's150_1500_anytime_h4', 's200_1500_anytime_h4', 's250_1500_anytime_h4', 's300_1500_anytime_h4',
                's150_2000_anytime_h4', 's200_2000_anytime_h4']
 
-    methods = ['s300_100k_anytime_h4']
+    methods = ['1_s250_50k_anytime_h4', '2_s250_50k_anytime_h4', '3_s250_50k_anytime_h4', '4_s250_50k_anytime_h4']
+    methods = ['1_s250_100k_anytime_h4', '2_s250_100k_anytime_h4', '3_s250_100k_anytime_h4']
 
     method_names = [r'$150-750$', r'$200-750$', r'$250-750$', r'$300-750$',
                     r'$150-1000$', r'$200-1000$', r'$250-1000$', r'$300-1000$',
                     r'$150-1200$', r'$200-1200$', r'$250-1200$', r'$300-1200$',
                     r'$150-1500$', r'$200-1500$', r'$250-1500$', r'$300-1500$',
                     r'$150-2000$', r'$200-2000$', r'$250-2000$', r'$300-2000$']
-    root_path = '../../7anytime/'
+    method_names = ['1', '2', '3', '4']
+    root_path = '../../8anytime/'
+    root_path = '../../9anytime/'
 
-    output_file = '../../result_graphs/eps/anytime.eps'
+    output_file = '../../result_graphs/eps/anytime_100.eps'
     """
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file)
@@ -255,7 +259,7 @@ def GetRoad_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
-
+    """
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
@@ -266,3 +270,5 @@ if __name__ == "__main__":
 
 
     GetRoad_H2Full_TotalRewards()
+    """
+    GetSimulatedTotalRewards()

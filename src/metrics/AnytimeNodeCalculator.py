@@ -38,8 +38,8 @@ def CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file)
 def ExpandedNodesSimulated():
     seeds = range(66, 102)
     root_path = '../../releaseTests/simulated/rewards-sAD/'
-    methods = ['anytime_h3']
-    method_names = ['Anytime 3']
+    methods = ['2_s250_100k_anytime_h4']
+    method_names = ['Anytime 4']
     output_file = '../../result_graphs/nodes_simulated.txt'
     CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
 
@@ -105,6 +105,6 @@ def ExpandedNodesForH1():
 
 if __name__ == "__main__":
     # ExpandedNodesRoads()
-    # ExpandedNodesSimulated()
+    ExpandedNodesSimulated()
     #ExpandedNodesForH1()
-    ExpandedNodesRoads_H2Full()
+    # ExpandedNodesRoads_H2Full()

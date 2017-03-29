@@ -156,8 +156,8 @@ def GetSimulatedTotalRegrets():
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
 
-    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h4', 'qEI', 'new_pe']
-    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'qEI', 'new_pe']
+    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
 
     output_file = '../../result_graphs/eps/simulated_simple_regrets.eps'
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
@@ -187,8 +187,8 @@ def GetSimulatedBeta3Regrets():
 
 if __name__ == "__main__":
 
-    GetRoadTotalRegrets()
+    # GetRoadTotalRegrets()
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
     GetSimulatedTotalRegrets()
-    GetRoadTotalRegrets_H2Full()
+    # GetRoadTotalRegrets_H2Full()
