@@ -38,11 +38,67 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
 
     assert filename is not None
     m = GenerateModelFromFile(filename)
+    """
     h = 4
     testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "h" + str(h) + "/",
                             num_samples=num_samples, batch_size=batch_size)
+    """
+
+    result_graphs = []
+    output_rewards = open(save_folder + "reward_histories.txt", 'w')
+
+    method_name = 'Myopic DB-GP-UCB'
+    myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
+                                         save_folder=save_folder + "h1/",
+                                         num_samples=num_samples, batch_size=batch_size)
+    result_graphs.append([method_name, myopic_ucb])
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(myopic_ucb) + '\n')
+
+    # for h in range(2, h_max+1):
+    for h in range(h_max, 1, -1):
+        # print h
+        method_name = 'H = ' + str(h)
+        current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+                                                   num_timesteps_test=time_steps,
+                                                   save_folder=save_folder + "h" + str(h) + "/",
+                                                   num_samples=num_samples, batch_size=batch_size)
+        result_graphs.append([method_name, current_h_result])
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(current_h_result) + '\n')
+        # can't apply qEI to single-point
+
+    if batch_size > 1:
+            method_name = 'qEI'
+            qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
+                                          save_folder=save_folder + "qEI/",
+                                          num_samples=num_samples, batch_size=batch_size)
+            result_graphs.append([method_name, qEI])
+            output_rewards.write(method_name + '\n')
+            output_rewards.write(str(qEI) + '\n')
+
+    method_name = 'MLE H = 4'
+    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=4, num_timesteps_test=time_steps,
+                                      save_folder=save_folder + "mle_h4/",
+                                      num_samples=num_samples, batch_size=batch_size)
+    result_graphs.append([method_name, mle])
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(mle) + '\n')
+
+    method_name = 'PE'
+    pe = testWithFixedParameters(model=m, method=Methods.BUCB_PE, horizon=1,
+                                     num_timesteps_test=time_steps,
+                                     save_folder=save_folder + "pe/",
+                                     num_samples=num_samples, batch_size=batch_size)
+    result_graphs.append([method_name, pe])
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(pe) + '\n')
+
+
+
+    output_rewards.close()
 
 
 def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, batch_size, filename=None):
@@ -56,6 +112,7 @@ def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, batch_size, 
 
     assert filename is not None
     m = GenerateModelFromFile(filename)
+
     h = 4
 
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
@@ -63,6 +120,7 @@ def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, batch_size, 
                             save_folder=save_folder + "1_s250_100k_anytime_h" + str(h) + "/",
                             num_samples=250, batch_size=batch_size, anytime_iterations=100000)
 
+    """
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "2_s250_100k_anytime_h" + str(h) + "/",
@@ -73,7 +131,17 @@ def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, batch_size, 
                             save_folder=save_folder + "3_s250_100k_anytime_h" + str(h) + "/",
                             num_samples=250, batch_size=batch_size, anytime_iterations=100000)
 
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "4_s250_100k_anytime_h" + str(h) + "/",
+                            num_samples=250, batch_size=batch_size, anytime_iterations=100000)
 
+    testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "5_s250_100k_anytime_h" + str(h) + "/",
+                            num_samples=250, batch_size=batch_size, anytime_iterations=100000)
+
+    """
     #####################
     """
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,

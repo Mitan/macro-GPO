@@ -151,18 +151,22 @@ class TreePlanTester:
 
             elif method == Methods.Exact:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
+                a = tp.TransitionP(x_0, a)
 
             elif method == Methods.MyopicUCB:
                 vBest, a, nodes_expanded = tp.StochasticFull(x_0, 1)
+                a = tp.TransitionP(x_0, a)
 
             elif method == Methods.MLE:
                 vBest, a, nodes_expanded = tp.MLE(x_0, allowed_horizon)
+                a = tp.TransitionP(x_0, a)
 
             elif method == Methods.BUCB_PE:
                 vBest, a, nodes_expanded = tp.BUCB_PE(x_0)
 
             elif method == Methods.qEI:
                 vBest, a, nodes_expanded = tp.qEI(x_0)
+                a = tp.TransitionP(x_0, a)
 
             else:
                 raise Exception("Unknown method type")
@@ -170,7 +174,7 @@ class TreePlanTester:
             # Take action a
             x_temp  = a
 
-            # x_temp = tp.TransitionP(x_0, a)
+            #x_temp = tp.TransitionP(x_0, a)
             # Draw an actual observation from the underlying environment field and add it to the our measurements
 
             baseline_measurements = np.asarray(
@@ -305,10 +309,9 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     past_locations = np.array(
         [[1.0, 0.85], [1.0, 1.15], [1.15, 1.0], [0.85, 1.0], [1.0, 0.65], [1.0, 1.35], [1.35, 1.0], [0.65, 1.0],
          [1.0, 1.0]])
-    past_locations = np.array(
-        [[1.0, 0.5], [1.0, 1.5], [1.5, 1.0], [0.5, 1.0],[1.0, 1.0]])
+    past_locations = np.array([[1.05, 1.05],[1.0, 1.0]])
 
-    past_locations = np.array([[1.0, 1.0]])
+    # past_locations = np.array([[1.0, 1.0]])
 
     # Unused
     noise_in_trials = True
