@@ -184,7 +184,7 @@ b = [3,4,5]
 """
 
 #plt.show()
-dat = np.genfromtxt('real_loc')
+dat = np.genfromtxt('../datasets/robot/real_loc')
 dat = dat[:, :-1]
 l =  dat.tolist()
 plt.plot(*zip(*l), marker='o', color='r', ls='')
