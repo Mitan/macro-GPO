@@ -1,6 +1,7 @@
 from StringIO import StringIO
 import numpy as np
 import re
+import matplotlib.pyplot as plt
 
 from src.DatasetUtils import GenerateModelFromFile, GenerateRoadModelFromFile
 from src.GaussianProcess import MapValueDict
@@ -182,3 +183,9 @@ a =  [1,2,3]
 b = [3,4,5]
 """
 
+#plt.show()
+dat = np.genfromtxt('real_loc')
+dat = dat[:, :-1]
+l =  dat.tolist()
+plt.plot(*zip(*l), marker='o', color='r', ls='')
+plt.show()
