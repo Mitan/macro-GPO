@@ -4,7 +4,9 @@ from scipy.spatial import distance
 import re
 import matplotlib.pyplot as plt
 
+from collections import Counter
 
+"""
 #plt.show()
 dat = np.genfromtxt('../datasets/robot/real_loc')
 # dat = dat[:, :-1]
@@ -17,9 +19,8 @@ locs = list(set(locs))
 
 len_locs = len(locs)
 print  len_locs
-# plt.plot(*zip(*locs), marker='o', color='r', ls='')
-# plt.show()
-
+plt.plot(*zip(*locs), marker='o', color='r', ls='')
+plt.show()
 
 d = 0
 for loc in locs:
@@ -46,3 +47,25 @@ for loc in locs:
     av_len += len(neighbours)
 
 print float(av_len) / len_locs
+"""
+dict = {}
+print "0"
+lines = np.genfromtxt('../datasets/intel-robot/labapp3-data-new.txt')
+first = lines[:, 0].tolist()
+"""
+print first.shape
+print first
+for line in lines:
+    id =  line[0]
+    if id in dict.keys():
+        dict[id] = dict[id] + 1
+    else:
+        dict[id] = 1
+
+print dict
+"""
+
+count =  Counter(first)
+for key, value in sorted(count.items(),key= lambda kv: kv[1], reverse=True):
+    if value > 30:
+        print key,value
