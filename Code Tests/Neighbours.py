@@ -8,7 +8,7 @@ neighbours_dict = []
 
 num_points, _ = all_points.shape
 
-treshhold = 8
+treshhold = 9
 for i in range(num_points):
     id = all_points[i, 0]
     coord = all_points[i, 1:]
@@ -22,10 +22,11 @@ for i in range(num_points):
         if np.linalg.norm(coord - other_coord) < treshhold:
             neighbours.append(other_id)
 
+
     neighbours_dict.append(neighbours)
 
 
-output_filename = '../datasets/intel-robot/neighbours.txt'
+output_filename = '../datasets/intel-robot/neighbours_raw.txt'
 output_file = open(output_filename, 'w')
 
 for id in neighbours_dict:
