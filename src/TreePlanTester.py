@@ -201,6 +201,8 @@ class TreePlanTester:
         YGrid = np.arange(self.grid_domain[1][0], self.grid_domain[1][1] - 1e-10, self.grid_gap)
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
+        # todo just use the list of locations
+
         ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
 
         # Plot graph of locations

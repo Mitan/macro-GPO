@@ -97,6 +97,7 @@ class Vis2d:
         @param save_path
         """
 
+        # todo remove
         grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
                         grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
 
