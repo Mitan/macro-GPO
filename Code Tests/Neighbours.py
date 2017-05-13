@@ -1,6 +1,6 @@
 import numpy as np
 
-
+# without obstacles, just based on distance
 def GenerateUnconstrainedNeighbours(treshhold):
     input_file_name = '../datasets/intel-robot/coordinates.txt'
     all_points = np.genfromtxt(input_file_name)
@@ -86,9 +86,31 @@ def AddFakeNodesAndCoords():
     fake_neighbours_file.close()
     fake_coords_file.close()
 
+# fake and original
+def GenerateAllNeighbours():
 
+    all_neighbours = open('all_neighbours.txt', 'w')
+    fake_neighbours = np.genfromtxt('fake_neighbours.txt')
+    real_neighbours_dict = {}
+    for line in fake_neighbours:
+        id = line[0]
+        neighbours = line[1:]
 
+        str_n = " ".join(map(str, neighbours))
+        all_neighbours.write(str(id) + " " + str_n + '\n')
 
-AddFakeNodesAndCoords()
+        for n in neighbours:
+            if n in real_neighbours_dict.keys():
+                real_neighbours_dict[n].append(id)
+            else:
+                real_neighbours_dict[n] = [id]
+
+    for k in real_neighbours_dict.keys():
+        str_n = " ".join(map(str, real_neighbours_dict[k]))
+        all_neighbours.write(str(k) + " " + str_n + '\n')
+
+GenerateAllNeighbours()
+
+# AddFakeNodesAndCoords()
 # CheckNeighboursConsistency()
 # GenerateUnconstrainedNeighbours(9)
