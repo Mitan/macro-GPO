@@ -10,12 +10,13 @@ from src.GaussianProcess import SquareExponential, GaussianProcess
 # exact values based on GP prediction
 def GenerateExactValues():
     slot_number = 2
-    input_data_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '.txt'
-    hypers_file = '../datasets/robot/selected_slots/hypers_' + str(slot_number) + '.txt'
+    input_data_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/slot_' + str(slot_number) + '.txt'
+    hypers_file = '../datasets/robot/selected_slots/slot_' + str(slot_number)+ '/hypers_' + str(slot_number) + '.txt'
 
     real_coordinates_file = '../datasets/robot/coordinates.txt'
     fake_coordinates_file = '../datasets/robot/fake_coordinates.txt'
-    output_filename = '../datasets/robot/selected_slots/generated_values_slot_' + str(slot_number) + '.txt'
+    output_filename = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/generated_values_slot_' + str(
+        slot_number) + '.txt'
 
     output_file = open(output_filename, 'w')
 
