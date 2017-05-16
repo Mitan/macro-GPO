@@ -54,6 +54,7 @@ def GenerateExactValues(slot_number):
         assert real_coord_line[0] == missing_index
         test_location = real_coord_line[1:]
         mu = __predictGP(gp=gp, train_X=X, train_Y=Y, test_location=test_location)
+        mu = round(mu, 4)
         """
         mu_gpy, _ = m.predict(np.atleast_2d(test_location), full_cov=True)
         print mu - (mu_gpy+ mean)[0,0]
@@ -64,9 +65,11 @@ def GenerateExactValues(slot_number):
     for fake_coord_line in all_fake_coords:
         test_location = fake_coord_line[1:3]
         mu = __predictGP(gp=gp, train_X=X, train_Y=Y, test_location=test_location)
+        mu = round(mu, 4)
         output_file.write(
             str(fake_coord_line[0]) + ' ' + str(test_location[0]) + ' ' + str(test_location[1]) + ' ' + str(mu) + '\n')
 
+    output_file.close()
 
 # dummy for internal use
 def __predictGP(gp, train_X, train_Y, test_location):
@@ -82,6 +85,21 @@ def __FindMissingIndexes(existing_indexes):
     return [i for i in allowed_range if not i in existing_indexes]
 
 
+def GenerateFinalDataset(slot_number):
+    GenerateExactValues(slot_number)
+    real_values_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/slot_' + \
+                       str(slot_number) + '.txt'
+    generated_values_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + \
+                            '/generated_values_slot_' + str(slot_number) + '.txt'
+    output_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/final_slot_' + \
+                       str(slot_number) + '.txt'
+    filenames = [real_values_file, generated_values_file]
+    with open(output_file, 'w') as outfile:
+        for fname in filenames:
+            with open(fname) as infile:
+                outfile.write(infile.read())
+
 if __name__ == "__main__":
-    GenerateExactValues(2)
-    GenerateExactValues(16)
+    selected_slots = [2,16]
+    for slot in selected_slots:
+        GenerateFinalDataset(slot)
