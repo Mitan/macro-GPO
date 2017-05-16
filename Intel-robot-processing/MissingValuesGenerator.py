@@ -8,10 +8,9 @@ from src.GaussianProcess import SquareExponential, GaussianProcess
 
 
 # exact values based on GP prediction
-def GenerateExactValues():
-    slot_number = 2
+def GenerateExactValues(slot_number):
     input_data_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/slot_' + str(slot_number) + '.txt'
-    hypers_file = '../datasets/robot/selected_slots/slot_' + str(slot_number)+ '/hypers_' + str(slot_number) + '.txt'
+    hypers_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/hypers_' + str(slot_number) + '.txt'
 
     real_coordinates_file = '../datasets/robot/coordinates.txt'
     fake_coordinates_file = '../datasets/robot/fake_coordinates.txt'
@@ -21,6 +20,7 @@ def GenerateExactValues():
     output_file = open(output_filename, 'w')
 
     all_real_coords = np.genfromtxt(real_coordinates_file)
+    all_fake_coords = np.genfromtxt(fake_coordinates_file)
     all_data = np.genfromtxt(input_data_file)
     hypers = np.genfromtxt(hypers_file)
 
@@ -61,6 +61,12 @@ def GenerateExactValues():
         output_file.write(
             str(missing_index) + ' ' + str(test_location[0]) + ' ' + str(test_location[1]) + ' ' + str(mu) + '\n')
 
+    for fake_coord_line in all_fake_coords:
+        test_location = fake_coord_line[1:3]
+        mu = __predictGP(gp=gp, train_X=X, train_Y=Y, test_location=test_location)
+        output_file.write(
+            str(fake_coord_line[0]) + ' ' + str(test_location[0]) + ' ' + str(test_location[1]) + ' ' + str(mu) + '\n')
+
 
 # dummy for internal use
 def __predictGP(gp, train_X, train_Y, test_location):
@@ -77,4 +83,5 @@ def __FindMissingIndexes(existing_indexes):
 
 
 if __name__ == "__main__":
-    GenerateExactValues()
+    GenerateExactValues(2)
+    GenerateExactValues(16)
