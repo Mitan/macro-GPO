@@ -75,25 +75,35 @@ def GetMacroActionsOfLocation(loc, batch_size):
 
     m = GenerateRobotModelFromFile(data_filename=data_file, coords_filename=coords_file,
                                    neighbours_filename=neighbours_file)
-    print m.GetNeighbours(loc)
+
     return m.GenerateAllMacroActions(loc, batch_size)
 
 
 def LoadActionsFromFileTest(folder_name, batch_size):
-    filename = '../datasets/slot18/taxi18.dom'
-    m = GenerateRoadModelFromFile(filename)
+    data_file = '../datasets/robot/selected_slots/slot_2/final_slot_2.txt'
+    neighbours_file = '../datasets/robot/all_neighbours.txt'
+    coords_file = '../datasets/robot/all_coords.txt'
+
+    m = GenerateRobotModelFromFile(data_filename=data_file, coords_filename=coords_file,
+                                   neighbours_filename=neighbours_file)
     m.LoadSelectedMacroactions(folder_name, batch_size)
 
 
 if __name__ == '__main__':
     # IterateOverMacroActions(4)
     # GenerateMacroActionsFromeFile(4)
+
+
+    """
     l = [3.75,  23.5]
+
     for a in GetMacroActionsOfLocation(l, 4):
         print a
-    # LogTransformTest()
-    # HistTests()
-    # LoadActionsFromFileTest('./', 4)
+
+    """
+    actions_folder = '../datasets/robot/'
+    LoadActionsFromFileTest(folder_name=actions_folder, batch_size=4)
+
     """
     filename = '../src/taxi18.dom'
     m = GenerateRoadModelFromFile(filename)

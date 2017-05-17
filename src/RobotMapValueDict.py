@@ -54,11 +54,11 @@ class RobotValueDict(MapValueDict):
             id_neighbours = line[1:]
             tuple_neighbours = map(lambda x : self.__IdToCoord(all_coords_data, x), id_neighbours)
             self.neighbours[current_loc_coord] = tuple_neighbours
+            # self.neighbours[current_loc_coord] = id_neighbours
 
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
-
         # return self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
         # should not raise an exception
         return self.neighbours[tuple_loc]
