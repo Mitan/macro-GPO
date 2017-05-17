@@ -45,7 +45,8 @@ class RobotValueDict(MapValueDict):
             all_neighbours_lines = outfile.readlines()
 
         for line in all_neighbours_lines:
-            line = map(float, line.strip())
+            line = line.split()
+            line = map(float, line)
             current_loc_id = line[0]
 
             current_loc_coord = self.__IdToCoord(all_coords_data, current_loc_id)
@@ -85,7 +86,7 @@ class RobotValueDict(MapValueDict):
         actions_file  = open(folder_name + 'actions_selected.txt', 'w')
 
         for loc in self.locations:
-            all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)
+            all_macro_actions = self.GenerateAllMacroActions(loc, batch_size)
 
             if select_all:
                 self.selected_actions_dict[tuple(loc)] = all_macro_actions
@@ -132,7 +133,7 @@ class RobotValueDict(MapValueDict):
             loc = ( numbers[0], numbers[1])
             indexes = map(int, numbers[2:])
             # print loc, indexes
-            all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)
+            all_macro_actions = self.GenerateAllMacroActions(loc, batch_size)
             length = len(indexes)
             assert length <= 20
 
