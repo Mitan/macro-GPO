@@ -118,3 +118,45 @@ class RoadHypersStorer_Log44(AbstarctHypersStorer):
 
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
+
+
+class RobotHypersStorer_2(AbstarctHypersStorer):
+    def __init__(self):
+        AbstarctHypersStorer.__init__(self)
+        self.length_scale = (5.139014,	9.975326)
+
+        self.signal_variance = 0.464407
+
+        self.noise_variance = 0.022834
+        self.mean_function = 22.924200
+
+        # domain is not grid-like
+        self.grid_gap = None
+
+        self.grid_domain = None
+
+        self.PrintParams()
+
+    def GetInitialPhysicalState(self, start_location):
+        return np.array([start_location])
+
+
+class RobotHypersStorer_16(AbstarctHypersStorer):
+    def __init__(self):
+        AbstarctHypersStorer.__init__(self)
+        self.length_scale = ( 4.005779, 11.381141)
+
+        self.signal_variance = 0.596355
+
+        self.noise_variance = 0.059732
+        self.mean_function = 17.851283
+
+        # domain is not grid-like
+        self.grid_gap = None
+
+        self.grid_domain = None
+
+        self.PrintParams()
+
+    def GetInitialPhysicalState(self, start_location):
+        return np.array([start_location])
