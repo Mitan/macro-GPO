@@ -27,9 +27,12 @@ class TreePlan:
         # Problem parameters
         self.grid_gap = grid_gap
         self.macroaction_set = macroaction_set
+
+        # only for simulated
+        """
         if macroaction_set is None:
             self.macroaction_set = GenerateSimpleMacroactions(self.batch_size, self.grid_gap)
-
+        """
         self.grid_domain = grid_domain
         self.gp = gaussian_process
         self.max_nodes = float("inf") if max_nodes is None else max_nodes
@@ -584,6 +587,7 @@ class TreePlan:
             new_st.ComputeWeightsAndVariance(self.gp)
             self.BuildTree(new_st, H - 1)
 
+    # used only for simulated
     def GetValidActionSet(self, physical_state):
         return [a for a in self.macroaction_set if self.IsValidMacroAction(physical_state, a)]
 
