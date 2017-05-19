@@ -220,13 +220,22 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
-
+    """
     if time_slot == 44:
         hyper_storer = RoadHypersStorer_Log44()
     elif time_slot == 18:
         hyper_storer = RoadHypersStorer_Log18()
     else:
         raise Exception("wrong tzxi time slot")
+    """
+
+    if time_slot == 2:
+        hyper_storer = RobotHypersStorer_2()
+    elif time_slot == 16:
+        hyper_storer = RobotHypersStorer_16()
+    else:
+        raise Exception("wrong robot time slot")
+
     # hyper_storer = RoadHypersStorer_18()
 
     initial_physical_state = hyper_storer.GetInitialPhysicalState(start_location)
@@ -243,7 +252,6 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
     past_locations = np.copy(initial_physical_state)
 
     print "Start location " + str(past_locations) + "\n"
-
 
     TPT = TreePlanTester(beta=beta)
     # this GP is for prediction

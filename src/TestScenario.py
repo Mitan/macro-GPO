@@ -1,6 +1,6 @@
 import os
 
-from DatasetUtils import GenerateRoadModelFromFile
+from DatasetUtils import GenerateRobotModelFromFile, GenerateRoadModelFromFile
 from MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
 
@@ -193,7 +193,8 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
     output_rewards.close()
 
 
-def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, time_slot, filename=None):
+def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, time_slot, data_filename=None,
+                 coords_filename=None, neighbours_filename=None):
     result_graphs = []
 
     # eps = 10 ** 10
@@ -230,7 +231,9 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
                                    mean_function=hyper_storer.mean_function)
     """
 
-    m = GenerateRoadModelFromFile(filename)
+    # m = GenerateRoadModelFromFile(filename)
+    m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
+                                   neighbours_filename=neighbours_filename)
 
     # todo note
     m.SelectMacroActions(batch_size, save_folder)
