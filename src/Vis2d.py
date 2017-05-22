@@ -98,9 +98,10 @@ class Vis2d:
         """
 
         # todo remove
+        """
         grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
                         grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
-
+        """
         mmax = -10 ** 10
         mmin = 10 ** 10
         for q in [ground_truth, posterior_mean_before, posterior_mean_after]:
@@ -111,7 +112,7 @@ class Vis2d:
         axes = plt.axes()
         # fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
         if ground_truth is not None:
-            im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
+            im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto',
                              cmap='Greys', vmin=mmin, vmax=mmax)
             if not path_points == None and path_points:
                 # batch size

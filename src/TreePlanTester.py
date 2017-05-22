@@ -195,25 +195,31 @@ class TreePlanTester:
         return normalized_total_reward_history
 
     def Visualize(self, state_history, display=True, save_path=None):
-        """ Visualize 2d environments
         """
         XGrid = np.arange(self.grid_domain[0][0], self.grid_domain[0][1] - 1e-10, self.grid_gap)
         YGrid = np.arange(self.grid_domain[1][0], self.grid_domain[1][1] - 1e-10, self.grid_gap)
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
-
+        """
         # todo just use the list of locations
 
-        ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
+        # ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
+        ground_truth = np.vectorize(lambda x: self.model(x))
 
-        # Plot graph of locations
+
         vis = Vis2d()
+        """
         vis.MapPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
                                  self.grid_domain[1][1]],
                     ground_truth=ground_truth(XGrid, YGrid),
                     path_points=[x.physical_state for x in state_history],
                     display=display,
                     save_path=save_path)
-
+        """
+        vis.MapPlot(grid_extent=None,
+                    ground_truth=ground_truth(self.model.locations),
+                    path_points=[x.physical_state for x in state_history],
+                    display=display,
+                    save_path=save_path)
 
 def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size,
                             time_slot,
