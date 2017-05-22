@@ -243,8 +243,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     with  open(save_folder + "start_location.txt", 'w') as f:
         f.write(str(start_location[0]) + " " + str(start_location[1]))
 
-    # can't apply qEI to single-point
-
+    # simulated
     """
     if batch_size > 1:
         method_name = 'qEI'
@@ -276,13 +275,16 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         output_rewards.write(str(current_h_result) + '\n')
 
 
-    method_name = 'MLE H = 3'
-    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "mle_h3/",
+
+    method_name = 'MLE H = 4'
+    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=4, num_timesteps_test=time_steps,
+                                  save_folder=save_folder + "mle_h4/",
                                   num_samples=num_samples, batch_size=batch_size)
     result_graphs.append([method_name, mle])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
+
+
 
     method_name = 'Anytime H = 3'
     anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=1, num_timesteps_test=time_steps,
@@ -291,7 +293,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, anytime])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(anytime) + '\n')
-    """
 
     method_name = 'BUCB-PE'
     bucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
@@ -301,6 +302,10 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, bucb])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(bucb) + '\n')
+    """
+
+
+    # real-world
 
     """
     if batch_size > 1:
@@ -312,7 +317,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         result_graphs.append([method_name, qEI])
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(qEI) + '\n')
-
+    """
     method_name = 'Myopic DB-GP-UCB'
     myopic_ucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MyopicUCB, horizon=1,
                                          num_timesteps_test=time_steps,
@@ -321,11 +326,11 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, myopic_ucb])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(myopic_ucb) + '\n')
-
-    method_name = 'MLE H = 3'
-    mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=3,
+    """
+    method_name = 'MLE H = 4'
+    mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=4,
                                   num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "mle_h3/",
+                                  save_folder=save_folder + "mle_h4/",
                                   num_samples=num_samples, batch_size=batch_size, start_location=start_location)
     result_graphs.append([method_name, mle])
     output_rewards.write(method_name + '\n')
