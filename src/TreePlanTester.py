@@ -199,12 +199,9 @@ class TreePlanTester:
         XGrid = np.arange(self.grid_domain[0][0], self.grid_domain[0][1] - 1e-10, self.grid_gap)
         YGrid = np.arange(self.grid_domain[1][0], self.grid_domain[1][1] - 1e-10, self.grid_gap)
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
+
+        ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
         """
-        # todo just use the list of locations
-
-        # ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
-        ground_truth = np.vectorize(lambda x: self.model(x))
-
 
         vis = Vis2d()
         """
@@ -215,11 +212,12 @@ class TreePlanTester:
                     display=display,
                     save_path=save_path)
         """
-        vis.MapPlot(grid_extent=None,
-                    ground_truth=ground_truth(self.model.locations),
+        vis.MapPlot(locations=self.model.locations,
+                    values=self.model.values,
                     path_points=[x.physical_state for x in state_history],
                     display=display,
                     save_path=save_path)
+
 
 def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size,
                             time_slot,
@@ -275,6 +273,7 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                     save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
                     num_samples=num_samples)
+
 
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
