@@ -19,7 +19,7 @@ def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_s
 
     start_location = m.LoadRandomLocation(save_folder)
 
-    h = 4
+    h = 1
 
     filename_rewards = save_folder + "reward_histories.txt"
     if os.path.exists(filename_rewards):
@@ -31,7 +31,7 @@ def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_s
 
     mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=h,
                                   num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "mle_h" + str(h) + "/",
+                                  save_folder=save_folder + "mmmle_h" + str(h) + "/",
                                   num_samples=num_samples, batch_size=batch_size,
                                   start_location=start_location)
 

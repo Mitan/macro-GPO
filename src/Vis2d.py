@@ -107,11 +107,15 @@ class Vis2d:
             if q is not  None:
                 mmax = max(np.amax(np.amax(q)), mmax)
                 mmin = min(np.amin(np.amin(q)), mmin)
-        axes = plt.axes()
+
+        fig = plt.figure(figsize=(8,11))
+        axes = fig.add_subplot(111)
+        # axes = plt.axes()
         # fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
         if ground_truth is not None:
             im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
-                             cmap='Greys', vmin=mmin, vmax=mmax)
+                             #cmap='Greys', vmin=mmin, vmax=mmax)
+                            vmin=mmin, vmax=mmax)
             if not path_points == None and path_points:
                 # batch size
                 # path points is a list
@@ -125,9 +129,15 @@ class Vis2d:
 
                     prev_end = prev[-1, :]
                     current_start = current[0, :]
+
+                    """
                     axes.arrow(prev_end[0], prev_end[1],
                                current_start[0] - prev_end[0],
-                               current_start[1] - prev_end[1], edgecolor='green')
+                               current_start[1] - prev_end[1], edgecolor='black')
+                    """
+                    x_coord = (prev_end[0], current_start[0])
+                    y_coord = (prev_end[1], current_start[1])
+                    axes.plot(x_coord, y_coord, color='black', linewidth=3)
 
 
                     # here we need to draw k - 1 arrows
@@ -140,10 +150,14 @@ class Vis2d:
                         # both a locations [x,y]
                         current_point = current[j, :]
                         next_point = current[j+1, :]
+                        """
                         axes.arrow(current_point[0], current_point[1],
                                    next_point[0] - current_point[0],
-                                   next_point[1] - current_point[1], edgecolor='red')
-
+                                   next_point[1] - current_point[1], edgecolor='black')
+                        """
+                        x_coord = (current_point[0], next_point[0])
+                        y_coord = (current_point[1], next_point[1])
+                        axes.plot(x_coord, y_coord, color='black', linewidth=3)
 
         if not save_path == None:
             plt.savefig(save_path + ".png")
