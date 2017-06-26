@@ -170,7 +170,7 @@ class TreePlanTester:
                 f.close()
 
         # Save for the whole trial
-        self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary")
+        self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary", animated=True)
         # Save to file
         f = open(save_folder + "summary" + ".txt", "w")
 
@@ -194,7 +194,7 @@ class TreePlanTester:
         # return state_history, reward_history, nodes_expanded_history, base_measurement_history, total_reward_history
         return normalized_total_reward_history
 
-    def Visualize(self, state_history, display=True, save_path=None):
+    def Visualize(self, state_history, display=True, save_path=None, animated=False):
         """ Visualize 2d environments
         """
         XGrid = np.arange(self.grid_domain[0][0], self.grid_domain[0][1] - 1e-10, self.grid_gap)
@@ -205,12 +205,20 @@ class TreePlanTester:
 
         # Plot graph of locations
         vis = Vis2d()
-        vis.MapPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
-                                 self.grid_domain[1][1]],
-                    ground_truth=ground_truth(XGrid, YGrid),
-                    path_points=[x.physical_state for x in state_history],
-                    display=display,
-                    save_path=save_path)
+        if animated:
+            vis.MapAnimatedPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
+                                             self.grid_domain[1][1]],
+                                ground_truth=ground_truth(XGrid, YGrid),
+                                path_points=[x.physical_state for x in state_history],
+                                display=display,
+                                save_path=save_path)
+        else:
+            vis.MapPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
+                                     self.grid_domain[1][1]],
+                        ground_truth=ground_truth(XGrid, YGrid),
+                        path_points=[x.physical_state for x in state_history],
+                        display=display,
+                        save_path=save_path)
 
 
 def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size,
@@ -218,7 +226,6 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
-
     if time_slot == 44:
         hyper_storer = RoadHypersStorer_Log44()
     elif time_slot == 18:
@@ -242,7 +249,6 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
 
     print "Start location " + str(past_locations) + "\n"
 
-
     TPT = TreePlanTester(beta=beta)
     # this GP is for prediction
     TPT.InitGP(length_scale=hyper_storer.length_scale, signal_variance=hyper_storer.signal_variance,
@@ -259,6 +265,7 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                     save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
                     num_samples=num_samples)
+
 
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"
