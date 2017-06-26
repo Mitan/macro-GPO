@@ -38,29 +38,43 @@ def f(x, y):
 
 x = np.linspace(0, 2 * np.pi, 120)
 y = np.linspace(0, 2 * np.pi, 100).reshape(-1, 1)
-i = 0
-ax = fig.gca()
-patch = plt.Arrow(0, 0, 90, 40)
-ax.add_patch(patch)
 
+ax = fig.gca()
+
+# plt.scatter(20, 70,  color='black', marker='+', s=100)
+# plt.plot(20, 70,  color='black', marker='+', markersize=12)
 im = plt.imshow(f(x, y), animated=True)
 
+x = [10, 20, 30, 40, 50, 60, 70, 80, 90]
+y = [50, 10, 40, 50, 70, 20, 15, 60, 20]
+batch_size = 2
+time_steps = 8
+i = 0
 
-colors = ['green', 'red']
 def updatefig(*args):
-    global x, y,i
-    x += np.pi / 15.
-    y += np.pi / 20.
-    i+=1
-    # im.set_array(f(x, y))
-    mod_i = i % 3
-    if i % 3 == 2:
-        ax.patches = ax.patches[:-2]
+    global i
+
+    # one step for clearing the picture
+    mod_i = i % (time_steps+1)
+
+    if mod_i % batch_size == 0:
+        circle_patch = plt.Circle((x[mod_i], y[mod_i]), 2, color='black')
+        ax.add_patch(circle_patch)
+        plt.pause(1.5)
+
+    if  mod_i == time_steps:
+        plt.pause(2.0)
+        # arrows + circles
+        num_patches = time_steps + time_steps/batch_size
+        ax.patches = ax.patches[:-num_patches]
+
     else:
-        patch = plt.Arrow(20 * mod_i , 20 * mod_i , 20  + 10, 20 * mod_i  + 10, color='black')
+        patch = plt.Arrow(x[mod_i] , y[mod_i] , x[mod_i+1] - x[mod_i], y[mod_i+1] - y[mod_i], color='black')
         ax.add_patch(patch)
+        plt.pause(1.0)
+    i+=1
     return im,
 
-ani = animation.FuncAnimation(fig, updatefig, interval=500, blit=True)
+ani = animation.FuncAnimation(fig, updatefig, interval=1000, blit=True)
 #plt.show()
 ani.save('line.gif', dpi=80, writer='imagemagick')
