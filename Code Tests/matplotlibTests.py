@@ -51,30 +51,39 @@ batch_size = 2
 time_steps = 8
 i = 0
 
+# initila point + time_steps points + one for clearing
+animation_stages = 1 + time_steps  + 1
+
 def updatefig(*args):
     global i
 
-    # one step for clearing the picture
-    mod_i = i % (time_steps+1)
-
+    mod_i = i % (animation_stages)
+    # for initial point and ends of macro-actions (visited locations)
     if mod_i % batch_size == 0:
         circle_patch = plt.Circle((x[mod_i], y[mod_i]), 2, color='black')
         ax.add_patch(circle_patch)
         plt.pause(1.5)
 
-    if  mod_i == time_steps:
+    # last stage for clearing
+    if mod_i == animation_stages - 1:
         plt.pause(2.0)
-        # arrows + circles
-        num_patches = time_steps + time_steps/batch_size
+        # arrows + circles at visited locations + initial point
+        num_patches = time_steps + time_steps/batch_size + 1
         ax.patches = ax.patches[:-num_patches]
+
+    # las location doesn't have an arrow
+    elif mod_i == animation_stages - 2:
+        pass
 
     else:
         patch = plt.Arrow(x[mod_i] , y[mod_i] , x[mod_i+1] - x[mod_i], y[mod_i+1] - y[mod_i], color='black')
         ax.add_patch(patch)
         plt.pause(1.0)
-    i+=1
+
+    i+= 1
+
     return im,
 
 ani = animation.FuncAnimation(fig, updatefig, interval=1000, blit=True)
-#plt.show()
+plt.show()
 ani.save('line.gif', dpi=80, writer='imagemagick')
