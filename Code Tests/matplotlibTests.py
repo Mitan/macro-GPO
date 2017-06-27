@@ -39,7 +39,7 @@ def f(x, y):
 x = np.linspace(0, 2 * np.pi, 120)
 y = np.linspace(0, 2 * np.pi, 100).reshape(-1, 1)
 
-ax = fig.gca()
+axes = fig.gca()
 
 # plt.scatter(20, 70,  color='black', marker='+', s=100)
 # plt.plot(20, 70,  color='black', marker='+', markersize=12)
@@ -49,24 +49,25 @@ x = [10, 20, 30, 40, 50, 60, 70, 80, 90]
 y = [50, 10, 40, 50, 70, 20, 15, 60, 20]
 batch_size = 2
 time_steps = 8
-i = 0
+
+iteration = 0
 
 # initila point + time_steps points + one for clearing
-animation_stages = 1 + time_steps  + 1
+a_stages = 1 + time_steps  + 1
 
-def updatefig(*args):
-    global i
-
-    mod_i = i % (animation_stages)
+def updatefig(i, animation_stages, ax):
+    global iteration
+    print iteration
+    mod_i = iteration % (animation_stages)
     # for initial point and ends of macro-actions (visited locations)
     if mod_i % batch_size == 0:
         circle_patch = plt.Circle((x[mod_i], y[mod_i]), 2, color='black')
         ax.add_patch(circle_patch)
-        plt.pause(1.5)
+        # plt.pause(1.5)
 
     # last stage for clearing
     if mod_i == animation_stages - 1:
-        plt.pause(2.0)
+        # plt.pause(2.0)
         # arrows + circles at visited locations + initial point
         num_patches = time_steps + time_steps/batch_size + 1
         ax.patches = ax.patches[:-num_patches]
@@ -78,12 +79,12 @@ def updatefig(*args):
     else:
         patch = plt.Arrow(x[mod_i] , y[mod_i] , x[mod_i+1] - x[mod_i], y[mod_i+1] - y[mod_i], color='black')
         ax.add_patch(patch)
-        plt.pause(1.0)
+        # plt.pause(1.0)
 
-    i+= 1
+    iteration+= 1
 
     return im,
 
-ani = animation.FuncAnimation(fig, updatefig, interval=1000, blit=True)
+ani = animation.FuncAnimation(fig, updatefig, fargs=(a_stages, axes), interval=1000, blit=True)
 plt.show()
 ani.save('line.gif', dpi=80, writer='imagemagick')
