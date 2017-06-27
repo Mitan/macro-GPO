@@ -9,12 +9,15 @@ import numpy as np
 
 from src.DatasetUtils import GenerateRoadModelFromFile
 from src.HypersStorer import RoadHypersStorer_Log18
-from src.Vis2d import Vis2d
+
 
 # todo note
 # for some reason the first iteration (number 0) appears two times in animation (check by printing i from update)
 # dirty hack to resolve it
 iteration = 0
+
+# in 2.0 they changed default style
+mpl.style.use('classic')
 
 def GetAllLocations(summary_filename, batch_size):
 
@@ -57,7 +60,7 @@ def MapAnimatedPlot(grid_extent, ground_truth, path_points,save_path):
     #todo note hardcoded
     time_steps = 20
 
-    ani = animation.FuncAnimation(fig, updatefig, fargs=(time_steps, axes, im, path_points), interval=1000, blit=True)
+    ani = animation.FuncAnimation(fig, updatefig, fargs=(time_steps, axes, im, path_points), interval=1000, blit=False)
     plt.show()
     ani.save(save_path, dpi=80, writer='imagemagick')
 
