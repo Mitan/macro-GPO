@@ -34,8 +34,7 @@ def GetAllLocations(summary_filename, batch_size):
     assert len(locations) == 21
     return locations
 
-
-def MapAnimatedPlot(grid_extent, ground_truth, path_points,save_path):
+def MapStaticPlot(grid_extent, ground_truth, path_points, save_path, isZoomed):
 
     grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
                     grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
@@ -48,7 +47,39 @@ def MapAnimatedPlot(grid_extent, ground_truth, path_points,save_path):
             mmax = max(np.amax(np.amax(q)), mmax)
             mmin = min(np.amin(np.amin(q)), mmin)
 
-    fig = plt.figure(figsize=(8, 11))
+    fig_size = (8,8) if isZoomed else (8, 11)
+    fig = plt.figure(figsize=fig_size)
+    axes = fig.add_subplot(111)
+    # axes = plt.axes()
+    # fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
+
+    im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
+                     # cmap='Greys', vmin=mmin, vmax=mmax)
+                     vmin=mmin, vmax=mmax, animated=True)
+
+    #todo note hardcoded
+    time_steps = 20
+
+    ani = animation.FuncAnimation(fig, updatefig, fargs=(time_steps, axes, im, path_points), interval=1000, blit=False)
+    plt.show()
+    ani.save(save_path, dpi=80, writer='imagemagick')
+
+
+def MapAnimatedPlot(grid_extent, ground_truth, path_points, save_path, is_zoomed):
+
+    grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
+                    grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
+
+    mmax = -10 ** 10
+    mmin = 10 ** 10
+    for q in ground_truth:
+        # for q in [ground_truth, posterior_mean_before, posterior_mean_after]:
+        if q is not None:
+            mmax = max(np.amax(np.amax(q)), mmax)
+            mmin = min(np.amin(np.amin(q)), mmin)
+
+    fig_size = (8,8) if is_zoomed else (8, 11)
+    fig = plt.figure(figsize=fig_size)
     axes = fig.add_subplot(111)
     # axes = plt.axes()
     # fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
@@ -103,25 +134,38 @@ if __name__ == "__main__":
     t, batch_size, num_samples = (4, 5, 250)
     time_slot = 18
 
-    input_folder = '../../mmmle_h1/'
-    locs = GetAllLocations(input_folder + 'summary.txt', batch_size)
-
     filename = '../../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
     m = GenerateRoadModelFromFile(filename)
 
-    XGrid = np.arange(hyper_storer.grid_domain[0][0], hyper_storer.grid_domain[0][1] - 1e-10, hyper_storer.grid_gap)
-    YGrid = np.arange(hyper_storer.grid_domain[1][0], hyper_storer.grid_domain[1][1] - 1e-10, hyper_storer.grid_gap)
+    input_folder = '../../mmmle_h1/'
+    locs = GetAllLocations(input_folder + 'summary.txt', batch_size)
+
+    X_crop = (15, 23)
+    Y_crop = (70, 18)
+
+    X_min = hyper_storer.grid_domain[0][0]
+    X_max = hyper_storer.grid_domain[0][1]
+    Y_min = hyper_storer.grid_domain[1][0]
+    Y_max = hyper_storer.grid_domain[1][1]
+
+    X_min = X_min + X_crop[0]
+    X_max = X_max - X_crop[1]
+    Y_min = Y_min + Y_crop[0]
+    Y_max = Y_max - Y_crop[1]
+
+    XGrid = np.arange(X_min, X_max - 1e-10, hyper_storer.grid_gap)
+    YGrid = np.arange(Y_min, Y_max - 1e-10, hyper_storer.grid_gap)
     XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
     ground_truth = np.vectorize(lambda x, y: m([x, y]))
 
     # Plot graph of locations
     MapAnimatedPlot(
-        grid_extent=[hyper_storer.grid_domain[0][0], hyper_storer.grid_domain[0][1], hyper_storer.grid_domain[1][0],
-                     hyper_storer.grid_domain[1][1]],
+        grid_extent=[X_min, X_max, Y_min,Y_max],
         ground_truth=ground_truth(XGrid, YGrid),
         path_points=locs,
-        save_path=input_folder +'ani_summary_gif.gif')
+        save_path=input_folder +'ani_summary_gif.gif',
+        is_zoomed=True)
 
     path_points = [np.array([[19., 75.]]),
                    np.array([[20., 75.], [21., 76.], [22., 76.], [23., 76.], [23., 77.]]),
