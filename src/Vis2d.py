@@ -161,28 +161,12 @@ class Vis2d:
 
         if not save_path == None:
             plt.savefig(save_path + ".png")
-        if display: plt.show()
         plt.clf()
         plt.close()
 
     def MapAnimatedPlot(self, grid_extent, ground_truth=None, posterior_mean_before=None, posterior_mean_after=None,
                         path_points=None, display=True,
                         save_path=None):
-
-        print "animated"
-
-        """
-        Plots original field and path taken, as well as
-        Saves data to file if required
-        @param ground_truth, posterior mean, posterior variance - 2d-array of relvant data.
-        - Each 2d array represents 1 field (eg. posterior, ground truth)
-        - Note that these are all indexed in integers etc
-        - We will need to scale and translate accordingly
-        @param grid_extent - axis mesh points as a 4-tuple of numpy arrays comprising (x-min, xmax, ymin, ymax)
-        @param path_points - path coordinates in "world" space (ie. actual coordinates, not just (5,3) etc ... )
-        @param display - shows plot on screen, useful for debugging
-        @param save_path
-        """
 
         grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
                         grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
@@ -199,11 +183,11 @@ class Vis2d:
         axes = fig.add_subplot(111)
         # axes = plt.axes()
         # fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
-        if ground_truth is not None:
-            im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
+        #if ground_truth is not None:
+        im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
                              # cmap='Greys', vmin=mmin, vmax=mmax)
-                             vmin=mmin, vmax=mmax)
-            if not path_points == None and path_points:
+                             vmin=mmin, vmax=mmax, animated=True)
+        if not path_points == None and path_points:
                 # batch size
                 # path points is a list
                 number_of_points = len(path_points)
@@ -245,7 +229,7 @@ class Vis2d:
                         axes.plot(x_coord, y_coord, color='black', linewidth=3)
 
         if not save_path == None:
-            plt.savefig(save_path + ".png")
+            plt.savefig(save_path + "_ani.png")
         if display: plt.show()
         plt.clf()
         plt.close()

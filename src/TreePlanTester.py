@@ -170,7 +170,7 @@ class TreePlanTester:
                 f.close()
 
         # Save for the whole trial
-        self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary", animated=True)
+        self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary")
         # Save to file
         f = open(save_folder + "summary" + ".txt", "w")
 
@@ -194,7 +194,7 @@ class TreePlanTester:
         # return state_history, reward_history, nodes_expanded_history, base_measurement_history, total_reward_history
         return normalized_total_reward_history
 
-    def Visualize(self, state_history, display=True, save_path=None, animated=False):
+    def Visualize(self, state_history, display=True, save_path=None):
         """ Visualize 2d environments
         """
         XGrid = np.arange(self.grid_domain[0][0], self.grid_domain[0][1] - 1e-10, self.grid_gap)
@@ -205,15 +205,8 @@ class TreePlanTester:
 
         # Plot graph of locations
         vis = Vis2d()
-        if animated:
-            vis.MapAnimatedPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
-                                             self.grid_domain[1][1]],
-                                ground_truth=ground_truth(XGrid, YGrid),
-                                path_points=[x.physical_state for x in state_history],
-                                display=display,
-                                save_path=save_path)
-        else:
-            vis.MapPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
+
+        vis.MapPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
                                      self.grid_domain[1][1]],
                         ground_truth=ground_truth(XGrid, YGrid),
                         path_points=[x.physical_state for x in state_history],
