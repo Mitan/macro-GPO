@@ -228,8 +228,8 @@ class Vis2d:
                         y_coord = (current_point[1], next_point[1])
                         axes.plot(x_coord, y_coord, color='black', linewidth=3)
 
-        if not save_path == None:
-            plt.savefig(save_path + "_ani.png")
+        plt.savefig(save_path)
+
         if display: plt.show()
         plt.clf()
         plt.close()
