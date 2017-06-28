@@ -46,7 +46,7 @@ def MapStaticPlot(grid_extent, ground_truth, path_points, save_path, xy_min, win
             mmax = max(np.amax(np.amax(q)), mmax)
             mmin = min(np.amin(np.amin(q)), mmin)
 
-    fig_size = (8, 11)
+    fig_size = (6, 11)
     fig = plt.figure(figsize=fig_size)
     ax = fig.add_subplot(111)
     # axes = plt.axes()
@@ -79,7 +79,7 @@ def MapStaticPlot(grid_extent, ground_truth, path_points, save_path, xy_min, win
     patch = plt.Rectangle(xy=xy_min, width=window_size, height=window_size, edgecolor='black', fill=False, linewidth=4)
     ax.add_patch(patch)
 
-    plt.savefig(save_path)
+    plt.savefig(save_path, bbox_inches='tight', pad_inches=0)
     plt.clf()
     plt.close()
 
@@ -191,14 +191,14 @@ if __name__ == "__main__":
         save_path=input_folder + 'ani_summary_full.png',
         xy_min=(cropped_X_min, cropped_Y_min),
         window_size=cropping_constant)
-
+    """
     # zoomed image
     MapAnimatedPlot(
         grid_extent=[cropped_X_min, cropped_X_max, cropped_Y_min,cropped_Y_max],
         ground_truth=ground_truth(cropped_XGrid, cropped_YGrid),
         path_points=locs,
         save_path=input_folder + 'ani_summary_zoomed.gif')
-    
+    """
     path_points = [np.array([[19., 75.]]),
                    np.array([[20., 75.], [21., 76.], [22., 76.], [23., 76.], [23., 77.]]),
                    np.array([[24., 77.], [25., 76.], [25., 75.], [25., 74.], [24., 73.]]),
