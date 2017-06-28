@@ -28,15 +28,15 @@ def GetAllLocations(summary_filename, batch_size):
     for str_line in stripped_lines:
         string_numbers = str_line.replace('[', ' ').replace(']', ' ').split()
         numbers = map(float, string_numbers)
-        loc = (numbers[0], numbers[1])
+        loc = (numbers[1], numbers[0])
         locations.append(loc)
     assert len(locations) == 21
     return locations
 
 
 def MapStaticPlot(grid_extent, ground_truth, path_points, save_path, xy_min, window_size):
-    grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
-                    grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
+    #grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
+    #                grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
 
     mmax = -10 ** 10
     mmin = 10 ** 10
@@ -46,13 +46,14 @@ def MapStaticPlot(grid_extent, ground_truth, path_points, save_path, xy_min, win
             mmax = max(np.amax(np.amax(q)), mmax)
             mmin = min(np.amin(np.amin(q)), mmin)
 
-    fig_size = (6, 11)
+    # fig_size = (6, 11)
+    fig_size = (11, 8)
     fig = plt.figure(figsize=fig_size)
     ax = fig.add_subplot(111)
     # axes = plt.axes()
     # fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
 
-    im = ax.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
+    im = ax.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent, origin='lower',
                      # cmap='Greys', vmin=mmin, vmax=mmax)
                      vmin=mmin, vmax=mmax)
 
@@ -85,8 +86,7 @@ def MapStaticPlot(grid_extent, ground_truth, path_points, save_path, xy_min, win
 
 
 def MapAnimatedPlot(grid_extent, ground_truth, path_points, save_path):
-    grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
-                    grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
+    # grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
 
     mmax = -10 ** 10
     mmin = 10 ** 10
@@ -102,7 +102,7 @@ def MapAnimatedPlot(grid_extent, ground_truth, path_points, save_path):
     # axes = plt.axes()
     # fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
 
-    im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
+    im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent,
                      # cmap='Greys', vmin=mmin, vmax=mmax)
                      vmin=mmin, vmax=mmax, animated=True)
 
@@ -157,18 +157,19 @@ if __name__ == "__main__":
     input_folder = '../../mmmle_h1/'
     locs = GetAllLocations(input_folder + 'summary.txt', batch_size)
 
-    ground_truth = np.vectorize(lambda x, y: m([x, y]))
+    ground_truth = np.vectorize(lambda x, y: m([y, x]))
 
-    X_crop = (15, 23)
-    Y_crop = (70, 18)
+    X_crop = (70, 18)
+    Y_crop = (15, 23)
+
 
     # the size of the cropping window
     cropping_constant = 12
 
-    X_min = hyper_storer.grid_domain[0][0]
-    X_max = hyper_storer.grid_domain[0][1]
-    Y_min = hyper_storer.grid_domain[1][0]
-    Y_max = hyper_storer.grid_domain[1][1]
+    X_min = hyper_storer.grid_domain[1][0]
+    X_max = hyper_storer.grid_domain[1][1]
+    Y_min = hyper_storer.grid_domain[0][0]
+    Y_max = hyper_storer.grid_domain[0][1]
 
     XGrid = np.arange(X_min, X_max - 1e-10, hyper_storer.grid_gap)
     YGrid = np.arange(Y_min, Y_max - 1e-10, hyper_storer.grid_gap)
