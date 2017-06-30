@@ -32,6 +32,7 @@ def GetAllLocations(summary_filename, batch_size):
         locations.append(loc)
     assert len(locations) == 21
     return locations
+    # return list(reversed(locations))
 
 
 def MapStaticPlot(grid_extent, ground_truth, path_points, save_path, xy_min, window_size):
@@ -47,7 +48,7 @@ def MapStaticPlot(grid_extent, ground_truth, path_points, save_path, xy_min, win
             mmin = min(np.amin(np.amin(q)), mmin)
 
     # fig_size = (6, 11)
-    fig_size = (11, 8)
+    fig_size = (12, 8)
     fig = plt.figure(figsize=fig_size)
     ax = fig.add_subplot(111)
     # axes = plt.axes()
@@ -96,13 +97,13 @@ def MapAnimatedPlot(grid_extent, ground_truth, path_points, save_path):
             mmax = max(np.amax(np.amax(q)), mmax)
             mmin = min(np.amin(np.amin(q)), mmin)
 
-    fig_size = (8, 8)
+    fig_size = (6, 8)
     fig = plt.figure(figsize=fig_size)
     axes = fig.add_subplot(111)
     # axes = plt.axes()
     # fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
 
-    im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent,
+    im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent,origin='lower',
                      # cmap='Greys', vmin=mmin, vmax=mmax)
                      vmin=mmin, vmax=mmax, animated=True)
 
@@ -123,7 +124,7 @@ def updatefig(i, time_steps, ax, im, locations):
     mod_i = iteration % (animation_stages)
     # for initial point and ends of macro-actions (visited locations)
     if mod_i % batch_size == 0:
-        circle_patch = plt.Circle(locations[mod_i], 0.2, color='black')
+        circle_patch = plt.Circle(locations[mod_i], 0.2, color='white')
         ax.add_patch(circle_patch)
 
     # last stage for clearing
@@ -154,17 +155,32 @@ if __name__ == "__main__":
     filename = '../../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
     m = GenerateRoadModelFromFile(filename)
 
+    # example
+    X_crop = (70, 18)
+    Y_crop = (15, 23)
     input_folder = '../../mmmle_h1/'
+    # the size of the cropping window
+    cropping_constant = 12
+
+    #todo note need to reverse
+    X_crop = (30, 50)
+    Y_crop = (0, 30)
+    input_folder = '../../o/normal_28pe/'
+    cropping_constant = 20
+
+    X_crop = (30, 50)
+    Y_crop = (12, 18)
+    input_folder = '../../o/normal_7_qEI/'
+    cropping_constant = 20
+
+    X_crop = (23, 57)
+    Y_crop = (13, 17)
+    input_folder = '../../o/beta3_1_beta0.05/'
+    cropping_constant = 20
+
     locs = GetAllLocations(input_folder + 'summary.txt', batch_size)
 
     ground_truth = np.vectorize(lambda x, y: m([y, x]))
-
-    X_crop = (70, 18)
-    Y_crop = (15, 23)
-
-
-    # the size of the cropping window
-    cropping_constant = 12
 
     X_min = hyper_storer.grid_domain[1][0]
     X_max = hyper_storer.grid_domain[1][1]
@@ -192,14 +208,14 @@ if __name__ == "__main__":
         save_path=input_folder + 'ani_summary_full.png',
         xy_min=(cropped_X_min, cropped_Y_min),
         window_size=cropping_constant)
-    """
+
     # zoomed image
     MapAnimatedPlot(
         grid_extent=[cropped_X_min, cropped_X_max, cropped_Y_min,cropped_Y_max],
         ground_truth=ground_truth(cropped_XGrid, cropped_YGrid),
         path_points=locs,
         save_path=input_folder + 'ani_summary_zoomed.gif')
-    """
+
     path_points = [np.array([[19., 75.]]),
                    np.array([[20., 75.], [21., 76.], [22., 76.], [23., 76.], [23., 77.]]),
                    np.array([[24., 77.], [25., 76.], [25., 75.], [25., 74.], [24., 73.]]),
