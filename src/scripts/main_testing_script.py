@@ -8,19 +8,20 @@ if __name__ == '__main__':
     h_max = 3
 
     args = sys.argv
-    # seed_0 = int(args[1])
-    # time_slot = int(args[2])
 
+    seed_0 = int(args[1])
+    time_slot = int(args[2])
+    """
     seed_0 = 0
     time_slot = 2
-
+    """
     # t, batch_size, num_samples, time_slot = (4,5, 250, 18)
-    t, batch_size, num_samples = (5, 4, 250)
+    t, batch_size, num_samples = (4, 5, 250)
 
     # filename = '../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
 
     my_save_folder_root = "../../robot_tests/"
-    data_file = '../../datasets/robot/selected_slots/slot_' + str(2) + '/final_slot_2.txt'
+    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/final_slot_'+ str(time_slot) + '.txt'
     neighbours_file = '../../datasets/robot/all_neighbours.txt'
     coords_file = '../../datasets/robot/all_coords.txt'
 

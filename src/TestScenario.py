@@ -3,6 +3,7 @@ import os
 from DatasetUtils import GenerateRobotModelFromFile, GenerateRoadModelFromFile
 from MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
+from src.ResultsPlotter import PlotData
 
 
 def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
@@ -307,7 +308,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
 
     # real-world
 
-    """
     if batch_size > 1:
         method_name = 'qEI'
         qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
@@ -317,7 +317,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         result_graphs.append([method_name, qEI])
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(qEI) + '\n')
-    """
+
     method_name = 'Myopic DB-GP-UCB'
     myopic_ucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MyopicUCB, horizon=1,
                                          num_timesteps_test=time_steps,
@@ -326,7 +326,19 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, myopic_ucb])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(myopic_ucb) + '\n')
-    """
+
+    PE = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
+                                 num_timesteps_test=time_steps,
+                                 save_folder=save_folder + "new_pe/",
+                                 num_samples=num_samples, batch_size=batch_size,
+                                 start_location=start_location)
+
+    method_name = 'NEW-BUCB-PE'
+    result_graphs.append([method_name, PE])
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(PE) + '\n')
+
+
     method_name = 'MLE H = 4'
     mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=4,
                                   num_timesteps_test=time_steps,
@@ -348,9 +360,9 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         result_graphs.append([method_name, current_h_result])
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h_result) + '\n')
-    """
+
     output_rewards.close()
-    # PlotData(result_graphs, save_folder)
+    PlotData(results=result_graphs, output_file_name=save_folder+ 'results.eps', isRoad=False, isTotalReward=True)
 
 
 def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,

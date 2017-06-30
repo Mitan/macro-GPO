@@ -295,7 +295,8 @@ class TreePlan:
 
         first_points = self.GetSetOfNextPoints(available_states, 0)
 
-        domain_size = self.grid_domain[0][1] * self.grid_domain[1][1]
+        # for robot experiment domain size is None
+        domain_size =  145 if self.grid_domain is None else self.grid_domain[0][1] * self.grid_domain[1][1]
         delta = 0.1
         t_squared = 1
         beta_0 = 2 * math.log(domain_size * t_squared * math.pi ** 2 / (6 * delta))

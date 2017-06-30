@@ -6,8 +6,8 @@ from src.GaussianProcess import SquareExponential, GaussianProcess
 
 def LeaveOneOut(slot_number):
     error = 0
-    input_data_file = '../datasets/robot/slots/slot_' + str(slot_number) + '.txt'
-    hypers_file = '../datasets/robot/hypers/hypers_' + str(slot_number) + '.txt'
+    input_data_file = '../datasets/old_robot/slots/slot_' + str(slot_number) + '.txt'
+    hypers_file = '../datasets/old_robot/hypers/hypers_' + str(slot_number) + '.txt'
     all_data = np.genfromtxt(input_data_file)
     hypers = np.genfromtxt(hypers_file)
     X = all_data[:, :-1]
