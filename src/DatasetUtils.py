@@ -3,7 +3,7 @@ import numpy as np
 
 from GaussianProcess import SquareExponential, GaussianProcess, MapValueDict
 from RoadMapValueDict import RoadMapValueDict
-from src.RobotMapValueDict import RobotValueDict
+from RobotMapValueDict import RobotValueDict
 
 
 def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,

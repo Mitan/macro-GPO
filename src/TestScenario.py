@@ -3,7 +3,7 @@ import os
 from DatasetUtils import GenerateRobotModelFromFile, GenerateRoadModelFromFile
 from MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
-from src.ResultsPlotter import PlotData
+# from ResultsPlotter import PlotData
 
 
 def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
@@ -304,8 +304,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(bucb) + '\n')
     """
-
-
     # real-world
 
     if batch_size > 1:
@@ -349,7 +347,8 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(str(mle) + '\n')
 
     # for h in range(2, h_max+1):
-    for h in range(2, h_max + 1):
+    # for h in range(2, h_max + 1):
+    for h in range(h_max, 1, -1):
         # print h
         method_name = 'Anytime H = ' + str(h)
         current_h_result = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
@@ -362,7 +361,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         output_rewards.write(str(current_h_result) + '\n')
 
     output_rewards.close()
-    PlotData(results=result_graphs, output_file_name=save_folder+ 'results.eps', isRoad=False, isTotalReward=True)
+    # PlotData(results=result_graphs, output_file_name=save_folder+ 'results.eps', isRoad=False, isTotalReward=True)
 
 
 def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,
