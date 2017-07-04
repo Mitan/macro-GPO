@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     # filename = '../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
 
-    my_save_folder_root = "../robot_tests/tests1/"
+    my_save_folder_root = "../robot_tests/tests1_" + str(time_slot) + "/"
     data_file = '../datasets/robot/selected_slots/slot_' + str(time_slot) + '/final_slot_'+ str(time_slot) + '.txt'
     neighbours_file = '../datasets/robot/all_neighbours.txt'
     coords_file = '../datasets/robot/all_coords.txt'
