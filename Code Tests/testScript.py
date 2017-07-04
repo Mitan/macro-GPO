@@ -63,7 +63,7 @@ for line in lines:
 print dict
 """
 
-
+"""
 def process_1():
     dict = {}
     # print "0"
@@ -131,3 +131,6 @@ new_lines = np.genfromtxt('../datasets/intel-robot/raw_dataset.txt')
 
 for i in range(len(keys)):
     GetSlotForOneKey(all_lines=new_lines, all_keys=keys, index=i)
+"""
+
+print range(3, 1, -1)
