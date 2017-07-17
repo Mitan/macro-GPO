@@ -1,7 +1,7 @@
 from src.ResultsPlotter import PlotData
 import numpy as np
 
-from src.DatasetUtils import GetAllMeasurements, GetAccumulatedRewards, GenerateModelFromFile, GenerateRoadModelFromFile
+from src.DatasetUtils import *
 
 
 def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, tests_source_path):
@@ -38,6 +38,28 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
     scaled_results = results_for_method - scaled_model_mean
     # result = [method_names[index], scaled_results.tolist()]
     return scaled_results.tolist()
+
+
+def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot):
+
+    results = []
+
+    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/final_slot_' + str(time_slot) + '.txt'
+    neighbours_file = '../../datasets/robot/all_neighbours.txt'
+    coords_file = '../../datasets/robot/all_coords.txt'
+    m = GenerateRobotModelFromFile(data_filename=data_file, coords_filename=coords_file,
+                                   neighbours_filename=neighbours_file)
+    model_mean = m.mean
+
+    for index, method in enumerate(methods):
+        # todo hack
+        adjusted_batch_size = 1 if method == 'ei' else batch_size
+        scaled_results = CalculateRoadResultsForOneMethod(adjusted_batch_size, model_mean, seeds, method,
+                                                          tests_source_path)
+        result = [method_names[index], scaled_results]
+        results.append(result)
+
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, isRoad=True)
 
 
 def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename):
@@ -258,17 +280,89 @@ def GetRoad_H2Full_TotalRewards():
                 seeds=seeds, output_filename=output_file)
 
 
+##### Robot #######
+
+# todo
+def GetRobotBeta2Rewards():
+    seeds = range(35)
+    root_path = '../../releaseTests/road/beta2/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/road_beta2_rewards.eps'
+
+    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file)
+
+# todo
+def GetRobotBeta3Rewards():
+    seeds = range(35)
+    root_path = '../../releaseTests/road/beta3/'
+    # root_path = '../../last_Beta3/'
+    # root_path = '../../zero_last_Beta3/'
+    # root_path = '../../copy_beta3/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/road_beta3_rewards.eps'
+
+    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file)
+
+
+def GetRobotTotalRewards():
+    seeds = range(35)
+    batch_size = 5
+
+    time_slot = 16
+
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h4', 'qEI', 'new_pe']
+
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    # method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+
+    root_path = '../../robot_tests/tests1_16/'
+
+    output_file = '../../result_graphs/eps/robot'+ str(time_slot) +'_total_rewards.eps'
+
+    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file, time_slot=time_slot)
+
+# todo
+def GetRobot_H2Full_TotalRewards():
+    seeds = range(35)
+    batch_size = 5
+
+    # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
+    method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)', 'EI']
+
+    root_path = '../../releaseTests/road/tests2full/'
+
+    output_file = '../../result_graphs/eps/h2_full_total_rewards.eps'
+
+    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file)
+
 if __name__ == "__main__":
     """
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
+    GetRoad_H2Full_TotalRewards()
 
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
-
-
-    GetRoad_H2Full_TotalRewards()
     """
-    GetSimulatedTotalRewards()
+    GetRobotTotalRewards()
+
