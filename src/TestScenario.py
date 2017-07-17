@@ -156,7 +156,8 @@ def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch
     output_rewards.close()
 
 
-def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
+def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, data_filename,
+                 coords_filename, neighbours_filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -165,7 +166,9 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
         if not os.path.isdir(save_folder):
             raise
 
-    m = GenerateRoadModelFromFile(filename)
+    # m = GenerateRoadModelFromFile(filename)
+    m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
+                                   neighbours_filename=neighbours_filename)
     m.LoadSelectedMacroactions(save_folder, batch_size)
     # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
 
