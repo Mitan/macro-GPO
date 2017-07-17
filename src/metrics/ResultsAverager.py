@@ -324,7 +324,7 @@ def GetRobotTotalRewards():
 
     time_slot = 16
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
+    # methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h4', 'qEI', 'new_pe']
 
     method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
