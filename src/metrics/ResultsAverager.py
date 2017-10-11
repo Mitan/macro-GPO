@@ -9,7 +9,7 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
 
     steps = 20 / batch_size
     scaled_model_mean = np.array([(1 + batch_size * i) * model_mean for i in range(steps + 1)])
-    print scaled_model_mean
+    # print scaled_model_mean
 
     number_of_location = 0
 
@@ -36,6 +36,7 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
     # print results_for_method
     results_for_method = results_for_method / len_seeds
     scaled_results = results_for_method - scaled_model_mean
+    print method, scaled_results
     # result = [method_names[index], scaled_results.tolist()]
     return scaled_results.tolist()
 
@@ -324,11 +325,13 @@ def GetRobotTotalRewards():
 
     time_slot = 16
 
-    # methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h4', 'qEI', 'new_pe']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe', 'pe']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'pe']
+    # methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h4', 'qEI', 'new_pe']
 
-    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
-    # method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    # method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE', 'PE']
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI',  'PE']
 
     root_path = '../../robot_tests/tests1_16/'
 

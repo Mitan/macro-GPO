@@ -43,7 +43,8 @@ def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_s
     output_rewards.close()
 
 
-def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
+def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, coords_filename,
+                        data_filename, neighbours_filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -52,8 +53,18 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
         if not os.path.isdir(save_folder):
             raise
 
+    """
     m = GenerateRoadModelFromFile(filename)
     m.LoadSelectedMacroactions(save_folder, batch_size)
+
+    start_location = m.LoadRandomLocation(save_folder)
+    """
+    m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
+                                   neighbours_filename=neighbours_filename)
+
+
+    m.LoadSelectedMacroactions(save_folder, batch_size)
+    # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
 
     start_location = m.LoadRandomLocation(save_folder)
 
@@ -77,7 +88,7 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
     """
     PE = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
                                  num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "new_pe/",
+                                 save_folder=save_folder + "pe/",
                                  num_samples=num_samples, batch_size=batch_size,
                                  start_location=start_location)
 
