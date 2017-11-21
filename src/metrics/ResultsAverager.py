@@ -283,40 +283,39 @@ def GetRoad_H2Full_TotalRewards():
 
 ##### Robot #######
 
-# todo
 def GetRobotBeta2Rewards():
     seeds = range(35)
-    root_path = '../../releaseTests/road/beta2/'
+    root_path = '../../robot_tests/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
+    time_slot = 16
 
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/road_beta2_rewards.eps'
+    output_file = '../../result_graphs/robot_beta2_rewards.eps'
 
-    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file)
+    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot)
 
-# todo
+
 def GetRobotBeta3Rewards():
     seeds = range(35)
-    root_path = '../../releaseTests/road/beta3/'
-    # root_path = '../../last_Beta3/'
-    # root_path = '../../zero_last_Beta3/'
-    # root_path = '../../copy_beta3/'
+    # seeds = list(set(range(35)) - set([27]))
+    root_path = '../../robot_tests/beta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
+    time_slot = 16
 
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/road_beta3_rewards.eps'
+    output_file = '../../result_graphs/robot_beta3_rewards.eps'
 
-    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file)
+    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot)
 
 
 def GetRobotTotalRewards():
@@ -367,5 +366,6 @@ if __name__ == "__main__":
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
     """
-    GetRobotTotalRewards()
-
+    # GetRobotTotalRewards()
+    GetRobotBeta2Rewards()
+    GetRobotBeta3Rewards()
