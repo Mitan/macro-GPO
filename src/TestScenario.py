@@ -130,7 +130,7 @@ def TestScenario_EI_PI(my_save_folder_root, seed, time_steps, num_samples, batch
     """
 
 
-def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
+def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot,coords_filename,data_filename, neighbours_filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -139,8 +139,9 @@ def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch
         if not os.path.isdir(save_folder):
             raise
 
-    m = GenerateRoadModelFromFile(filename)
-    m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
+    m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
+                                   neighbours_filename=neighbours_filename)
+    m.LoadSelectedMacroactions(save_folder, batch_size)
 
     start_location = m.LoadRandomLocation(save_folder)
 
