@@ -141,7 +141,8 @@ def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch
 
     m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
                                    neighbours_filename=neighbours_filename)
-    m.LoadSelectedMacroactions(save_folder, batch_size)
+    # m.LoadSelectedMacroactions(save_folder, batch_size)
+    m.SelectMacroActions(save_folder, batch_size, select_all=True)
 
     start_location = m.LoadRandomLocation(save_folder)
 
