@@ -79,3 +79,5 @@ unused_datasets
 datasets/intel-robot/neighbours.txt
 datasets/intel-robot/labapp3-data-new.txt
 datasets/intel-robot/coordinates.txt
+robot_beta3_rewards.eps
+robot_beta2_rewards.eps

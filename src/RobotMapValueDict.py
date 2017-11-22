@@ -83,7 +83,7 @@ class RobotValueDict(MapValueDict):
         self.selected_actions_dict = {}
 
         treshhold = 20
-        actions_file  = open(folder_name + 'actions_selected.txt', 'w')
+        actions_file  = open(folder_name + 'actions_selected.txt', 'w') if not select_all else None
 
         for loc in self.locations:
             all_macro_actions = self.GenerateAllMacroActions(loc, batch_size)
@@ -105,7 +105,8 @@ class RobotValueDict(MapValueDict):
                 self.selected_actions_dict[tuple(loc)] = [all_macro_actions[i] for i in generated_indexes]
                 actions_file.write(str(loc[0]) + ' ' + str(loc[1]) + ' ' + str(generated_indexes) + '\n')
 
-        actions_file.close()
+        if actions_file:
+            actions_file.close()
 
     # for given state
     def GetSelectedMacroActions(self, current_state):
