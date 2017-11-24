@@ -339,21 +339,23 @@ def GetRobotTotalRewards():
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, time_slot=time_slot)
 
-# todo
+
 def GetRobot_H2Full_TotalRewards():
     seeds = range(35)
     batch_size = 5
+    time_slot = 16
 
     # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
-    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
-    method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)', 'EI']
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
+    method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
 
-    root_path = '../../releaseTests/road/tests2full/'
+    root_path = '../../robot_tests/tests1_16_ok/'
 
-    output_file = '../../result_graphs/eps/h2_full_total_rewards.eps'
+    output_file = '../../result_graphs/robot_h2_full_total_rewards.eps'
 
-    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file)
+    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file, time_slot=time_slot)
+
 
 if __name__ == "__main__":
     """
@@ -367,5 +369,6 @@ if __name__ == "__main__":
     GetSimulatedTotalRewards()
     """
     # GetRobotTotalRewards()
-    GetRobotBeta2Rewards()
-    GetRobotBeta3Rewards()
+    # GetRobotBeta2Rewards()
+    #GetRobotBeta3Rewards()
+    GetRobot_H2Full_TotalRewards()
