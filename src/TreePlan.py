@@ -42,7 +42,9 @@ class TreePlan:
         # unused
         self.l2 = lambda sigma: 1
 
-        self.reward_analytical = lambda mu, sigma: self.AcquizitionFunction(mu, sigma)
+        self.reward_analytical = lambda mu, sigma: (
+            self.AcquizitionFunction(mu, sigma) - self.batch_size * self.gp.mean_function)
+
         # unused
         self.reward_sampled = lambda f: 0
 
@@ -249,7 +251,6 @@ class TreePlan:
 
         return vBest, xBest, -1
 
-
     def EI(self, x_0):
 
         best_observation = max(x_0.history.measurements)
@@ -296,7 +297,7 @@ class TreePlan:
         first_points = self.GetSetOfNextPoints(available_states, 0)
 
         # for robot experiment domain size is None
-        domain_size =  145 if self.grid_domain is None else self.grid_domain[0][1] * self.grid_domain[1][1]
+        domain_size = 145 if self.grid_domain is None else self.grid_domain[0][1] * self.grid_domain[1][1]
         delta = 0.1
         t_squared = 1
         beta_0 = 2 * math.log(domain_size * t_squared * math.pi ** 2 / (6 * delta))
