@@ -3,7 +3,7 @@ import random
 import GPy
 import numpy as np
 import rpy2.robjects as robjects  # This initializes R
-from r_qei import newQEI
+from src.r_qei import newQEI
 
 
 class GPyPredictor:

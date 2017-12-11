@@ -13,6 +13,8 @@ class GaussianProcess:
         # self.noise_variance = noise_variance
         self.mean_function = mean_function
         self.noise = self.covariance_function.noise_variance
+        self.length_scale = self.covariance_function.length_scale
+        self.signal_variance = self.covariance_function.signal_variance
 
     def CovarianceFunction(self, s1, s2):
         return self.covariance_function.Cov(s1, s2)
@@ -141,7 +143,9 @@ class CovarianceFunction:
     """
 
     def __init__(self):
-        pass
+        self.length_scale = None
+        self.signal_variance = None
+        self.noise_variance = None
 
 
 # noiseless fucnction
@@ -153,6 +157,7 @@ class SquareExponential(CovarianceFunction):
         @param: length_scale l - array or list containing the length scales for each dimension
         @param: signal variance sigma_f_squared - float containing the signal variance
         """
+        CovarianceFunction.__init__(self)
         self.length_scale = np.atleast_2d(length_scale)
         self.signal_variance = signal_variance
         self.noise_variance = noise_variance

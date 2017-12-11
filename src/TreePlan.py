@@ -8,6 +8,7 @@ from scipy.stats import norm
 from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
 from SampleFunctionBuilder import GetNumberOfSamples
+from src.r_qei import newQEI
 
 
 class TreePlan:
@@ -171,8 +172,35 @@ class TreePlan:
             return 0
 
         mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
-        # mu = self.gp.GPMean(locations=x.history.locations, measurements=x.history.measurements, current_location=x.physical_state, cholesky=new_st.cholesky)
+        # mu = self.gp.GPMean(locations=x.history.locations, measurements=x.history.measurements,
+        # current_location=x.physical_state, cholesky=new_st.cholesky)
         return self.ComputeVMLE(T - 1, self.TransitionH(x, mu), new_st)[0]
+
+    def new_qEI(self, x_0):
+        # x_0 stores a 2D np array of k points with history
+
+        best_action = None
+        best_expected_improv = -1.0
+
+        qei = newQEI(length_scale=self.gp.length_scale, signal_variance=self.gp.signal_variance,
+                     noise_variance=self.gp.noise,
+                     locations=x_0.history.locations, Y=x_0.history.measurements - np.mean(x_0.history.measurements))
+
+        next_states = self.GetNextAugmentedStates(x_0)
+        if not next_states:
+            raise Exception("qEI could not move from  location " + str(x_0.physical_state))
+
+        for x_next in next_states:
+            # x_next = self.TransitionP(x_0, a)
+
+            expectedImprov = qei.acquisition(x_next.physical_state)
+
+            # comparison
+            if expectedImprov >= best_expected_improv:
+                best_expected_improv = expectedImprov
+                best_action = x_next
+
+        return best_expected_improv, best_action, len(next_states)
 
     def qEI(self, x_0, eps=10 ** (-5)):
         # x_0 stores a 2D np array of k points with history
