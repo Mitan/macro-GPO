@@ -7,8 +7,8 @@ if __name__ == '__main__':
     args = sys.argv
 
     # seeds = map(int, args[1:])
-    #seed_0 = int(args[1])
-    seed_0 = 0
+    seed_0 = int(args[1])
+    # seed_0 = 0
     # time_slot = int(args[2])
 
     # note hardcoded
