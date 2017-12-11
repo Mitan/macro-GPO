@@ -471,7 +471,7 @@ class TreePlan:
         gc.collect()
         print "Performing search..."
 
-        number_of_iterations = 200 if H == 4 else 750
+        number_of_iterations = 600 if H == 4 else 1500
         counter = 0
         # TODO: Set a proper termination condition
         # whilre resources permit
