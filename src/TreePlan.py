@@ -283,7 +283,7 @@ class TreePlan:
 
         return vBest, xBest, -1
 
-    def BUCB_PE(self, x_0):
+    def BUCB_PE(self, x_0, t):
 
         # valid_actions = self.GetValidActionSet(x_0.physical_state)
         # next_states = [self.TransitionP(x_0, a) for a in valid_actions]
@@ -299,8 +299,9 @@ class TreePlan:
         # for robot experiment domain size is None
         domain_size = 145 if self.grid_domain is None else self.grid_domain[0][1] * self.grid_domain[1][1]
         delta = 0.1
-        t_squared = 1
-        beta_0 = 2 * math.log(domain_size * t_squared * math.pi ** 2 / (6 * delta))
+        t_squared = (t + 1) ** 2
+        # beta_{t+1}
+        beta_t1 = 2 * math.log(domain_size * t_squared * (math.pi ** 2) / (6 * delta))
 
         best_current_point = None
         best_current_measurement = - float("inf")
@@ -317,7 +318,7 @@ class TreePlan:
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
 
             # predicted_val = mu[0] + beta_0 * Sigma[0, 0]
-            predicted_val = mu[0] + beta_0 * math.sqrt(Sigma[0, 0])
+            predicted_val = mu[0] + math.sqrt(beta_t1) * math.sqrt(Sigma[0, 0])
             if predicted_val > best_current_measurement:
                 best_current_measurement = predicted_val
                 best_current_point = first_point

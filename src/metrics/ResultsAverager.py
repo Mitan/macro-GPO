@@ -42,7 +42,6 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
 
 
 def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot):
-
     results = []
 
     data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/final_slot_' + str(time_slot) + '.txt'
@@ -253,9 +252,9 @@ def GetRoadTotalRewards():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe', 'fixed_pe']
 
-    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE', 'FIXED-PE']
 
     root_path = '../../releaseTests/road/b5-18-log/'
 
@@ -302,9 +301,10 @@ def GetRobotBeta2Rewards():
 
 def GetRobotBeta3Rewards():
     seeds = range(35)
-    # seeds = list(set(range(35)) - set([27]))
+    seeds = list(set(range(35)) - set([33, 34]))
     root_path = '../../robot_tests/beta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
     time_slot = 16
 
@@ -325,19 +325,20 @@ def GetRobotTotalRewards():
     time_slot = 16
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe', 'pe']
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'pe']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'pe', 'fixed_pe']
     # methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h4', 'qEI', 'new_pe']
 
     # method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
-    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE', 'PE']
-    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI',  'PE']
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE', 'PE',
+                    'FIXED-PE']
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'PE', 'FIXED-PE']
 
-    root_path = '../../robot_tests/tests1_16/'
+    root_path = '../../robot_tests/tests1_16_ok/'
 
-    output_file = '../../result_graphs/eps/robot'+ str(time_slot) +'_total_rewards.eps'
+    output_file = '../../result_graphs/eps/robot' + str(time_slot) + '_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, time_slot=time_slot)
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot)
 
 
 def GetRobot_H2Full_TotalRewards():
@@ -354,7 +355,7 @@ def GetRobot_H2Full_TotalRewards():
     output_file = '../../result_graphs/robot_h2_full_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, time_slot=time_slot)
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot)
 
 
 if __name__ == "__main__":
@@ -368,7 +369,7 @@ if __name__ == "__main__":
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
     """
-    # GetRobotTotalRewards()
+    GetRobotTotalRewards()
     # GetRobotBeta2Rewards()
-    #GetRobotBeta3Rewards()
-    GetRobot_H2Full_TotalRewards()
+    # GetRobotBeta3Rewards()
+    # GetRobot_H2Full_TotalRewards()
