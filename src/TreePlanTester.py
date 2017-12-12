@@ -106,6 +106,13 @@ class TreePlanTester:
             elif method == Methods.qEI:
                 vBest, x_temp, nodes_expanded = tp.qEI(x_0)
 
+            elif method == Methods.new_qEI:
+                if time > 0:
+                    vBest, x_temp, nodes_expanded = tp.new_qEI(x_0)
+                else:
+                    vBest, x_temp, nodes_expanded = tp.qEI(x_0)
+
+
             elif method == Methods.EI:
                 vBest, x_temp, nodes_expanded = tp.EI(x_0)
 
