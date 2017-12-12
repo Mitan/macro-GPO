@@ -162,7 +162,7 @@ class TreePlanTester:
                 a = tp.TransitionP(x_0, a)
 
             elif method == Methods.BUCB_PE:
-                vBest, a, nodes_expanded = tp.BUCB_PE(x_0)
+                vBest, a, nodes_expanded = tp.BUCB_PE(x_0, time)
 
             elif method == Methods.qEI:
                 vBest, a, nodes_expanded = tp.qEI(x_0)
