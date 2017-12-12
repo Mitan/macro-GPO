@@ -309,9 +309,9 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
     past_locations = np.array(
         [[1.0, 0.85], [1.0, 1.15], [1.15, 1.0], [0.85, 1.0], [1.0, 0.65], [1.0, 1.35], [1.35, 1.0], [0.65, 1.0],
          [1.0, 1.0]])
-    past_locations = np.array([[1.05, 1.05],[1.0, 1.0]])
+    # past_locations = np.array([[1.05, 1.05],[1.0, 1.0]])
 
-    # past_locations = np.array([[1.0, 1.0]])
+    past_locations = np.array([[1.0, 1.0]])
 
     # Unused
     noise_in_trials = True
