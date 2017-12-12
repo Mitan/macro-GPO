@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     # note hardcoded
     time_slot = 18
-    t, batch_size, num_samples = (1, 5, 250)
+    t, batch_size, num_samples = (4, 5, 250)
 
     filename = '../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
 
