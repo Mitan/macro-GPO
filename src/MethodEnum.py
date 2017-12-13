@@ -19,4 +19,5 @@ Methods = enum(Exact=1,
                qEI=3,
                MLE=4,
                MyopicUCB=5,
-               BUCB_PE=6)
+               BUCB_PE=6,
+               new_qEI=7)

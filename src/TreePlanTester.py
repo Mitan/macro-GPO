@@ -168,6 +168,14 @@ class TreePlanTester:
                 vBest, a, nodes_expanded = tp.qEI(x_0)
                 a = tp.TransitionP(x_0, a)
 
+            elif method == Methods.new_qEI:
+                if time == 0:
+                    vBest, a, nodes_expanded = tp.qEI(x_0)
+                else:
+                    vBest, a, nodes_expanded = tp.new_qEI(x_0)
+
+                a = tp.TransitionP(x_0, a)
+
             else:
                 raise Exception("Unknown method type")
 

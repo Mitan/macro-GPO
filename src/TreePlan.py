@@ -12,6 +12,7 @@ from Vis2d import Vis2d
 from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
 from SampleFunctionBuilder import GetNumberOfSamples
+from src.r_qei import newQEI
 
 
 class TreePlan:
@@ -176,6 +177,34 @@ class TreePlan:
         mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
         # mu = self.gp.GPMean(locations=x.history.locations, measurements=x.history.measurements, current_location=x.physical_state, cholesky=new_st.cholesky)
         return self.ComputeVRandom(T - 1, self.TransitionH(x, mu), new_st)[0]
+
+    def new_qEI(self, x_0):
+        print "R qEI"
+        """
+        @param x_0 - augmented state
+        @return approximately optimal value, answer, and number of node expansions
+        """
+        # x_0 stores a 2D np array of k points with history
+        best_action = None
+        best_expected_improv = -float('inf')
+
+        valid_actions = self.GetValidActionSet(x_0.physical_state)
+
+        qei = newQEI(length_scale=self.gp.length_scale, signal_variance=self.gp.signal_variance,
+                     noise_variance=self.gp.noise,
+                     locations=x_0.history.locations, Y=x_0.history.measurements - np.mean(x_0.history.measurements))
+
+        for a in valid_actions:
+            x_next = self.TransitionP(x_0, a)
+
+            expectedImprov = qei.acquisition(x_next.physical_state)
+
+            # comparison
+            if expectedImprov >= best_expected_improv:
+                best_expected_improv = expectedImprov
+                best_action = a
+
+        return best_expected_improv, best_action, len(valid_actions)
 
     def qEI(self, x_0, eps=10 ** (-5)):
         """
