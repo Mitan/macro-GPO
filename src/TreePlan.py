@@ -210,7 +210,7 @@ class TreePlan:
         # x_0 stores a 2D np array of k points with history
 
         best_action = None
-        best_expected_improv = -1.0
+        best_expected_improv = -float('inf')
 
         qei = newQEI(length_scale=self.gp.length_scale, signal_variance=self.gp.signal_variance,
                  noise_variance=self.gp.noise,
