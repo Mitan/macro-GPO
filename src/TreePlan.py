@@ -213,8 +213,8 @@ class TreePlan:
         best_expected_improv = -float('inf')
 
         qei = newQEI(length_scale=self.gp.length_scale, signal_variance=self.gp.signal_variance,
-                 noise_variance=self.gp.noise,
-                 locations=x_0.history.locations, Y=x_0.history.measurements - np.mean(x_0.history.measurements))
+                     noise_variance=self.gp.noise,
+                     locations=x_0.history.locations, Y=x_0.history.measurements - np.mean(x_0.history.measurements))
 
         next_states = self.GetNextAugmentedStates(x_0)
         if not next_states:
@@ -231,7 +231,6 @@ class TreePlan:
                 best_action = x_next
 
         return best_expected_improv, best_action, len(next_states)
-
 
     # given a list of macroactions, find the set of unique points at step i
     def GetSetOfNextPoints(self, available_states, step):
@@ -274,7 +273,6 @@ class TreePlan:
                 xBest = x_next
 
         return vBest, xBest, -1
-
 
     def EI(self, x_0):
 
@@ -323,7 +321,7 @@ class TreePlan:
 
         domain_size = self.grid_domain[0][1] * self.grid_domain[1][1]
         delta = 0.1
-        t_squared = (t+1)**2
+        t_squared = (t + 1) ** 2
         beta_t1 = 2 * math.log(domain_size * t_squared * (math.pi ** 2) / (6 * delta))
 
         best_current_point = None
