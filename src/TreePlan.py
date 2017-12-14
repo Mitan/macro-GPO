@@ -367,6 +367,60 @@ class TreePlan:
 
         return -1.0, random.choice(available_states), -1.0
 
+    def BUCB(self, x_0, t):
+
+        tolerance_eps = 10 ** (-8)
+
+        available_states = self.GetNextAugmentedStates(x_0)
+
+        if not available_states:
+            raise Exception("BUCB could not move from  location " + str(x_0.physical_state))
+
+        domain_size = self.grid_domain[0][1] * self.grid_domain[1][1]
+
+        delta = 0.1
+        beta_multiplier = 0.2
+
+        history_locations = x_0.history.locations
+
+        # get the mu values for the first point
+        mu_values = {}
+        current_chol = self.gp.Cholesky(x_0.history.locations)
+        first_points = self.GetSetOfNextPoints(available_states, 0)
+        for first_point in first_points:
+            weights = self.gp.GPWeights(locations=history_locations, current_location=first_point,
+                                        cholesky=current_chol)
+            mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
+            mu_values[tuple(first_point[0])] = mu
+
+        for num_steps in range(self.batch_size):
+            print num_steps, len(available_states)
+            value_dict= {}
+            best_next_value = - float("inf")
+            for next_state in available_states:
+                current_locations = np.append(history_locations, next_state.physical_state[:num_steps, :], axis=0)
+
+                current_chol = self.gp.Cholesky(current_locations)
+                next_point = next_state.physical_state[num_steps: num_steps+1, :]
+                Sigma = self.gp.GPVariance(locations=current_locations, current_location=next_point,
+                                           cholesky=current_chol)
+
+                first_point = next_state.physical_state[0:1, :]
+                mu = mu_values[tuple(first_point[0])]
+                iteration = self.batch_size * t + num_steps + 1
+                beta_t1 = 2 * beta_multiplier * math.log(domain_size * (iteration**2) * (math.pi ** 2) / (6 * delta))
+                predicted_val = mu[0] + math.sqrt(beta_t1) * math.sqrt(Sigma[0, 0])
+
+                best_next_value = max(predicted_val, best_next_value)
+
+                value_dict[tuple(map(tuple, next_state.physical_state))] = predicted_val
+
+            available_states = [next_state for next_state in available_states if
+                                abs(value_dict[tuple(map(tuple, next_state.physical_state))]
+                                    - best_next_value) < tolerance_eps]
+
+        return -1.0, random.choice(available_states), -1.0
+
     def StochasticFull(self, x_0, H):
         # by default physical state length is self.batch_size
         # but for the first step it is equal to 1, since it is just agent's position
