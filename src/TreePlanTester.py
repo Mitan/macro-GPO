@@ -1,6 +1,6 @@
 import os
 
-from GaussianProcess import MapValueDict
+from GaussianProcess import *
 from TreePlan import *
 from Vis2d import Vis2d
 from MethodEnum import Methods
@@ -163,6 +163,9 @@ class TreePlanTester:
 
             elif method == Methods.BUCB_PE:
                 vBest, a, nodes_expanded = tp.BUCB_PE(x_0, time)
+
+            elif method == Methods.BUCB:
+                vBest, a, nodes_expanded = tp.BUCB(x_0, time)
 
             elif method == Methods.qEI:
                 vBest, a, nodes_expanded = tp.qEI(x_0)

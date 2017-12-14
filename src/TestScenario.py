@@ -10,7 +10,7 @@ from MethodEnum import Methods
 from DatasetUtils import GenerateModelFromFile, GenerateSimulatedModel
 
 
-def TestScenario_PE(my_save_folder_root, seed, time_steps, num_samples, batch_size, filename=None):
+def TestScenario_PE_BUCB(my_save_folder_root, seed, time_steps, num_samples, batch_size, filename=None):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -21,9 +21,15 @@ def TestScenario_PE(my_save_folder_root, seed, time_steps, num_samples, batch_si
 
     assert filename is not None
     m = GenerateModelFromFile(filename)
+
     testWithFixedParameters(model=m, method=Methods.BUCB_PE, horizon=1,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "fixed_pe/",
+                            num_samples=num_samples, batch_size=batch_size)
+
+    testWithFixedParameters(model=m, method=Methods.BUCB, horizon=1,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "gp-bucb/",
                             num_samples=num_samples, batch_size=batch_size)
 
 
