@@ -340,7 +340,6 @@ class TreePlan:
             mu_values[tuple(first_point[0])] = mu
 
         for num_steps in range(self.batch_size):
-            print num_steps, len(available_states)
             value_dict= {}
             best_next_value = - float("inf")
             for next_state in available_states:

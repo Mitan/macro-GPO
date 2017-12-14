@@ -104,7 +104,7 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
                                    num_samples=num_samples, batch_size=batch_size,
                                    start_location=start_location)
 
-    method_name = 'FIXED-BUCB-PE'
+    method_name = 'BUCB'
 
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(bucb) + '\n')
