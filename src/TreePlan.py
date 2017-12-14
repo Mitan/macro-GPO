@@ -180,10 +180,7 @@ class TreePlan:
 
     def new_qEI(self, x_0):
         print "R qEI"
-        """
-        @param x_0 - augmented state
-        @return approximately optimal value, answer, and number of node expansions
-        """
+
         # x_0 stores a 2D np array of k points with history
         best_action = None
         best_expected_improv = -float('inf')
@@ -336,7 +333,7 @@ class TreePlan:
         if not available_states:
             raise Exception("BUCB-PE could not move from  location " + str(x_0.physical_state))
 
-        first_points = self.GetSetOfNextPoints(available_states, 0)
+        # first_points = self.GetSetOfNextPoints(available_states, 0)
 
         domain_size = (self.grid_domain[0][1] - self.grid_domain[0][0]) * (
             self.grid_domain[1][1] - self.grid_domain[1][0]) / self.grid_gap ** 2
@@ -345,16 +342,16 @@ class TreePlan:
         beta_t1 = 2 * math.log(domain_size * t_squared * (math.pi ** 2) / (6 * delta))
 
         best_current_measurement = - float("inf")
-        current_locations = x_0.history.locations
+        history_locations = x_0.history.locations
         current_chol = self.gp.Cholesky(x_0.history.locations)
 
         predict_val_dict = {}
         # first step is ucb
-        for first_point in first_points:
-
-            Sigma = self.gp.GPVariance(locations=current_locations, current_location=first_point,
+        for next_state in available_states:
+            first_point = next_state.physical_state[0:1, :]
+            Sigma = self.gp.GPVariance(locations=history_locations, current_location=first_point,
                                        cholesky=current_chol)
-            weights = self.gp.GPWeights(locations=current_locations, current_location=first_point,
+            weights = self.gp.GPWeights(locations=history_locations, current_location=first_point,
                                         cholesky=current_chol)
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
 
@@ -376,16 +373,30 @@ class TreePlan:
 
         # Pure exploration part
         for num_steps in range(1, self.batch_size):
-            current_locations = []
-            # add point from the previous stage
-            current_locations = np.append(current_locations, best_current_point, axis=0)
-            current_chol = self.gp.Cholesky(current_locations)
+            sigma_dict= {}
+            best_next_sigma = - float("inf")
 
-            current_points = self.GetSetOfNextPoints(available_states, num_steps)
+            for next_state in available_states:
+                current_locations = np.append(history_locations, next_state.physical_state[:num_steps, :], axis=0)
 
-            best_current_point = None
-            best_current_sigma = - float("inf")
+                """
+                current_locations = []
+                # add point from the previous stage
+                current_locations = np.append(current_locations, best_current_point, axis=0)
+                """
+                current_chol = self.gp.Cholesky(current_locations)
+                next_point = next_state.physical_state[num_steps: num_steps+1, :]
+                # current_points = self.GetSetOfNextPoints(available_states, num_steps)
+                sigma = self.gp.GPVariance(locations=current_locations, current_location=next_point,
+                                           cholesky=current_chol)[0, 0]
+                best_next_sigma = max(sigma, best_next_sigma)
+                sigma_dict[tuple(map(tuple, next_state.physical_state))] = sigma
 
+            available_states = [next_state for next_state in available_states if
+                                abs(sigma_dict[tuple(map(tuple, next_state.physical_state))]
+                                    - best_next_sigma) < tolerance_eps]
+
+            """
             # find the most uncertain point
             for current_point in current_points:
                 sigma = self.gp.GPVariance(locations=current_locations, current_location=current_point,
@@ -399,6 +410,7 @@ class TreePlan:
                                                best_current_point)]
 
             # if len(available_states) == 1:
+            """
         return -1.0, available_states[0], -1.0
 
     """
