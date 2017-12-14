@@ -3,6 +3,8 @@ import os
 from DatasetUtils import GenerateRobotModelFromFile, GenerateRoadModelFromFile
 from MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
+
+
 # from ResultsPlotter import PlotData
 
 
@@ -43,8 +45,8 @@ def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_s
     output_rewards.close()
 
 
-def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, coords_filename,
-                        data_filename, neighbours_filename):
+def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, coords_filename,
+                             data_filename, neighbours_filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -62,7 +64,6 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
     m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
                                    neighbours_filename=neighbours_filename)
 
-
     m.LoadSelectedMacroactions(save_folder, batch_size)
     # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
 
@@ -75,7 +76,7 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
         append_write = 'w'
 
     output_rewards = open(filename_rewards, append_write)
-
+    """
     qEI = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.new_qEI, horizon=1,
                                   num_timesteps_test=time_steps,
                                   save_folder=save_folder + "r_qEI/",
@@ -96,7 +97,17 @@ def TestScenario_PE_qEI(my_save_folder_root, seed, time_steps, num_samples, batc
 
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(PE) + '\n')
-    """
+
+    bucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BUCB, horizon=1,
+                                   num_timesteps_test=time_steps,
+                                   save_folder=save_folder + "gp-bucb/",
+                                   num_samples=num_samples, batch_size=batch_size,
+                                   start_location=start_location)
+
+    method_name = 'FIXED-BUCB-PE'
+
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(bucb) + '\n')
 
     output_rewards.close()
 
@@ -131,7 +142,8 @@ def TestScenario_EI_PI(my_save_folder_root, seed, time_steps, num_samples, batch
     """
 
 
-def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot,coords_filename,data_filename, neighbours_filename):
+def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, coords_filename,
+                       data_filename, neighbours_filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -171,7 +183,7 @@ def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch
 
 
 def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, data_filename,
-                 coords_filename, neighbours_filename):
+                    coords_filename, neighbours_filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -353,7 +365,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(PE) + '\n')
 
-
     method_name = 'MLE H = 4'
     mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=4,
                                   num_timesteps_test=time_steps,
@@ -413,7 +424,6 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
     # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
 
     start_location = m.LoadRandomLocation(save_folder)
-
 
     # start_location = m.GetRandomStartLocation(batch_size=batch_size)
     # start_location = m.LoadRandomLocation(save_folder)

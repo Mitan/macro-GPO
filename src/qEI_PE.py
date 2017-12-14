@@ -1,4 +1,4 @@
-from src.TestScenario import TestScenario_PE_qEI
+from src.TestScenario import TestScenario_PE_qEI_BUCB
 
 if __name__ == '__main__':
 
@@ -24,6 +24,7 @@ if __name__ == '__main__':
 
     for seed in seeds:
         print seed
-        TestScenario_PE_qEI(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t, num_samples=num_samples,
-                            batch_size=batch_size, coords_filename=coords_file,
-                            data_filename=data_file, neighbours_filename=neighbours_file, time_slot=time_slot)
+        TestScenario_PE_qEI_BUCB(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t,
+                                 num_samples=num_samples,
+                                 batch_size=batch_size, coords_filename=coords_file,
+                                 data_filename=data_file, neighbours_filename=neighbours_file, time_slot=time_slot)
