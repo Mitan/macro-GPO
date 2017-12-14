@@ -214,7 +214,7 @@ class TreePlan:
         # x_0 stores a 2D np array of k points with history
         max_measurement = max(x_0.history.measurements)
         best_action = None
-        best_expected_improv = -1.0
+        best_expected_improv = -float('inf')
 
         valid_actions = self.GetValidActionSet(x_0.physical_state)
 
@@ -324,6 +324,7 @@ class TreePlan:
 
     def BUCB_PE(self, x_0, t):
 
+        tolerance_eps = 10 ** (-8)
         # valid_actions = self.GetValidActionSet(x_0.physical_state)
         # next_states = [self.TransitionP(x_0, a) for a in valid_actions]
 
@@ -340,14 +341,14 @@ class TreePlan:
         domain_size = (self.grid_domain[0][1] - self.grid_domain[0][0]) * (
             self.grid_domain[1][1] - self.grid_domain[1][0]) / self.grid_gap ** 2
         delta = 0.1
-        t_squared = (t + 1)**2
+        t_squared = (t + 1) ** 2
         beta_t1 = 2 * math.log(domain_size * t_squared * (math.pi ** 2) / (6 * delta))
 
-        best_current_point = None
         best_current_measurement = - float("inf")
         current_locations = x_0.history.locations
         current_chol = self.gp.Cholesky(x_0.history.locations)
 
+        predict_val_dict = {}
         # first step is ucb
         for first_point in first_points:
 
@@ -358,20 +359,24 @@ class TreePlan:
             mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
 
             predicted_val = mu[0] + math.sqrt(beta_t1) * math.sqrt(Sigma[0, 0])
+
+            predict_val_dict[tuple(first_point[0])] = predicted_val
             if predicted_val > best_current_measurement:
                 best_current_measurement = predicted_val
-                best_current_point = first_point
 
         # the states with selected several points according to batch construction
         available_states = [next_state for next_state in available_states if
-                            np.array_equal(next_state.physical_state[0:1, :], best_current_point)]
-
-        assert len(available_states) == 1
+                            abs(predict_val_dict[tuple(next_state.physical_state[0, :])]
+                                - best_current_measurement) < tolerance_eps]
+        # np.array_equal(next_state.physical_state[0:1, :], best_current_point)]
+        """
         if len(available_states) == 1:
             return -1.0, available_states[0], -1.0
+        """
 
         # Pure exploration part
         for num_steps in range(1, self.batch_size):
+            current_locations = []
             # add point from the previous stage
             current_locations = np.append(current_locations, best_current_point, axis=0)
             current_chol = self.gp.Cholesky(current_locations)
@@ -393,8 +398,8 @@ class TreePlan:
                                 np.array_equal(next_state.physical_state[num_steps: num_steps + 1, :],
                                                best_current_point)]
 
-            if len(available_states) == 1:
-                return -1.0, available_states[0], -1.0
+            # if len(available_states) == 1:
+        return -1.0, available_states[0], -1.0
 
     """
     def NewStochasticFull(self, x_0, H):
