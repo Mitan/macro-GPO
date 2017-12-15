@@ -79,8 +79,11 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
     if isTotalReward:
         plt.ylabel("Total Rewards")
         if isRoad:
+            # original road
             # plt.yticks(range(-1, 9))
-            plt.yticks(range(-1, 17))
+            plt.yticks(range(-1, 8))
+            # robot
+            # plt.yticks(range(-1, 17))
         else:
             plt.yticks(range(-4, 13, 2))
     else:

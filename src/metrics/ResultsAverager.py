@@ -151,11 +151,11 @@ def GetSimulatedTotalRewards():
 
     root_path = '../../releaseTests/simulated/rewards-sAD/'
 
-    methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'qEI', 'new_pe']
+    methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
-    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'BUCB-PE', 'GP-BUCB', 'R QEI']
 
-    output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/simulated_total_rewards.eps'
 
     """
     methods = ['s150_750_anytime_h4', 's200_750_anytime_h4', 's250_750_anytime_h4', 's300_750_anytime_h4',
@@ -191,7 +191,7 @@ def GetSimulatedBeta2Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/simulated_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/simulated_beta2_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file)
@@ -206,7 +206,7 @@ def GetSimulatedBeta3Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/simulated_beta3_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/simulated_beta3_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file)
@@ -215,6 +215,7 @@ def GetSimulatedBeta3Rewards():
 ####### Road ########
 def GetRoadBeta2Rewards():
     seeds = range(35)
+    # seeds = list(set(range(35))
     root_path = '../../releaseTests/road/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
@@ -223,7 +224,7 @@ def GetRoadBeta2Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/road_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/road/road_beta2_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file)
@@ -231,6 +232,7 @@ def GetRoadBeta2Rewards():
 
 def GetRoadBeta3Rewards():
     seeds = range(35)
+    # seeds = list(set(range(35)) - set([22]))
     root_path = '../../releaseTests/road/beta3/'
     # root_path = '../../last_Beta3/'
     # root_path = '../../zero_last_Beta3/'
@@ -242,23 +244,24 @@ def GetRoadBeta3Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/road_beta3_rewards.eps'
+    output_file = '../../result_graphs/eps/road/road_beta3_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file)
 
 
 def GetRoadTotalRewards():
+    # seeds = list(set(range(35)) - set([22]))
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe', 'fixed_pe', 'new_ixed_pe', 'r_qEI', 'bucb']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
 
-    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE', 'FIXED-PE', 'GP-BUCB-PE', 'r qEI', 'GP-BUCB']
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'GP-BUCB-PE', 'GP-BUCB', 'qEI']
 
     root_path = '../../releaseTests/road/b5-18-log/'
 
-    output_file = '../../result_graphs/eps/road_total_rewards.eps'
+    output_file = '../../result_graphs/eps/road/road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file)
@@ -266,6 +269,7 @@ def GetRoadTotalRewards():
 
 def GetRoad_H2Full_TotalRewards():
     seeds = range(35)
+    # seeds = list(set(range(35)) - set([22]))
     batch_size = 5
 
     # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
@@ -274,7 +278,7 @@ def GetRoad_H2Full_TotalRewards():
 
     root_path = '../../releaseTests/road/tests2full/'
 
-    output_file = '../../result_graphs/eps/h2_full_total_rewards.eps'
+    output_file = '../../result_graphs/eps/road/h2_full_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file)
@@ -284,6 +288,7 @@ def GetRoad_H2Full_TotalRewards():
 
 def GetRobotBeta2Rewards():
     seeds = range(35)
+
     root_path = '../../robot_tests/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
@@ -325,7 +330,7 @@ def GetRobotTotalRewards():
     time_slot = 16
 
     # methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe', 'pe']
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI',  'fixed_pe', 'gp-bucb']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei',  'fixed_pe', 'gp-bucb']
     # methods = ['h1', 'anytime_h2', 'anytime_h3', 'mle_h4', 'qEI', 'new_pe']
 
     # method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
@@ -359,19 +364,16 @@ def GetRobot_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
-    
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
     GetRoad_H2Full_TotalRewards()
 
-    """
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
-    
+
     GetRobotTotalRewards()
     GetRobotBeta2Rewards()
     GetRobotBeta3Rewards()
     GetRobot_H2Full_TotalRewards()
-    """
