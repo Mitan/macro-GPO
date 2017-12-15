@@ -153,7 +153,7 @@ def GetSimulatedTotalRewards():
 
     methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
-    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'BUCB-PE', 'GP-BUCB', 'R QEI']
+    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'BUCB-PE', 'GP-BUCB', 'qEI']
 
     output_file = '../../result_graphs/eps/simulated/simulated_total_rewards.eps'
 
@@ -364,6 +364,7 @@ def GetRobot_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
+    """
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
@@ -372,7 +373,7 @@ if __name__ == "__main__":
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
-
+    """
     GetRobotTotalRewards()
     GetRobotBeta2Rewards()
     GetRobotBeta3Rewards()
