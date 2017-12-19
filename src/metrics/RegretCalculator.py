@@ -1,7 +1,8 @@
 from StringIO import StringIO
 import numpy as np
 
-from src.DatasetUtils import GenerateRoadModelFromFile, GetAllMeasurements, GetMaxValues, GenerateModelFromFile
+from src.DatasetUtils import GenerateRoadModelFromFile, GetAllMeasurements, GetMaxValues, GenerateModelFromFile, \
+    GenerateRobotModelFromFile
 from src.ResultsPlotter import PlotData
 
 
@@ -23,6 +24,30 @@ def GetRoadResultsForMethod(seeds, batch_size, method, root_path, model_max):
     regrets = [model_max - res for res in results_for_method.tolist()]
     return regrets
     # result = [method_names[index], regrets]
+
+
+def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename):
+    time_slot = 16
+    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/final_slot_' + str(time_slot) + '.txt'
+    neighbours_file = '../../datasets/robot/all_neighbours.txt'
+    coords_file = '../../datasets/robot/all_coords.txt'
+    m = GenerateRobotModelFromFile(data_filename=data_file, coords_filename=coords_file,
+                                   neighbours_filename=neighbours_file)
+    model_max = m.GetMax()
+
+    results = []
+
+    # for every method
+    for index, method in enumerate(methods):
+        # todo hack
+        adjusted_batch_size = 1 if method == 'ei' else batch_size
+        regrets = GetRoadResultsForMethod(seeds, adjusted_batch_size, method, root_path, model_max)
+        result = [method_names[index], regrets]
+        results.append(result)
+        print result
+
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=False, type='robot')
+
 
 def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename):
     """
@@ -220,11 +245,14 @@ def GetRobotTotalRegrets():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
-    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei',  'fixed_pe', 'gp-bucb']
 
-    output_file = '../../result_graphs/eps/road_simple_regrets.eps'
-    root_path = '../../releaseTests/road/b5-18-log/'
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'GP-BUCB-PE', 'GP-BUCB']
+
+    root_path = '../../releaseTests/robot/slot_16/'
+
+    output_file = '../../result_graphs/eps/robot/robot_simple_regrets.eps'
+
     RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
 """
@@ -245,9 +273,9 @@ def GetRobotTotalRegrets_H2Full():
 
 if __name__ == "__main__":
 
-    GetRoadTotalRegrets()
+    # GetRoadTotalRegrets()
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
-    GetSimulatedTotalRegrets()
+    # GetSimulatedTotalRegrets()
     GetRobotTotalRegrets()
     # GetRoadTotalRegrets_H2Full()
