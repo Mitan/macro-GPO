@@ -22,7 +22,7 @@ def ParseName(method_name):
     return method_name
 
 
-def PlotData(results, isRoad,  output_file_name, isTotalReward):
+def PlotData(results, type,  output_file_name, isTotalReward):
     if not results:
         return
 
@@ -78,14 +78,14 @@ def PlotData(results, isRoad,  output_file_name, isTotalReward):
 
     if isTotalReward:
         plt.ylabel("Total Rewards")
-        if isRoad:
-            # original road
-            # plt.yticks(range(-1, 9))
+        if type == 'road':
             plt.yticks(range(-1, 8))
-            # robot
-            # plt.yticks(range(-1, 17))
-        else:
+        elif type == 'robot':
+            plt.yticks(range(-1, 17))
+        elif type == 'simulated':
             plt.yticks(range(-4, 13, 2))
+        else:
+            raise
     else:
         plt.ylabel("Simple regret")
 

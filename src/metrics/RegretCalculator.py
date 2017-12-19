@@ -50,7 +50,7 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
         results.append(result)
         print result
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=False, isRoad=True)
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=False, type='road')
 
 
 def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename):
@@ -95,7 +95,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         results.append(result)
         print result
 
-    PlotData(results=results,  output_file_name=output_filename, isTotalReward=False, isRoad=False)
+    PlotData(results=results,  output_file_name=output_filename, isTotalReward=False, type='simulated')
 
 ### Road ###
 def GetRoadBeta2Regrets():
@@ -129,10 +129,12 @@ def GetRoadTotalRegrets():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
-    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
 
-    output_file = '../../result_graphs/eps/road_simple_regrets.eps'
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'GP-BUCB-PE', 'GP-BUCB',
+                    'qEI']
+
+    output_file = '../../result_graphs/eps/road/road_simple_regrets.eps'
     root_path = '../../releaseTests/road/b5-18-log/'
     RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
@@ -156,10 +158,12 @@ def GetSimulatedTotalRegrets():
     batch_size = 4
     root_path = '../../releaseTests/simulated/rewards-sAD/'
 
-    methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'qEI', 'new_pe']
-    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+    methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
-    output_file = '../../result_graphs/eps/simulated_simple_regrets.eps'
+    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'BUCB-PE', 'GP-BUCB',
+                    'qEI']
+
+    output_file = '../../result_graphs/eps/simulated/simulated_simple_regrets.eps'
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
 
@@ -184,11 +188,66 @@ def GetSimulatedBeta3Regrets():
     method_names = map(lambda x: 'beta = ' + x, str_beta)
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds)
 
+#### Robot
+"""
+def GetRobotBeta2Regrets():
+    seeds = range(35)
+    root_path = '../../releaseTests/road/beta2/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
+
+
+def GetRoadBeta3Regrets():
+    seeds = range(0, 32)
+    # seeds = list(set(seeds) - set([27, 31]))
+    seeds = list(set(seeds) - set([5]))
+    root_path = '../../releaseTests/road/beta3/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
+"""
+
+def GetRobotTotalRegrets():
+    seeds = range(35)
+    batch_size = 5
+
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'qEI', 'new_pe']
+    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'BUCB-PE']
+
+    output_file = '../../result_graphs/eps/road_simple_regrets.eps'
+    root_path = '../../releaseTests/road/b5-18-log/'
+    RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+
+"""
+def GetRobotTotalRegrets_H2Full():
+    seeds = range(35)
+    batch_size = 5
+    time_slot = 16
+
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
+    method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
+
+    root_path = '../../releaseTests/robot/h2_full/'
+
+    output_file = '../../result_graphs/eps/robot/h2_full_simple_regrets.eps'
+
+    RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+"""
 
 if __name__ == "__main__":
 
-    # GetRoadTotalRegrets()
+    GetRoadTotalRegrets()
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
     GetSimulatedTotalRegrets()
+    GetRobotTotalRegrets()
     # GetRoadTotalRegrets_H2Full()
