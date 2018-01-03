@@ -59,7 +59,7 @@ def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, ou
         result = [method_names[index], scaled_results]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, isRoad=True)
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, type='robot')
 
 
 def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename):
@@ -87,7 +87,7 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
         result = [method_names[index], scaled_results]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, isRoad=True)
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=True,type='road')
 
 
 def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename):
@@ -141,7 +141,7 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
         scaled_results = results_for_method - scaled_model_mean
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
-    PlotData(results=results, output_file_name=output_filename, isRoad=False, isTotalReward=True)
+    PlotData(results=results, output_file_name=output_filename, type='simulated', isTotalReward=True)
 
 
 ##### Simulated ####
@@ -153,7 +153,10 @@ def GetSimulatedTotalRewards():
 
     methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
-    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'BUCB-PE', 'GP-BUCB', 'qEI']
+    method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 4$',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'BUCB-PE', 'GP-BUCB',
+                    'qEI']
 
     output_file = '../../result_graphs/eps/simulated/simulated_total_rewards.eps'
 
@@ -365,7 +368,7 @@ if __name__ == "__main__":
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
     GetRoad_H2Full_TotalRewards()
-
+    """
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
@@ -374,3 +377,4 @@ if __name__ == "__main__":
     GetRobotBeta2Rewards()
     GetRobotBeta3Rewards()
     GetRobot_H2Full_TotalRewards()
+    """

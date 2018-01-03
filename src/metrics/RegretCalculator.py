@@ -185,7 +185,9 @@ def GetSimulatedTotalRegrets():
 
     methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
-    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$', r'$H = 4$', r'$H^* = 4$', r'MLE $H = 4$', 'BUCB-PE', 'GP-BUCB',
+    method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 4$',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'BUCB-PE', 'GP-BUCB',
                     'qEI']
 
     output_file = '../../result_graphs/eps/simulated/simulated_simple_regrets.eps'
@@ -276,6 +278,6 @@ if __name__ == "__main__":
     # GetRoadTotalRegrets()
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
-    # GetSimulatedTotalRegrets()
-    GetRobotTotalRegrets()
+    GetSimulatedTotalRegrets()
+    # GetRobotTotalRegrets()
     # GetRoadTotalRegrets_H2Full()
