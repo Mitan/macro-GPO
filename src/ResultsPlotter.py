@@ -4,6 +4,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
+import numpy as np
+from matplotlib.ticker import FormatStrFormatter
 
 from matplotlib import rc
 #rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
@@ -75,6 +77,8 @@ def PlotData(results, type,  output_file_name, isTotalReward):
 
     plt.xticks(time_steps)
     plt.xlabel("No. of samples collected")
+    axes = plt.axes()
+    axes.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
     if isTotalReward:
         plt.ylabel("Total Rewards")
@@ -88,16 +92,24 @@ def PlotData(results, type,  output_file_name, isTotalReward):
             raise
     else:
         plt.ylabel("Simple regret")
+        if type == 'road':
+            plt.yticks(np.arange(1.5, 4, 0.5))
+        elif type == 'robot':
+            plt.yticks(np.arange(1.5, 4, 0.5))
+        elif type == 'simulated':
+            plt.yticks(np.arange(1.4, 3.2, 0.2))
+        else:
+            raise
+
 
     plt.legend(handles=handles, loc=legend_loc)
     # plt.savefig(folder_name + file_name)
 
     # margins on x and y side
-    axes = plt.axes()
     axes.margins(x=0.02)
 
-    if not isTotalReward:
-        axes.margins(y=0.02)
+    #if not isTotalReward:
+    axes.margins(y=0.02)
 
     # plt.savefig(output_file_name, bbox_inches='tight')
     plt.savefig(output_file_name, format='eps', dpi=1000, bbox_inches='tight')

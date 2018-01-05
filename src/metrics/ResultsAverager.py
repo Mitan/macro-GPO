@@ -155,8 +155,8 @@ def GetSimulatedTotalRewards():
 
     method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 4$',
-                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'BUCB-PE', 'GP-BUCB',
-                    'qEI']
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                    r'$q$-EI']
 
     output_file = '../../result_graphs/eps/simulated/simulated_total_rewards.eps'
 
@@ -260,7 +260,8 @@ def GetRoadTotalRewards():
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
 
-    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'GP-BUCB-PE', 'GP-BUCB', 'qEI']
+    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
     root_path = '../../releaseTests/road/b5-18-log/'
 
@@ -277,7 +278,10 @@ def GetRoad_H2Full_TotalRewards():
 
     # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
     methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
-    method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)', 'EI']
+    method_names = [ r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
+                     r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
+                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
+                     'EI']
 
     root_path = '../../releaseTests/road/tests2full/'
 
@@ -362,13 +366,13 @@ def GetRobot_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
-    """
+
     GetRoadTotalRewards()
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
     GetRoadTotalRewards()
     GetRoad_H2Full_TotalRewards()
-    """
+
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
