@@ -57,7 +57,7 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
         rewards = result[1]
 
         # hack for EI
-        adjusted_time_steps = range(21) if (name=='EI' or name == 'PI') else time_steps
+        adjusted_time_steps = range(21) if (name=='EI (all MA)' or name == 'PI') else time_steps
 
         # previous version with small filled markers
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])

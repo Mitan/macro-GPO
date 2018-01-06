@@ -372,6 +372,7 @@ def GetRobot_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
+    """
     GetRoadTotalRewards()
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
@@ -386,5 +387,5 @@ if __name__ == "__main__":
     GetRobotTotalRewards()
     GetRobotBeta2Rewards()
     GetRobotBeta3Rewards()
-
+    """
     GetRobot_H2Full_TotalRewards()
