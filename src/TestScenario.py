@@ -114,7 +114,7 @@ def TestScenario_EI_PI(my_save_folder_root, seed, time_steps, num_samples, batch
     start_location = m.LoadRandomLocation(save_folder)
 
     h = -1
-
+    """
     testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.PI, horizon=h,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "pi/",
@@ -126,7 +126,6 @@ def TestScenario_EI_PI(my_save_folder_root, seed, time_steps, num_samples, batch
                             save_folder=save_folder + "ei/",
                             num_samples=num_samples, batch_size=batch_size,
                             start_location=start_location)
-    """
 
 
 def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):

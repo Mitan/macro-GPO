@@ -281,8 +281,8 @@ class TreePlan:
 
         next_states = self.GetNextAugmentedStates(x_0)
 
-        vBest = 0.0
-        xBest = next_states[0]
+        vBest = -float('inf')
+        xBest = None
 
         current_locations = x_0.history.locations
         current_chol = self.gp.Cholesky(x_0.history.locations)
