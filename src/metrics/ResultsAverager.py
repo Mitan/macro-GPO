@@ -344,7 +344,7 @@ def GetRobotTotalRewards():
 
     root_path = '../../releaseTests/robot/slot_16/'
 
-    output_file = '../../result_graphs/eps/robot' + str(time_slot) + '_total_rewards.eps'
+    output_file = '../../result_graphs/eps/robot_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot)
@@ -361,7 +361,7 @@ def GetRobot_H2Full_TotalRewards():
     method_names = [r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
-                    'EI']
+                    'EI (all MA)']
 
     root_path = '../../releaseTests/robot/h2_full/'
 
@@ -372,7 +372,6 @@ def GetRobot_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
-    """
     GetRoadTotalRewards()
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
@@ -383,7 +382,7 @@ if __name__ == "__main__":
 
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
-    """
+
     GetRobotTotalRewards()
     GetRobotBeta2Rewards()
     GetRobotBeta3Rewards()

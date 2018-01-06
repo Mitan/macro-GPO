@@ -276,7 +276,7 @@ def GetRobotTotalRegrets_H2Full():
     method_names = [r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
-                    'EI']
+                    'EI (all MA)']
 
     root_path = '../../releaseTests/robot/h2_full/'
 
