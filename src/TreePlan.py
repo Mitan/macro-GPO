@@ -9,7 +9,7 @@ from scipy.stats import norm
 from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
 from SampleFunctionBuilder import GetNumberOfSamples
-from src.r_qei import newQEI
+# from src.r_qei import newQEI
 
 
 class TreePlan:
@@ -542,7 +542,7 @@ class TreePlan:
         gc.collect()
         print "Performing search..."
 
-        number_of_iterations = 600 if H == 4 else 1500
+        number_of_iterations = 600 if H == 4 else 1000
         counter = 0
         # TODO: Set a proper termination condition
         # whilre resources permit
