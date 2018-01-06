@@ -178,7 +178,7 @@ def GetRoadTotalRegrets_H2Full():
                      r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
                      'EI']
 
-    output_file = '../../result_graphs/eps/h2_full_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/road_h2_full_simple_regrets.eps'
     root_path = '../../releaseTests/road/tests2full/'
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
@@ -255,9 +255,10 @@ def GetRobotTotalRegrets():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei',  'fixed_pe', 'gp-bucb']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'fixed_pe', 'gp-bucb']
 
-    method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'GP-BUCB-PE', 'GP-BUCB']
+    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
     root_path = '../../releaseTests/robot/slot_16/'
 
@@ -265,27 +266,33 @@ def GetRobotTotalRegrets():
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
-"""
+
 def GetRobotTotalRegrets_H2Full():
     seeds = range(35)
     batch_size = 5
     time_slot = 16
 
-    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
-    method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
+    method_names = [r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
+                    'EI']
 
     root_path = '../../releaseTests/robot/h2_full/'
 
-    output_file = '../../result_graphs/eps/robot/h2_full_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot_h2_full_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
-"""
+
 
 if __name__ == "__main__":
 
     GetRoadTotalRegrets()
+    GetRoadTotalRegrets_H2Full()
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
+
     GetSimulatedTotalRegrets()
-    # GetRobotTotalRegrets()
-    GetRoadTotalRegrets_H2Full()
+
+    GetRobotTotalRegrets()
+    GetRobotTotalRegrets_H2Full()

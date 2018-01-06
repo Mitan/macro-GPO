@@ -57,7 +57,7 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
         rewards = result[1]
 
         # hack for EI
-        adjusted_time_steps = range(21) if name=='EI' else time_steps
+        adjusted_time_steps = range(21) if (name=='EI' or name == 'PI') else time_steps
 
         # previous version with small filled markers
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])
@@ -89,14 +89,18 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
             else:
                 plt.yticks(range(-1, 8))
         elif type == 'robot':
-            plt.yticks(range(-1, 17))
+            if isBeta:
+                axes.set_ylim([0, 16])
+                plt.yticks(range(0, 17))
+            else:
+                plt.yticks(range(-1, 16))
         elif type == 'simulated':
             if isBeta:
-                plt.yticks(range(-4, 14, 2))
+                plt.yticks(range(-4, 14))
                 # plt.axis((x1, x2, -4, 12))
                 axes.set_ylim([-4, 12])
             else:
-                plt.yticks(range(-4, 13, 2))
+                plt.yticks(range(-4, 13))
         else:
             raise
     else:

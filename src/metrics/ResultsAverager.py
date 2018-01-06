@@ -41,7 +41,7 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
     return scaled_results.tolist()
 
 
-def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot):
+def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot, isBeta = False):
     results = []
 
     data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/final_slot_' + str(time_slot) + '.txt'
@@ -53,13 +53,13 @@ def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, ou
 
     for index, method in enumerate(methods):
         # todo hack
-        adjusted_batch_size = 1 if method == 'ei' else batch_size
+        adjusted_batch_size = 1 if (method == 'ei' or method == 'pi') else batch_size
         scaled_results = CalculateRoadResultsForOneMethod(adjusted_batch_size, model_mean, seeds, method,
                                                           tests_source_path)
         result = [method_names[index], scaled_results]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, type='robot')
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, type='robot', isBeta=isBeta)
 
 
 def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, isBeta = False):
@@ -285,7 +285,7 @@ def GetRoad_H2Full_TotalRewards():
 
     root_path = '../../releaseTests/road/tests2full/'
 
-    output_file = '../../result_graphs/eps/h2_full_total_rewards.eps'
+    output_file = '../../result_graphs/eps/road_h2_full_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file)
@@ -296,7 +296,7 @@ def GetRoad_H2Full_TotalRewards():
 def GetRobotBeta2Rewards():
     seeds = range(35)
 
-    root_path = '../../releaseTests/robot//beta_new2/'
+    root_path = '../../releaseTests/robot/beta_new2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
     time_slot = 16
@@ -308,13 +308,13 @@ def GetRobotBeta2Rewards():
     output_file = '../../result_graphs/eps/robot_beta2_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                 seeds=seeds, output_filename=output_file, time_slot=time_slot)
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot, isBeta = True)
 
 
 def GetRobotBeta3Rewards():
     seeds = range(35)
     # seeds = list(set(range(35)) - set([33, 34]))
-    root_path = '../../releaseTests/beta_new3/'
+    root_path = '../../releaseTests/robot/beta_new3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0,  5.0]
     # beta_list = [0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
@@ -327,7 +327,7 @@ def GetRobotBeta3Rewards():
     output_file = '../../result_graphs/eps/robot_beta3_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                 seeds=seeds, output_filename=output_file, time_slot=time_slot)
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot, isBeta = True)
 
 
 def GetRobotTotalRewards():
@@ -339,6 +339,8 @@ def GetRobotTotalRewards():
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei',  'fixed_pe', 'gp-bucb']
 
     method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'GP-BUCB-PE', 'GP-BUCB']
+    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
     root_path = '../../releaseTests/robot/slot_16/'
 
@@ -354,8 +356,12 @@ def GetRobot_H2Full_TotalRewards():
     time_slot = 16
 
     # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
-    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
     method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
+    method_names = [r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
+                    'EI']
 
     root_path = '../../releaseTests/robot/h2_full/'
 
@@ -366,6 +372,7 @@ def GetRobot_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
+    """
     GetRoadTotalRewards()
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
@@ -380,5 +387,5 @@ if __name__ == "__main__":
     GetRobotTotalRewards()
     GetRobotBeta2Rewards()
     GetRobotBeta3Rewards()
+
     GetRobot_H2Full_TotalRewards()
-    """
