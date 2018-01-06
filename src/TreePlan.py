@@ -9,7 +9,7 @@ from scipy.stats import norm
 from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
 from SampleFunctionBuilder import GetNumberOfSamples
-from src.r_qei import newQEI
+# from src.r_qei import newQEI
 
 
 class TreePlan:
