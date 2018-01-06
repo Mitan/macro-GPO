@@ -164,7 +164,7 @@ def GetRoadTotalRegrets():
     method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
-    output_file = '../../result_graphs/eps/road/road_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/road_simple_regrets.eps'
     root_path = '../../releaseTests/road/b5-18-log/'
     RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
@@ -178,7 +178,7 @@ def GetRoadTotalRegrets_H2Full():
                      r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
                      'EI']
 
-    output_file = '../../result_graphs/eps/road/h2_full_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/h2_full_simple_regrets.eps'
     root_path = '../../releaseTests/road/tests2full/'
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
@@ -198,7 +198,7 @@ def GetSimulatedTotalRegrets():
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI']
 
-    output_file = '../../result_graphs/eps/simulated/simulated_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/simulated_simple_regrets.eps'
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
 
@@ -261,7 +261,7 @@ def GetRobotTotalRegrets():
 
     root_path = '../../releaseTests/robot/slot_16/'
 
-    output_file = '../../result_graphs/eps/robot/robot_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 

@@ -62,7 +62,7 @@ def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, ou
     PlotData(results=results, output_file_name=output_filename, isTotalReward=True, type='robot')
 
 
-def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename):
+def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, isBeta = False):
     """
     seeds = range(36)
     seeds = list(set(seeds) - set([31]))
@@ -87,10 +87,10 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
         result = [method_names[index], scaled_results]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=True,type='road')
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=True,type='road', isBeta=isBeta)
 
 
-def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename):
+def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, isBeta = False):
     """
     seeds = range(66, 102)
     batch_size = 4
@@ -141,7 +141,7 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
         scaled_results = results_for_method - scaled_model_mean
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
-    PlotData(results=results, output_file_name=output_filename, type='simulated', isTotalReward=True)
+    PlotData(results=results, output_file_name=output_filename, type='simulated', isTotalReward=True, isBeta=isBeta)
 
 
 ##### Simulated ####
@@ -158,7 +158,7 @@ def GetSimulatedTotalRewards():
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI']
 
-    output_file = '../../result_graphs/eps/simulated/simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
 
     """
     methods = ['s150_750_anytime_h4', 's200_750_anytime_h4', 's250_750_anytime_h4', 's300_750_anytime_h4',
@@ -194,10 +194,10 @@ def GetSimulatedBeta2Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/simulated/simulated_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated_beta2_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds, output_filename=output_file)
+                     seeds=seeds, output_filename=output_file, isBeta = True)
 
 
 def GetSimulatedBeta3Rewards():
@@ -209,10 +209,10 @@ def GetSimulatedBeta3Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/simulated/simulated_beta3_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated_beta3_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds, output_filename=output_file)
+                     seeds=seeds, output_filename=output_file, isBeta = True)
 
 
 ####### Road ########
@@ -227,10 +227,10 @@ def GetRoadBeta2Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/road/road_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/road_beta2_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file)
+                seeds=seeds, output_filename=output_file, isBeta = True)
 
 
 def GetRoadBeta3Rewards():
@@ -247,10 +247,10 @@ def GetRoadBeta3Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/road/road_beta3_rewards.eps'
+    output_file = '../../result_graphs/eps/road_beta3_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file)
+                seeds=seeds, output_filename=output_file, isBeta = True)
 
 
 def GetRoadTotalRewards():
@@ -265,7 +265,7 @@ def GetRoadTotalRewards():
 
     root_path = '../../releaseTests/road/b5-18-log/'
 
-    output_file = '../../result_graphs/eps/road/road_total_rewards.eps'
+    output_file = '../../result_graphs/eps/road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file)
@@ -285,7 +285,7 @@ def GetRoad_H2Full_TotalRewards():
 
     root_path = '../../releaseTests/road/tests2full/'
 
-    output_file = '../../result_graphs/eps/road/h2_full_total_rewards.eps'
+    output_file = '../../result_graphs/eps/h2_full_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file)
@@ -305,7 +305,7 @@ def GetRobotBeta2Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/robot/robot_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/robot_beta2_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot)
@@ -314,7 +314,7 @@ def GetRobotBeta2Rewards():
 def GetRobotBeta3Rewards():
     seeds = range(35)
     # seeds = list(set(range(35)) - set([33, 34]))
-    root_path = '../../releaseTests/robot/beta_new3/'
+    root_path = '../../releaseTests/beta_new3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0,  5.0]
     # beta_list = [0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
@@ -324,7 +324,7 @@ def GetRobotBeta3Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/robot/robot_beta3_rewards.eps'
+    output_file = '../../result_graphs/eps/robot_beta3_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot)
@@ -342,7 +342,7 @@ def GetRobotTotalRewards():
 
     root_path = '../../releaseTests/robot/slot_16/'
 
-    output_file = '../../result_graphs/eps/robot/robot' + str(time_slot) + '_total_rewards.eps'
+    output_file = '../../result_graphs/eps/robot' + str(time_slot) + '_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot)
@@ -359,14 +359,13 @@ def GetRobot_H2Full_TotalRewards():
 
     root_path = '../../releaseTests/robot/h2_full/'
 
-    output_file = '../../result_graphs/eps/robot/robot_h2_full_total_rewards.eps'
+    output_file = '../../result_graphs/eps/robot_h2_full_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot)
 
 
 if __name__ == "__main__":
-
     GetRoadTotalRewards()
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
@@ -374,6 +373,7 @@ if __name__ == "__main__":
     GetRoad_H2Full_TotalRewards()
 
     GetSimulatedBeta2Rewards()
+
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
     """

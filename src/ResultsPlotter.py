@@ -24,7 +24,7 @@ def ParseName(method_name):
     return method_name
 
 
-def PlotData(results, type,  output_file_name, isTotalReward):
+def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
     if not results:
         return
 
@@ -83,11 +83,20 @@ def PlotData(results, type,  output_file_name, isTotalReward):
     if isTotalReward:
         plt.ylabel("Total Rewards")
         if type == 'road':
-            plt.yticks(range(-1, 8))
+            if isBeta:
+                axes.set_ylim([-1, 8])
+                plt.yticks(range(-1, 9))
+            else:
+                plt.yticks(range(-1, 8))
         elif type == 'robot':
             plt.yticks(range(-1, 17))
         elif type == 'simulated':
-            plt.yticks(range(-4, 13, 2))
+            if isBeta:
+                plt.yticks(range(-4, 14, 2))
+                # plt.axis((x1, x2, -4, 12))
+                axes.set_ylim([-4, 12])
+            else:
+                plt.yticks(range(-4, 13, 2))
         else:
             raise
     else:
@@ -112,6 +121,7 @@ def PlotData(results, type,  output_file_name, isTotalReward):
     axes.margins(y=0.02)
 
     # plt.savefig(output_file_name, bbox_inches='tight')
+    # plt.savefig(output_file_name, format='eps', dpi=1000)
     plt.savefig(output_file_name, format='eps', dpi=1000, bbox_inches='tight')
     # plt.savefig(folder_name + file_name, bbox_inches=1.0)
 
