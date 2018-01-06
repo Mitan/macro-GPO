@@ -176,7 +176,7 @@ def GetRoadTotalRegrets_H2Full():
     method_names = [ r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
                      r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
                      r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
-                     'EI']
+                     'EI (all MA)']
 
     output_file = '../../result_graphs/eps/road_h2_full_simple_regrets.eps'
     root_path = '../../releaseTests/road/tests2full/'

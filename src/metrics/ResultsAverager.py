@@ -281,7 +281,7 @@ def GetRoad_H2Full_TotalRewards():
     method_names = [ r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
                      r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
                      r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
-                     'EI']
+                     'EI (all MA)']
 
     root_path = '../../releaseTests/road/tests2full/'
 
@@ -372,7 +372,6 @@ def GetRobot_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
-    """
     GetRoadTotalRewards()
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
@@ -387,5 +386,4 @@ if __name__ == "__main__":
     GetRobotTotalRewards()
     GetRobotBeta2Rewards()
     GetRobotBeta3Rewards()
-    """
     GetRobot_H2Full_TotalRewards()
