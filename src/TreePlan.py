@@ -557,7 +557,7 @@ class TreePlan:
         # TODO: Set a proper termination condition
         # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
-            print counter, H
+            # print counter, H
             _, _, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
@@ -719,7 +719,9 @@ class TreePlan:
 
     def ConstructTree(self, action_node, st, T, l):
 
-        if T == 0: return 0, 0, 1
+        if T == 0:
+            print "blea"
+            return 0, 0, 1
         assert not action_node.saturated, "Exploring saturated action node"
 
         # Select action that has the greatest upper bound (TODO: make sure there are still leaves in that branch)
@@ -972,10 +974,10 @@ class MCTSActionNode:
             fake_action = np.zeros(next_physical_state.shape)
             next_augmented_state = TransitionP(self.augmented_state, fake_action)
             next_augmented_state.physical_state = next_physical_state
-
             c = MCTSObservationNode(augmented_state=next_augmented_state, semi_tree=semi_child, treeplan=self.treeplan,
                                     l=self.lamb,
                                     number_of_samples=self.number_of_samples, level=self.level)
+
             num_nodes_expanded += c.SkeletalExpand()
             self.ChanceChildren[a] = c
             self.BoundsChildren[a] = c.Eval()
@@ -1157,7 +1159,9 @@ class MCTSObservationNode:
             if self.ActionChildren[index_to_expand].saturated:
                 self.numchild_unsaturated -= 1
                 if self.numchild_unsaturated == 0: self.saturated = True
-
+        else:
+            # we can't expand, but need to count this node
+            num_nodes_expanded = 1
         return num_nodes_expanded
 
 
