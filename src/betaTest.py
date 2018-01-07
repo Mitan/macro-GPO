@@ -4,10 +4,11 @@ from TestScenario import TestScenario_Beta
 
 if __name__ == '__main__':
 
-    h = 2
+    h = 3
     # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0, 10.0, 50.0, 100.0, 200.0]
     beta_list = [0.0, 0.01, 0.05,0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 50.0]
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    # beta_list = [1.0, 2.0, 5.0, 10.0]
     # beta_list = [0.0]
 
     args = sys.argv
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     neighbours_file = '../datasets/robot/all_neighbours.txt'
     coords_file = '../datasets/robot/all_coords.txt'
 
-    for seed in range(seed_0, seed_0 + 5):
+    for seed in range(seed_0, seed_0 + 1):
         TestScenario_Beta(my_save_folder_root=my_save_folder_root, test_horizon=h, seed=seed, time_steps=t,
                           num_samples=num_samples, batch_size=batch_size, time_slot=time_slot,
                           beta_list=beta_list, coords_filename=coords_file,
