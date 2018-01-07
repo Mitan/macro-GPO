@@ -551,6 +551,7 @@ class TreePlan:
         print "Performing search..."
 
         number_of_iterations = 800 if H == 4 else 1500
+        number_of_iterations = 1500
         # number_of_iterations = 1 if H == 4 else 1
         counter = 0
         # TODO: Set a proper termination condition
