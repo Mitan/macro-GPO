@@ -286,13 +286,13 @@ def GetRobotTotalRegrets_H2Full():
 
 
 if __name__ == "__main__":
-
+    """
     GetRoadTotalRegrets()
     GetRoadTotalRegrets_H2Full()
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
 
     GetSimulatedTotalRegrets()
-
+    """
     GetRobotTotalRegrets()
     GetRobotTotalRegrets_H2Full()

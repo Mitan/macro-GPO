@@ -108,7 +108,8 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
         if type == 'road':
             plt.yticks(np.arange(1.5, 4, 0.5))
         elif type == 'robot':
-            plt.yticks(np.arange(1.5, 4, 0.5))
+            pass
+            # lt.yticks(np.arange(1.5, 4, 0.5))
         elif type == 'simulated':
             plt.yticks(np.arange(1.4, 3.2, 0.2))
         else:
