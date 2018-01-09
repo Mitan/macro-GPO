@@ -124,7 +124,7 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
     output_rewards.close()
 
 
-def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, batch_size, filename=None):
+def TestScenario_Anytime(my_save_folder_root, seed, time_steps, batch_size, h, filename=None):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -136,7 +136,7 @@ def TestScenario_AnytimeMLE4(my_save_folder_root, seed, time_steps, batch_size, 
     assert filename is not None
     m = GenerateModelFromFile(filename)
 
-    h = 4
+    #  = 4
 
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
                             num_timesteps_test=time_steps,
