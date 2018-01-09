@@ -557,7 +557,7 @@ class TreePlan:
         # TODO: Set a proper termination condition
         # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
-            # print counter, H
+            print counter, H
             _, _, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
@@ -977,8 +977,8 @@ class MCTSActionNode:
             c = MCTSObservationNode(augmented_state=next_augmented_state, semi_tree=semi_child, treeplan=self.treeplan,
                                     l=self.lamb,
                                     number_of_samples=self.number_of_samples, level=self.level)
-
-            num_nodes_expanded += c.SkeletalExpand()
+            current_nodes = c.SkeletalExpand()
+            num_nodes_expanded += current_nodes
             self.ChanceChildren[a] = c
             self.BoundsChildren[a] = c.Eval()
 
@@ -1156,12 +1156,13 @@ class MCTSObservationNode:
             assert self.BoundsChildren[index_to_expand][0] <= self.BoundsChildren[index_to_expand][1]
             self.UpdateChildrenBounds(index_to_expand)
 
-            if self.ActionChildren[index_to_expand].saturated:
-                self.numchild_unsaturated -= 1
-                if self.numchild_unsaturated == 0: self.saturated = True
         else:
             # we can't expand, but need to count this node
             num_nodes_expanded = 1
+        if self.ActionChildren[index_to_expand].saturated:
+            self.numchild_unsaturated -= 1
+            if self.numchild_unsaturated == 0: self.saturated = True
+
         return num_nodes_expanded
 
 
