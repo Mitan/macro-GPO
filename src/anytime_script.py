@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     start = int(args[1])
     # start = 66
-    for seed in range(start, start + 1):
+    for seed in range(start, start + 6):
         filename = my_save_folder_root + "seed" + str(seed) + "/dataset.txt"
         print seed
         TestScenario_Anytime(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t,

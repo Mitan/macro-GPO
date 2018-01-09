@@ -140,7 +140,7 @@ def TestScenario_Anytime(my_save_folder_root, seed, time_steps, batch_size, h, f
 
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "1_s250_100k_anytime_h" + str(h) + "/",
+                            save_folder=save_folder + "anytime_h" + str(h) + "/",
                             num_samples=250, batch_size=batch_size, anytime_iterations=100000)
 
     """
