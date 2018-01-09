@@ -217,8 +217,8 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
 
     output_rewards = open(filename_rewards, append_write)
 
-    h_start = 1
-    h_end = 3
+    h_start = 4
+    h_end = 4
     for h in range(h_start, h_end + 1):
         res = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
                                       num_timesteps_test=time_steps,
