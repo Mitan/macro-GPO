@@ -145,7 +145,7 @@ class TreePlanTester:
             if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
                 bounds, a, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon,
-                                                                max_nodes=MCTSMaxNodes, iterations=anytime_iterations)
+                                                                max_nodes=MCTSMaxNodes)
                 # make a transition
                 a = tp.TransitionP(x_0, a)
 
