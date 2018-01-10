@@ -16,8 +16,10 @@ if __name__ == '__main__':
     h_max = 3
 
     args = sys.argv
-    seed_0 = int(args[1])
-    time_slot = int(args[2])
+    # seed_0 = int(args[1])
+    seed_0 = 0
+    # time_slot = int(args[2])
+    time_slot = 18
 
     # t, batch_size, num_samples, time_slot = (4,5, 250, 18)
 
@@ -26,6 +28,7 @@ if __name__ == '__main__':
     filename = '../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
 
     my_save_folder_root = "../testsRoad2/b" + str(batch_size) + "/" + str(time_slot) + "/"
+    my_save_folder_root = "../road_tests/tests1/"
 
     # number of samples per stage
     # todo note now num_samples is only for anytime

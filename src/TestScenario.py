@@ -203,6 +203,48 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
     output_rewards.close()
 
 
+def TestScenarioAnytime(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, time_slot, filename=None):
+    result_graphs = []
+
+    # eps = 10 ** 10
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+    print "Generating model"
+    m = GenerateRoadModelFromFile(filename)
+
+    m.LoadSelectedMacroactions(save_folder, batch_size)
+    start_location = m.LoadRandomLocation(save_folder)
+    print start_location
+
+    # for h in range(2, h_max+1):
+    for h in range(1, h_max + 1):
+        # print h
+        method_name = 'Anytime H = ' + str(h)
+        current_h_result = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
+                                                   num_timesteps_test=time_steps,
+                                                   save_folder=save_folder + "anytime_h" + str(h) + "/",
+                                                   num_samples=num_samples, batch_size=batch_size,
+                                                   start_location=start_location)
+        result_graphs.append([method_name, current_h_result])
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(current_h_result) + '\n')
+
+    output_rewards.close()
+    # PlotData(result_graphs, save_folder)
+
 def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, time_slot, filename=None):
     result_graphs = []
 
@@ -298,7 +340,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, anytime])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(anytime) + '\n')
-    """
 
     method_name = 'BUCB-PE'
     bucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
@@ -309,7 +350,6 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(bucb) + '\n')
 
-    """
     if batch_size > 1:
         method_name = 'qEI'
         qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
@@ -337,9 +377,9 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     result_graphs.append([method_name, mle])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
-
+    """
     # for h in range(2, h_max+1):
-    for h in range(2, h_max + 1):
+    for h in range(1, h_max + 1):
         # print h
         method_name = 'Anytime H = ' + str(h)
         current_h_result = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
@@ -350,9 +390,10 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
         result_graphs.append([method_name, current_h_result])
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h_result) + '\n')
-    """
+
     output_rewards.close()
     # PlotData(result_graphs, save_folder)
+
 
 
 def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,

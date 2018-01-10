@@ -535,20 +535,22 @@ class TreePlan:
         lamb = 5.0
         print "lambda is " + str(lamb)
         # node d_0, where we have actions
-        root_action_node = MCTSActionNode(x_0, root_node, self, lamb)
+        root_action_node = MCTSActionNode(augmented_state=x_0, semi_tree=root_node, treeplan=self, l=lamb, level=H)
         print "MCTS max nodes:", max_nodes, "Skeletal Expansion"
         # Expand tree
         total_nodes_expanded = root_action_node.SkeletalExpand()
         gc.collect()
         print "Performing search..."
 
-        number_of_iterations = 600 if H == 4 else 1000
+        number_of_iterations = 800 if H == 4 else 1500
+        # number_of_iterations = 1500
+        # number_of_iterations = 1 if H == 4 else 1
         counter = 0
         # TODO: Set a proper termination condition
         # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
             print counter, H
-            lower, upper, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
+            _, _, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
             gc.collect()
@@ -557,17 +559,6 @@ class TreePlan:
             if counter > number_of_iterations:
                 break
         print "counter is " + str(counter)
-        # TODO: Set action selection scheme
-        # Current: Selection based on the action with the highest average bound
-        # bestavg = -float('inf')
-        # for a, cc in root_action_node.BoundsChildren.iteritems():
-        # 	print a, cc
-        # 	avg = (cc[0] + cc[1])/2
-        # 	if bestavg < avg:
-        # 		best_a = a
-        # 		bestavg = avg
-
-
 
         # Select according to maximum lower bound node
         best_lower = -float('inf')
@@ -579,14 +570,6 @@ class TreePlan:
 
         if math.isinf(best_lower):
             raise Exception("Anytime for " + str(H) + " could not move from  location " + str(x_0.physical_state))
-
-        # bestval, best_a = self.MCTSTraverseBest(root_action_node)
-        print best_lower, np.asarray(best_a)
-
-        # Vreal, Areal, _ = self.Algorithm1(epsilon, gamma, x_0, H)
-        # print Vreal, Areal
-
-        # assert abs(Vreal-bestval) <= 0.001
 
         print "Total nodes expanded %d" % total_nodes_expanded
         return root_action_node.BoundsChildren[best_a], np.asarray(best_a), total_nodes_expanded
@@ -708,15 +691,19 @@ class TreePlan:
 
     def ConstructTree(self, action_node, st, T, l):
 
-        if T == 0: return 0, 0, 0
+        if T == 0:
+            print "blea"
+            return 0, 0, 1
         assert not action_node.saturated, "Exploring saturated action node"
 
         # Select action that has the greatest upper bound (TODO: make sure there are still leaves in that branch)
         highest_upper = -float('inf')
         best_a = None
         # choose the best child so far
+
         for a, bounds in action_node.BoundsChildren.iteritems():
             if action_node.ChanceChildren[a].saturated: continue
+
             if highest_upper < bounds[1]: best_a = a
             highest_upper = max(highest_upper, bounds[1])
 
@@ -724,35 +711,43 @@ class TreePlan:
 
         # Select observation that has the greatest WEIGHTED error
         obs_node = action_node.ChanceChildren[best_a]
-        highest_variance = -0.5
-        most_uncertain_node_index = None
-        for i in xrange(obs_node.num_samples):
-            if not (obs_node.ActionChildren[i] is None) and obs_node.ActionChildren[i].saturated:
-                continue
-            current_variance = obs_node.BoundsChildren[i][1] - obs_node.BoundsChildren[i][0]
-            if current_variance > highest_variance:
-                most_uncertain_node_index = i
-                highest_variance = current_variance
+        # we have approaching the leaf of the whole tree
 
-        i = most_uncertain_node_index
-        # If observation is leaf, then we expand:
-        if obs_node.ActionChildren[i] is None:
+        if T > 1:
+            highest_variance = -0.5
+            most_uncertain_node_index = 0
+            for i in xrange(obs_node.num_samples):
+                if not (obs_node.ActionChildren[i] is None) and obs_node.ActionChildren[i].saturated:
+                    continue
+                current_variance = obs_node.BoundsChildren[i][1] - obs_node.BoundsChildren[i][0]
+                if current_variance > highest_variance:
+                    most_uncertain_node_index = i
+                    highest_variance = current_variance
 
-            new_action_node = MCTSActionNode(TransitionH(obs_node.augmented_state, obs_node.ObservationValue[i]),
-                                             new_semi_tree, self, l)
-            obs_node.ActionChildren[i] = new_action_node
+            i = most_uncertain_node_index
+            # nothing to expand
 
-            num_nodes_expanded = new_action_node.SkeletalExpand()
-            # Update upper and lower bounds on this observation node
-            lower, upper = new_action_node.Eval()
-            obs_node.BoundsChildren[i] = (
-                max(obs_node.BoundsChildren[i][0], lower), min(obs_node.BoundsChildren[i][1], upper))
+            # If observation is leaf, then we expand:
+            if obs_node.ActionChildren[i] is None:
+                new_action_node = MCTSActionNode(
+                    augmented_state=TransitionH(obs_node.augmented_state, obs_node.ObservationValue[i]),
+                    semi_tree=new_semi_tree, treeplan=self, l=l, level=T - 1)
+                obs_node.ActionChildren[i] = new_action_node
 
-        else:  # Observation has already been made, expand further
+                num_nodes_expanded = new_action_node.SkeletalExpand()
+                # Update upper and lower bounds on this observation node
+                lower, upper = new_action_node.Eval()
+                obs_node.BoundsChildren[i] = (
+                    max(obs_node.BoundsChildren[i][0], lower), min(obs_node.BoundsChildren[i][1], upper))
 
-            lower, upper, num_nodes_expanded = self.ConstructTree(obs_node.ActionChildren[i], new_semi_tree, T - 1, l)
-            obs_node.BoundsChildren[i] = (
-                max(lower, obs_node.BoundsChildren[i][0]), min(upper, obs_node.BoundsChildren[i][1]))
+            else:  # Observation has already been made, expand further
+                lower, upper, num_nodes_expanded = self.ConstructTree(obs_node.ActionChildren[i], new_semi_tree, T - 1, l)
+                obs_node.BoundsChildren[i] = (
+                    max(lower, obs_node.BoundsChildren[i][0]), min(upper, obs_node.BoundsChildren[i][1]))
+        else:
+            lower, upper, num_nodes_expanded = (0, 0, 1)
+            # has only one child
+            i = 0
 
         obs_node.UpdateChildrenBounds(i)
         lower, upper = obs_node.Eval()
@@ -883,252 +878,266 @@ class SemiState:
 
 
 class MCTSActionNode:
-    """
-    """
-    # d_t
-    mini_epsilon = 10 ** -8
-
-    def __init__(self, augmented_state, semi_tree, treeplan, l):
-        self.augmented_state = augmented_state
-        self.semi_tree = semi_tree
-        self.treeplan = treeplan
-
-        # number of samples per stage at every child ObservationNode
-        self.number_of_samples = self.treeplan.samples_per_stage
-
-        self.lamb = l
-
-        # is full?
-        self.saturated = False
-        # d_t + s_{t]
-        self.ChanceChildren = dict()
-        # Q_lower and Q_upper for each child
-        self.BoundsChildren = dict()
-        self.max_upper = -float('inf')
-        self.max_lower = -float('inf')
-
-    def Eval(self):
         """
-        Evaluate upper and lower bounds of this action node
-        V_lower and V_upper
         """
-        # if no children, then we are certain, and zero value
-        if len(self.BoundsChildren) == 0:
-            return -MCTSActionNode.mini_epsilon, MCTSActionNode.mini_epsilon
+        # d_t
+        mini_epsilon = 10 ** -8
 
-        # max_upper = -float('inf')
-        # max_lower = -float('inf')
-        # get max upper and lower bound
-        # V_lower and V_upper
-        for _, b in self.BoundsChildren.iteritems():
-            self.max_upper = max(b[1], self.max_upper)
-            self.max_lower = max(b[0], self.max_lower)
+        def __init__(self, augmented_state, semi_tree, treeplan, l, level):
+            self.level = level
+            self.augmented_state = augmented_state
+            self.semi_tree = semi_tree
+            self.treeplan = treeplan
+            # number of samples per stage at every child ObservationNode
+            self.number_of_samples = self.treeplan.samples_per_stage
 
-        # todo refact
-        # self.max_upper = max_upper
-        # self.max_lower = max_lower
+            self.lamb = l
+            if level > 0:
+                # is full?
+                self.saturated = False
+                # d_t + s_{t]
+                self.ChanceChildren = dict()
+                # Q_lower and Q_upper for each child
+                self.BoundsChildren = dict()
+                self.max_upper = -float('inf')
+                self.max_lower = -float('inf')
+            else:
+                # is full?
+                self.saturated = True
+                # d_t + s_{t]
+                self.ChanceChildren = dict()
+                # Q_lower and Q_upper for each child
+                self.BoundsChildren = dict()
+                self.max_upper = -float('inf')
+                self.max_lower = -float('inf')
 
-        return self.max_lower, self.max_upper
+        def Eval(self):
+            """
+            Evaluate upper and lower bounds of this action node
+            V_lower and V_upper
+            """
+            # if no children, then we are certain, and zero value
+            if len(self.BoundsChildren) == 0:
+                return -MCTSActionNode.mini_epsilon, MCTSActionNode.mini_epsilon
 
-    def SkeletalExpand(self):
-        """ Builds observation nodes for every action
-        """
+            # max_upper = -float('inf')
+            # max_lower = -float('inf')
+            # get max upper and lower bound
+            # V_lower and V_upper
+            for _, b in self.BoundsChildren.iteritems():
+                self.max_upper = max(b[1], self.max_upper)
+                self.max_lower = max(b[0], self.max_lower)
 
-        # generate all children d_t + s_{t+1}
-        num_nodes_expanded = 1
-        for a, semi_child in self.semi_tree.children.iteritems():
-            # TODO bad design
-            next_physical_state = np.asarray(a)
-            fake_action = np.zeros(next_physical_state.shape)
-            next_augmented_state = TransitionP(self.augmented_state, fake_action)
-            next_augmented_state.physical_state = next_physical_state
+            # todo refact
+            # self.max_upper = max_upper
+            # self.max_lower = max_lower
 
-            c = MCTSObservationNode(next_augmented_state, semi_child, self.treeplan,
-                                    self.lamb,
-                                    self.number_of_samples)
-            num_nodes_expanded += c.SkeletalExpand()
-            self.ChanceChildren[a] = c
-            self.BoundsChildren[a] = c.Eval()
+            return self.max_lower, self.max_upper
 
-        # self.DetermineDominance()
-        self.DetermineSaturation()
-        return num_nodes_expanded
+        def SkeletalExpand(self):
+            """ Builds observation nodes for every action
+            """
 
-    # not used
-    def DetermineDominance(self):
+            # generate all children d_t + s_{t+1}
+            num_nodes_expanded = 1
+            for a, semi_child in self.semi_tree.children.iteritems():
+                # TODO bad design
+                next_physical_state = np.asarray(a)
+                fake_action = np.zeros(next_physical_state.shape)
+                next_augmented_state = TransitionP(self.augmented_state, fake_action)
+                next_augmented_state.physical_state = next_physical_state
+                c = MCTSObservationNode(augmented_state=next_augmented_state, semi_tree=semi_child,
+                                        treeplan=self.treeplan,
+                                        l=self.lamb,
+                                        number_of_samples=self.number_of_samples, level=self.level)
+                current_nodes = c.SkeletalExpand()
+                num_nodes_expanded += current_nodes
+                self.ChanceChildren[a] = c
+                self.BoundsChildren[a] = c.Eval()
 
-        dominated = True
+            # self.DetermineDominance()
+            self.DetermineSaturation()
+            return num_nodes_expanded
 
-        # Get action with the highest lower bound (may not be the best action per se)
-        highest_lower = -float('inf')
-        for a, cc in self.ChanceChildren.iteritems():
-            if self.BoundsChildren[a][0] >= highest_lower:
-                highest_lower = self.BoundsChildren[a][0]
-                best_a = a
+        # not used
+        def DetermineDominance(self):
 
-        # Check dominance
-        for a, cc in self.ChanceChildren.iteritems():
-            if a == best_a: continue
-            if self.BoundsChildren[a][1] < highest_lower:
-                # pass
-                # if not cc.saturated: print "Action %s cutoff in favour of %s" % (a, best_a)
-                cc.saturated = True  # saturate all nodes which are dominated
+            dominated = True
 
-    def DetermineSaturation(self):
-        """ Action node is saturated when
-        Everything underneath it is saturated (or dominated)
-        """
-        allSat = True
-        for a, cc in self.ChanceChildren.iteritems():
-            if not cc.saturated: allSat = False
+            # Get action with the highest lower bound (may not be the best action per se)
+            highest_lower = -float('inf')
+            for a, cc in self.ChanceChildren.iteritems():
+                if self.BoundsChildren[a][0] >= highest_lower:
+                    highest_lower = self.BoundsChildren[a][0]
+                    best_a = a
 
-        # todo check if works initially was like this
-        # self.saturated = allSat
-        self.saturated = allSat
+            # Check dominance
+            for a, cc in self.ChanceChildren.iteritems():
+                if a == best_a: continue
+                if self.BoundsChildren[a][1] < highest_lower:
+                    # pass
+                    # if not cc.saturated: print "Action %s cutoff in favour of %s" % (a, best_a)
+                    cc.saturated = True  # saturate all nodes which are dominated
 
+        def DetermineSaturation(self):
+            """ Action node is saturated when
+            Everything underneath it is saturated (or dominated)
+            """
+            allSat = True
+            for a, cc in self.ChanceChildren.iteritems():
+                if not cc.saturated: allSat = False
+
+            # todo check if works initially was like this
+            # self.saturated = allSat
+            self.saturated = allSat
 
 class MCTSObservationNode:
-    def __init__(self, augmented_state, semi_tree, treeplan, l, number_of_samples):
-        self.augmented_state = augmented_state
-        self.semi_tree = semi_tree
-        self.treeplan = treeplan
-        self.lamb = l
+        def __init__(self, augmented_state, semi_tree, treeplan, l, number_of_samples, level):
+            self.augmented_state = augmented_state
+            self.semi_tree = semi_tree
+            self.treeplan = treeplan
+            self.lamb = l
+            self.level = level
 
-        self.num_samples = number_of_samples
+            self.num_samples = number_of_samples
 
-        self.saturated = False
+            self.saturated = False
 
-        self.numchild_unsaturated = self.num_samples
+            self.mu = self.treeplan.gp.GPMean(measurements=augmented_state.history.measurements,
+                                              weights=semi_tree.weights)
 
-        self.mu = self.treeplan.gp.GPMean(measurements=augmented_state.history.measurements, weights=semi_tree.weights)
+            if self.level != 1:
+                self.numchild_unsaturated = self.num_samples
+                # Pointer too children action selection nodes. "None" = this observation has not been expanded.
+                self.ActionChildren = [None] * self.num_samples
+                # Array of (lower, upper) tuple. Includes bounds which are due to Lipschitz constraints.
+                self.BoundsChildren = [(-float('inf'), float('inf'))] * self.num_samples
 
-        # self.mu = self.treeplan.gp.GPMean(augmented_state.history.locations, augmented_state.history.measurements,
-        #                                  augmented_state.physical_state, weights=semi_tree.weights)
+                mu = self.mu
+                # sd = math.sqrt(semi_tree.variance)
+                samples = np.random.multivariate_normal(mu, semi_tree.variance, self.num_samples)
+                # samples = np.random.normal(mu, sd, self.num_samples)
 
-        # Pointer too children action selection nodes. "None" = this observation has not been expanded.
-        self.ActionChildren = [None] * self.num_samples
-        # Array of (lower, upper) tuple. Includes bounds which are due to Lipschitz constraints.
-        self.BoundsChildren = [(-float('inf'), float('inf'))] * self.num_samples
-        # todo check if we need it
-        # Range of observations for this partition
-        # self.ObservationBounds = [None] * self.num_samples
-        # todo change into stochastic sample values
-        # Value of observation that we take from this partition
-        # self.ObservationValue = [None] * self.num_samples
+                # cannot sort
+                # self.ObservationValue = np.sort(samples, axis=None)
+                self.ObservationValue = samples
+            else:
+                self.numchild_unsaturated = 1
+                self.num_samples = 1
+                self.ActionChildren = [None]
+                # Array of (lower, upper) tuple. Includes bounds which are due to Lipschitz constraints.
+                self.BoundsChildren = [0, 0]
+                self.ObservationValue = np.array([self.mu])
 
-        mu = self.mu
-        # sd = math.sqrt(semi_tree.variance)
-        samples = np.random.multivariate_normal(mu, semi_tree.variance, self.num_samples)
-        # samples = np.random.normal(mu, sd, self.num_samples)
+        def Eval(self):
+            """
+            Evaluate upper and lower bounds of this chance node (weighted)
+           they are Q_lower and Q_upper
+            """
+            r = self.treeplan.reward_analytical(self.mu, self.semi_tree.variance)
+            # lower = 0.0
+            # upper = 0.0
+            # the same as num_samples
+            number_of_children = len(self.BoundsChildren)
+            if self.level > 1:
+                lower = sum([childBound[0] for childBound in self.BoundsChildren]) / number_of_children
+                upper = sum([childBound[1] for childBound in self.BoundsChildren]) / number_of_children
+                lower += r - self.lamb
+                upper += r + self.lamb
+            else:
+                lower = r
+                upper = r
+            assert (lower <= upper), "Lower > Upper!, %s, %s" % (lower, upper)
 
-        # cannot sort
-        # self.ObservationValue = np.sort(samples, axis=None)
-        self.ObservationValue = samples
+            return lower, upper
 
-    def Eval(self):
-        """
-        Evaluate upper and lower bounds of this chance node (weighted)
-       they are Q_lower and Q_upper
-        """
+        def UpdateChildrenBounds(self, index_updated):
+            """ Update bounds of OTHER children while taking into account lipschitz constraints
+            @param index_updated: index of child whose bound was just updated
+            """
+            # can't update bounds if level = 1
+            if self.level == 1:
+                return
+            lip = self.semi_tree.lipchitz
+            assert self.BoundsChildren[index_updated][0] <= self.BoundsChildren[index_updated][1], "%s, %s" % (
+                self.BoundsChildren[index_updated][0], self.BoundsChildren[index_updated][1])
 
-        # lower = 0.0
-        # upper = 0.0
-        # the same as num_samples
-        number_of_children = len(self.BoundsChildren)
+            for i in range(len(self.ActionChildren)):
+                # is it efficient? or better remove from iteration list?
+                if i == index_updated:
+                    continue
+                # line 20 of algorithm in draft
+                b = np.linalg.norm(self.ObservationValue[i] - self.ObservationValue[index_updated]) * lip
+                testLower = self.BoundsChildren[index_updated][0] - b
+                testUpper = self.BoundsChildren[index_updated][1] + b
+                # print self.BoundsChildren[i], testLower, testUpper
+                if self.BoundsChildren[i][0] < testLower:
+                    self.BoundsChildren[i] = (testLower, self.BoundsChildren[i][1])
 
-        lower = sum([childBound[0] for childBound in self.BoundsChildren]) / number_of_children
-        upper = sum([childBound[1] for childBound in self.BoundsChildren]) / number_of_children
+                if self.BoundsChildren[i][1] > testUpper:
+                    self.BoundsChildren[i] = (self.BoundsChildren[i][0], testUpper)
 
-        # Update reward
-        # lower += self.mu - self.semi_tree.true_error
-        # upper += self.mu + self.semi_tree.true_error
-        r = self.treeplan.reward_analytical(self.mu, self.semi_tree.variance)
+                assert (
+                    self.BoundsChildren[i][0] <= self.BoundsChildren[i][
+                        1]), "lower bound greater than upper bound %f, %f" % (
+                    self.BoundsChildren[i][0], self.BoundsChildren[i][1])
 
-        lower += r - self.lamb
-        upper += r + self.lamb
+        def SkeletalExpand(self):
+            """ Expand only using observations at the edges
+            """
 
-        assert (lower <= upper), "Lower > Upper!, %s, %s" % (lower, upper)
+            num_nodes_expanded = 0
 
-        return lower, upper
+            # choose the center node
+            # todo change coz ugly
+            list_observations = self.ObservationValue.tolist()
+            distances = [np.linalg.norm(observation - self.mu) for observation in list_observations]
+            target = -1.0
+            current_min = float('inf')
+            for i in range(len(distances)):
+                if distances[i] < current_min:
+                    current_min = distances[i]
+                    target = i
 
-    def UpdateChildrenBounds(self, index_updated):
-        """ Update bounds of OTHER children while taking into account lipschitz constraints
-        @param index_updated: index of child whose bound was just updated
-        """
+            assert target >= 0
+            # target = int(math.floor(self.num_samples / 2))
+            num_nodes_expanded += self.SkeletalExpandHere(target)
+            self.UpdateChildrenBounds(target)
+            return num_nodes_expanded
 
-        lip = self.semi_tree.lipchitz
+        def SkeletalExpandHere(self, index_to_expand):
+            """ Expand given node at a particular index
+            """
+            num_nodes_expanded = 0
+            assert self.ActionChildren[index_to_expand] == None, "Node already expanded"
+            # uses obervation value
+            self.ActionChildren[index_to_expand] = MCTSActionNode(
+                augmented_state=TransitionH(self.augmented_state, self.ObservationValue[index_to_expand]),
+                semi_tree=self.semi_tree, treeplan=self.treeplan,
+                l=self.lamb, level=self.level - 1)
 
-        assert self.BoundsChildren[index_updated][0] <= self.BoundsChildren[index_updated][1], "%s, %s" % (
-            self.BoundsChildren[index_updated][0], self.BoundsChildren[index_updated][1])
+            # we can't expand further if level = 1
+            if self.level > 1:
+                num_nodes_expanded += self.ActionChildren[index_to_expand].SkeletalExpand()
+                lower, upper = self.ActionChildren[index_to_expand].Eval()
+                assert lower <= upper
+                # print lower, upper, self.BoundsChildren[index_to_expand]
+                self.BoundsChildren[index_to_expand] = (
+                    # tighten the bounds
+                    max(self.BoundsChildren[index_to_expand][0], lower),
+                    min(self.BoundsChildren[index_to_expand][1], upper))
+                # print self.BoundsChildren[index_to_expand]
+                assert self.BoundsChildren[index_to_expand][0] <= self.BoundsChildren[index_to_expand][1]
+                self.UpdateChildrenBounds(index_to_expand)
 
-        for i in range(len(self.ActionChildren)):
-            # is it efficient? or better remove from iteration list?
-            if i == index_updated:
-                continue
-            # line 20 of algorithm in draft
-            b = np.linalg.norm(self.ObservationValue[i] - self.ObservationValue[index_updated]) * lip
-            testLower = self.BoundsChildren[index_updated][0] - b
-            testUpper = self.BoundsChildren[index_updated][1] + b
-            # print self.BoundsChildren[i], testLower, testUpper
-            if self.BoundsChildren[i][0] < testLower:
-                self.BoundsChildren[i] = (testLower, self.BoundsChildren[i][1])
+            else:
+                # we can't expand, but need to count this node
+                num_nodes_expanded = 1
+            if self.ActionChildren[index_to_expand].saturated:
+                self.numchild_unsaturated -= 1
+                if self.numchild_unsaturated == 0: self.saturated = True
 
-            if self.BoundsChildren[i][1] > testUpper:
-                self.BoundsChildren[i] = (self.BoundsChildren[i][0], testUpper)
-
-            assert (
-                self.BoundsChildren[i][0] <= self.BoundsChildren[i][
-                    1]), "lower bound greater than upper bound %f, %f" % (
-                self.BoundsChildren[i][0], self.BoundsChildren[i][1])
-
-    def SkeletalExpand(self):
-        """ Expand only using observations at the edges
-        """
-
-        num_nodes_expanded = 0
-
-        # choose the center node
-        # todo change coz ugly
-        list_observations = self.ObservationValue.tolist()
-        distances = [np.linalg.norm(observation - self.mu) for observation in list_observations]
-        target = -1.0
-        current_min = float('inf')
-        for i in range(len(distances)):
-            if distances[i] < current_min:
-                current_min = distances[i]
-                target = i
-
-        assert target >= 0
-        # target = int(math.floor(self.num_samples / 2))
-        num_nodes_expanded += self.SkeletalExpandHere(target)
-        self.UpdateChildrenBounds(target)
-        return num_nodes_expanded
-
-    def SkeletalExpandHere(self, index_to_expand):
-        """ Expand given node at a particular index
-        """
-        num_nodes_expanded = 0
-        assert self.ActionChildren[index_to_expand] == None, "Node already expanded"
-        # uses obervation value
-        self.ActionChildren[index_to_expand] = MCTSActionNode(
-            TransitionH(self.augmented_state, self.ObservationValue[index_to_expand]), self.semi_tree, self.treeplan,
-            self.lamb)
-        num_nodes_expanded += self.ActionChildren[index_to_expand].SkeletalExpand()
-        lower, upper = self.ActionChildren[index_to_expand].Eval()
-        assert lower <= upper
-        # print lower, upper, self.BoundsChildren[index_to_expand]
-        self.BoundsChildren[index_to_expand] = (
-            # tighten the bounds
-            max(self.BoundsChildren[index_to_expand][0], lower), min(self.BoundsChildren[index_to_expand][1], upper))
-        # print self.BoundsChildren[index_to_expand]
-        assert self.BoundsChildren[index_to_expand][0] <= self.BoundsChildren[index_to_expand][1]
-        self.UpdateChildrenBounds(index_to_expand)
-
-        if self.ActionChildren[index_to_expand].saturated:
-            self.numchild_unsaturated -= 1
-            if self.numchild_unsaturated == 0: self.saturated = True
-
-        return num_nodes_expanded
+            return num_nodes_expanded
 
 
 # TODO note history locations includes current state

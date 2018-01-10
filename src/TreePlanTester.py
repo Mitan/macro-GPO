@@ -177,7 +177,9 @@ class TreePlanTester:
                 # Save to file
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
                 f.write(x_0.to_str() + "\n")
-                f.write("Total accumulated reward = " + str(total_reward))
+
+                f.write("Total accumulated reward = " + str(total_reward) + '\n')
+                f.write("Nodes expanded = " + str(nodes_expanded))
                 f.close()
 
         # Save for the whole trial
