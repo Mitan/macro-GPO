@@ -220,6 +220,7 @@ def GetRoadBeta2Rewards():
     seeds = range(35)
     # seeds = list(set(range(35))
     root_path = '../../releaseTests/road/beta2/'
+    root_path = '../../road_tests/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
 
@@ -237,6 +238,7 @@ def GetRoadBeta3Rewards():
     seeds = range(35)
     # seeds = list(set(range(35)) - set([22]))
     root_path = '../../releaseTests/road/beta3/'
+    root_path = '../../road_tests/beta3/'
     # root_path = '../../last_Beta3/'
     # root_path = '../../zero_last_Beta3/'
     # root_path = '../../copy_beta3/'
@@ -259,11 +261,15 @@ def GetRoadTotalRewards():
     batch_size = 5
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    # methods = ['anytime_h4_5']
 
     method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
+    # method_names = ["H = 1", "H = 2", "H = 3"]
+
     root_path = '../../releaseTests/road/b5-18-log/'
+    # root_path = '../../road_tests/new_h4/'
 
     output_file = '../../result_graphs/eps/road_total_rewards.eps'
 
@@ -348,9 +354,9 @@ def GetRobotTotalRewards():
     method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$', r'$H^* = 4$', r'MLE $H = 4$', 'qEI', 'GP-BUCB-PE', 'GP-BUCB']
     method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
-
+    # method_names = [r'$H = 1$', r'$H^* = 2$', r'$H^* = 3$']
     root_path = '../../releaseTests/robot/slot_16/'
-    # root_path = '../../robot_tests/tests1/'
+    # root_path = '../../robot_tests/tests3/'
 
     output_file = '../../result_graphs/eps/robot_total_rewards.eps'
 
@@ -394,8 +400,14 @@ if __name__ == "__main__":
     GetSimulatedTotalRewards()
     GetRobotTotalRewards()
     GetRobotBeta2Rewards()
-    """
-    # GetRobotBeta3Rewards()
-    # GetRobot_H2Full_TotalRewards()
+    
     GetRobotBeta3Rewards()
+    GetRobot_H2Full_TotalRewards()
+    GetRobotBeta3Rewards()
+    GetRoadBeta3Rewards()
+    """
+    # GetRoadBeta3Rewards()
+    # GetRoadBeta2Rewards()
+    GetRoadTotalRewards()
+    # GetRobotTotalRewards()
     # GetRoadBeta3Rewards()
