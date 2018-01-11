@@ -192,11 +192,11 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
 
     h4 = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
                                  num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "anytime_h" + str(h) + "/",
+                                 save_folder=save_folder + "anytime_h" + str(h) + "_" + str(num_samples) + "/",
                                  num_samples=num_samples, batch_size=batch_size,
                                  start_location=start_location)
 
-    method_name = 'Anytime H = ' + str(h)
+    method_name = 'Anytime H = ' + str(h) + ' ' + str(num_samples)
 
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(h4) + '\n')
