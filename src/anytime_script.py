@@ -20,7 +20,7 @@ if __name__ == '__main__':
         filename = my_save_folder_root + "seed" + str(seed) + "/dataset.txt"
         print seed
         TestScenario_Anytime(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t,
-                             batch_size=batch_size, filename=filename, h=h)
+                             batch_size=batch_size, filename=filename, h=h, num_samples=num_samples)
 
         # TestScenario_H4(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t,
         #                batch_size=batch_size, filename=filename, num_samples=num_samples, h_max=3)

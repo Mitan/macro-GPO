@@ -124,7 +124,7 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
     output_rewards.close()
 
 
-def TestScenario_Anytime(my_save_folder_root, seed, time_steps, batch_size, h, filename=None):
+def TestScenario_Anytime(my_save_folder_root, seed, time_steps, batch_size, h, num_samples, filename=None):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -140,8 +140,8 @@ def TestScenario_Anytime(my_save_folder_root, seed, time_steps, batch_size, h, f
 
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "anytime_h" + str(h) + "/",
-                            num_samples=250, batch_size=batch_size, anytime_iterations=100000)
+                            save_folder=save_folder + "anytime_h" + str(h) + "_" + str(num_samples) + "/",
+                            num_samples=num_samples, batch_size=batch_size)
 
     """
     testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
