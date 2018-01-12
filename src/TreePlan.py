@@ -301,7 +301,9 @@ class TreePlan:
         sd = new_st.variance
 
         number_of_samples = GetNumberOfSamples(self.H, T)
-        # sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
+        # todo note
+        number_of_samples = self.samples_per_stage
+
         sams = np.random.multivariate_normal(mu, sd, number_of_samples)
 
         rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),

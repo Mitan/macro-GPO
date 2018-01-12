@@ -64,11 +64,18 @@ def TestScenario__only_H4(my_save_folder_root, h, seed, time_steps, num_samples,
     method_name = 'h = ' + str(h) + " " + str(num_samples)
 
     current_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-                            num_timesteps_test=time_steps,
-                            save_folder=save_folder + "h" + str(h) + "/",
-                            num_samples=num_samples, batch_size=batch_size)
+                                             num_timesteps_test=time_steps,
+                                             save_folder=save_folder + "h" + str(h) + "/",
+                                             num_samples=num_samples, batch_size=batch_size)
 
-    output_rewards = open(save_folder + "reward_histories.txt", 'w')
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(current_result) + '\n')
 
@@ -95,6 +102,7 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
     """
 
     result_graphs = []
+
     output_rewards = open(save_folder + "reward_histories.txt", 'w')
 
     method_name = 'Myopic DB-GP-UCB'
@@ -119,32 +127,30 @@ def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, b
         # can't apply qEI to single-point
 
     if batch_size > 1:
-            method_name = 'qEI'
-            qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
-                                          save_folder=save_folder + "qEI/",
-                                          num_samples=num_samples, batch_size=batch_size)
-            result_graphs.append([method_name, qEI])
-            output_rewards.write(method_name + '\n')
-            output_rewards.write(str(qEI) + '\n')
+        method_name = 'qEI'
+        qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
+                                      save_folder=save_folder + "qEI/",
+                                      num_samples=num_samples, batch_size=batch_size)
+        result_graphs.append([method_name, qEI])
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(qEI) + '\n')
 
     method_name = 'MLE H = 4'
     mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=4, num_timesteps_test=time_steps,
-                                      save_folder=save_folder + "mle_h4/",
-                                      num_samples=num_samples, batch_size=batch_size)
+                                  save_folder=save_folder + "mle_h4/",
+                                  num_samples=num_samples, batch_size=batch_size)
     result_graphs.append([method_name, mle])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
 
     method_name = 'PE'
     pe = testWithFixedParameters(model=m, method=Methods.BUCB_PE, horizon=1,
-                                     num_timesteps_test=time_steps,
-                                     save_folder=save_folder + "pe/",
-                                     num_samples=num_samples, batch_size=batch_size)
+                                 num_timesteps_test=time_steps,
+                                 save_folder=save_folder + "pe/",
+                                 num_samples=num_samples, batch_size=batch_size)
     result_graphs.append([method_name, pe])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(pe) + '\n')
-
-
 
     output_rewards.close()
 
