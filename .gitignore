@@ -79,3 +79,6 @@ Code Tests
 datasets/intel-robot/
 robot/
 intel_lab_circled.eps
+default.txt
+simulated_tests
+tests3
