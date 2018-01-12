@@ -65,7 +65,7 @@ def TestScenario__only_H4(my_save_folder_root, h, seed, time_steps, num_samples,
 
     current_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
                                              num_timesteps_test=time_steps,
-                                             save_folder=save_folder + "h" + str(h) + "/",
+                                             save_folder=save_folder + "h" + str(h) + '_' + str(num_samples) + "/",
                                              num_samples=num_samples, batch_size=batch_size)
 
     filename_rewards = save_folder + "reward_histories.txt"
