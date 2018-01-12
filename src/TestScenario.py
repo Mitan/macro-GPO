@@ -50,6 +50,31 @@ def TestScenario_QEI(my_save_folder_root, seed, time_steps, num_samples, batch_s
                             num_samples=num_samples, batch_size=batch_size)
 
 
+def TestScenario__only_H4(my_save_folder_root, h, seed, time_steps, num_samples, batch_size, filename):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    m = GenerateModelFromFile(filename)
+
+    method_name = 'h = ' + str(h) + " " + str(num_samples)
+
+    current_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "h" + str(h) + "/",
+                            num_samples=num_samples, batch_size=batch_size)
+
+    output_rewards = open(save_folder + "reward_histories.txt", 'w')
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(current_result) + '\n')
+
+    output_rewards.close()
+
+
 def TestScenario_H4(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
