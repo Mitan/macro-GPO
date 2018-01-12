@@ -75,7 +75,7 @@ class TreePlanTester:
 
         for time in xrange(num_timesteps_test):
             allowed_horizon = DynamicHorizon(t=time, H_max=self.H, t_max=num_timesteps_test)
-            # allowed_horizon = 4
+            allowed_horizon = 4
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
                           macroaction_set=action_set,
                           beta=self.beta,
