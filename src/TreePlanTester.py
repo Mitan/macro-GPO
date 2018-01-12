@@ -32,7 +32,7 @@ class TreePlanTester:
         self.beta = beta
 
     # just sets the parameters
-    def InitGP(self, length_scale, signal_variance, noise_variance, mean_function=0.0):
+    def InitGP(self, length_scale, signal_variance, noise_variance, mean_function):
         """
         @param length_scale: list/nparray containing length scales of each axis respectively
         @param signal_variance
@@ -331,7 +331,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
 
     TPT = TreePlanTester(simulate_noise_in_trials=noise_in_trials, beta=beta)
     # this GP is for prediction
-    TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance)
+    TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance, mean_function=model.mean)
     # adds noise to observations
     TPT.InitEnvironment(environment_noise=noisevariance, model=model)
     TPT.InitPlanner(grid_domain=grid_domain, grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, horizon=horizon,
