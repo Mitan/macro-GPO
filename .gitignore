@@ -88,3 +88,5 @@ result_graphs/eps copy
 result_graphs/folders
 intel_lab_circled.eps
 tests3
+logs
+simulated_tests
