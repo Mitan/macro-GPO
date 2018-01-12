@@ -112,8 +112,14 @@ def GetAllMeasurements(root_folder, method_name, batch_size):
     step_file_name = root_folder + method_name + '/step' + str(i) + '.txt'
     lines = open(step_file_name).readlines()
     first_line_index = 1 + batch_size + 1 + (1 + batch_size * (i + 1)) + 1
-    last_line_index = -(1)
-    # last_line_index = -(1+1)
+
+    # hack to match format:
+    # later added number of nodes in counting
+    if lines[-2][0] == 'T':
+        last_line_index = -2
+    else:
+        last_line_index = - 1
+        
     stripped_lines = map(lambda x: x.strip(), lines[first_line_index: last_line_index])
     joined_lines = " ".join(stripped_lines)
     assert joined_lines[0] == '['
