@@ -119,7 +119,6 @@ def GetAllMeasurements(root_folder, method_name, batch_size):
         last_line_index = -2
     else:
         last_line_index = - 1
-        
     stripped_lines = map(lambda x: x.strip(), lines[first_line_index: last_line_index])
     joined_lines = " ".join(stripped_lines)
     assert joined_lines[0] == '['

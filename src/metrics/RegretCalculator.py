@@ -168,6 +168,7 @@ def GetRoadTotalRegrets():
     root_path = '../../releaseTests/road/b5-18-log/'
     RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
+
 def GetRoadTotalRegrets_H2Full():
     seeds = range(35)
     batch_size = 5
@@ -182,6 +183,24 @@ def GetRoadTotalRegrets_H2Full():
     root_path = '../../releaseTests/road/tests2full/'
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+
+
+def GetRoadTotalRegrets_H2Full_H4Samples():
+    seeds = range(35)
+    batch_size = 5
+
+    methods = ['anytime_h4_5', 'anytime_h4_50', 'anytime_h4']
+    methods = ['anytime_h4_5', 'anytime_h4']
+
+    method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
+    method_names = [r'$N = 5$', r'$N = 300$']
+
+    root_path = '../../road_tests/new_h4/'
+
+    output_file = '../../result_graphs/eps/road_h4samples_simple_regrets.eps'
+
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+
 
 
 #### Simulated ####
@@ -285,6 +304,27 @@ def GetRobotTotalRegrets_H2Full():
     RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
 
+def GetRobotTotalRegrets_H4Samples():
+    seeds = range(35)
+    batch_size = 5
+
+    time_slot = 16
+
+    methods = ['new_anytime_h4_ 5', 'anytime_h4_ 50', 'anytime_h4']
+    methods = ['new_anytime_h4_ 5', 'anytime_h4_5','anytime_h4']
+    methods = ['new_anytime_h4_ 5','anytime_h4']
+
+    method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
+    method_names = [r'$N = 5$', r'$N = 5$a' r'$N = 300$']
+    method_names = [r'$N = 5$',  r'$N = 300$']
+
+    root_path = '../../robot_tests/h4_samples/'
+
+    output_file = '../../result_graphs/eps/robot_h4samples_simple_regrets.eps'
+
+    RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+
+
 if __name__ == "__main__":
     """
     GetRoadTotalRegrets()
@@ -293,6 +333,9 @@ if __name__ == "__main__":
     # GetRoadBeta3Regrets()
 
     GetSimulatedTotalRegrets()
-    """
+    
     GetRobotTotalRegrets()
     GetRobotTotalRegrets_H2Full()
+    """
+    GetRoadTotalRegrets_H2Full_H4Samples()
+    GetRobotTotalRegrets_H4Samples()

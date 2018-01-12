@@ -150,7 +150,6 @@ def GetSimulatedTotalRewards():
     batch_size = 4
 
     root_path = '../../releaseTests/simulated/rewards-sAD/'
-
     methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
     method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
@@ -161,25 +160,10 @@ def GetSimulatedTotalRewards():
     output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
 
     """
-    methods = ['s150_750_anytime_h4', 's200_750_anytime_h4', 's250_750_anytime_h4', 's300_750_anytime_h4',
-               's150_1000_anytime_h4', 's200_1000_anytime_h4', 's250_1000_anytime_h4', 's300_1000_anytime_h4',
-               's150_1200_anytime_h4', 's200_1200_anytime_h4', 's250_1200_anytime_h4', 's300_1200_anytime_h4',
-               's150_1500_anytime_h4', 's200_1500_anytime_h4', 's250_1500_anytime_h4', 's300_1500_anytime_h4',
-               's150_2000_anytime_h4', 's200_2000_anytime_h4']
-
-    methods = ['1_s250_50k_anytime_h4', '2_s250_50k_anytime_h4', '3_s250_50k_anytime_h4', '4_s250_50k_anytime_h4']
-    methods = ['1_s250_100k_anytime_h4', '2_s250_100k_anytime_h4', '3_s250_100k_anytime_h4']
-
-    method_names = [r'$150-750$', r'$200-750$', r'$250-750$', r'$300-750$',
-                    r'$150-1000$', r'$200-1000$', r'$250-1000$', r'$300-1000$',
-                    r'$150-1200$', r'$200-1200$', r'$250-1200$', r'$300-1200$',
-                    r'$150-1500$', r'$200-1500$', r'$250-1500$', r'$300-1500$',
-                    r'$150-2000$', r'$200-2000$', r'$250-2000$', r'$300-2000$']
-    method_names = ['1', '2', '3', '4']
-    root_path = '../../8anytime/'
-    root_path = '../../9anytime/'
-
-    output_file = '../../result_graphs/eps/anytime_100.eps'
+    root_path = '../../simulated_tests/anytime/'
+    methods = ['anytime_h4_300']
+    method_names = ['Anytime']
+    output_file = '../../result_graphs/eps/temp_simulated_total_rewards.eps'
     """
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file)
@@ -243,6 +227,7 @@ def GetRoadBeta3Rewards():
     # root_path = '../../zero_last_Beta3/'
     # root_path = '../../copy_beta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
 
     str_beta = map(str, beta_list)
@@ -254,6 +239,23 @@ def GetRoadBeta3Rewards():
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, isBeta = True)
 
+
+def GetRoad_H4Samples_TotalRewards():
+    seeds = range(35)
+    batch_size = 5
+
+    methods = ['anytime_h4_5', 'anytime_h4_50', 'anytime_h4']
+    methods = ['anytime_h4_5', 'anytime_h4']
+
+    method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
+    method_names = [r'$N = 5$', r'$N = 300$']
+
+    root_path = '../../road_tests/new_h4/'
+
+    output_file = '../../result_graphs/eps/road_h4samples_total_rewards.eps'
+
+    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file)
 
 def GetRoadTotalRewards():
     # seeds = list(set(range(35)) - set([22]))
@@ -342,6 +344,25 @@ def GetRobotBeta3Rewards():
                  seeds=seeds, output_filename=output_file, time_slot=time_slot, isBeta = True)
 
 
+def GetRobot_H4Samples_TotalRewards():
+    seeds = range(35)
+    batch_size = 5
+
+    time_slot = 16
+
+    methods = ['new_anytime_h4_ 5', 'anytime_h4_ 50', 'anytime_h4']
+    methods = ['new_anytime_h4_ 5', 'anytime_h4_5','anytime_h4']
+
+    method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
+    method_names = [r'$N = 5$', r'$N = 5$a' r'$N = 300$']
+
+    root_path = '../../robot_tests/h4_samples/'
+
+    output_file = '../../result_graphs/eps/robot_h4samples_total_rewards.eps'
+
+    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot)
+
 def GetRobotTotalRewards():
     seeds = range(35)
     batch_size = 5
@@ -391,23 +412,21 @@ if __name__ == "__main__":
     GetRoadTotalRewards()
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
-    GetRoadTotalRewards()
     GetRoad_H2Full_TotalRewards()
     
     GetSimulatedBeta2Rewards()
-
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
+    
     GetRobotTotalRewards()
     GetRobotBeta2Rewards()
-    
     GetRobotBeta3Rewards()
     GetRobot_H2Full_TotalRewards()
-    GetRobotBeta3Rewards()
-    GetRoadBeta3Rewards()
     """
-    # GetRoadBeta3Rewards()
-    # GetRoadBeta2Rewards()
-    GetRoadTotalRewards()
     # GetRobotTotalRewards()
+    # GetRoad_H4Samples_TotalRewards()
+    GetRobot_H4Samples_TotalRewards()
+    # GetSimulatedTotalRewards()
+    # GetRoadBeta3Rewards()
+    # GetSimulatedTotalRewards()
     # GetRoadBeta3Rewards()
