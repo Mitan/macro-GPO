@@ -148,7 +148,7 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
 def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
-
+    """
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
@@ -164,7 +164,7 @@ def GetSimulatedTotalRewards():
     methods = ['anytime_h4_300']
     method_names = ['Anytime']
     output_file = '../../result_graphs/eps/temp_simulated_total_rewards.eps'
-    """
+
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file)
 
@@ -197,6 +197,20 @@ def GetSimulatedBeta3Rewards():
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, isBeta = True)
+
+
+
+def GetSimulated_H4Samples_TotalRewards():
+    seeds = range(66, 102)
+    batch_size = 4
+
+    root_path = '../../simulated_tests/h4_samples/'
+    methods = ['h4', 'h4_20', 'h4_5']
+    method_names = ['N=100', 'N=20', 'N=5']
+    output_file = '../../result_graphs/eps/simulated_h4_samples_total_rewards.eps'
+
+    SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                     seeds=seeds, output_filename=output_file)
 
 
 ####### Road ########
@@ -263,15 +277,16 @@ def GetRoadTotalRewards():
     batch_size = 5
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    methods = ['anytime_h2', 'anytime_h3']
     # methods = ['anytime_h4_5']
 
     method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
-    # method_names = ["H = 1", "H = 2", "H = 3"]
+    method_names = [ "H = 2", "H = 3"]
 
     root_path = '../../releaseTests/road/b5-18-log/'
-    # root_path = '../../road_tests/new_h4/'
+    root_path = '../../road_tests/tests1/'
 
     output_file = '../../result_graphs/eps/road_total_rewards.eps'
 
@@ -306,6 +321,7 @@ def GetRobotBeta2Rewards():
     seeds = range(35)
 
     root_path = '../../releaseTests/robot/beta_new2/'
+    root_path = '../../robot_tests/beta2/'
     # root_path = '../../robot_tests/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
@@ -429,4 +445,6 @@ if __name__ == "__main__":
     # GetSimulatedTotalRewards()
     # GetRoadBeta3Rewards()
     # GetSimulatedTotalRewards()
+    # GetRoadBeta2Rewards()
     # GetRoadBeta3Rewards()
+    # GetSimulated_H4Samples_TotalRewards()
