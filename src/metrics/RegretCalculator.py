@@ -220,6 +220,17 @@ def GetSimulatedTotalRegrets():
     output_file = '../../result_graphs/eps/simulated_simple_regrets.eps'
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
 
+def GetSimulatedTotalRegrets_H4Samples():
+    seeds = range(66, 102)
+    batch_size = 4
+
+    root_path = '../../simulated_tests/h4_samples/'
+    methods = ['h4', 'new_h4_20', 'h4_5']
+    method_names = ['N=100', 'N=20', 'N=5']
+    output_file = '../../result_graphs/eps/simulated_h4_samples_simple_regrets.eps'
+
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+
 
 def GetSimulatedBeta2Regrets():
     seeds = range(66, 102)
@@ -337,5 +348,6 @@ if __name__ == "__main__":
     GetRobotTotalRegrets()
     GetRobotTotalRegrets_H2Full()
     """
-    GetRoadTotalRegrets_H2Full_H4Samples()
-    GetRobotTotalRegrets_H4Samples()
+    # GetRoadTotalRegrets_H2Full_H4Samples()
+    # GetRobotTotalRegrets_H4Samples()
+    GetSimulatedTotalRegrets_H4Samples()
