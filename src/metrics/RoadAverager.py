@@ -6,12 +6,14 @@ def GetRoadBeta2Rewards():
     # seeds = list(set(range(35))
     root_path = '../../releaseTests/road/beta2/'
     root_path = '../../road_tests/beta2/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
 
     str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
     output_file = '../../result_graphs/eps/road_beta2_rewards.eps'
 
@@ -24,16 +26,14 @@ def GetRoadBeta3Rewards():
     # seeds = list(set(range(35)) - set([22]))
     root_path = '../../releaseTests/road/beta3/'
     root_path = '../../road_tests/beta3/'
-    # root_path = '../../last_Beta3/'
-    # root_path = '../../zero_last_Beta3/'
-    # root_path = '../../copy_beta3/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
 
     str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
     output_file = '../../result_graphs/eps/road_beta3_rewards.eps'
 
@@ -102,8 +102,9 @@ def GetRoad_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
-    GetRoadTotalRewards()
+    # GetRoadTotalRewards()
     GetRoadBeta3Rewards()
     GetRoadBeta2Rewards()
-    GetRoad_H2Full_TotalRewards()
-    GetRoad_H4Samples_TotalRewards()
+
+    # GetRoad_H2Full_TotalRewards()
+    # GetRoad_H4Samples_TotalRewards()
