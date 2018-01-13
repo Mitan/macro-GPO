@@ -31,7 +31,7 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
 
     # check that we collected data for every location
     # print method
-    # print number_of_location, len(seeds)
+    print number_of_location, len(seeds)
     assert number_of_location == len(seeds)
     # print results_for_method
     results_for_method = results_for_method / len_seeds
@@ -44,7 +44,7 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
 def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot, isBeta = False):
     results = []
 
-    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/final_slot_' + str(time_slot) + '.txt'
+    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
     neighbours_file = '../../datasets/robot/all_neighbours.txt'
     coords_file = '../../datasets/robot/all_coords.txt'
     m = GenerateRobotModelFromFile(data_filename=data_file, coords_filename=coords_file,
