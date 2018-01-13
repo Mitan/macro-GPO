@@ -191,6 +191,44 @@ def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch
     output_rewards.close()
 
 
+def TestScenario_justH4(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, data_filename,
+                    coords_filename, neighbours_filename, h):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    # m = GenerateRoadModelFromFile(filename)
+    m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
+                                   neighbours_filename=neighbours_filename)
+    m.LoadSelectedMacroactions(save_folder, batch_size)
+    # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
+
+    start_location = m.LoadRandomLocation(save_folder)
+
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+
+    h4 = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=4,
+                                 num_timesteps_test=time_steps,
+                                 save_folder=save_folder + "new_anytime_h" + str(4) + "_" + str(num_samples) + "/",
+                                 num_samples=num_samples, batch_size=batch_size,
+                                 start_location=start_location)
+
+    method_name = 'Anytime H = ' + str(h) + ' ' + str(num_samples)
+
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(h4) + '\n')
+    output_rewards.close()
+
 def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, data_filename,
                     coords_filename, neighbours_filename, h):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
