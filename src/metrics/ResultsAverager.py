@@ -148,7 +148,7 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
 def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
-    """
+
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
@@ -164,7 +164,7 @@ def GetSimulatedTotalRewards():
     methods = ['anytime_h4_300']
     method_names = ['Anytime']
     output_file = '../../result_graphs/eps/temp_simulated_total_rewards.eps'
-
+    """
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file)
 
@@ -206,7 +206,8 @@ def GetSimulated_H4Samples_TotalRewards():
 
     root_path = '../../simulated_tests/h4_samples/'
     methods = ['h4', 'h4_20', 'h4_5']
-    method_names = ['N=100', 'N=20', 'N=5']
+    methods = ['h4', 'new_h4_20', 'h4_5']
+    method_names = ['N=100', 'N=20','N=5']
     output_file = '../../result_graphs/eps/simulated_h4_samples_total_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
@@ -441,10 +442,10 @@ if __name__ == "__main__":
     """
     # GetRobotTotalRewards()
     # GetRoad_H4Samples_TotalRewards()
-    GetRobot_H4Samples_TotalRewards()
+    # GetRobot_H4Samples_TotalRewards()
     # GetSimulatedTotalRewards()
     # GetRoadBeta3Rewards()
-    # GetSimulatedTotalRewards()
+    GetSimulatedTotalRewards()
     # GetRoadBeta2Rewards()
     # GetRoadBeta3Rewards()
     # GetSimulated_H4Samples_TotalRewards()
