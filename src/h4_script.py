@@ -14,14 +14,15 @@ if __name__ == '__main__':
 
     filename = '../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
 
-    my_save_folder_root = "../road_tests/new_h4/"
+    my_save_folder_root = "../road_tests/copy_new_h4/"
 
     # num_samples = 300
 
     samples = [5, 50]
+    samples = [50]
 
     for num_samples in samples:
-        for seed in range(seed_0, seed_0 + 5):
+        for seed in range(seed_0, seed_0 + 1):
             # for seed in seeds:
             TestScenario_H4(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t, num_samples=num_samples,
                             batch_size=batch_size, filename=filename, time_slot=time_slot)
