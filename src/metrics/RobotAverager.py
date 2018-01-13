@@ -71,12 +71,12 @@ def GetRobotTotalRewards():
     time_slot = 16
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei',  'fixed_pe', 'gp-bucb']
-    methods = ['anytime_h1', 'anytime_h2']
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3']
 
     method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
-    method_names = [r'$H = 1$', r'$H^* = 2$']
+    method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$']
 
     root_path = '../../releaseTests/robot/slot_16/'
     root_path = '../../noise_robot_tests/all_tests/'
