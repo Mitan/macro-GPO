@@ -223,6 +223,7 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
     # h_end = 3
     # for h in range(h_start, h_end + 1):
     h_end = 3
+    """
     for current_h in range(1, h_end +1):
         # print h
         method_name = 'Anytime H = ' + str(h)
@@ -234,11 +235,13 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
 
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h_result) + '\n')
-
+    """
     method_name = 'MLE H = 4'
-    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=4, num_timesteps_test=time_steps,
+    mle = testWithFixedParameters(time_slot=time_slot,model=m, method=Methods.MLE, horizon=4,
+                                  num_timesteps_test=time_steps,
                                   save_folder=save_folder + "mle_h4/",
-                                  num_samples=num_samples, batch_size=batch_size)
+                                  num_samples=num_samples, batch_size=batch_size,
+                                  start_location=start_location)
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
 
@@ -448,13 +451,10 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     # PlotData(results=result_graphs, output_file_name=save_folder+ 'results.eps', isRoad=False, isTotalReward=True)
 
 
-def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,
+def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta, test_horizon,
                       time_slot,
                       coords_filename,
                       data_filename, neighbours_filename):
-    result_graphs = []
-
-    # test_horizon = 3
 
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
@@ -464,40 +464,30 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
         if not os.path.isdir(save_folder):
             raise
 
-    output_rewards = open(save_folder + "reward_histories.txt", 'w')
-
-    # assert filename is not None
-
-    # m = GenerateModelFromFile(filename)
-    # m = GenerateRoadModelFromFile(filename)
     m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
                                    neighbours_filename=neighbours_filename)
 
-    # todo note
-    # m.SelectMacroActions(batch_size, save_folder)
-    # m.LoadSelectedMacroactions(save_folder, batch_size)
     m.LoadSelectedMacroactions(save_folder, batch_size)
-    # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
 
     start_location = m.LoadRandomLocation(save_folder)
 
-    # start_location = m.GetRandomStartLocation(batch_size=batch_size)
-    # start_location = m.LoadRandomLocation(save_folder)
-
-    with  open(save_folder + "start_location.txt", 'w') as f:
-        f.write(str(start_location[0]) + " " + str(start_location[1]))
-
-    for beta in beta_list:
-        method_name = 'beta = ' + str(beta)
-        current_h_result = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=test_horizon,
+    # for beta in beta_list:
+    method_name = 'beta = ' + str(beta)
+    current_h_result = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=test_horizon,
                                                    num_timesteps_test=time_steps,
                                                    save_folder=save_folder + "beta" + str(beta) + "/",
                                                    num_samples=num_samples, batch_size=batch_size, beta=beta,
                                                    start_location=start_location, time_slot=time_slot)
 
-        result_graphs.append([method_name, current_h_result])
-        output_rewards.write(method_name + '\n')
-        output_rewards.write(str(current_h_result) + '\n')
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(current_h_result) + '\n')
 
     output_rewards.close()
     # PlotData(result_graphs, save_folder)

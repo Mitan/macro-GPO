@@ -15,6 +15,7 @@ if __name__ == '__main__':
     my_save_folder_root = "../robot_tests/tests1/"
     my_save_folder_root = "../robot_tests/h4_samples/"
     my_save_folder_root = "../robot_tests/all_tests/"
+    # my_save_folder_root = "../noise_robot_tests/all_tests/"
 
     data_file = '../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
     neighbours_file = '../datasets/robot/all_neighbours.txt'
