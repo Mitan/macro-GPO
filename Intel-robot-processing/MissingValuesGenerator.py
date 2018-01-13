@@ -12,9 +12,9 @@ def GenerateExactValues(slot_number):
     input_data_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/slot_' + str(slot_number) + '.txt'
     hypers_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/hypers_' + str(slot_number) + '.txt'
 
-    real_coordinates_file = '../datasets/robot/coordinates.txt'
-    fake_coordinates_file = '../datasets/robot/fake_coordinates.txt'
-    output_filename = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/generated_values_slot_' + str(
+    real_coordinates_file = '../datasets/robot/processing/coordinates.txt'
+    fake_coordinates_file = '../datasets/robot/processing/fake_coordinates.txt'
+    output_filename = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/noise_generated_values_slot_' + str(
         slot_number) + '.txt'
 
     output_file = open(output_filename, 'w')
@@ -54,6 +54,8 @@ def GenerateExactValues(slot_number):
         assert real_coord_line[0] == missing_index
         test_location = real_coord_line[1:]
         mu = __predictGP(gp=gp, train_X=X, train_Y=Y, test_location=test_location)
+        # noise
+        mu = mu + np.random.normal(loc=0, scale = math.sqrt(noise_variance))
         mu = round(mu, 4)
         """
         mu_gpy, _ = m.predict(np.atleast_2d(test_location), full_cov=True)
@@ -65,6 +67,8 @@ def GenerateExactValues(slot_number):
     for fake_coord_line in all_fake_coords:
         test_location = fake_coord_line[1:3]
         mu = __predictGP(gp=gp, train_X=X, train_Y=Y, test_location=test_location)
+        # noise
+        mu = mu + np.random.normal(loc=0, scale=math.sqrt(noise_variance))
         mu = round(mu, 4)
         output_file.write(
             str(fake_coord_line[0]) + ' ' + str(test_location[0]) + ' ' + str(test_location[1]) + ' ' + str(mu) + '\n')
@@ -90,8 +94,8 @@ def GenerateFinalDataset(slot_number):
     real_values_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/slot_' + \
                        str(slot_number) + '.txt'
     generated_values_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + \
-                            '/generated_values_slot_' + str(slot_number) + '.txt'
-    output_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/final_slot_' + \
+                            '/noise_generated_values_slot_' + str(slot_number) + '.txt'
+    output_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/noise_final_slot_' + \
                        str(slot_number) + '.txt'
     filenames = [real_values_file, generated_values_file]
     with open(output_file, 'w') as outfile:
@@ -101,5 +105,6 @@ def GenerateFinalDataset(slot_number):
 
 if __name__ == "__main__":
     selected_slots = [2,16]
+    selected_slots = [16]
     for slot in selected_slots:
         GenerateFinalDataset(slot)
