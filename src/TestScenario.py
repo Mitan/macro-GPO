@@ -207,29 +207,73 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
 
     start_location = m.LoadRandomLocation(save_folder)
 
-    # h = 4
-
-    # h_start = 1
-    # h_end = 3
-    # for h in range(h_start, h_end + 1):
-    res = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
-                                  num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "new_anytime_h" + str(h) + "_ " + str(num_samples) + "/",
-                                  num_samples=num_samples, batch_size=batch_size,
-                                  start_location=start_location)
-
-    method_name = 'Anytime H = ' + str(h) + ' ' + str(num_samples)
-
     filename_rewards = save_folder + "reward_histories.txt"
     if os.path.exists(filename_rewards):
         append_write = 'a'
     else:
         append_write = 'w'
 
-    output_rewards = open(filename_rewards, append_write)
+    output_rewards = open(filename_rewards, 'w')
+
+    # h = 4
+
+    # h_start = 1
+    # h_end = 3
+    # for h in range(h_start, h_end + 1):
+    h_end = 3
+    for current_h in range(1, h_end +1):
+        # print h
+        method_name = 'Anytime H = ' + str(h)
+        current_h_result = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=current_h,
+                                                   num_timesteps_test=time_steps,
+                                                   save_folder=save_folder + "anytime_h" + str(current_h) + "/",
+                                                   num_samples=num_samples, batch_size=batch_size,
+                                                   start_location=start_location)
+
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(current_h_result) + '\n')
+
+    method_name = 'MLE H = 4'
+    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=4, num_timesteps_test=time_steps,
+                                  save_folder=save_folder + "mle_h4/",
+                                  num_samples=num_samples, batch_size=batch_size)
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(mle) + '\n')
+
+    PE = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
+                                 num_timesteps_test=time_steps,
+                                 save_folder=save_folder + "fixed_pe/",
+                                 num_samples=num_samples, batch_size=batch_size,
+                                 start_location=start_location)
+
+    method_name = 'FIXED-BUCB-PE'
 
     output_rewards.write(method_name + '\n')
-    output_rewards.write(str(res) + '\n')
+    output_rewards.write(str(PE) + '\n')
+
+    bucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BUCB, horizon=1,
+                                   num_timesteps_test=time_steps,
+                                   save_folder=save_folder + "gp-bucb/",
+                                   num_samples=num_samples, batch_size=batch_size,
+                                   start_location=start_location)
+
+    method_name = 'BUCB'
+
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(bucb) + '\n')
+
+    output_rewards.close()
+
+    h4 = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=4,
+                                 num_timesteps_test=time_steps,
+                                 save_folder=save_folder + "new_anytime_h" + str(h) + "_" + str(num_samples) + "/",
+                                 num_samples=num_samples, batch_size=batch_size,
+                                 start_location=start_location)
+
+    method_name = 'Anytime H = ' + str(h) + ' ' + str(num_samples)
+
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(h4) + '\n')
     output_rewards.close()
 
 
