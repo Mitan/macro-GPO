@@ -82,3 +82,5 @@ intel_lab_circled.eps
 default.txt
 simulated_tests
 tests3
+logs
+noise_robot_tests
