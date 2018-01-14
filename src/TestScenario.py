@@ -262,9 +262,9 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
     # for h in range(h_start, h_end + 1):
     h_end = 3
     """
-    for current_h in range(1, h_end +1):
+    for current_h in range(h_end, h_end +1):
         # print h
-        method_name = 'Anytime H = ' + str(h)
+        method_name = 'Anytime H = ' + str(current_h)
         current_h_result = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=current_h,
                                                    num_timesteps_test=time_steps,
                                                    save_folder=save_folder + "anytime_h" + str(current_h) + "/",

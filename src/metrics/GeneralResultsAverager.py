@@ -59,7 +59,7 @@ def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, ou
         result = [method_names[index], scaled_results]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, type='robot', isBeta=isBeta)
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, dataset='robot', isBeta=isBeta)
 
 
 def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, isBeta = False):
@@ -87,7 +87,7 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
         result = [method_names[index], scaled_results]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=True,type='road', isBeta=isBeta)
+    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, dataset='road', isBeta=isBeta)
 
 
 def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, isBeta = False):
@@ -141,4 +141,4 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
         scaled_results = results_for_method - scaled_model_mean
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
-    PlotData(results=results, output_file_name=output_filename, type='simulated', isTotalReward=True, isBeta=isBeta)
+    PlotData(results=results, output_file_name=output_filename, dataset='simulated', isTotalReward=True, isBeta=isBeta)

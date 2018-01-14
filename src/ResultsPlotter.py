@@ -1,6 +1,8 @@
 import matplotlib
 
 # Force matplotlib to not use any Xwindows backend.
+from src.PlottingEnum import PlottingMethods
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
@@ -8,9 +10,10 @@ import numpy as np
 from matplotlib.ticker import FormatStrFormatter
 
 from matplotlib import rc
-#rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+
+# rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 ## for Palatino and other serif fonts use:
-rc('font',**{'family':'serif','serif':['Times']})
+rc('font', **{'family': 'serif', 'serif': ['Times']})
 rc('text', usetex=True)
 
 
@@ -24,16 +27,15 @@ def ParseName(method_name):
     return method_name
 
 
-def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
+def PlotData(results, dataset, output_file_name, plottingType):
     if not results:
         return
-
 
     # 0 is width, 1 is height
     plt.rcParams["figure.figsize"] = [6, 9]
 
     color_sequence = ['red', 'green', 'blue', '#e377c2', '#17becf', 'orange',
-                       '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#7f7f7f',
+                      '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#7f7f7f',
                       '#8c564b', '#c49c94', '#7f7f7f',
                       '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5', 'yellow']
 
@@ -41,9 +43,9 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
 
     # include first step before planning
     number_of_steps = len((results[0])[1])
-    batch_size = 20 / (number_of_steps -1)
+    batch_size = 20 / (number_of_steps - 1)
 
-    legend_loc = 2 if isTotalReward else 1
+    # legend_loc = 2 if isTotalReward else 1
 
     # time_steps = range(number_of_steps)
     # show samples obtained instead
@@ -51,13 +53,12 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
     # for legends
     handles = []
     for i, result in enumerate(results):
-
         name = ParseName(result[0])
 
         rewards = result[1]
 
         # hack for EI
-        adjusted_time_steps = range(21) if (name=='EI (all MA)' or name == 'PI') else time_steps
+        adjusted_time_steps = range(21) if (name == 'EI (all MA)' or name == 'PI') else time_steps
 
         # previous version with small filled markers
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])
@@ -65,7 +66,8 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
         marker_index = i if i < 8 else 0
 
         # dirty hack to make it unfilled
-        plt.plot(adjusted_time_steps, rewards, lw=1.0, marker=markers[marker_index], markersize=15, markerfacecolor="None",
+        plt.plot(adjusted_time_steps, rewards, lw=1.0, marker=markers[marker_index], markersize=15,
+                 markerfacecolor="None",
                  markeredgewidth=1, markeredgecolor=color_sequence[i], color=color_sequence[i])
 
         # patch = mpatches.Patch(color=color_sequence[i], label=name)
@@ -80,21 +82,85 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
     axes = plt.axes()
     axes.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
+    if dataset == 'simulated':
+        if plottingType == PlottingMethods.TotalReward:
+            plt.ylabel("Total Rewards")
+            plt.yticks(range(-4, 13))
+            legend_loc = 2
+        elif plottingType == PlottingMethods.TotalRewardBeta:
+            plt.ylabel("Total Rewards")
+            plt.yticks(range(-4, 14))
+            # plt.axis((x1, x2, -4, 12))
+            axes.set_ylim([-4, 12])
+            legend_loc = 2
+        elif plottingType == PlottingMethods.SimpleRegret:
+            plt.ylabel("Simple regret")
+            plt.yticks(np.arange(1.4, 3.2, 0.2))
+            legend_loc = 1
+        elif plottingType == PlottingMethods.Nodes:
+            plt.ylabel("No. of nodes expanded")
+            axes.set_yscale('log')
+            # axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 10))
+            # plt.yticks(np.arange(0, 10 ** 8, 10 ** 7))
+            legend_loc = 1
+        else:
+            raise
+    elif dataset == 'road':
+        if plottingType == PlottingMethods.TotalReward:
+            plt.ylabel("Total Rewards")
+            plt.yticks(range(-1, 8))
+            legend_loc = 2
+        elif plottingType == PlottingMethods.TotalRewardBeta:
+            plt.ylabel("Total Rewards")
+            axes.set_ylim([-1, 8])
+            plt.yticks(range(-1, 9))
+            legend_loc = 2
+        elif plottingType == PlottingMethods.SimpleRegret:
+            plt.ylabel("Simple regret")
+            plt.yticks(np.arange(1.5, 4, 0.5))
+            legend_loc = 1
+        elif plottingType == PlottingMethods.Nodes:
+            plt.ylabel("No. of nodes expanded")
+            axes.set_yscale('log')
+            legend_loc = 1
+        else:
+            raise
+    elif dataset == 'robot':
+        if plottingType == PlottingMethods.TotalReward:
+            plt.ylabel("Total Rewards")
+            plt.yticks(range(-1, 16))
+            legend_loc = 2
+        elif plottingType == PlottingMethods.TotalRewardBeta:
+            plt.ylabel("Total Rewards")
+            axes.set_ylim([0, 16])
+            plt.yticks(range(0, 17))
+            legend_loc = 2
+        elif plottingType == PlottingMethods.SimpleRegret:
+            plt.ylabel("Simple regret")
+            legend_loc = 1
+        elif plottingType == PlottingMethods.Nodes:
+            plt.ylabel("No. of nodes expanded")
+            axes.set_yscale('log')
+            legend_loc = 1
+        else:
+            raise
+
+    """ 
     if isTotalReward:
         plt.ylabel("Total Rewards")
-        if type == 'road':
+        if dataset == 'road':
             if isBeta:
                 axes.set_ylim([-1, 8])
                 plt.yticks(range(-1, 9))
             else:
                 plt.yticks(range(-1, 8))
-        elif type == 'robot':
+        elif dataset == 'robot':
             if isBeta:
                 axes.set_ylim([0, 16])
                 plt.yticks(range(0, 17))
             else:
                 plt.yticks(range(-1, 16))
-        elif type == 'simulated':
+        elif dataset == 'simulated':
             if isBeta:
                 plt.yticks(range(-4, 14))
                 # plt.axis((x1, x2, -4, 12))
@@ -105,16 +171,16 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
             raise
     else:
         plt.ylabel("Simple regret")
-        if type == 'road':
+        if dataset == 'road':
             plt.yticks(np.arange(1.5, 4, 0.5))
-        elif type == 'robot':
+        elif dataset == 'robot':
             pass
             # lt.yticks(np.arange(1.5, 4, 0.5))
-        elif type == 'simulated':
+        elif dataset == 'simulated':
             plt.yticks(np.arange(1.4, 3.2, 0.2))
         else:
             raise
-
+    """
 
     plt.legend(handles=handles, loc=legend_loc)
     # plt.savefig(folder_name + file_name)
@@ -122,7 +188,7 @@ def PlotData(results, type,  output_file_name, isTotalReward, isBeta=False):
     # margins on x and y side
     axes.margins(x=0.02)
 
-    #if not isTotalReward:
+    # if not isTotalReward:
     axes.margins(y=0.02)
 
     # plt.savefig(output_file_name, bbox_inches='tight')
