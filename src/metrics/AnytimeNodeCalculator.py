@@ -1,11 +1,7 @@
-from src.ResultsPlotter import PlotData
 import numpy as np
-from StringIO import StringIO
+import os
 
-from src.DatasetUtils import GetAllMeasurements, GetAccumulatedRewards, GenerateModelFromFile, \
-    GenerateRoadModelFromFile, GenerateRobotModelFromFile
-
-
+"""
 def CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file):
     nodes_file = open(output_file, 'w')
 
@@ -50,42 +46,6 @@ def CountExpandedNodesForSingleSeed(m, seed, path):
         # print loc, len(m.GetSelectedMacroActions(loc))
         expanded_nodes += len(m.GetSelectedMacroActions(loc))
     return expanded_nodes
-
-
-##### Simulated
-
-def ExpandedNodesSimulated():
-    seeds = range(66, 102)
-    root_path = '../../releaseTests/simulated/rewards-sAD/'
-    methods = ['2_s250_100k_anytime_h4']
-    method_names = ['Anytime 4']
-    output_file = '../../result_graphs/nodes_simulated.txt'
-    CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
-
-
-# Roads
-
-def ExpandedNodesRoads():
-    seeds = range(35)
-
-    methods = ['anytime_h2', 'anytime_h3', 'anytime_h4']
-    method_names = ['Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4']
-
-    root_path = '../../releaseTests/road/b5-18-log/'
-    output_file = '../../result_graphs/nodes_roads.txt'
-    CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
-
-
-def ExpandedNodesRoads_H2Full():
-    seeds = range(35)
-
-    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
-    method_names = ['Anytime H = 2 Full', 'Anytime H = 2', 'Anytime H = 4']
-
-    root_path = '../../releaseTests/road/tests2full/'
-    output_file = '../../result_graphs/nodes_roads_h2_full.txt'
-    CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
-
 
 def Road_ExpandedNodesForH1():
     seeds = range(35)
@@ -140,15 +100,92 @@ def Robot_ExpandedNodesForH1():
     nodes_file.close()
 
 
-def Robot_ExpandedNodes():
+"""
+
+
+def New_CountExpandedNodesForMethod(method_name, seeds, tests_folder, time_steps):
+    total_results =  np.zeros((time_steps,))
+    len_seeds = len(seeds)
+
+    for seed in seeds:
+        seed_folder = tests_folder + 'seed'+ str(seed) + '/' + method_name + '/'
+        results = New_CountExpandedNodesForSingleSeed(path=seed_folder, time_steps=time_steps)
+        total_results = np.add(total_results, results)
+
+    return list(total_results/len_seeds)
+
+
+def New_CountExpandedNodesForSingleSeed(path, time_steps):
+    results = []
+    for step in range(time_steps):
+        current_seed_file = path + 'step' + str(step) + '.txt'
+        all_summary_lines = open(current_seed_file).readlines()
+        nodes_line = all_summary_lines[-1]
+        expanded_node = nodes_line.split()[3]
+        results.append(int(expanded_node))
+    return np.array(results)
+
+
+##### Simulated
+
+def ExpandedNodesSimulated():
+    seeds = range(66, 102)
+    root_path = '../../releaseTests/simulated/rewards-sAD/'
+    methods = ['2_s250_100k_anytime_h4']
+    method_names = ['Anytime 4']
+    output_file = '../../result_graphs/nodes_simulated.txt'
+    CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
+
+
+# Roads
+
+def ExpandedNodesRoads():
     seeds = range(35)
 
     methods = ['anytime_h2', 'anytime_h3', 'anytime_h4']
     method_names = ['Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4']
 
-    root_path = '../../robot_tests/tests1_16_ok/'
-    output_file = '../../result_graphs/nodes_robots.txt'
+    root_path = '../../releaseTests/road/b5-18-log/'
+    output_file = '../../result_graphs/nodes_roads.txt'
     CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
+
+
+def ExpandedNodesRoads_H2Full():
+    seeds = range(35)
+
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
+    method_names = ['Anytime H = 2 Full', 'Anytime H = 2', 'Anytime H = 4']
+
+    root_path = '../../releaseTests/road/tests2full/'
+    output_file = '../../result_graphs/nodes_roads_h2_full.txt'
+    CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
+
+# Robot
+
+def Robot_ExpandedNodes():
+    seeds = list(set(range(35)) - set([24]))
+    root_path = '../../noise_robot_tests/all_tests/'
+    time_steps=4
+
+    methods = ['anytime_h1','anytime_h2', 'anytime_h3', 'new_anytime_h4_300']
+    method_names = ['Anytime H = 1', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4']
+
+    output_file = '../../result_graphs/new_robot_nodes.txt'
+    if os.path.exists(output_file):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(output_file, append_write)
+    for i, method  in enumerate(methods):
+        magic = 15.0 / 6 if method == 'new_anytime_h4_300' else 1.0
+        results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
+                                                  tests_folder=root_path, time_steps=time_steps)
+        total = results[0] * magic + sum(results[1:])
+        print method_names[i], total
+        output_rewards.write(method_names[i] + ' ' + str(total) + '\n')
+
+    output_rewards.close()
 
 
 def Robot_ExpandedNodes_H2Full():
@@ -163,10 +200,18 @@ def Robot_ExpandedNodes_H2Full():
 
 
 if __name__ == "__main__":
+    # path = '../../noise_robot_tests/21_full/seed0/anytime_h2_full/'
+    tests_folder = '../../noise_robot_tests/21_full/'
+    seeds = range(35)
+    method_name = 'anytime_h2_full'
+    time_steps = 4
+    # New_CountExpandedNodesForMethod(method_name=method_name, tests_folder=tests_folder,
+    #                                seeds=seeds, time_steps=time_steps)
+    # New_CountExpandedNodesForSingleSeed(path=path, time_steps=4)
     # ExpandedNodesRoads()
     # ExpandedNodesSimulated()
     # ExpandedNodesForH1()
     # ExpandedNodesRoads_H2Full()
     # Robot_ExpandedNodesForH1()
     Robot_ExpandedNodes()
-    Robot_ExpandedNodes_H2Full()
+    # Robot_ExpandedNodes_H2Full()
