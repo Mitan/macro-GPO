@@ -3,6 +3,7 @@ import numpy as np
 
 from src.DatasetUtils import GenerateRoadModelFromFile, GetAllMeasurements, GetMaxValues, GenerateModelFromFile, \
     GenerateRobotModelFromFile
+from src.PlottingEnum import PlottingMethods
 from src.ResultsPlotter import PlotData
 
 
@@ -26,7 +27,7 @@ def GetRoadResultsForMethod(seeds, batch_size, method, root_path, model_max):
     # result = [method_names[index], regrets]
 
 
-def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename):
+def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):
     time_slot = 16
     data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/final_slot_' + str(time_slot) + '.txt'
     neighbours_file = '../../datasets/robot/all_neighbours.txt'
@@ -46,10 +47,10 @@ def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_fil
         results.append(result)
         print result
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=False, dataset='robot')
+    PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='robot')
 
 
-def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename):
+def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):
     """
     root_path = '../../releaseTests/road/b5-18-log/'
     seeds = range(35)
@@ -75,10 +76,10 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
         results.append(result)
         print result
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=False, dataset='road')
+    PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='road')
 
 
-def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename):
+def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):
     """
     seeds = range(66, 102)
     batch_size = 4
@@ -120,7 +121,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         results.append(result)
         print result
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=False, dataset='simulated')
+    PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='simulated')
 
 ### Road ###
 def GetRoadBeta2Regrets():
@@ -166,7 +167,8 @@ def GetRoadTotalRegrets():
 
     output_file = '../../result_graphs/eps/road_simple_regrets.eps'
     root_path = '../../releaseTests/road/b5-18-log/'
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds,
+                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
 def GetRoadTotalRegrets_H2Full():
@@ -182,7 +184,8 @@ def GetRoadTotalRegrets_H2Full():
     output_file = '../../result_graphs/eps/road_h2_full_simple_regrets.eps'
     root_path = '../../releaseTests/road/tests2full/'
 
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds,
+                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
 def GetRoadTotalRegrets_H2Full_H4Samples():
@@ -218,7 +221,8 @@ def GetSimulatedTotalRegrets():
                     r'$q$-EI']
 
     output_file = '../../result_graphs/eps/simulated_simple_regrets.eps'
-    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
+                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 def GetSimulatedTotalRegrets_H4Samples():
     seeds = range(66, 102)
@@ -229,7 +233,8 @@ def GetSimulatedTotalRegrets_H4Samples():
     method_names = ['N=100', 'N=20', 'N=5']
     output_file = '../../result_graphs/eps/simulated_h4_samples_simple_regrets.eps'
 
-    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
+                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
 def GetSimulatedBeta2Regrets():
@@ -294,7 +299,8 @@ def GetRobotTotalRegrets():
 
     output_file = '../../result_graphs/eps/robot_simple_regrets.eps'
 
-    RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
+                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
 def GetRobotTotalRegrets_H2Full():
@@ -312,7 +318,8 @@ def GetRobotTotalRegrets_H2Full():
 
     output_file = '../../result_graphs/eps/robot_h2_full_simple_regrets.eps'
 
-    RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
+                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
 def GetRobotTotalRegrets_H4Samples():
@@ -337,17 +344,20 @@ def GetRobotTotalRegrets_H4Samples():
 
 
 if __name__ == "__main__":
-    """
-    GetRoadTotalRegrets()
-    GetRoadTotalRegrets_H2Full()
+
+    # GetRoadTotalRegrets()
+    # GetRoadTotalRegrets_H2Full()
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
-
-    GetSimulatedTotalRegrets()
     
+    GetSimulatedTotalRegrets()
+    GetSimulatedTotalRegrets_H4Samples()
+    """
     GetRobotTotalRegrets()
     GetRobotTotalRegrets_H2Full()
     """
-    # GetRoadTotalRegrets_H2Full_H4Samples()
-    # GetRobotTotalRegrets_H4Samples()
-    GetSimulatedTotalRegrets_H4Samples()
+
+    """
+    GetRoadTotalRegrets_H2Full_H4Samples()
+    GetRobotTotalRegrets_H4Samples()
+    """

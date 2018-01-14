@@ -41,7 +41,7 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
     return scaled_results.tolist()
 
 
-def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot, isBeta = False):
+def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot, plottingType):
     results = []
 
     data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
@@ -59,10 +59,10 @@ def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, ou
         result = [method_names[index], scaled_results]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, dataset='robot', isBeta=isBeta)
+    PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='robot')
 
 
-def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, isBeta = False):
+def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, plottingType):
     """
     seeds = range(36)
     seeds = list(set(seeds) - set([31]))
@@ -87,10 +87,10 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
         result = [method_names[index], scaled_results]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, isTotalReward=True, dataset='road', isBeta=isBeta)
+    PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='road')
 
 
-def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, isBeta = False):
+def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, plottingType):
     """
     seeds = range(66, 102)
     batch_size = 4
@@ -141,4 +141,4 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
         scaled_results = results_for_method - scaled_model_mean
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
-    PlotData(results=results, output_file_name=output_filename, dataset='simulated', isTotalReward=True, isBeta=isBeta)
+    PlotData(results=results, output_file_name=output_filename, dataset='simulated', plottingType=plottingType)

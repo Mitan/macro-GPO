@@ -1,4 +1,5 @@
 from GeneralResultsAverager import SimulatedRewards
+from src.PlottingEnum import PlottingMethods
 
 
 def GetSimulatedTotalRewards():
@@ -22,7 +23,7 @@ def GetSimulatedTotalRewards():
     output_file = '../../result_graphs/eps/temp_simulated_total_rewards.eps'
     """
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds, output_filename=output_file)
+                     seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
 def GetSimulatedBeta2Rewards():
@@ -37,7 +38,7 @@ def GetSimulatedBeta2Rewards():
     output_file = '../../result_graphs/eps/simulated_beta2_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds, output_filename=output_file, isBeta = True)
+                     seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
 
 
 def GetSimulatedBeta3Rewards():
@@ -52,7 +53,7 @@ def GetSimulatedBeta3Rewards():
     output_file = '../../result_graphs/eps/simulated_beta3_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds, output_filename=output_file, isBeta = True)
+                     seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
 
 
 def GetSimulated_H4Samples_TotalRewards():
@@ -66,7 +67,7 @@ def GetSimulated_H4Samples_TotalRewards():
     output_file = '../../result_graphs/eps/simulated_h4_samples_total_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds, output_filename=output_file)
+                     seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
 if __name__ == "__main__":
