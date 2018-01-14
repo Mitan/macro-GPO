@@ -326,12 +326,17 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
 
     past_locations = np.array([[1.0, 1.0]])
 
+    # todo nb
+    # this works only for simulated model
+    mean_function = 0.0
+
     # Unused
     noise_in_trials = True
 
     TPT = TreePlanTester(simulate_noise_in_trials=noise_in_trials, beta=beta)
     # this GP is for prediction
-    TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance, mean_function=model.mean)
+    TPT.InitGP(length_scale=lengthscale, signal_variance=signalvariance, noise_variance=noisevariance,
+               mean_function=mean_function)
     # adds noise to observations
     TPT.InitEnvironment(environment_noise=noisevariance, model=model)
     TPT.InitPlanner(grid_domain=grid_domain, grid_gap=grid_gap_, gamma=1, epsilon=epsilon_, horizon=horizon,

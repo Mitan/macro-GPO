@@ -11,6 +11,7 @@ if __name__ == '__main__':
     h = 4
     # num_samples = 300
     samples = [5, 20]
+    samples = [20]
 
     args = sys.argv
     start = int(args[1])

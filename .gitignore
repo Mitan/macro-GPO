@@ -75,3 +75,6 @@ intel_lab_circled.eps
 tests3
 simulated_tests
 default.txt
+experiments_beta.sh
+noise_robot_tests
+test.eps
