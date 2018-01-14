@@ -137,6 +137,30 @@ def ExpandedNodesSimulated():
     CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
 
 
+def Simulated_ExpandedNodes():
+    seeds = range(66, 102)
+
+    method = 'anytime_h4_300'
+    method_name = 'Anytime H = 4'
+
+    root_path = '../../simulated_tests/anytime/'
+    time_steps = 5
+
+    output_file = '../../result_graphs/node_files/simulated_nodes.txt'
+
+    output_rewards = open(output_file, 'w')
+
+    magic = 15.0 / 8.0
+
+    results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
+                                              tests_folder=root_path, time_steps=time_steps)
+    total = results[0] * magic + results[1] * magic + sum(results[2:])
+    print method_name, total
+    output_rewards.write(method_name + ' ' + str(total) + '\n')
+
+    output_rewards.close()
+
+
 # Roads
 
 def ExpandedNodesRoads():
@@ -254,7 +278,9 @@ if __name__ == "__main__":
     # ExpandedNodesForH1()
     # ExpandedNodesRoads_H2Full()
     # Robot_ExpandedNodesForH1()
-
+    Simulated_ExpandedNodes()
+    """
     Robot_ExpandedNodes()
     Robot_ExpandedNodes_H2Full()
     Robot_ExpandedNodes_H4Samples()
+    """
