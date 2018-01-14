@@ -228,8 +228,8 @@ def Robot_ExpandedNodes_H4Samples():
     output_rewards = open(output_file, append_write)
 
     for i, method in enumerate(methods):
-        # magic = 15.0 / 6
-        magic = 15.0 / 6 if method == 'new_anytime_h4_50' else 1.0
+        magic = 15.0 / 6
+        # magic = 15.0 / 6 if method == 'new_anytime_h4_50' else 1.0
         results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
                                                   tests_folder=root_path, time_steps=time_steps)
         total = results[0] * magic + sum(results[1:])
