@@ -9,7 +9,8 @@ def GetRobotBeta2Rewards():
     root_path = '../../releaseTests/robot/beta_new2/'
     root_path = '../../robot_tests/beta2/'
     root_path = '../../noise_robot_tests/beta2/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
     time_slot = 16
 
@@ -30,7 +31,9 @@ def GetRobotBeta3Rewards():
     root_path = '../../releaseTests/robot/beta_new3/'
     # root_path = '../../robot_tests/beta3/'
     root_path = '../../noise_robot_tests/beta3/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
+    # beta_list = [0.0,  0.1, 0.5, 1.0, 5.0]
 
     # beta_list = [0.0, 0.05, 0.1]
 
@@ -51,6 +54,7 @@ def GetRobotBeta3Rewards():
 
 def GetRobot_H4Samples_TotalRewards():
     seeds = range(35)
+    seeds = list(set(range(35)) - set([17, 24]))
     batch_size = 5
 
     time_slot = 16
@@ -59,10 +63,10 @@ def GetRobot_H4Samples_TotalRewards():
     methods = ['new_anytime_h4_ 5', 'anytime_h4_5', 'anytime_h4']
     methods = ['new_anytime_h4_ 5', 'anytime_h4_5']
     methods = ['new_anytime_h4_5', 'new_anytime_h4_50']
-    methods = ['new_anytime_h4_5']
+    # methods = ['new_anytime_h4_5']
 
     method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
-    method_names = [r'$N = 5$', r'$N = 5$a' r'$N = 300$']
+    method_names = [r'$N = 5$', r'$N = 50$' r'$N = 300$']
 
     root_path = '../../robot_tests/h4_samples/'
     root_path = '../../noise_robot_tests/h4_tests/'
@@ -76,7 +80,8 @@ def GetRobot_H4Samples_TotalRewards():
 
 def GetRobotTotalRewards():
     seeds = range(35)
-    # seeds = list(set(range(35)) - set([0,31]))
+    seeds = list(set(range(35)) - set([24]))
+
     batch_size = 5
 
     time_slot = 16
@@ -131,9 +136,9 @@ def GetRobot_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
-    # GetRobotTotalRewards()
+    GetRobotTotalRewards()
     # GetRobotBeta2Rewards()
     # GetRobotBeta3Rewards()
-    GetRobot_H2Full_TotalRewards()
+    # GetRobot_H2Full_TotalRewards()
 
     GetRobot_H4Samples_TotalRewards()

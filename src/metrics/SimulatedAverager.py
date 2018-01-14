@@ -31,6 +31,7 @@ def GetSimulatedBeta2Rewards():
     batch_size = 4
     root_path = '../../releaseTests/simulated/simulatedBeta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
@@ -46,6 +47,7 @@ def GetSimulatedBeta3Rewards():
     batch_size = 4
     root_path = '../../releaseTests/simulated/simulatedBeta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)

@@ -47,10 +47,10 @@ def GetRoad_H4Samples_TotalRewards():
     batch_size = 5
 
     methods = ['anytime_h4_5', 'anytime_h4_50', 'anytime_h4']
-    methods = ['anytime_h4_5', 'anytime_h4']
+    # methods = ['anytime_h4_5', 'anytime_h4']
 
     method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
-    method_names = [r'$N = 5$', r'$N = 300$']
+    # method_names = [r'$N = 5$', r'$N = 300$']
 
     root_path = '../../road_tests/new_h4/'
 
@@ -65,16 +65,19 @@ def GetRoadTotalRewards():
     batch_size = 5
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
-    # methods = ['anytime_h2', 'anytime_h3']
-    # methods = ['anytime_h4_5']
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3']
 
     method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
+    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
+                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+
     # method_names = [ "H = 2", "H = 3"]
 
     root_path = '../../releaseTests/road/b5-18-log/'
-    # root_path = '../../road_tests/tests1/'
+    root_path = '../../road_tests/tests1/'
 
     output_file = '../../result_graphs/eps/road_total_rewards.eps'
 
@@ -103,9 +106,10 @@ def GetRoad_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
-    GetRoadTotalRewards()
-    GetRoadBeta3Rewards()
-    GetRoadBeta2Rewards()
 
-    GetRoad_H2Full_TotalRewards()
-    GetRoad_H4Samples_TotalRewards()
+    GetRoadTotalRewards()
+    # GetRoadBeta3Rewards()
+    # GetRoadBeta2Rewards()
+
+    # GetRoad_H2Full_TotalRewards()
+    # GetRoad_H4Samples_TotalRewards()
