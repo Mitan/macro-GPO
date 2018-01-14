@@ -104,15 +104,15 @@ def Robot_ExpandedNodesForH1():
 
 
 def New_CountExpandedNodesForMethod(method_name, seeds, tests_folder, time_steps):
-    total_results =  np.zeros((time_steps,))
+    total_results = np.zeros((time_steps,))
     len_seeds = len(seeds)
 
     for seed in seeds:
-        seed_folder = tests_folder + 'seed'+ str(seed) + '/' + method_name + '/'
+        seed_folder = tests_folder + 'seed' + str(seed) + '/' + method_name + '/'
         results = New_CountExpandedNodesForSingleSeed(path=seed_folder, time_steps=time_steps)
         total_results = np.add(total_results, results)
 
-    return list(total_results/len_seeds)
+    return list(total_results / len_seeds)
 
 
 def New_CountExpandedNodesForSingleSeed(path, time_steps):
@@ -160,24 +160,21 @@ def ExpandedNodesRoads_H2Full():
     output_file = '../../result_graphs/nodes_roads_h2_full.txt'
     CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
 
+
 # Robot
 
 def Robot_ExpandedNodes():
     seeds = list(set(range(35)) - set([24]))
     root_path = '../../noise_robot_tests/all_tests/'
-    time_steps=4
+    time_steps = 4
 
-    methods = ['anytime_h1','anytime_h2', 'anytime_h3', 'new_anytime_h4_300']
-    method_names = ['Anytime H = 1', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4']
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300']
+    method_names = ['Anytime H = 1', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4 300']
 
-    output_file = '../../result_graphs/new_robot_nodes.txt'
-    if os.path.exists(output_file):
-        append_write = 'a'
-    else:
-        append_write = 'w'
+    output_file = '../../result_graphs/node_files/robot_nodes.txt'
+    output_rewards = open(output_file, 'w')
 
-    output_rewards = open(output_file, append_write)
-    for i, method  in enumerate(methods):
+    for i, method in enumerate(methods):
         magic = 15.0 / 6 if method == 'new_anytime_h4_300' else 1.0
         results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
                                                   tests_folder=root_path, time_steps=time_steps)
@@ -191,12 +188,56 @@ def Robot_ExpandedNodes():
 def Robot_ExpandedNodes_H2Full():
     seeds = range(35)
 
-    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4']
-    method_names = ['Anytime H = 2 Full', 'Anytime H = 2', 'Anytime H = 4']
+    method = 'anytime_h2_full'
+    method_name = 'Anytime H = 2 Full'
 
-    root_path = '../../robot_tests/tests1_16_ok/'
-    output_file = '../../result_graphs/nodes_robot_h2_full.txt'
-    CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file=output_file)
+    root_path = '../../noise_robot_tests/21_full/'
+    time_steps = 4
+
+    output_file = '../../result_graphs/node_files/robot_nodes.txt'
+    if os.path.exists(output_file):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(output_file, append_write)
+
+    results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
+                                              tests_folder=root_path, time_steps=time_steps)
+    total = sum(results)
+    print method_name, total
+    output_rewards.write(method_name + ' ' + str(total) + '\n')
+
+    output_rewards.close()
+
+
+def Robot_ExpandedNodes_H4Samples():
+    seeds = list(set(range(35)) - set([17]))
+    root_path = '../../noise_robot_tests/h4_tests/'
+    time_steps = 4
+
+    methods = ['new_anytime_h4_5', 'new_anytime_h4_50']
+    method_names = ['Anytime H = 4 5', 'Anytime H = 4 50']
+
+    output_file = '../../result_graphs/node_files/robot_nodes.txt'
+    if os.path.exists(output_file):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(output_file, append_write)
+
+    for i, method in enumerate(methods):
+        # magic = 15.0 / 6
+        magic = 15.0 / 6 if method == 'new_anytime_h4_50' else 1.0
+        results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
+                                                  tests_folder=root_path, time_steps=time_steps)
+        total = results[0] * magic + sum(results[1:])
+        print method_names[i], total
+        output_rewards.write(method_names[i] + ' ' + str(total) + '\n')
+
+    output_rewards.close()
+
 
 
 if __name__ == "__main__":
@@ -213,5 +254,7 @@ if __name__ == "__main__":
     # ExpandedNodesForH1()
     # ExpandedNodesRoads_H2Full()
     # Robot_ExpandedNodesForH1()
+
     Robot_ExpandedNodes()
-    # Robot_ExpandedNodes_H2Full()
+    Robot_ExpandedNodes_H2Full()
+    Robot_ExpandedNodes_H4Samples()
