@@ -1,3 +1,0 @@
-Anytime H = 2 Full 180786.4
-Anytime H = 2 80712.9714286
-Anytime H = 4 5359824.68571
