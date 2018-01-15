@@ -63,7 +63,7 @@ def GetSimulated_H4Samples_TotalRewards():
     batch_size = 4
 
     root_path = '../../simulated_tests/h4_samples/'
-    methods = ['h4', 'h4_20', 'h4_5']
+    root_path = '../../releaseTests/simulated/h4_samples/'
     methods = ['h4', 'new_new_h4_20', 'h4_5']
     method_names = ['N=100', 'N=20','N=5']
     output_file = '../../result_graphs/eps/simulated_h4_samples_total_rewards.eps'
@@ -73,9 +73,9 @@ def GetSimulated_H4Samples_TotalRewards():
 
 
 if __name__ == "__main__":
-    """
+
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
     GetSimulatedTotalRewards()
-    """
+
     GetSimulated_H4Samples_TotalRewards()

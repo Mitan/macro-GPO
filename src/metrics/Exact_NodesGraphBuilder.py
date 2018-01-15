@@ -32,7 +32,7 @@ for i in range(4):
 print results
 
 results = []
-N_samples = [5, 20, 100]
+N_samples = [100, 20, 5]
 for N in N_samples:
     h_current = get_nodes_number_array(H=4, actions=4, samples=N)
     # add root node
