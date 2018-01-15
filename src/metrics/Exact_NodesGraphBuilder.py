@@ -20,17 +20,23 @@ def get_nodes_number_array(H, actions, samples):
 
 
 results = []
-"""
+
 for i in range(4):
     h_current = get_nodes_number_array(H=i + 1, actions=4, samples=100)
+    # add root node
+    h_current = map(lambda x: x + 1, h_current)
+
     results.append(['H = ' + str(i + 1), h_current])
     print sum(h_current)
 
 print results
-"""
+
+results = []
 N_samples = [5, 20, 100]
 for N in N_samples:
     h_current = get_nodes_number_array(H=4, actions=4, samples=N)
+    # add root node
+    h_current = map(lambda x: x+1, h_current)
     results.append([r'$N$ = ' + str(N), h_current])
     print sum(h_current)
 
