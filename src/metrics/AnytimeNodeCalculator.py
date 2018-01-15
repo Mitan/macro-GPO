@@ -1,6 +1,9 @@
 import numpy as np
 import os
 
+from src.PlottingEnum import PlottingMethods
+from src.ResultsPlotter import PlotData
+
 """
 def CalculateExpandedNodes(root_path, methods, method_names, seeds, output_file):
     nodes_file = open(output_file, 'w')
@@ -210,7 +213,9 @@ def Road_ExpandedNodes_H4Samples():
     methods = ['anytime_h4_5', 'anytime_h4_50']
     methods = ['anytime_h4_5']
     method_names = ['Anytime H = 4 5', 'Anytime H = 4 50']
+    legends = [r'$N$ = 5', r'$N$ = 50']
 
+    plotting_results = []
     output_file = '../../result_graphs/node_files/road_nodes.txt'
     if os.path.exists(output_file):
         append_write = 'a'
@@ -224,17 +229,27 @@ def Road_ExpandedNodes_H4Samples():
         # magic = 15.0 / 6 if method == 'new_anytime_h4_50' else 1.0
         results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
                                                   tests_folder=root_path, time_steps=time_steps)
-        total = results[0] * magic + sum(results[1:])
+
+        adjusted_results = [results[0] * magic] + results[1:]
+        # total = results[0] * magic + sum(results[1:])
+        total = sum(adjusted_results)
         print method_names[i], total
+        plotting_results.append([legends[i], adjusted_results])
+        # total = results[0] * magic + sum(results[1:])
+        # print method_names[i], total
         output_rewards.write(method_names[i] + ' ' + str(total) + '\n')
 
     output_rewards.close()
+    output_filename = '../../result_graphs/eps/road_nodes.eps'
+
+    PlotData(results=plotting_results, output_file_name=output_filename,
+             plottingType=PlottingMethods.Nodes, dataset='road')
 
 
 # Robot
 
 def Robot_ExpandedNodes():
-    seeds = list(set(range(35)) - set([24]))
+    seeds = range(35)
     root_path = '../../noise_robot_tests/all_tests/'
     time_steps = 4
 
@@ -282,13 +297,13 @@ def Robot_ExpandedNodes_H2Full():
 
 
 def Robot_ExpandedNodes_H4Samples():
-    seeds = list(set(range(35)) - set([17]))
+    seeds = range(35)
     root_path = '../../noise_robot_tests/h4_tests/'
     time_steps = 4
 
     methods = ['new_anytime_h4_5', 'new_anytime_h4_50']
     method_names = ['Anytime H = 4 5', 'Anytime H = 4 50']
-
+    legends = [r'$N$ = 5' , r'$N$ = 50' ]
     output_file = '../../result_graphs/node_files/robot_nodes.txt'
     if os.path.exists(output_file):
         append_write = 'a'
@@ -296,22 +311,30 @@ def Robot_ExpandedNodes_H4Samples():
         append_write = 'w'
 
     output_rewards = open(output_file, append_write)
+    plotting_results = []
 
     for i, method in enumerate(methods):
         magic = 15.0 / 6
         # magic = 15.0 / 6 if method == 'new_anytime_h4_50' else 1.0
         results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
                                                   tests_folder=root_path, time_steps=time_steps)
-        total = results[0] * magic + sum(results[1:])
-        print method_names[i], total
+        adjusted_results = [results[0] * magic] + results[1:]
+        # total = results[0] * magic + sum(results[1:])
+        total = sum(adjusted_results)
+        print method_names[i], total, adjusted_results
+        plotting_results.append([legends[i], adjusted_results])
         output_rewards.write(method_names[i] + ' ' + str(total) + '\n')
 
     output_rewards.close()
+    output_filename = '../../result_graphs/eps/robot_nodes.eps'
+
+    PlotData(results=plotting_results, output_file_name=output_filename,
+             plottingType=PlottingMethods.Nodes, dataset='robot')
 
 
 if __name__ == "__main__":
 
-    Simulated_ExpandedNodes()
+    # Simulated_ExpandedNodes()
     """
     Robot_ExpandedNodes()
     Robot_ExpandedNodes_H2Full()
@@ -321,3 +344,4 @@ if __name__ == "__main__":
     Road_ExpandedNodes_H2Full()
     Road_ExpandedNodes_H4Samples()
     """
+    Robot_ExpandedNodes_H4Samples()
