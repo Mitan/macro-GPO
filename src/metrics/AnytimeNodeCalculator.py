@@ -129,7 +129,7 @@ def New_CountExpandedNodesForSingleSeed(path, time_steps):
 def Simulated_ExpandedNodes():
     seeds = range(66, 102)
 
-    method = 'anytime_h4_300'
+    method = 'new_anytime_h4_300'
     method_name = 'Anytime H = 4'
 
     root_path = '../../simulated_tests/anytime/'
@@ -139,11 +139,12 @@ def Simulated_ExpandedNodes():
 
     output_rewards = open(output_file, 'w')
 
-    magic = 15.0 / 8.0
+    # magic = 15.0 / 8.0
 
     results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
                                               tests_folder=root_path, time_steps=time_steps)
-    total = results[0] * magic + results[1] * magic + sum(results[2:])
+    # total = results[0] * magic + results[1] * magic + sum(results[2:])
+    total = sum(results)
     print method_name, total
     output_rewards.write(method_name + ' ' + str(total) + '\n')
 
@@ -310,12 +311,13 @@ def Robot_ExpandedNodes_H4Samples():
 
 if __name__ == "__main__":
 
-    # Simulated_ExpandedNodes()
+    Simulated_ExpandedNodes()
     """
     Robot_ExpandedNodes()
     Robot_ExpandedNodes_H2Full()
     Robot_ExpandedNodes_H4Samples()
-    """
+    
     Road_ExpandedNodes()
     Road_ExpandedNodes_H2Full()
     Road_ExpandedNodes_H4Samples()
+    """

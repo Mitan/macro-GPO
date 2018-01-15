@@ -54,7 +54,7 @@ def GetRobotBeta3Rewards():
 
 def GetRobot_H4Samples_TotalRewards():
     seeds = range(35)
-    seeds = list(set(range(35)) - set([17, 24]))
+    # seeds = list(set(range(35))
     batch_size = 5
 
     time_slot = 16
@@ -116,9 +116,10 @@ def GetRobot_H2Full_TotalRewards():
     time_slot = 16
 
     # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
-    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
+    methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4', 'ei']
+    methods = ['anytime_h2_full', 'anytime_h2', 'new_anytime_h4_300', 'ei']
 
-    methods = ['anytime_h2_full']
+    # methods = ['anytime_h2_full']
 
     method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
     method_names = [r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
@@ -126,8 +127,7 @@ def GetRobot_H2Full_TotalRewards():
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
                     'EI (all MA)']
 
-    root_path = '../../releaseTests/robot/h2_full/'
-    root_path = '../../noise_robot_tests/21_full/'
+    root_path = '../../noise_robot_tests/all_tests/'
 
     output_file = '../../result_graphs/eps/noise_robot_h2_full_total_rewards.eps'
 

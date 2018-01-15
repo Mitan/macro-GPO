@@ -229,7 +229,7 @@ def GetSimulatedTotalRegrets_H4Samples():
     batch_size = 4
 
     root_path = '../../simulated_tests/h4_samples/'
-    methods = ['h4', 'new_h4_20', 'h4_5']
+    methods = ['h4', 'new_new_h4_20', 'h4_5']
     method_names = ['N=100', 'N=20', 'N=5']
     output_file = '../../result_graphs/eps/simulated_h4_samples_simple_regrets.eps'
 
