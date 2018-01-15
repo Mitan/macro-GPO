@@ -123,6 +123,21 @@ def GetAllMeasurements(root_folder, method_name, batch_size):
     return measurements.tolist()
 
 
+def LoadHistory(foldername, step, batch_size):
+    filename = foldername + 'step%d.txt' % (step)
+    # filename = foldername + 'step%d.txt' + str(step) + '.txt'
+    with  open(filename, 'r') as f:
+        lines = f.readlines()
+    loc_start = 7
+    loc_count = 1 + batch_size * (step +1)
+    location_lines =  lines[loc_start: loc_start+ loc_count]
+    result = []
+    for line in location_lines:
+        string_numbers = line.replace(',', ' ').replace('[', ' ').replace(']', ' ').split()
+        loc = map(float, string_numbers)
+        result.append(loc)
+    return np.array(result)
+
 if __name__ == "__main__":
     # cannot use - cylcic linking
     file_name = './taxi18.dom'

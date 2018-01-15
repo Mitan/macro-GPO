@@ -51,10 +51,22 @@ class TreePlanTester:
     def Test(self, num_timesteps_test, method, num_samples, visualize=False, action_set=None, save_per_step=True,
              save_folder="default_results/", MCTSMaxNodes=10 ** 15):
 
+        start_time = 0
+        if self.batch_size > 1:
+            start_time = self.past_locations.shape[0] / self.batch_size
+
         # history includes currrent state
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
         state_history = [x_0]
+        """
+        if start_time > 0:
+            _state = self.past_locations[:1, :]
+            _measurements = self.past_measurements[:1]
+            x_temp = AugmentedState(_state,
+                                    initial_history=History(_state, _measurements))
+            state_history.insert(0, x_temp)
+        """
 
         if not os.path.exists(save_folder):
             os.makedirs(save_folder)
@@ -73,7 +85,7 @@ class TreePlanTester:
         total_nodes_expanded = 0
         nodes_expanded_history = []
 
-        for time in xrange(num_timesteps_test):
+        for time in xrange(start_time, num_timesteps_test):
             allowed_horizon = DynamicHorizon(t=time, H_max=self.H, t_max=num_timesteps_test)
             # allowed_horizon = 4
             tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
@@ -230,8 +242,7 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                             time_slot,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
-                            action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
-
+                            action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0, initial_history=None):
     if time_slot == 44:
         hyper_storer = RoadHypersStorer_Log44()
     elif time_slot == 18:
@@ -239,11 +250,17 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
     else:
         raise Exception("wrong tzxi time slot")
     # hyper_storer = RoadHypersStorer_18()
-
-    initial_physical_state = hyper_storer.GetInitialPhysicalState(start_location)
+    if start_location is not None:
+        initial_physical_state = hyper_storer.GetInitialPhysicalState(start_location)
+        past_locations = np.copy(initial_physical_state)
+    else:
+        past_locations = np.copy(initial_history)
+        initial_physical_state = initial_history[-1:, :]
+        print past_locations
+        print initial_physical_state
 
     # print model.GenerateRoadMacroActions(initial_physical_state[-1], batch_size)
-
+    """
     # includes current state
     past_locations = np.array(
         [[1.0, 0.85], [1.0, 1.15], [1.15, 1.0], [0.85, 1.0], [1.0, 0.65], [1.0, 1.35], [1.35, 1.0], [0.65, 1.0],
@@ -251,10 +268,8 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
     past_locations = np.array(
         [[1.0, 0.5], [1.0, 1.5], [1.5, 1.0], [0.5, 1.0], [1.0, 1.0]])
     past_locations = np.array([[1.0, 1.0]])
-    past_locations = np.copy(initial_physical_state)
-
     print "Start location " + str(past_locations) + "\n"
-
+    """
 
     TPT = TreePlanTester(beta=beta)
     # this GP is for prediction
@@ -272,6 +287,7 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                     save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
                     num_samples=num_samples)
+
 
 if __name__ == "__main__":
     # assert len(sys.argv) == 2, "Wrong number of arguments"

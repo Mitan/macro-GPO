@@ -1,6 +1,6 @@
 import os
 
-from DatasetUtils import GenerateRoadModelFromFile
+from DatasetUtils import GenerateRoadModelFromFile, LoadHistory
 from MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
 
@@ -162,6 +162,52 @@ def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch
 
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(h2) + '\n')
+    output_rewards.close()
+
+
+def TestScenario_H4_LoadedHistory(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename, h):
+    step = 0
+    method = "anytime_h" + str(4) + "_" + str(num_samples) + "/"
+
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+    # method = "anytime_h" + str(h) + "_" + str(num_samples) + "/"
+
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    # start_location = m.LoadRandomLocation(save_folder)
+    start_location = None
+
+    # initial_history = m.LoadHistory(save_folder +  method, 0)
+    initial_history = LoadHistory(foldername=save_folder + method, step=step, batch_size=batch_size)
+
+    m = GenerateRoadModelFromFile(filename)
+    m.LoadSelectedMacroactions(save_folder, batch_size)
+
+    # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
+
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+
+    h4 = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=h,
+                                 num_timesteps_test=time_steps,
+                                 save_folder=save_folder + method,
+                                 num_samples=num_samples, batch_size=batch_size,
+                                 start_location=start_location, initial_history=initial_history)
+
+    method_name = 'Anytime H = ' + str(h) + ' ' + str(num_samples)
+
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(h4) + '\n')
     output_rewards.close()
 
 
