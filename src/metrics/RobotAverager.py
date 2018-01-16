@@ -9,7 +9,7 @@ def GetRobotBeta2Rewards():
     root_path = '../../releaseTests/robot/beta_new2/'
     root_path = '../../robot_tests/beta2/'
     root_path = '../../noise_robot_tests/beta2/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
     time_slot = 16
@@ -31,7 +31,7 @@ def GetRobotBeta3Rewards():
     root_path = '../../releaseTests/robot/beta_new3/'
     # root_path = '../../robot_tests/beta3/'
     root_path = '../../noise_robot_tests/beta3/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
     # beta_list = [0.0,  0.1, 0.5, 1.0, 5.0]
 
@@ -59,19 +59,19 @@ def GetRobot_H4Samples_TotalRewards():
 
     time_slot = 16
 
-    methods = ['new_anytime_h4_ 5', 'anytime_h4_ 50', 'anytime_h4']
-    methods = ['new_anytime_h4_ 5', 'anytime_h4_5', 'anytime_h4']
-    methods = ['new_anytime_h4_ 5', 'anytime_h4_5']
-    methods = ['new_anytime_h4_5', 'new_anytime_h4_50']
+    # methods = ['new_anytime_h4_ 5', 'anytime_h4_ 50', 'anytime_h4']
+    # methods = ['new_anytime_h4_ 5', 'anytime_h4_5', 'anytime_h4']
+    # methods = ['new_anytime_h4_ 5', 'anytime_h4_5']
+    methods = ['new_anytime_h4_5', 'new_anytime_h4_50', 'new_anytime_h4_300']
     # methods = ['new_anytime_h4_5']
 
+    # method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
     method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
-    method_names = [r'$N = 5$', r'$N = 50$' r'$N = 300$']
 
-    root_path = '../../robot_tests/h4_samples/'
+    # root_path = '../../robot_tests/h4_samples/'
     root_path = '../../noise_robot_tests/h4_tests/'
 
-    output_file = '../../result_graphs/eps/robot_h4samples_total_rewards.eps'
+    # output_file = '../../result_graphs/eps/robot_h4samples_total_rewards.eps'
     output_file = '../../result_graphs/eps/noise_robot_h4samples_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
@@ -80,13 +80,12 @@ def GetRobot_H4Samples_TotalRewards():
 
 def GetRobotTotalRewards():
     seeds = range(35)
-    seeds = list(set(range(35)) - set([24]))
 
     batch_size = 5
 
     time_slot = 16
 
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'fixed_pe', 'gp-bucb']
+    # methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'fixed_pe', 'gp-bucb']
 
     methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
     # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3','mle_h4', 'r_qei', 'pe', 'gp-bucb']
@@ -99,10 +98,10 @@ def GetRobotTotalRewards():
 
     # method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$']
 
-    root_path = '../../releaseTests/robot/slot_16/'
+    # root_path = '../../releaseTests/robot/slot_16/'
     root_path = '../../noise_robot_tests/all_tests/'
 
-    output_file = '../../result_graphs/eps/robot_total_rewards.eps'
+    # output_file = '../../result_graphs/eps/robot_total_rewards.eps'
     output_file = '../../result_graphs/eps/noise_robot_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
@@ -116,12 +115,12 @@ def GetRobot_H2Full_TotalRewards():
     time_slot = 16
 
     # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
-    methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4', 'ei']
+    # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4', 'ei']
     methods = ['anytime_h2_full', 'anytime_h2', 'new_anytime_h4_300', 'ei']
 
     # methods = ['anytime_h2_full']
 
-    method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
+    # method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
     method_names = [r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
@@ -136,7 +135,7 @@ def GetRobot_H2Full_TotalRewards():
 
 
 if __name__ == "__main__":
-    GetRobotTotalRewards()
+    # GetRobotTotalRewards()
     # GetRobotBeta2Rewards()
     # GetRobotBeta3Rewards()
     # GetRobot_H2Full_TotalRewards()

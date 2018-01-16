@@ -29,7 +29,7 @@ def GetRoadResultsForMethod(seeds, batch_size, method, root_path, model_max):
 
 def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):
     time_slot = 16
-    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/final_slot_' + str(time_slot) + '.txt'
+    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
     neighbours_file = '../../datasets/robot/all_neighbours.txt'
     coords_file = '../../datasets/robot/all_coords.txt'
     m = GenerateRobotModelFromFile(data_filename=data_file, coords_filename=coords_file,
@@ -126,7 +126,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
 ### Road ###
 def GetRoadBeta2Regrets():
     seeds = range(0, 35)
-    seeds = list(set(seeds) - set([30]))
+    # seeds = list(set(seeds) - set([30]))
     root_path = '../../releaseTests/road/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
@@ -138,9 +138,9 @@ def GetRoadBeta2Regrets():
 
 
 def GetRoadBeta3Regrets():
-    seeds = range(0, 32)
+    seeds = range(0, 35)
     # seeds = list(set(seeds) - set([27, 31]))
-    seeds = list(set(seeds) - set([5]))
+    # seeds = list(set(seeds) - set([5]))
     root_path = '../../releaseTests/road/beta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
@@ -292,14 +292,21 @@ def GetRobotTotalRegrets():
     seeds = range(35)
     batch_size = 5
 
+    """
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'fixed_pe', 'gp-bucb']
 
     method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
     root_path = '../../releaseTests/robot/slot_16/'
+    """
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
 
-    output_file = '../../result_graphs/eps/robot_simple_regrets.eps'
+    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
+    root_path = '../../noise_robot_tests/all_tests/'
+
+    output_file = '../../result_graphs/eps/noise_robot_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -318,7 +325,7 @@ def GetRobotTotalRegrets_H2Full():
 
     root_path = '../../releaseTests/robot/h2_full/'
 
-    output_file = '../../result_graphs/eps/robot_h2_full_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/noise_robot_h2_full_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -329,7 +336,7 @@ def GetRobotTotalRegrets_H4Samples():
     batch_size = 5
 
     time_slot = 16
-
+    """
     methods = ['new_anytime_h4_ 5', 'anytime_h4_ 50', 'anytime_h4']
     methods = ['new_anytime_h4_ 5', 'anytime_h4_5','anytime_h4']
     methods = ['new_anytime_h4_ 5','anytime_h4']
@@ -339,10 +346,16 @@ def GetRobotTotalRegrets_H4Samples():
     method_names = [r'$N = 5$',  r'$N = 300$']
 
     root_path = '../../robot_tests/h4_samples/'
+    """
+    methods = ['new_anytime_h4_5', 'new_anytime_h4_50', 'new_anytime_h4_300']
 
-    output_file = '../../result_graphs/eps/robot_h4samples_simple_regrets.eps'
+    method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
 
-    RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename=output_file)
+    root_path = '../../noise_robot_tests/h4_tests/'
+    output_file = '../../result_graphs/eps/noise_robot_h4samples_simple_regrets.eps'
+
+    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
+                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
 if __name__ == "__main__":
@@ -351,13 +364,15 @@ if __name__ == "__main__":
     # GetRoadTotalRegrets_H2Full()
     # GetRoadBeta2Regrets()
     # GetRoadBeta3Regrets()
-    
+    """
     GetSimulatedTotalRegrets()
     GetSimulatedTotalRegrets_H4Samples()
     """
+
     GetRobotTotalRegrets()
     GetRobotTotalRegrets_H2Full()
-    """
+    GetRobotTotalRegrets_H4Samples()
+
 
     """
     GetRoadTotalRegrets_H2Full_H4Samples()
