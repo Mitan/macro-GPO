@@ -206,6 +206,37 @@ def GetRoadTotalRegrets_H2Full_H4Samples():
 
 
 
+def GetRobotBeta2Regrets():
+    seeds = range(35)
+    root_path = '../../releaseTests/road/beta2/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
+
+
+def GetRoadBeta3Regrets():
+    seeds = range(35)
+    # seeds = list(set(seeds) - set([27, 31]))
+    # seeds = list(set(seeds) - set([5]))
+    root_path = '../../road_tests/beta3/'
+
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
+    batch_size = 5
+
+    str_beta = map(str, beta_list)
+    methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/additional/road_beta3_rewards.eps'
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds,
+                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+
+
 #### Simulated ####
 
 def GetSimulatedTotalRegrets():
@@ -244,10 +275,14 @@ def GetSimulatedBeta2Regrets():
     batch_size = 4
     root_path = '../../releaseTests/simulated/simulatedBeta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
-    methods =  map(lambda x: 'beta' + x, str_beta)
+    methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds)
+
+    output_file = '../../result_graphs/eps/additional/simulated_beta2_simple_regrets.eps'
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
+                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
 def GetSimulatedBeta3Regrets():
@@ -255,38 +290,16 @@ def GetSimulatedBeta3Regrets():
     batch_size = 4
     root_path = '../../releaseTests/simulated/simulatedBeta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
-    methods =  map(lambda x: 'beta' + x, str_beta)
+    methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds)
+
+    output_file = '../../result_graphs/eps/additional/simulated_beta3_simple_regrets.eps'
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
+                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 #### Robot
-"""
-def GetRobotBeta2Regrets():
-    seeds = range(35)
-    root_path = '../../releaseTests/road/beta2/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    batch_size = 5
-
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
-
-
-def GetRoadBeta3Regrets():
-    seeds = range(0, 32)
-    # seeds = list(set(seeds) - set([27, 31]))
-    seeds = list(set(seeds) - set([5]))
-    root_path = '../../releaseTests/road/beta3/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    batch_size = 5
-
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
-"""
 
 def GetRobotTotalRegrets():
     seeds = range(35)
@@ -357,22 +370,63 @@ def GetRobotTotalRegrets_H4Samples():
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
+def GetRobotTotalRegrets_beta2():
+    seeds = range(35)
+    batch_size = 5
+
+    time_slot = 16
+    root_path = '../../noise_robot_tests/beta2/'
+    # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
+
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/additional/noise_robot_beta2_simple_regrets.eps'
+
+    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
+                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+
+
+def GetRobotTotalRegrets_beta3():
+    seeds = range(35)
+    batch_size = 5
+
+    time_slot = 16
+    root_path = '../../noise_robot_tests/beta3/'
+    # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
+
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/additional/noise_robot_beta3_simple_regrets.eps'
+
+    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
+                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+
 
 if __name__ == "__main__":
 
     # GetRoadTotalRegrets()
     # GetRoadTotalRegrets_H2Full()
     # GetRoadBeta2Regrets()
-    # GetRoadBeta3Regrets()
+    #GetRoadBeta3Regrets()
+    # GetSimulatedBeta2Regrets()
+    # GetSimulatedBeta3Regrets()
+    GetRobotTotalRegrets_beta2()
+    GetRobotTotalRegrets_beta3()
     """
     GetSimulatedTotalRegrets()
     GetSimulatedTotalRegrets_H4Samples()
     """
-
+    """
     GetRobotTotalRegrets()
     GetRobotTotalRegrets_H2Full()
     GetRobotTotalRegrets_H4Samples()
-
+    """
 
     """
     GetRoadTotalRegrets_H2Full_H4Samples()

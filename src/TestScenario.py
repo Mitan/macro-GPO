@@ -219,7 +219,7 @@ def TestScenario_justH4(my_save_folder_root, seed, time_steps, num_samples, batc
 
     h4 = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=4,
                                  num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "new_anytime_h" + str(4) + "_" + str(num_samples) + "/",
+                                 save_folder=save_folder + "n_anytime_h" + str(4) + "_" + str(num_samples) + "/",
                                  num_samples=num_samples, batch_size=batch_size,
                                  start_location=start_location)
 
