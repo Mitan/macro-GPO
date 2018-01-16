@@ -149,7 +149,7 @@ def Simulated_ExpandedNodes():
     # total = results[0] * magic + results[1] * magic + sum(results[2:])
     total = sum(results)
     print method_name, total
-    output_rewards.write(method_name + ' ' + str(total) + '\n')
+    output_rewards.write(method_name + ' ' + "%.3g" % total + '\n')
 
     output_rewards.close()
 
@@ -175,7 +175,7 @@ def Road_ExpandedNodes():
                                                   tests_folder=root_path, time_steps=time_steps)
         total = results[0] * magic + sum(results[1:])
         print method_names[i], total
-        output_rewards.write(method_names[i] + ' ' + str(total) + '\n')
+        output_rewards.write(method_names[i] + ' ' + "%.3g" % total + '\n')
 
     output_rewards.close()
 
@@ -201,7 +201,7 @@ def Road_ExpandedNodes_H2Full():
                                               tests_folder=root_path, time_steps=time_steps)
     total = sum(results)
     print method_name, total
-    output_rewards.write(method_name + ' ' + str(total) + '\n')
+    output_rewards.write(method_name + ' ' + "%.3g" % total + '\n')
 
     output_rewards.close()
 
@@ -237,7 +237,7 @@ def Road_ExpandedNodes_H4Samples():
         plotting_results.append([legends[i], adjusted_results])
         # total = results[0] * magic + sum(results[1:])
         # print method_names[i], total
-        output_rewards.write(method_names[i] + ' ' + str(total) + '\n')
+        output_rewards.write(method_names[i] + ' ' + "%.3g" % total  + '\n')
 
     output_rewards.close()
     output_filename = '../../result_graphs/eps/road_nodes.eps'
@@ -265,7 +265,7 @@ def Robot_ExpandedNodes():
                                                   tests_folder=root_path, time_steps=time_steps)
         total = results[0] * magic + sum(results[1:])
         print method_names[i], total
-        output_rewards.write(method_names[i] + ' ' + str(total) + '\n')
+        output_rewards.write(method_names[i] + ' ' + "%.3g" % total + '\n')
 
     output_rewards.close()
 
@@ -291,7 +291,7 @@ def Robot_ExpandedNodes_H2Full():
                                               tests_folder=root_path, time_steps=time_steps)
     total = sum(results)
     print method_name, total
-    output_rewards.write(method_name + ' ' + str(total) + '\n')
+    output_rewards.write(method_name + ' ' + "%.3g" % total + '\n')
 
     output_rewards.close()
 
@@ -323,7 +323,7 @@ def Robot_ExpandedNodes_H4Samples():
         total = sum(adjusted_results)
         print method_names[i], total, adjusted_results
         plotting_results.append([legends[i], adjusted_results])
-        output_rewards.write(method_names[i] + ' ' + str(total) + '\n')
+        output_rewards.write(method_names[i] + ' ' + "%.3g" % total + '\n')
 
     output_rewards.close()
     output_filename = '../../result_graphs/eps/robot_nodes.eps'
@@ -336,12 +336,13 @@ if __name__ == "__main__":
 
     # Simulated_ExpandedNodes()
     """
-    Robot_ExpandedNodes()
-    Robot_ExpandedNodes_H2Full()
+    
     Robot_ExpandedNodes_H4Samples()
     
     Road_ExpandedNodes()
     Road_ExpandedNodes_H2Full()
     Road_ExpandedNodes_H4Samples()
     """
+    Robot_ExpandedNodes()
+    Robot_ExpandedNodes_H2Full()
     Robot_ExpandedNodes_H4Samples()

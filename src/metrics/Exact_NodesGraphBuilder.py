@@ -27,7 +27,7 @@ for i in range(4):
     h_current = map(lambda x: x + 1, h_current)
 
     results.append(['H = ' + str(i + 1), h_current])
-    print sum(h_current)
+    print "%.3g" % sum(h_current)
 
 print results
 
@@ -38,7 +38,7 @@ for N in N_samples:
     # add root node
     h_current = map(lambda x: x+1, h_current)
     results.append([r'$N$ = ' + str(N), h_current])
-    print sum(h_current)
+    print "%.3g" % sum(h_current)
 
 output_filename = '../../result_graphs/eps/simulated_nodes.eps'
 

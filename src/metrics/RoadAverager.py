@@ -112,4 +112,4 @@ if __name__ == "__main__":
     # GetRoadBeta2Rewards()
 
     # GetRoad_H2Full_TotalRewards()
-    # GetRoad_H4Samples_TotalRewards()
+    GetRoad_H4Samples_TotalRewards()
