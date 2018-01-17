@@ -16,7 +16,7 @@ def GetRoadBeta2Rewards():
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/road_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/additional/road_beta2_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -36,7 +36,7 @@ def GetRoadBeta3Rewards():
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/road_beta3_rewards.eps'
+    output_file = '../../result_graphs/eps/additional/road_beta3_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -61,27 +61,25 @@ def GetRoad_H4Samples_TotalRewards():
 
 def GetRoadTotalRewards():
     seeds = list(set(range(35)) - set([19]))
-    # seeds = range(35)
+    seeds = range(35)
     batch_size = 5
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
-    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
-    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300']
     # methods = ['anytime_h4_300']
 
     method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
-    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
-                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
     # method_names = [ "H = 4"]
 
-    root_path = '../../releaseTests/road/b5-18-log/'
-    root_path = '../../road_tests/tests1/'
-    # root_path = '../../road_tests/h4_1step/'
+    root_path = '../../releaseTests/road/b5-18-log-NEW/'
+    # root_path = '../../road_tests/tests1/'
+    # root_path = '../../road_tests/h4_1step_copy/'
 
-    output_file = '../../result_graphs/eps/temp_road_total_rewards.eps'
+    output_file = '../../result_graphs/eps/road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
@@ -93,15 +91,17 @@ def GetRoad_H2Full_TotalRewards():
     batch_size = 5
 
     # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
-    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
+    methods = ['anytime_h2_full_2', 'anytime_h2', 'anytime_h4_300', 'ei']
+    # methods = ['anytime_h2_full_2', 'anytime_h2', 'anytime_h4_300']
     method_names = [ r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
                      r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
                      r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
                      'EI (all MA)']
 
     root_path = '../../releaseTests/road/tests2full/'
+    root_path = '../../releaseTests/road/tests2full-NEW/'
 
-    output_file = '../../result_graphs/eps/road_h2_full_total_rewards.eps'
+    output_file = '../../result_graphs/eps/temp_road_h2_full_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
@@ -109,9 +109,9 @@ def GetRoad_H2Full_TotalRewards():
 
 if __name__ == "__main__":
 
-    GetRoadTotalRewards()
+    # GetRoadTotalRewards()
     # GetRoadBeta3Rewards()
     # GetRoadBeta2Rewards()
 
-    # GetRoad_H2Full_TotalRewards()
+    GetRoad_H2Full_TotalRewards()
     # GetRoad_H4Samples_TotalRewards()

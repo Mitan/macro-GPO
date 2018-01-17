@@ -141,4 +141,5 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
         scaled_results = results_for_method - scaled_model_mean
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
+        print result
     PlotData(results=results, output_file_name=output_filename, dataset='simulated', plottingType=plottingType)
