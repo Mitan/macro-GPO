@@ -20,7 +20,7 @@ def GetSimulatedTotalRewards():
     root_path = '../../simulated_tests/anytime/'
     methods = ['anytime_h4_300']
     method_names = ['Anytime']
-    output_file = '../../result_graphs/eps/temp_simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
     """
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
@@ -32,11 +32,12 @@ def GetSimulatedBeta2Rewards():
     root_path = '../../releaseTests/simulated/simulatedBeta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/additional/simulated_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated_beta2_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -48,11 +49,12 @@ def GetSimulatedBeta3Rewards():
     root_path = '../../releaseTests/simulated/simulatedBeta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/additional/simulated_beta3_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated_beta3_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -76,6 +78,6 @@ if __name__ == "__main__":
 
     GetSimulatedBeta2Rewards()
     GetSimulatedBeta3Rewards()
-    GetSimulatedTotalRewards()
+    # GetSimulatedTotalRewards()
 
-    GetSimulated_H4Samples_TotalRewards()
+    # GetSimulated_H4Samples_TotalRewards()

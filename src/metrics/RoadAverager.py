@@ -5,18 +5,24 @@ from src.PlottingEnum import PlottingMethods
 def GetRoadBeta2Rewards():
     seeds = range(35)
     # seeds = list(set(range(35))
-    root_path = '../../releaseTests/road/beta2/'
-    root_path = '../../road_tests/beta2/'
-
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
-    beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
+    # root_path = '../../road_tests/beta2/'
     batch_size = 5
 
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+
+    root_path =  '../../road_tests/beta2/'
+    beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/additional/road_beta2_rewards.eps'
+    root_path = '../../releaseTests/road/beta2/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names =  map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/road_beta2_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -24,19 +30,23 @@ def GetRoadBeta2Rewards():
 
 def GetRoadBeta3Rewards():
     seeds = range(35)
-    # seeds = list(set(range(35)) - set([22]))
-    root_path = '../../releaseTests/road/beta3/'
-    root_path = '../../road_tests/beta3/'
 
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
-    beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
     batch_size = 5
 
+    root_path = '../../road_tests/beta3/'
+    beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/additional/road_beta3_rewards.eps'
+    root_path = '../../releaseTests/road/beta3/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/road_beta3_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -60,7 +70,6 @@ def GetRoad_H4Samples_TotalRewards():
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 def GetRoadTotalRewards():
-    seeds = list(set(range(35)) - set([19]))
     seeds = range(35)
     batch_size = 5
 
@@ -75,7 +84,7 @@ def GetRoadTotalRewards():
 
     # method_names = [ "H = 4"]
 
-    root_path = '../../releaseTests/road/b5-18-log-NEW/'
+    root_path = '../../releaseTests/road/b5-18-log-NEW-copy/'
     # root_path = '../../road_tests/tests1/'
     # root_path = '../../road_tests/h4_1step_copy/'
 
@@ -109,9 +118,9 @@ def GetRoad_H2Full_TotalRewards():
 
 if __name__ == "__main__":
 
-    # GetRoadTotalRewards()
-    # GetRoadBeta3Rewards()
-    # GetRoadBeta2Rewards()
+    GetRoadTotalRewards()
+    GetRoadBeta3Rewards()
+    GetRoadBeta2Rewards()
 
-    GetRoad_H2Full_TotalRewards()
+    # GetRoad_H2Full_TotalRewards()
     # GetRoad_H4Samples_TotalRewards()

@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     t, batch_size, num_samples = (4, 5, 300)
 
-    my_save_folder_root = "../robot_tests/beta" + str(h) + "/"
+    my_save_folder_root = "../robot_tests/beta3" + str(h) + "/"
 
     data_file = '../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
     neighbours_file = '../datasets/robot/all_neighbours.txt'

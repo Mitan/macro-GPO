@@ -159,18 +159,19 @@ def Simulated_ExpandedNodes():
 def Road_ExpandedNodes():
     seeds = range(35)
     root_path = '../../road_tests/tests1/'
+    root_path = '../../releaseTests/road/nodes/'
     time_steps = 4
 
-    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300']
-    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3']
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300']
+    # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3']
     method_names = ['Anytime H = 1', 'Anytime H = 2', 'Anytime H = 3', 'Anytime H = 4 300']
-    method_names = ['Anytime H = 1', 'Anytime H = 2', 'Anytime H = 3']
+    # method_names = ['Anytime H = 1', 'Anytime H = 2', 'Anytime H = 3']
 
     output_file = '../../result_graphs/node_files/road_nodes.txt'
     output_rewards = open(output_file, 'w')
 
     for i, method in enumerate(methods):
-        magic = 15.0 / 8 if method == 'new_anytime_h4_300' else 1.0
+        magic = 15.0 / 8 if method == 'anytime_h4_300' else 1.0
         results = New_CountExpandedNodesForMethod(method_name=method, seeds=seeds,
                                                   tests_folder=root_path, time_steps=time_steps)
         total = results[0] * magic + sum(results[1:])
@@ -187,6 +188,7 @@ def Road_ExpandedNodes_H2Full():
     method_name = 'Anytime H = 2 Full'
 
     root_path = '../../road_tests/21testsfull/'
+    root_path = '../../releaseTests/road/nodes/'
     time_steps = 4
 
     output_file = '../../result_graphs/node_files/road_nodes.txt'
@@ -334,7 +336,7 @@ def Robot_ExpandedNodes_H4Samples():
 
 if __name__ == "__main__":
 
-    # Simulated_ExpandedNodes()
+    Simulated_ExpandedNodes()
     """
     
     Robot_ExpandedNodes_H4Samples()
@@ -342,7 +344,11 @@ if __name__ == "__main__":
     Road_ExpandedNodes()
     Road_ExpandedNodes_H2Full()
     Road_ExpandedNodes_H4Samples()
-    """
+    
     Robot_ExpandedNodes()
     Robot_ExpandedNodes_H2Full()
     Robot_ExpandedNodes_H4Samples()
+    """
+
+    Road_ExpandedNodes()
+    Road_ExpandedNodes_H2Full()
