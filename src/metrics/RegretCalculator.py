@@ -359,9 +359,17 @@ def GetRobotTotalRegrets():
     root_path = '../../releaseTests/robot/slot_16/'
     """
     methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
+    # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3','mle_h4', 'r_qei', 'pe', 'gp-bucb']
 
     method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
+
+    # method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
+    #                r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
+
+    # method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$']
+
+    # root_path = '../../releaseTests/robot/slot_16/'
     root_path = '../../noise_robot_tests/all_tests/'
 
     output_file = '../../result_graphs/eps/noise_robot_simple_regrets.eps'
@@ -375,15 +383,19 @@ def GetRobotTotalRegrets_H2Full():
     batch_size = 5
     time_slot = 16
 
-    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
+    methods = ['anytime_h2_full', 'anytime_h2', 'new_anytime_h4_300', 'ei']
+
+    # methods = ['anytime_h2_full']
+
+    # method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
     method_names = [r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
                     r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
                     'EI (all MA)']
 
-    root_path = '../../releaseTests/robot/h2_full/'
+    root_path = '../../noise_robot_tests/all_tests/'
 
-    output_file = '../../result_graphs/eps/noise_robot_h2_full_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot_h2_full_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -420,7 +432,8 @@ def GetRobotTotalRegrets_beta2():
     batch_size = 5
 
     time_slot = 16
-    root_path = '../../noise_robot_tests/beta2_fixed/'
+    root_path = '../../noise_robot_tests/beta2_fixed_exp/'
+    root_path = '../../noise_robot_tests/beta2/'
     # root_path = '../../noise_robot_tests/beta2_fixed/'
     # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
@@ -441,6 +454,7 @@ def GetRobotTotalRegrets_beta3():
 
     time_slot = 16
     root_path = '../../noise_robot_tests/beta3_fixed_exp/'
+    root_path = '../../noise_robot_tests/beta3/'
     # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
 
@@ -455,7 +469,7 @@ def GetRobotTotalRegrets_beta3():
 
 
 if __name__ == "__main__":
-
+    """
     # GetRoadTotalRegrets()
     # GetRoadTotalRegrets_H2Full()
     GetRoadBeta2Regrets()
@@ -464,7 +478,7 @@ if __name__ == "__main__":
     # GetSimulatedBeta3Regrets()
     # GetRobotTotalRegrets_beta2()
     # GetRobotTotalRegrets_beta3()
-    """
+   
     GetSimulatedTotalRegrets()
     GetSimulatedTotalRegrets_H4Samples()
     """
@@ -478,3 +492,5 @@ if __name__ == "__main__":
     GetRoadTotalRegrets_H2Full_H4Samples()
     GetRobotTotalRegrets_H4Samples()
     """
+    # GetRobotTotalRegrets()
+    GetRobotTotalRegrets_H2Full()

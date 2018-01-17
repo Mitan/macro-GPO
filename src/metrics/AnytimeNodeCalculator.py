@@ -336,7 +336,7 @@ def Robot_ExpandedNodes_H4Samples():
 
 if __name__ == "__main__":
 
-    Simulated_ExpandedNodes()
+    # Simulated_ExpandedNodes()
     """
     
     Robot_ExpandedNodes_H4Samples()
@@ -350,5 +350,7 @@ if __name__ == "__main__":
     Robot_ExpandedNodes_H4Samples()
     """
 
-    Road_ExpandedNodes()
-    Road_ExpandedNodes_H2Full()
+    # Road_ExpandedNodes()
+    # Road_ExpandedNodes_H2Full()
+    Robot_ExpandedNodes()
+    Robot_ExpandedNodes_H2Full()

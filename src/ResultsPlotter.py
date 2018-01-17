@@ -133,7 +133,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
             legend_loc = 2
         elif plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total Rewards")
-            axes.set_ylim([-1, 15])
+            axes.set_ylim([-1, 16])
             plt.yticks(range(-1, 16))
             legend_loc = 2
         elif plottingType == PlottingMethods.SimpleRegret:
