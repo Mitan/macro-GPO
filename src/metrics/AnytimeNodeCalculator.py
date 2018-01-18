@@ -124,7 +124,9 @@ def New_CountExpandedNodesForSingleSeed(path, time_steps):
         current_seed_file = path + 'step' + str(step) + '.txt'
         all_summary_lines = open(current_seed_file).readlines()
         nodes_line = all_summary_lines[-1]
+        # expanded_node = nodes_line.split()[-1]
         expanded_node = nodes_line.split()[3]
+        # print expanded_node, current_seed_file
         results.append(int(expanded_node))
     return np.array(results)
 
@@ -210,12 +212,12 @@ def Road_ExpandedNodes_H2Full():
 def Road_ExpandedNodes_H4Samples():
     seeds = range(35)
     root_path = '../../road_tests/new_h4/'
+    root_path = '../../releaseTests/road/h4_samples/rewards/'
     time_steps = 4
 
-    methods = ['anytime_h4_5', 'anytime_h4_50']
-    methods = ['anytime_h4_5']
-    method_names = ['Anytime H = 4 5', 'Anytime H = 4 50']
-    legends = [r'$N$ = 5', r'$N$ = 50']
+    methods = ['anytime_h4_5', 'anytime_h4_50', 'anytime_h4_300']
+    method_names = ['Anytime H = 4 5', 'Anytime H = 4 50', 'Anytime H = 4 300']
+    legends = [r'$N$ = 5', r'$N$ = 50', r'$N$ = 300']
 
     plotting_results = []
     output_file = '../../result_graphs/node_files/road_nodes.txt'
@@ -337,20 +339,13 @@ def Robot_ExpandedNodes_H4Samples():
 if __name__ == "__main__":
 
     # Simulated_ExpandedNodes()
+
     """
-    
-    Robot_ExpandedNodes_H4Samples()
-    
     Road_ExpandedNodes()
     Road_ExpandedNodes_H2Full()
     Road_ExpandedNodes_H4Samples()
-    
+    """
+
     Robot_ExpandedNodes()
     Robot_ExpandedNodes_H2Full()
     Robot_ExpandedNodes_H4Samples()
-    """
-
-    # Road_ExpandedNodes()
-    # Road_ExpandedNodes_H2Full()
-    Robot_ExpandedNodes()
-    Robot_ExpandedNodes_H2Full()

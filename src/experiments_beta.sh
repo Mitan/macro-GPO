@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # args: seed, h
-for loc in 0 3 6 9 12 15 18 21 24 27 30 33
-    do
-        python  betaTest.py ${loc} 3 1  &
-    done
+for beta in 0.0 0.05 0.1 0.5 1.0 2.0 5.0
+     do
+         python betaTest.py $1 $2 ${beta} &
+     done
