@@ -18,12 +18,14 @@ def GetRoadBeta2Rewards():
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
     root_path = '../../releaseTests/road/beta2/'
+    root_path = '../../road_tests/new_beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.05, 0.1, 0.5, 1.0, 2.0,  5.0, 10.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names =  map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/road_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/temp_road_beta2_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -282,5 +284,7 @@ if __name__ == "__main__":
 
     # GetRoad_H2Full_TotalRewards()
     """
-    GetRoad_H4Samples_TotalRewards()
-    GetRoadTotalRegrets_H4Samples()
+    #GetRoad_H4Samples_TotalRewards()
+    # GetRoadTotalRegrets_H4Samples()
+    GetRoadBeta2Rewards()
+    GetRoadTotalRewards()

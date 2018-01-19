@@ -36,6 +36,7 @@ def GetRobotBeta3Rewards():
     # root_path = '../../robot_tests/beta3/'
     root_path = '../../noise_robot_tests/beta3_fixed_exp/'
     root_path = '../../noise_robot_tests/beta3/'
+    root_path = '../../noise_robot_tests/beta33/'
     # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
     # beta_list = [0.0,  0.1, 0.5, 1.0, 5.0]
@@ -240,6 +241,7 @@ def GetRobotTotalRegrets_beta3():
     time_slot = 16
     root_path = '../../noise_robot_tests/beta3_fixed_exp/'
     root_path = '../../noise_robot_tests/beta3/'
+    root_path = '../../noise_robot_tests/beta33/'
     # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
 
