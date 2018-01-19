@@ -170,7 +170,14 @@ def GetSimulatedBeta2Regrets():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/additional/simulated_beta2_simple_regrets.eps'
+    root_path = '../../simulated_tests/beta2/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    beta_list = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/additional/temp_simulated_beta2_simple_regrets.eps'
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
                      output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 

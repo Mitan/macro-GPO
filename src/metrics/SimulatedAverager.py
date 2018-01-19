@@ -30,14 +30,15 @@ def GetSimulatedBeta2Rewards():
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/simulatedBeta2/'
+    root_path = '../../simulated_tests/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
-    beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
+    beta_list = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/simulated_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/temp_simulated_beta2_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)

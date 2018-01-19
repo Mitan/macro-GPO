@@ -25,6 +25,12 @@ def GetRoadBeta2Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names =  map(lambda x: 'beta = ' + x, str_beta)
 
+    root_path = '../../road_tests/beta2/'
+    beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
+    str_beta = map(str, beta_list)
+    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+
     output_file = '../../result_graphs/eps/temp_road_beta2_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
@@ -287,4 +293,4 @@ if __name__ == "__main__":
     #GetRoad_H4Samples_TotalRewards()
     # GetRoadTotalRegrets_H4Samples()
     GetRoadBeta2Rewards()
-    GetRoadTotalRewards()
+    # GetRoadTotalRewards()
