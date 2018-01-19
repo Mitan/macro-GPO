@@ -1,7 +1,7 @@
 #!/bin/bash
 
-
-for loc in 82 83 84 85 86 87 88 89 90 91 92 93 94 95
-    do
-        python  betaTest.py $loc &
-    done
+# args: seed, h
+for beta in 0.05 0.1 0.5 1.0 2.0 5.0 10.0
+     do
+         python betaTest.py $1 $2 ${beta} &
+     done

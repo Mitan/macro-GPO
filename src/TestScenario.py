@@ -393,7 +393,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     PlotData(result_graphs, save_folder)
 
 
-def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta_list, test_horizon,
+def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta, test_horizon,
                       filename=None):
     result_graphs = []
 
@@ -413,16 +413,16 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
 
     m = GenerateModelFromFile(filename)
 
-    for beta in beta_list:
-        print beta
-        method_name = 'beta = ' + str(beta)
-        current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=test_horizon,
+    # for beta in beta_list:
+    print beta
+    method_name = 'beta = ' + str(beta)
+    current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=test_horizon,
                                                    num_timesteps_test=time_steps,
                                                    save_folder=save_folder + "beta" + str(beta) + "/",
                                                    num_samples=num_samples, batch_size=batch_size, beta=beta)
-        result_graphs.append([method_name, current_h_result])
-        output_rewards.write(method_name + '\n')
-        output_rewards.write(str(current_h_result) + '\n')
+    result_graphs.append([method_name, current_h_result])
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(current_h_result) + '\n')
 
     output_rewards.close()
-    PlotData(result_graphs, save_folder)
+    # PlotData(result_graphs, save_folder)
