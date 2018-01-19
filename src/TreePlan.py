@@ -72,7 +72,7 @@ class TreePlan:
         if self.beta == 0:
             return np.sum(mu)
         exploration_matrix = np.identity(sigma.shape[0]) + sigma * (1 / self.gp.covariance_function.noise_variance)
-        # print np.sum(mu), math.log(np.linalg.det(exploration_matrix))
+        print np.sum(mu), math.log(np.linalg.det(exploration_matrix))
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     def Algorithm1(self, epsilon, gamma, x_0, H):
@@ -261,7 +261,7 @@ class TreePlan:
         if T == 0: return 0, valid_actions[0]
 
         vBest = -self.INF
-        aBest = valid_actions[0]
+        aBest = None
         for a in valid_actions:
 
             x_next = self.TransitionP(x, a)
@@ -301,6 +301,7 @@ class TreePlan:
         sd = new_st.variance
 
         number_of_samples = GetNumberOfSamples(self.H, T)
+        # number_of_samples = 100
         # todo note
         number_of_samples = self.samples_per_stage
 

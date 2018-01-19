@@ -54,7 +54,7 @@ class TreePlanTester:
         Example usage: InitEnvironment(0.1, lambda xy: multivariate_normal(mean=[0,0], cov=[[1,0],[0,1]]).pdf(xy))
         Makes the environment with 0.1 noise variance with a mean following that of a standard multivariate normal
         """
-        self.environment_noise = environment_noise
+        # self.environment_noise = environment_noise
         self.model = model
         # the empirical mean of the dataset
         # required for subtracting from measurements - gives better plotting
@@ -236,8 +236,7 @@ class TreePlanTester:
             state_history.append(x_0)
 
             if save_per_step:
-                self.Visualize(state_history=state_history, display=visualize,
-                               save_path=save_folder + "step" + str(time))
+                #self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "step" + str(time))
                 # Save to file
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
                 f.write(x_0.to_str() + "\n")

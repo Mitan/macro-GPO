@@ -407,13 +407,14 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
         if not os.path.isdir(save_folder):
             raise
 
-    output_rewards = open(save_folder + "reward_histories.txt", 'w')
+    output_rewards = open(save_folder + "reward_histories.txt", 'a')
 
     assert filename is not None
 
     m = GenerateModelFromFile(filename)
 
     for beta in beta_list:
+        print beta
         method_name = 'beta = ' + str(beta)
         current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=test_horizon,
                                                    num_timesteps_test=time_steps,
