@@ -90,9 +90,10 @@ def PlotData(results, dataset, output_file_name, plottingType):
             legend_loc = 2
         elif plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total Rewards")
-            plt.yticks(range(-5, 14))
-            # plt.axis((x1, x2, -4, 12))
-            axes.set_ylim([-5, 12])
+            # plt.yticks(range(-5, 12))
+            # axes.set_ylim([-5, 11])
+            plt.yticks(range(-4, 13))
+            axes.set_ylim([-3.5, 11])
             legend_loc = 2
         elif plottingType == PlottingMethods.SimpleRegret:
             plt.ylabel("Simple regret")
