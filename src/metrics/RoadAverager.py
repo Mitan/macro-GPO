@@ -18,20 +18,22 @@ def GetRoadBeta2Rewards():
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
     root_path = '../../releaseTests/road/beta2/'
-    root_path = '../../road_tests/new_beta2/'
+    # root_path = '../../road_tests/new_beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+
+    root_path = '../../road_tests/new_new_new_beta2/'
     beta_list = [0.05, 0.1, 0.5, 1.0, 2.0,  5.0, 10.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names =  map(lambda x: 'beta = ' + x, str_beta)
-
+    """
     root_path = '../../road_tests/beta2/'
     beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
-
-    output_file = '../../result_graphs/eps/temp_road_beta2_rewards.eps'
+    """
+    output_file = '../../result_graphs/eps/road_beta2_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -84,7 +86,7 @@ def GetRoadTotalRewards():
     batch_size = 5
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    # methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
     # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300']
     # methods = ['anytime_h4_300']
 
@@ -94,7 +96,7 @@ def GetRoadTotalRewards():
 
     # method_names = [ "H = 4"]
 
-    root_path = '../../releaseTests/road/b5-18-log-NEW-copy/'
+    root_path = '../../releaseTests/road/b5-18-log/'
     # root_path = '../../road_tests/tests1/'
     # root_path = '../../road_tests/h4_1step_copy/'
 
@@ -109,7 +111,7 @@ def GetRoad_H2Full_TotalRewards():
     # seeds = list(set(range(35)) - set([22]))
     batch_size = 5
 
-    methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4', 'ei']
+    methods = ['anytime_h2_full_2121', 'anytime_h2', 'anytime_h4', 'ei']
     # methods = ['anytime_h2_full_2', 'anytime_h2', 'anytime_h4_300', 'ei']
     # methods = ['anytime_h2_full_2', 'anytime_h2', 'anytime_h4_300']
     method_names = [ r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
@@ -188,6 +190,7 @@ def GetRoadTotalRegrets():
 
     # root_path = '../../road_tests/tests1/'
     output_file = '../../result_graphs/eps/road_simple_regrets.eps'
+    root_path = '../../releaseTests/road/b5-18-log-NEW-copy/'
     root_path = '../../releaseTests/road/b5-18-log-NEW-copy/'
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -292,5 +295,7 @@ if __name__ == "__main__":
     """
     #GetRoad_H4Samples_TotalRewards()
     # GetRoadTotalRegrets_H4Samples()
-    GetRoadBeta2Rewards()
+    # GetRoadBeta2Rewards()
     # GetRoadTotalRewards()
+    # GetRoadTotalRewards()
+    GetRoad_H2Full_TotalRewards()

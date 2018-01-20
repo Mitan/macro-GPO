@@ -163,20 +163,22 @@ def GetSimulatedBeta2Regrets():
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/simulatedBeta2/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
-    beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    root_path = '../../simulated_tests/beta2/'
 
+    beta_list = [ 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+
+    # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
+    str_beta = map(str, beta_list)
+    methods = ['h2'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+    """
     root_path = '../../simulated_tests/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-
+    """
     output_file = '../../result_graphs/eps/additional/temp_simulated_beta2_simple_regrets.eps'
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
                      output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -185,21 +187,34 @@ def GetSimulatedBeta2Regrets():
 def GetSimulatedBeta3Regrets():
     seeds = range(66, 102)
     batch_size = 4
+    """
     root_path = '../../releaseTests/simulated/simulatedBeta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
-    beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
+    # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
+
+    root_path = '../../simulated_tests/beta3/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
+    """
+    root_path = '../../simulated_tests/beta3_good_zero_mean/'
+    beta_list = [0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+
+    # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
+    str_beta = map(str, beta_list)
+    methods = ['h3'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+
 
     output_file = '../../result_graphs/eps/additional/simulated_beta3_simple_regrets.eps'
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
                      output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 #### Robot
-
-
 
 if __name__ == "__main__":
     """
