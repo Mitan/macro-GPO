@@ -285,101 +285,46 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     """
 
     m = GenerateRoadModelFromFile(filename)
+    m.LoadSelectedMacroactions(save_folder, batch_size)
 
-    # todo note
-    m.SelectMacroActions(batch_size, save_folder)
-
-    start_location = m.GetRandomStartLocation(batch_size=batch_size)
+    start_location = m.LoadRandomLocation(save_folder)
 
     with  open(save_folder + "start_location.txt", 'w') as f:
         f.write(str(start_location[0]) + " " + str(start_location[1]))
 
     # can't apply qEI to single-point
 
-    """
-    if batch_size > 1:
-        method_name = 'qEI'
-        qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
-                                      save_folder=save_folder + "qEI/",
-                                      num_samples=num_samples, batch_size=batch_size)
-        result_graphs.append([method_name, qEI])
-        output_rewards.write(method_name + '\n')
-        output_rewards.write(str(qEI) + '\n')
+    PE = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
+                                 num_timesteps_test=time_steps,
+                                 save_folder=save_folder + "fixed_pe/",
+                                 num_samples=num_samples, batch_size=batch_size,
+                                 start_location=start_location)
 
-    method_name = 'Myopic DB-GP-UCB'
-    myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
-                                         save_folder=save_folder + "h1/",
-                                         num_samples=num_samples, batch_size=batch_size)
-    result_graphs.append([method_name, myopic_ucb])
+    method_name = 'FIXED-BUCB-PE'
+
     output_rewards.write(method_name + '\n')
-    output_rewards.write(str(myopic_ucb) + '\n')
+    output_rewards.write(str(PE) + '\n')
 
-    # for h in range(2, h_max+1):
-    for h in range(h_max, 1, -1):
-        # print h
-        method_name = 'H = ' + str(h)
-        current_h_result = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-                                                   num_timesteps_test=time_steps,
-                                                   save_folder=save_folder + "h" + str(h) + "/",
-                                                   num_samples=num_samples, batch_size=batch_size)
-        result_graphs.append([method_name, current_h_result])
-        output_rewards.write(method_name + '\n')
-        output_rewards.write(str(current_h_result) + '\n')
-
-
-    method_name = 'MLE H = 3'
-    mle = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3, num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "mle_h3/",
-                                  num_samples=num_samples, batch_size=batch_size)
-    result_graphs.append([method_name, mle])
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(mle) + '\n')
-
-    method_name = 'Anytime H = 3'
-    anytime = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=1, num_timesteps_test=time_steps,
-                                      save_folder=save_folder + "anytime_h3/",
-                                      num_samples=num_samples, batch_size=batch_size, start_location=start_location)
-    result_graphs.append([method_name, anytime])
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(anytime) + '\n')
-
-    method_name = 'BUCB-PE'
-    bucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
+    bucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BUCB, horizon=1,
                                    num_timesteps_test=time_steps,
-                                   save_folder=save_folder + "bucb-pe/",
-                                   num_samples=num_samples, batch_size=batch_size, start_location=start_location)
-    result_graphs.append([method_name, bucb])
+                                   save_folder=save_folder + "bucb/",
+                                   num_samples=num_samples, batch_size=batch_size,
+                                   start_location=start_location)
+
+    method_name = 'GP-BUCB'
+
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(bucb) + '\n')
-
-    if batch_size > 1:
-        method_name = 'qEI'
-        qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
-                                      save_folder=save_folder + "qEI/",
-                                      num_samples=num_samples, batch_size=batch_size, start_location=start_location,
-                                      time_slot=time_slot)
-        result_graphs.append([method_name, qEI])
-        output_rewards.write(method_name + '\n')
-        output_rewards.write(str(qEI) + '\n')
-
-    method_name = 'Myopic DB-GP-UCB'
-    myopic_ucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MyopicUCB, horizon=1,
-                                         num_timesteps_test=time_steps,
-                                         save_folder=save_folder + "h1/",
-                                         num_samples=num_samples, batch_size=batch_size, start_location=start_location)
-    result_graphs.append([method_name, myopic_ucb])
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(myopic_ucb) + '\n')
-
-    method_name = 'MLE H = 3'
-    mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=3,
+    
+    method_name = 'MLE H = 4'
+    mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=4,
                                   num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "mle_h3/",
+                                  save_folder=save_folder + "mle_h4/",
                                   num_samples=num_samples, batch_size=batch_size, start_location=start_location)
     result_graphs.append([method_name, mle])
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
-    """
+
     # for h in range(2, h_max+1):
     for h in range(1, h_max + 1):
         # print h

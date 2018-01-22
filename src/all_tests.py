@@ -7,6 +7,7 @@ if __name__ == '__main__':
     args = sys.argv
 
     seed_0 = int(args[1])
+    # seed_0 = 0
 
     # note hardcoded
     time_slot = 18
@@ -14,7 +15,7 @@ if __name__ == '__main__':
 
     filename = '../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
 
-    my_save_folder_root = "../road_tests/copy_new_h4/"
+    my_save_folder_root = "../new_road_tests/new_all/"
 
     # num_samples = 300
 
@@ -24,5 +25,5 @@ if __name__ == '__main__':
     for num_samples in samples:
         for seed in range(seed_0, seed_0 + 1):
             # for seed in seeds:
-            TestScenario_H4(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t, num_samples=num_samples,
-                            batch_size=batch_size, filename=filename, time_slot=time_slot)
+            TestScenario(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t, num_samples=num_samples,
+                         batch_size=batch_size, filename=filename, time_slot=time_slot, h_max=4)
