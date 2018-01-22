@@ -86,7 +86,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
         if plottingType == PlottingMethods.TotalReward:
             plt.ylabel("Total Rewards")
             plt.yticks(range(-4, 13))
-            axes.set_ylim([-3, 11])
+            axes.set_ylim([-3.5, 11])
             legend_loc = 2
         elif plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total Rewards")
@@ -110,12 +110,13 @@ def PlotData(results, dataset, output_file_name, plottingType):
     elif dataset == 'road':
         if plottingType == PlottingMethods.TotalReward:
             plt.ylabel("Total Rewards")
-            plt.yticks(range(-1, 8))
+            plt.yticks(range(-1, 7))
+            axes.set_ylim([-1.5, 6])
             legend_loc = 2
         elif plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total Rewards")
-            axes.set_ylim([-1, 8])
-            plt.yticks(range(-1, 9))
+            axes.set_ylim([-1.5, 6])
+            plt.yticks(range(-1, 7))
             legend_loc = 2
         elif plottingType == PlottingMethods.SimpleRegret:
             plt.ylabel("Simple regret")

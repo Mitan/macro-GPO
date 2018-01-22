@@ -22,10 +22,10 @@ def GetRoadBeta2Rewards():
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
 
     root_path = '../../road_tests/new_new_new_beta2/'
-    beta_list = [0.05, 0.1, 0.5, 1.0, 2.0,  5.0, 10.0]
+    beta_list = [0.1, 0.5, 1.0, 2.0,  5.0]
     str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names =  map(lambda x: 'beta = ' + x, str_beta)
+    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
+    method_names =  ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
     """
     root_path = '../../road_tests/beta2/'
     beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
@@ -44,7 +44,7 @@ def GetRoadBeta3Rewards():
 
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
     batch_size = 5
-
+    """
     root_path = '../../road_tests/beta3/'
     beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
     str_beta = map(str, beta_list)
@@ -52,10 +52,14 @@ def GetRoadBeta3Rewards():
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
     root_path = '../../releaseTests/road/beta3/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
+    """
+    root_path = '../../road_tests/new_beta3/'
+    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.1, 0.5, 1.0, 2.0,  5.0]
     str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/road_beta3_rewards.eps'
 

@@ -7,4 +7,8 @@ GetRoadBeta2Rewards()
 GetRoadBeta2Regrets()
 GetRoadBeta3Regrets()
 """
+GetRoadBeta3Rewards()
+print
 GetRoadBeta2Rewards()
+print
+GetRoadTotalRewards()

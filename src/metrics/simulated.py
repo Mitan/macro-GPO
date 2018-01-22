@@ -2,10 +2,11 @@ from SimulatedAverager import *
 from RegretCalculator import *
 
 print
-GetSimulatedBeta2Regrets()
+# GetSimulatedBeta2Regrets()
 print
 GetSimulatedBeta2Rewards()
 print
-GetSimulatedBeta3Regrets()
+# GetSimulatedBeta3Regrets()
 print
 GetSimulatedBeta3Rewards()
+GetSimulatedTotalRewards()

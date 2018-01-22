@@ -30,14 +30,14 @@ def GetSimulatedBeta2Rewards():
     seeds = range(66, 102)
     batch_size = 4
     root_path = '../../releaseTests/simulated/simulatedBeta2/'
-    root_path = '../../simulated_tests/beta2/'
+    root_path = '../../simulated_tests/beta2-good/'
 
-    beta_list = [ 0.05,0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.1, 0.5, 1.0, 2.0, 5.0]
 
     # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = ['h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' +  str(2* float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/simulated_beta2_rewards.eps'
 
@@ -52,13 +52,13 @@ def GetSimulatedBeta3Rewards():
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
 
-    root_path = '../../simulated_tests/beta3_good_zero_mean/'
-    beta_list = [0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+    root_path = '../../simulated_tests/beta3-good/'
+    beta_list = [0.1, 0.5, 1.0, 2.0, 5.0]
 
     # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = ['h3'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/simulated_beta3_rewards.eps'
 
