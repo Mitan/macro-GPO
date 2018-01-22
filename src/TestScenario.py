@@ -63,10 +63,10 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
         append_write = 'w'
 
     output_rewards = open(filename_rewards, append_write)
-    """
+
     qEI = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.new_qEI, horizon=1,
                                   num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "r_qEI/",
+                                  save_folder=save_folder + "r_inf_qEI/",
                                   num_samples=num_samples, batch_size=batch_size,
                                   start_location=start_location)
 
@@ -95,7 +95,7 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
 
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(bucb) + '\n')
-
+    """
     output_rewards.close()
 
 
@@ -114,13 +114,13 @@ def TestScenario_EI_PI(my_save_folder_root, seed, time_steps, num_samples, batch
     start_location = m.LoadRandomLocation(save_folder)
 
     h = -1
-    """
+
     testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.PI, horizon=h,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "pi/",
                             num_samples=num_samples, batch_size=batch_size,
                             start_location=start_location)
-    """
+
     testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.EI, horizon=h,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "ei/",
