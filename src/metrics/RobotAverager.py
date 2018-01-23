@@ -27,7 +27,7 @@ def GetRobotBeta2Rewards():
     root_path = '../../noise_robot_tests/release/beta2_release/'
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2*float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/noise_robot_beta2_rewards.eps'
     output_file = '../../result_graphs/eps/additional/noise_robot_beta2_rewards.eps'
@@ -65,7 +65,7 @@ def GetRobotBeta3Rewards():
 
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2*float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/robot_beta3_rewards.eps'
     output_file = '../../result_graphs/eps/noise_robot_beta3_rewards.eps'

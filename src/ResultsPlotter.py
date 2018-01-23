@@ -131,12 +131,12 @@ def PlotData(results, dataset, output_file_name, plottingType):
     elif dataset == 'robot':
         if plottingType == PlottingMethods.TotalReward:
             plt.ylabel("Total Rewards")
-            axes.set_ylim([0, 14])
+            axes.set_ylim([-0.5, 14])
             plt.yticks(range(0, 15))
             legend_loc = 2
         elif plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total Rewards")
-            axes.set_ylim([0, 14])
+            axes.set_ylim([-0.5, 14])
             plt.yticks(range(0, 15))
             legend_loc = 2
         elif plottingType == PlottingMethods.SimpleRegret:
