@@ -3,15 +3,17 @@ from src.TestScenario import TestScenario_PE_qEI_BUCB
 if __name__ == '__main__':
 
     seeds = range(35)
+    seeds = range(42)
 
     # note hardcoded
     time_slot = 18
-    t, batch_size, num_samples = (4, 5, 250)
+    t, batch_size, num_samples = (4, 5, 300)
 
     filename = '../../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
 
     my_save_folder_root = '../../releaseTests/road/b5-18-log/'
     my_save_folder_root = '../../new_road_tests/new_all/'
+    my_save_folder_root = '../../new_road_tests/new_all_2/'
 
     for seed in seeds:
         print seed

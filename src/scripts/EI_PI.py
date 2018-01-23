@@ -3,6 +3,7 @@ from src.TestScenario import *
 if __name__ == '__main__':
 
     seeds = range(35)
+    seeds = range(42)
 
     # note hardcoded
     time_slot = 18
@@ -12,6 +13,7 @@ if __name__ == '__main__':
 
     my_save_folder_root = '../../releaseTests/road/tests2full/'
     my_save_folder_root = '../../new_road_tests/new_all/'
+    my_save_folder_root = '../../new_road_tests/new_all_2/'
 
     for seed in seeds:
         print seed
