@@ -3,7 +3,7 @@ from random import choice, sample
 
 from GaussianProcess import MapValueDict
 import numpy as np
-import math
+import os
 
 from Utils import LineToTuple
 
@@ -106,7 +106,14 @@ class RoadMapValueDict(MapValueDict):
         self.selected_actions_dict = {}
 
         treshhold = 20
-        actions_file  = open(folder_name + 'actions_selected.txt', 'w')
+        filename_actions =folder_name + 'actions_selected.txt'
+
+        if os.path.exists(filename_actions):
+            append_write = 'a'
+        else:
+            append_write = 'w'
+
+        actions_file = open(filename_actions, append_write)
 
         for loc in self.locations:
             all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)
