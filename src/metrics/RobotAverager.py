@@ -23,9 +23,16 @@ def GetRobotBeta2Rewards():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
+    beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
+    root_path = '../../noise_robot_tests/release/beta2_release/'
+    str_beta = map(str, beta_list)
+    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+
     output_file = '../../result_graphs/eps/noise_robot_beta2_rewards.eps'
     output_file = '../../result_graphs/eps/additional/noise_robot_beta2_rewards.eps'
     output_file = '../../result_graphs/eps/robot_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/robot/robot_beta2_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
@@ -39,27 +46,31 @@ def GetRobotBeta3Rewards():
     # root_path = '../../robot_tests/beta3/'
     # root_path = '../../noise_robot_tests/beta3_fixed_exp/'
     root_path = '../../noise_robot_tests/beta3/'
-    root_path = '../../noise_robot_tests/beta3_release/'
-    # root_path = '../../noise_robot_tests/beta33/'
+    root_path = '../../noise_robot_tests/release/beta3_release/'
+
+    # root_path = '../../noise_robot_tests/new_beta1532/'
     # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.0, 0.5, 1.0, 1.5, 2.0, 5.0]
     # beta_list = [0.0,  0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.5, 0.1, 1.0, 2.0, 5.0]
-    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
+
+    # beta_list = [1.5]
 
     # beta_list = [0.0, 0.05, 0.1]
 
     batch_size = 5
     time_slot = 16
 
+    beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
+
     str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
+    methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
     output_file = '../../result_graphs/eps/robot_beta3_rewards.eps'
     output_file = '../../result_graphs/eps/noise_robot_beta3_rewards.eps'
     output_file = '../../result_graphs/eps/additional/noise_robot_beta3_rewards.eps'
-    output_file = '../../result_graphs/eps/robot_beta3_rewards.eps'
+    output_file = '../../result_graphs/eps/robot/robot_beta3_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
@@ -111,6 +122,7 @@ def GetRobotTotalRewards():
 
     # root_path = '../../releaseTests/robot/slot_16/'
     root_path = '../../noise_robot_tests/all_tests/'
+    root_path = '../../noise_robot_tests/release/all_tests_release/'
 
     # output_file = '../../result_graphs/eps/robot_total_rewards.eps'
     output_file = '../../result_graphs/eps/noise_robot_total_rewards.eps'
@@ -171,7 +183,7 @@ def GetRobotTotalRegrets():
     # method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$']
 
     # root_path = '../../releaseTests/robot/slot_16/'
-    root_path = '../../noise_robot_tests/all_tests/'
+    root_path = '../../noise_robot_tests/release/all_tests_release/'
 
     output_file = '../../result_graphs/eps/noise_robot_simple_regrets.eps'
     output_file = '../../result_graphs/eps/robot/robot_simple_regrets.eps'
@@ -237,7 +249,13 @@ def GetRobotTotalRegrets_beta2():
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/additional/noise_robot_beta2_simple_regrets.eps'
+    beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
+    root_path = '../../noise_robot_tests/release/beta2_release/'
+    str_beta = map(str, beta_list)
+    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/additional/unfixed_robot_beta2_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -257,11 +275,21 @@ def GetRobotTotalRegrets_beta3():
     beta_list = [0.0, 0.05, 0.1, 1.0, 2.0, 5.0]
     beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
 
+    root_path = '../../noise_robot_tests/temp/'
+    beta_list = [0.0]
+
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/additional/noise_robot_beta3_simple_regrets.eps'
+    root_path = '../../noise_robot_tests/release/beta3_release/'
+    beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
+
+    str_beta = map(str, beta_list)
+    methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+
+    output_file = '../../result_graphs/eps/additional/unfixed_robot_beta3_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/robot_beta3_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
