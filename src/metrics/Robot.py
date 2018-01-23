@@ -5,10 +5,10 @@ GetRobotTotalRegrets_beta2()
 print
 GetRobotTotalRegrets_beta3()
 print
-# GetRobotBeta2Rewards()
+GetRobotBeta2Rewards()
 print
-# GetRobotBeta3Rewards()
-# GetRobotTotalRewards()
+GetRobotBeta3Rewards()
+GetRobotTotalRewards()
 # GetRobotTotalRegrets()
 """
 
