@@ -10,11 +10,13 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
     steps = 20 / batch_size
     scaled_model_mean = np.array([(1 + batch_size * i) * model_mean for i in range(steps + 1)])
     # print scaled_model_mean
+    all_measurements = np.empty([len_seeds, steps+1])
 
     number_of_location = 0
 
     # +1 initial point
     results_for_method = np.zeros((steps + 1,))
+    counter = 0
     for seed in seeds:
 
         seed_folder = tests_source_path + 'seed' + str(seed) + '/'
@@ -27,14 +29,23 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
             continue
 
         rewards = GetAccumulatedRewards(measurements, batch_size)
+        all_measurements[counter, :] = rewards
         results_for_method = np.add(results_for_method, rewards)
+        counter+=1
 
     # check that we collected data for every location
     # print method
     print number_of_location, len(seeds)
     assert number_of_location == len(seeds)
     # print results_for_method
+
     results_for_method = results_for_method / len_seeds
+    """
+    print results_for_method
+    print np.mean(all_measurements, axis=0)
+    all_measurements  = all_measurements - scaled_model_mean
+    print np.std(all_measurements, axis=0)
+    """
     scaled_results = results_for_method - scaled_model_mean
     print method, scaled_results
     # result = [method_names[index], scaled_results.tolist()]
