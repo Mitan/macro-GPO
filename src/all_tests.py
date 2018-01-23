@@ -6,8 +6,8 @@ if __name__ == '__main__':
 
     args = sys.argv
 
-    seed_0 = int(args[1])
-    # seed_0 = 0
+    # seed_0 = int(args[1])
+    seed_0 = 0
 
     # note hardcoded
     time_slot = 18
@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
     filename = '../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
 
-    my_save_folder_root = "../new_road_tests/new_all/"
+    my_save_folder_root = "../new_road_tests/new_all_2/"
 
     # num_samples = 300
 

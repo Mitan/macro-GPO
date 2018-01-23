@@ -285,9 +285,9 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     """
 
     m = GenerateRoadModelFromFile(filename)
-    m.LoadSelectedMacroactions(save_folder, batch_size)
+    m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size)
 
-    start_location = m.LoadRandomLocation(save_folder)
+    start_location = m.GetRandomStartLocation(batch_size=batch_size)
 
     with  open(save_folder + "start_location.txt", 'w') as f:
         f.write(str(start_location[0]) + " " + str(start_location[1]))

@@ -532,7 +532,7 @@ class TreePlan:
 
         # st, new_epsilon, l, nodes_expanded=self.Preprocess(x_0.physical_state, x_0.history.locations[0:-1], H,epsilon)
         lamb = epsilon
-        lamb = 1.0
+        lamb = 5.0
         print "lambda is " + str(lamb)
         # node d_0, where we have actions
         root_action_node = MCTSActionNode(augmented_state=x_0, semi_tree=root_node, treeplan=self, l=lamb, level=H)
