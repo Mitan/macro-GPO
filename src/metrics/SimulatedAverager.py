@@ -45,7 +45,7 @@ def GetSimulatedBeta2Rewards():
     methods = ['h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' +  str(2* float(x)), str_beta)
 
-    output_file = '../../result_graphs/eps/simulated_beta2_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/simulated_beta2_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -66,7 +66,7 @@ def GetSimulatedBeta3Rewards():
     methods = ['h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
 
-    output_file = '../../result_graphs/eps/simulated_beta3_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/simulated_beta3_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)

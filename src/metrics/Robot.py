@@ -14,7 +14,9 @@ GetRobotTotalRewards()
 
 GetRobotTotalRegrets_H2Full()
 GetRobot_H2Full_TotalRewards()
-"""
+
 GetRobotTotalRegrets_H2Full()
 
 GetRobot_H2Full_TotalRewards()
+"""
+GetRobotTotalRewards()
