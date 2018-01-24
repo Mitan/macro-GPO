@@ -8,10 +8,16 @@ def GetSimulatedTotalRewards():
 
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
+    methods = ['h1', 'h2', 'h3', 'h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
     method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 4$',
-                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                    r'$q$-EI']
+
+    method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 4$',
+                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI']
 
     output_file = '../../result_graphs/eps/simulated_total_rewards.eps'

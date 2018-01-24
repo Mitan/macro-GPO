@@ -78,7 +78,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
         handles.append(patch)
 
     plt.xticks(time_steps)
-    plt.xlabel("No. of samples collected")
+    plt.xlabel("No. of measurements collected")
     axes = plt.axes()
     axes.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
