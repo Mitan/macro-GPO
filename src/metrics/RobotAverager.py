@@ -117,8 +117,8 @@ def GetRobotTotalRewards():
     methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
     # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3','mle_h4', 'r_qei', 'pe', 'gp-bucb']
 
-    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
-                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
+    method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
     # root_path = '../../releaseTests/robot/slot_16/'
     root_path = '../../noise_robot_tests/all_tests/'
@@ -145,12 +145,13 @@ def GetRobot_H2Full_TotalRewards():
     # methods = ['anytime_h2_full']
 
     # method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
-    method_names = [r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
-                    r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
-                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
+    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all MA)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
                     'EI (all MA)']
 
     root_path = '../../noise_robot_tests/all_tests/'
+    root_path = '../../noise_robot_tests/release/all_tests_release/'
 
     output_file = '../../result_graphs/eps/robot_h2_full_total_rewards.eps'
     output_file = '../../result_graphs/eps/robot/robot_h2_full_total_rewards.eps'
@@ -174,8 +175,8 @@ def GetRobotTotalRegrets():
     methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
     # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3','mle_h4', 'r_qei', 'pe', 'gp-bucb']
 
-    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
-                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
+    method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
     # method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
     #                r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
@@ -202,12 +203,13 @@ def GetRobotTotalRegrets_H2Full():
     # methods = ['anytime_h2_full']
 
     # method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
-    method_names = [r'Anytime-$\epsilon$-Macro-GPO  $H = 2$ (all MA)',
-                    r'Anytime-$\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
-                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
+    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all MA)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
                     'EI (all MA)']
 
     root_path = '../../noise_robot_tests/all_tests/'
+    root_path = '../../noise_robot_tests/release/all_tests_release/'
 
     output_file = '../../result_graphs/eps/robot/robot_h2_full_simple_regrets.eps'
 
