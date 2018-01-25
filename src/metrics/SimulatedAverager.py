@@ -39,6 +39,7 @@ def GetSimulatedBeta2Rewards():
     root_path = '../../simulated_tests/beta2-good/'
 
     beta_list = [0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
 
     # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
@@ -54,14 +55,16 @@ def GetSimulatedBeta2Rewards():
 def GetSimulatedBeta3Rewards():
     seeds = range(66, 102)
     batch_size = 4
+    """
     root_path = '../../releaseTests/simulated/simulatedBeta3/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.1, 0.5, 1.0, 2.0, 5.0]
-
+    """
     root_path = '../../simulated_tests/beta3-good/'
-    beta_list = [0.1, 0.5, 1.0, 2.0, 5.0]
+    # root_path = '../../simulated_tests/beta3n/'
+    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
+    # beta_list = [0.25, 0.1]
 
-    # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = ['h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)

@@ -168,6 +168,7 @@ def GetSimulatedTotalRegrets_H4Samples():
 def GetSimulatedBeta2Regrets():
     seeds = range(66, 102)
     batch_size = 4
+    """
     root_path = '../../releaseTests/simulated/simulatedBeta2/'
     root_path = '../../simulated_tests/beta2/'
 
@@ -177,7 +178,7 @@ def GetSimulatedBeta2Regrets():
     str_beta = map(str, beta_list)
     methods = ['h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
-    """
+    
     root_path = '../../simulated_tests/beta2/'
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
@@ -188,6 +189,7 @@ def GetSimulatedBeta2Regrets():
     root_path = '../../simulated_tests/beta2-good/'
 
     beta_list = [0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
 
     # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
@@ -225,7 +227,7 @@ def GetSimulatedBeta3Regrets():
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
     """
     root_path = '../../simulated_tests/beta3-good/'
-    beta_list = [0.1, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
 
     # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
