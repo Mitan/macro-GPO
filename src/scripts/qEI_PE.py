@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     my_save_folder_root = '../../releaseTests/road/b5-18-log/'
     my_save_folder_root = '../../new_road_tests/new_all/'
-    my_save_folder_root = '../../new_road_tests/new_all_2/'
+    my_save_folder_root = '../../new_road_tests/new_all_3/'
 
     for seed in seeds:
         print seed
