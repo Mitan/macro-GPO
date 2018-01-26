@@ -255,7 +255,7 @@ def GetRobotTotalRegrets_beta2():
     method_names = map(lambda x: 'beta = ' + x, str_beta)
     """
     beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
-    root_path = '../../noise_robot_tests/release/beta2_release/'
+    root_path = '../../noise_robot_tests/release/beta2_release-r/'
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
