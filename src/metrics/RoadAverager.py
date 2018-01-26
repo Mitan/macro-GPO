@@ -22,10 +22,17 @@ def GetRoadBeta2Rewards():
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     """
     root_path = '../../road_tests/new_new_new_beta2/'
-    beta_list = [0.1, 0.5, 1.0, 2.0,  5.0]
+    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names =  ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
+    """
+    root_path = '../../road_tests/new_beta225/'
+    beta_list = [0.25]
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
+    """
     """
     root_path = '../../road_tests/beta2/'
     beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
@@ -54,12 +61,18 @@ def GetRoadBeta3Rewards():
     root_path = '../../releaseTests/road/beta3/'
     """
     root_path = '../../road_tests/new_beta3/'
-    beta_list = [0.1, 0.5, 1.0, 2.0,  5.0]
+    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
-
+    """
+    root_path = '../../road_tests/new_beta325/'
+    beta_list = [0.25]
+    str_beta = map(str, beta_list)
+    methods = map(lambda x: 'beta' + x, str_beta)
+    method_names = map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
+    """
     output_file = '../../result_graphs/eps/road/road_beta3_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
@@ -89,6 +102,7 @@ def GetRoadTotalRewards():
     batch_size = 5
 
     methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    methods = ['h1', 'anytime_h2','anytime_h3', 'anytime_h4', 'mle_h4','fixed_pe', 'bucb', 'r_inf_qEI']
     # methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
     # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300']
     # methods = ['anytime_h4_300']
@@ -96,14 +110,13 @@ def GetRoadTotalRewards():
     method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
-
     # method_names = [ "H = 4"]
 
     root_path = '../../releaseTests/road/b5-18-log/'
     # root_path = '../../road_tests/tests1/'
-    # root_path = '../../road_tests/h4_1step_copy/'
+    root_path = '../../new_road_tests/new_all_3/'
 
-    output_file = '../../result_graphs/eps/road_total_rewards.eps'
+    output_file = '../../result_graphs/eps/temp_road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
@@ -191,12 +204,24 @@ def GetRoadTotalRegrets():
     method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
+    methods = ['h1', 'anytime_h2', 'mle_h4', 'fixed_pe', 'bucb', 'r_inf_qEI']
+    # methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'anytime_h4_300']
+    # methods = ['anytime_h4_300']
 
+    method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
+    method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                    r'$q$-EI']
 
-    output_file = '../../result_graphs/eps/road_simple_regrets.eps'
-    root_path = '../../releaseTests/road/b5-18-log-NEW-copy/'
+    # method_names = [ "H = 4"]
+
     root_path = '../../releaseTests/road/b5-18-log/'
+    # root_path = '../../road_tests/tests1/'
+    root_path = '../../new_road_tests/new_all_3/'
+
+    output_file = '../../result_graphs/eps/temp_road_simple_regrets.eps'
     # root_path = '../../road_tests/tests1/'
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)

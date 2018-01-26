@@ -110,8 +110,8 @@ def PlotData(results, dataset, output_file_name, plottingType):
     elif dataset == 'road':
         if plottingType == PlottingMethods.TotalReward:
             plt.ylabel("Total Rewards")
-            plt.yticks(range(-1, 7))
-            axes.set_ylim([-1.5, 6])
+            plt.yticks(range(-1, 14))
+            axes.set_ylim([-1.5, 13])
             legend_loc = 2
         elif plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total Rewards")

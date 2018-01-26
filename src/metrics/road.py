@@ -20,8 +20,9 @@ GetRoadTotalRegrets_H2Full()
 
 GetRoadTotalRewards()
 """
-GetRoadBeta3Rewards()
+# GetRoadBeta3Rewards()
 
 # GetRoadBeta2Rewards()
 # GetRoadBeta2Regrets()
-GetRoadBeta3Regrets()
+# GetRoadBeta3Regrets()
+GetRoadTotalRewards()
