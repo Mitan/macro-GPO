@@ -6,7 +6,9 @@ from RegretCalculator import RobotRegrets
 def GetRobotBeta2Rewards():
     seeds = range(35)
     seeds = range(35)
-
+    time_slot = 16
+    batch_size = 5
+    """
     root_path = '../../releaseTests/robot/beta_new2/'
     root_path = '../../noise_robot_tests/beta2_fixed_exp/'
     # root_path = '../../noise_robot_tests/beta2/'
@@ -22,7 +24,7 @@ def GetRobotBeta2Rewards():
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-
+    """
     beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
     root_path = '../../noise_robot_tests/release/beta2_release/'
     str_beta = map(str, beta_list)
@@ -46,8 +48,8 @@ def GetRobotBeta3Rewards():
     # root_path = '../../robot_tests/beta3/'
     # root_path = '../../noise_robot_tests/beta3_fixed_exp/'
     root_path = '../../noise_robot_tests/beta3/'
-    root_path = '../../noise_robot_tests/release/beta3_release/'
-
+    root_path = '../../noise_robot_tests/release/beta3_release-r/'
+    """
     # root_path = '../../noise_robot_tests/new_beta1532/'
     # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     beta_list = [0.0, 0.5, 1.0, 1.5, 2.0, 5.0]
@@ -57,7 +59,7 @@ def GetRobotBeta3Rewards():
     # beta_list = [1.5]
 
     # beta_list = [0.0, 0.05, 0.1]
-
+    """
     batch_size = 5
     time_slot = 16
 
@@ -66,10 +68,11 @@ def GetRobotBeta3Rewards():
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2*float(x)), str_beta)
-
+    """
     output_file = '../../result_graphs/eps/robot_beta3_rewards.eps'
     output_file = '../../result_graphs/eps/noise_robot_beta3_rewards.eps'
     output_file = '../../result_graphs/eps/additional/noise_robot_beta3_rewards.eps'
+    """
     output_file = '../../result_graphs/eps/robot/robot_beta3_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
@@ -236,7 +239,7 @@ def GetRobotTotalRegrets_H4Samples():
 def GetRobotTotalRegrets_beta2():
     seeds = range(35)
     batch_size = 5
-
+    """
     time_slot = 16
     root_path = '../../noise_robot_tests/beta2_fixed_exp/'
     root_path = '../../noise_robot_tests/beta2/'
@@ -250,14 +253,14 @@ def GetRobotTotalRegrets_beta2():
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-
+    """
     beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
     root_path = '../../noise_robot_tests/release/beta2_release/'
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/additional/unfixed_robot_beta2_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot/unfixed_robot_beta2_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -266,7 +269,7 @@ def GetRobotTotalRegrets_beta2():
 def GetRobotTotalRegrets_beta3():
     seeds = range(35)
     batch_size = 5
-
+    """
     time_slot = 16
     root_path = '../../noise_robot_tests/beta3_fixed_exp/'
     root_path = '../../noise_robot_tests/beta3/'
@@ -283,15 +286,15 @@ def GetRobotTotalRegrets_beta3():
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names = map(lambda x: 'beta = ' + x, str_beta)
-
-    root_path = '../../noise_robot_tests/release/beta3_release/'
+    """
+    root_path = '../../noise_robot_tests/release/beta3_release-r/'
     beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
 
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
 
-    output_file = '../../result_graphs/eps/additional/unfixed_robot_beta3_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot/unfixed_robot_beta3_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/robot_beta3_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
