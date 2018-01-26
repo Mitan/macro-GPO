@@ -111,7 +111,9 @@ def PlotData(results, dataset, output_file_name, plottingType):
         if plottingType == PlottingMethods.TotalReward:
             plt.ylabel("Total Rewards")
             plt.yticks(range(-1, 14))
+            plt.yticks(range(0, 8))
             axes.set_ylim([-1.5, 13])
+            axes.set_ylim([0, 7])
             legend_loc = 2
         elif plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total Rewards")
