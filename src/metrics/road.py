@@ -22,10 +22,13 @@ GetRoadTotalRewards()
 """
 # GetRoadBeta3Rewards()
 
-# GetRoadBeta2Rewards()
-# GetRoadBeta2Regrets()
+GetRoadBeta2Rewards()
+GetRoadBeta2Regrets()
 # GetRoadBeta3Regrets()
+"""
 seeds = list(set(range(43)) - set([21, 41, 10, 14, 18, 22, 26, 33]))
-seeds = range(43)
+# seeds = list(set(range(43)) - set([21]))
+seeds = list(set(range(43)) - set([21]))
 GetRoadTotalRewards(seeds)
 GetRoadTotalRegrets(seeds)
+"""
