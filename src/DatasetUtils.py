@@ -4,7 +4,7 @@ import numpy as np
 from GaussianProcess import SquareExponential, GaussianProcess, MapValueDict
 from RoadMapValueDict import RoadMapValueDict
 from RobotMapValueDict import RobotValueDict
-
+import os
 
 def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
                            num_samples, mean_function):
@@ -32,8 +32,35 @@ def GenerateRoadModelFromFile(filename):
     return m
 
 
+"""
+np.random.seed(seed=seed)
+        # these are noiseless observations
+        drawn_vector = multivariate_normal.rvs(mean=u, cov=cov_mat)
+        # add noise to them
+        noise_components = np.random.normal(0, np.math.sqrt(noiseVariance), npoints)
+        assert drawn_vector.shape == noise_components.shape
+        assert drawn_vector.shape[0] == npoints
+        drawn_vector_with_noise = np.add(drawn_vector, noise_components)
+"""
+
+
+def GenerateRobotModel(coords_filename, neighbours_filename, root_folder, seed):
+    save_folder  = root_folder + 'seed' + str(seed) + '/'
+    print save_folder
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    m = RobotValueDict(seed=seed, save_folder=save_folder,
+                       coords_filename=coords_filename, neighbours_filename=neighbours_filename)
+    return m
+
+
 def GenerateRobotModelFromFile(data_filename, coords_filename, neighbours_filename):
-    m = RobotValueDict(data_filename, coords_filename, neighbours_filename)
+    m = RobotValueDict(data_filename=data_filename, coords_filename=coords_filename,
+                       neighbours_filename=neighbours_filename)
     return m
 
 
@@ -137,8 +164,17 @@ def GetAllMeasurements(root_folder, method_name, batch_size):
 
 
 if __name__ == "__main__":
+    """
     # cannot use - cylcic linking
     file_name = './taxi18.dom'
     m = GenerateRoadModelFromFile(file_name)
     for i in m.locations:
         print i, m.GetNeighbours(i)
+    """
+    seed = 0
+    save_folder = "../"
+    neighbours_file = '../datasets/robot/all_neighbours.txt'
+    coords_file = '../datasets/robot/all_coords.txt'
+    real_values_file = '../datasets/robot/selected_slots/slot_16/slot_16.txt'
+    GenerateRobotModel(coords_filename=coords_file, neighbours_filename=neighbours_file,
+                       root_folder=save_folder, seed=seed)

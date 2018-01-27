@@ -3,15 +3,33 @@ from random import choice, sample
 
 from GaussianProcess import MapValueDict
 import numpy as np
-import math
-
-from Utils import LineToTuple
+from RobotDatasetGenerator import GenerateRandomRobotDataset
 
 batch_road_macroactions = []
 
 
 class RobotValueDict(MapValueDict):
+    def __init__(self, seed, save_folder, coords_filename, neighbours_filename):
+        slot = 16
+        # generated dandom dataset
+        data_lines = GenerateRandomRobotDataset(slot_number=slot, seed=seed)
+        np.savetxt(fname=save_folder+ 'dataset.txt',X=data_lines, fmt='%10.4f')
 
+        self.__number_of_points = data_lines.shape[0]
+        # data_lines = np.genfromtxt(data_filename)
+        locs = data_lines[:, 1:3]
+
+        vals = data_lines[:, 3]
+
+        self.SetNeighbours(coords_filename=coords_filename, neighbours_filename=neighbours_filename)
+
+        # dict of selected macroactions
+        self.selected_actions_dict = None
+
+        MapValueDict.__init__(self, locations=locs, values=vals)
+
+        self.mean = np.mean(vals)
+    """
     def __init__(self, data_filename, coords_filename, neighbours_filename):
 
         data_lines = np.genfromtxt(data_filename)
@@ -30,7 +48,7 @@ class RobotValueDict(MapValueDict):
         MapValueDict.__init__(self, locations=locs, values=vals)
 
         self.mean = np.mean(vals)
-
+    """
     def __IdToCoord(self, all_coords_data, id):
         id = int(id)
         assert all_coords_data[id - 1, 0] == id
