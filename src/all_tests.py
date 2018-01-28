@@ -6,14 +6,14 @@ if __name__ == '__main__':
 
     args = sys.argv
 
-    seed_0 = 4
-    # seed_0 = int(args[1])
+    # seed_0 = 4
+    seed_0 = int(args[1])
 
     time_slot = 16
     # t, batch_size, num_samples = (4, 5, 300)
     t, batch_size = (4, 5)
 
-    my_save_folder_root = "../a_robot/all_tests/"
+    my_save_folder_root = "../tests/all_tests/"
 
     data_file = '../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
     neighbours_file = '../datasets/robot/all_neighbours.txt'

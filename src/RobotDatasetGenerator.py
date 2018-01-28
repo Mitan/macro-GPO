@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import multivariate_normal
 
-from src.GaussianProcess import SquareExponential, GaussianProcess
+from GaussianProcess import SquareExponential, GaussianProcess
 
 
 # exact values based on GP prediction
