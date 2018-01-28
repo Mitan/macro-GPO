@@ -1,6 +1,6 @@
 import os
 
-from DatasetUtils import GenerateRobotModelFromFile, GenerateRoadModelFromFile
+from DatasetUtils import GenerateRobotModelFromFile, GenerateRoadModelFromFile, GenerateRobotModel
 from MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
 
@@ -192,7 +192,7 @@ def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch
 
 
 def TestScenario_justH4(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, data_filename,
-                    coords_filename, neighbours_filename, h):
+                        coords_filename, neighbours_filename, h):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -229,6 +229,7 @@ def TestScenario_justH4(my_save_folder_root, seed, time_steps, num_samples, batc
     output_rewards.write(str(h4) + '\n')
     output_rewards.close()
 
+
 def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, data_filename,
                     coords_filename, neighbours_filename, h):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
@@ -240,12 +241,19 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
             raise
 
     # m = GenerateRoadModelFromFile(filename)
-    m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
-                                   neighbours_filename=neighbours_filename)
-    m.LoadSelectedMacroactions(save_folder, batch_size)
-    # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
+    m = GenerateRobotModel(coords_filename=coords_filename, save_folder=save_folder,
+                           neighbours_filename=neighbours_filename, seed=seed)
+    # m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
+    #                               neighbours_filename=neighbours_filename)
+    # m.LoadSelectedMacroactions(save_folder, batch_size)
 
-    start_location = m.LoadRandomLocation(save_folder)
+    m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=False)
+
+    # start_location = m.LoadRandomLocation(save_folder)
+    start_location = m.GetRandomStartLocation(batch_size)
+
+    with open(save_folder + 'start_location.txt', 'w') as f:
+        f.write(str(start_location[0]) + " " + str(start_location[1]))
 
     filename_rewards = save_folder + "reward_histories.txt"
     if os.path.exists(filename_rewards):
@@ -255,25 +263,6 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
 
     output_rewards = open(filename_rewards, append_write)
 
-    # h = 4
-
-    # h_start = 1
-    # h_end = 3
-    # for h in range(h_start, h_end + 1):
-    h_end = 3
-    """
-    for current_h in range(h_end, h_end +1):
-        # print h
-        method_name = 'Anytime H = ' + str(current_h)
-        current_h_result = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=current_h,
-                                                   num_timesteps_test=time_steps,
-                                                   save_folder=save_folder + "anytime_h" + str(current_h) + "/",
-                                                   num_samples=num_samples, batch_size=batch_size,
-                                                   start_location=start_location)
-
-        output_rewards.write(method_name + '\n')
-        output_rewards.write(str(current_h_result) + '\n')
-    """
 
     PE = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
                                  num_timesteps_test=time_steps,
@@ -298,7 +287,7 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
     output_rewards.write(str(bucb) + '\n')
 
     method_name = 'MLE H = 4'
-    mle = testWithFixedParameters(time_slot=time_slot,model=m, method=Methods.MLE, horizon=4,
+    mle = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.MLE, horizon=4,
                                   num_timesteps_test=time_steps,
                                   save_folder=save_folder + "mle_h4/",
                                   num_samples=num_samples, batch_size=batch_size,
@@ -306,6 +295,20 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(mle) + '\n')
 
+    for current_h in range(1, 5):
+        # print h
+        method_name = 'Anytime H = ' + str(current_h)
+        current_h_result = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime,
+                                                   horizon=current_h,
+                                                   num_timesteps_test=time_steps,
+                                                   save_folder=save_folder + "anytime_h" + str(current_h) + "/",
+                                                   num_samples=num_samples, batch_size=batch_size,
+                                                   start_location=start_location)
+
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(current_h_result) + '\n')
+    """
+    
     h4 = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Anytime, horizon=4,
                                  num_timesteps_test=time_steps,
                                  save_folder=save_folder + "new_anytime_h" + str(4) + "_" + str(num_samples) + "/",
@@ -313,9 +316,10 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
                                  start_location=start_location)
 
     method_name = 'Anytime H = ' + str(h) + ' ' + str(num_samples)
-
+    
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(h4) + '\n')
+    """
     output_rewards.close()
 
 
@@ -492,7 +496,6 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
                       time_slot,
                       coords_filename,
                       data_filename, neighbours_filename):
-
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -511,10 +514,10 @@ def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_
     # for beta in beta_list:
     method_name = 'beta = ' + str(beta)
     current_h_result = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=test_horizon,
-                                                   num_timesteps_test=time_steps,
-                                                   save_folder=save_folder + "beta" + str(beta) + "/",
-                                                   num_samples=num_samples, batch_size=batch_size, beta=beta,
-                                                   start_location=start_location, time_slot=time_slot)
+                                               num_timesteps_test=time_steps,
+                                               save_folder=save_folder + "beta" + str(beta) + "/",
+                                               num_samples=num_samples, batch_size=batch_size, beta=beta,
+                                               start_location=start_location, time_slot=time_slot)
 
     filename_rewards = save_folder + "reward_histories.txt"
     if os.path.exists(filename_rewards):

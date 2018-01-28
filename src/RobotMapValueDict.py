@@ -138,6 +138,7 @@ class RobotValueDict(MapValueDict):
 
     def GetRandomStartLocation(self, batch_size):
         return choice(list(self.locations))
+        # return np.array([0.5, 17.0])
 
     def LoadSelectedMacroactions(self, folder_name, batch_size):
 

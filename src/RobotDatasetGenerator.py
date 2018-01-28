@@ -6,6 +6,7 @@ from src.GaussianProcess import SquareExponential, GaussianProcess
 
 # exact values based on GP prediction
 def GenerateRandomRobotDataset(slot_number, seed):
+    slot_number = 16
     input_data_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/slot_' + str(slot_number) + '.txt'
     hypers_file = '../datasets/robot/selected_slots/slot_' + str(slot_number) + '/hypers_' + str(slot_number) + '.txt'
 
