@@ -115,14 +115,15 @@ def GetRobotTotalRewards():
 
     time_slot = 16
 
-    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
-    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'mle_h4', 'pe', 'gp-bucb', 'qEI']
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
+    # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3','anytime_h4', 'mle_h4', 'pe', 'gp-bucb', 'qEI']
 
     method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
-    method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
-                    r'MLE $H = 4$',  'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+    # method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+    #                r'MLE $H = 4$',  'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
     root_path = '../../a_robot/all_tests/'
 

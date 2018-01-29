@@ -76,41 +76,24 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
         append_write = 'w'
 
     output_rewards = open(filename_rewards, append_write)
-    """
+    
     qEI = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.qEI, horizon=1,
                                   num_timesteps_test=time_steps,
                                   save_folder=save_folder + "qEI/",
                                   num_samples=num_samples, batch_size=batch_size,
                                   start_location=start_location)
-    """
+    
     method_name = 'r_QEI'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(qEI) + '\n')
     """
-
-    """
-    PE = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
-                                 num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "fixed_pe/",
-                                 num_samples=num_samples, batch_size=batch_size,
-                                 start_location=start_location)
-
-    method_name = 'FIXED-BUCB-PE'
-
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(PE) + '\n')
-
-    bucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BUCB, horizon=1,
+    h1 = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.Exact, horizon=1,
                                    num_timesteps_test=time_steps,
-                                   save_folder=save_folder + "gp-bucb/",
+                                   save_folder=save_folder + "h1/",
                                    num_samples=num_samples, batch_size=batch_size,
                                    start_location=start_location)
 
-    method_name = 'BUCB'
 
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(bucb) + '\n')
-    """
     # output_rewards.close()
 
 
