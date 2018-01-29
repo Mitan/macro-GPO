@@ -2,7 +2,7 @@ from StringIO import StringIO
 import numpy as np
 
 from src.DatasetUtils import GenerateRoadModelFromFile, GetAllMeasurements, GetMaxValues, GenerateModelFromFile, \
-    GenerateRobotModelFromFile
+    GenerateRobotModelFromFile, GenerateRobotModel
 from src.PlottingEnum import PlottingMethods
 from src.ResultsPlotter import PlotData
 
@@ -29,12 +29,19 @@ def GetRoadResultsForMethod(seeds, batch_size, method, root_path, model_max):
 
 def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):
     time_slot = 16
-    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
+
     neighbours_file = '../../datasets/robot/all_neighbours.txt'
     coords_file = '../../datasets/robot/all_coords.txt'
-    m = GenerateRobotModelFromFile(data_filename=data_file, coords_filename=coords_file,
-                                   neighbours_filename=neighbours_file)
-    model_max = m.GetMax()
+
+    sum_model_max = 0
+    for seed in seeds:
+        seed_dataset_path = root_path + 'seed' + str(seed) + '/dataset.txt'
+        m = GenerateRobotModel(coords_filename=coords_file, neighbours_filename=neighbours_file,
+                               save_folder=None, seed=seed, data_filename=seed_dataset_path)
+        sum_model_max += m.GetMax()
+
+    model_max = sum_model_max / len(seeds)
+    print model_max
 
     results = []
 

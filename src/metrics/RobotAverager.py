@@ -115,21 +115,18 @@ def GetRobotTotalRewards():
 
     time_slot = 16
 
-    # methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'fixed_pe', 'gp-bucb']
-
     methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
-    # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3','mle_h4', 'r_qei', 'pe', 'gp-bucb']
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'mle_h4', 'pe', 'gp-bucb', 'qEI']
 
     method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
-    # root_path = '../../releaseTests/robot/slot_16/'
-    root_path = '../../noise_robot_tests/all_tests/'
-    root_path = '../../noise_robot_tests/release/all_tests_release/'
+    method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+                    r'MLE $H = 4$',  'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
-    # output_file = '../../result_graphs/eps/robot_total_rewards.eps'
-    output_file = '../../result_graphs/eps/noise_robot_total_rewards.eps'
-    output_file = '../../result_graphs/eps/robot/robot_total_rewards.eps'
+    root_path = '../../a_robot/all_tests/'
+
+    output_file = '../../result_graphs/eps/a_robot/robot_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
@@ -167,30 +164,18 @@ def GetRobotTotalRegrets():
     seeds = range(35)
     batch_size = 5
 
-    """
-    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'fixed_pe', 'gp-bucb']
-
-    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
-                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
-
-    root_path = '../../releaseTests/robot/slot_16/'
-    """
     methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
-    # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3','mle_h4', 'r_qei', 'pe', 'gp-bucb']
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'mle_h4', 'pe', 'gp-bucb', 'qEI']
 
     method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
-    # method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
-    #                r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
+    method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
 
-    # method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$']
+    root_path = '../../a_robot/all_tests/'
 
-    # root_path = '../../releaseTests/robot/slot_16/'
-    root_path = '../../noise_robot_tests/release/all_tests_release/'
-
-    output_file = '../../result_graphs/eps/noise_robot_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/robot/robot_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/a_robot/robot_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)

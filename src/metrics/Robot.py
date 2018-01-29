@@ -3,8 +3,10 @@ from RegretCalculator import *
 
 # GetRobotTotalRegrets_beta2()
 print
-GetRobotTotalRegrets_beta3()
+# GetRobotTotalRegrets_beta3()
 print
 # GetRobotBeta2Rewards()
 print
-GetRobotBeta3Rewards()
+# GetRobotBeta3Rewards()
+GetRobotTotalRewards()
+GetRobotTotalRegrets()

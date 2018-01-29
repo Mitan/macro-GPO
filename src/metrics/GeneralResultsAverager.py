@@ -51,16 +51,45 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
     # result = [method_names[index], scaled_results.tolist()]
     return scaled_results.tolist()
 
-
+"""
 def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot, plottingType):
     results = []
 
-    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
+    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(
+        time_slot) + '.txt'
     neighbours_file = '../../datasets/robot/all_neighbours.txt'
     coords_file = '../../datasets/robot/all_coords.txt'
     m = GenerateRobotModelFromFile(data_filename=data_file, coords_filename=coords_file,
                                    neighbours_filename=neighbours_file)
     model_mean = m.mean
+    
+    for index, method in enumerate(methods):
+        # todo hack
+        adjusted_batch_size = 1 if (method == 'ei' or method == 'pi') else batch_size
+        scaled_results = CalculateRoadResultsForOneMethod(adjusted_batch_size, model_mean, seeds, method,
+                                                          tests_source_path)
+        result = [method_names[index], scaled_results]
+        results.append(result)
+
+    PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='robot')
+"""
+
+
+def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot, plottingType):
+    results = []
+
+    neighbours_file = '../../datasets/robot/all_neighbours.txt'
+    coords_file = '../../datasets/robot/all_coords.txt'
+
+    sum_model_mean = 0
+    for seed in seeds:
+        seed_dataset_path = tests_source_path + 'seed' + str(seed) + '/dataset.txt'
+        m = GenerateRobotModel(coords_filename=coords_file, neighbours_filename=neighbours_file,
+                               save_folder=None, seed=seed, data_filename=seed_dataset_path)
+        sum_model_mean += m.mean
+
+    model_mean = sum_model_mean / len(seeds)
+    print model_mean
 
     for index, method in enumerate(methods):
         # todo hack

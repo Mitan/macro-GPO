@@ -61,8 +61,8 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
 
     start_location = m.LoadRandomLocation(save_folder)
     """
-    m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
-                                   neighbours_filename=neighbours_filename)
+    m = GenerateRobotModel(data_filename=data_filename, coords_filename=coords_filename,
+                                   neighbours_filename=neighbours_filename,seed=seed, save_folder=None)
 
     m.LoadSelectedMacroactions(save_folder, batch_size)
     # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
@@ -77,9 +77,9 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
 
     output_rewards = open(filename_rewards, append_write)
     """
-    qEI = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.new_qEI, horizon=1,
+    qEI = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.qEI, horizon=1,
                                   num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "r_qEI/",
+                                  save_folder=save_folder + "qEI/",
                                   num_samples=num_samples, batch_size=batch_size,
                                   start_location=start_location)
     """

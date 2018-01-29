@@ -44,9 +44,9 @@ np.random.seed(seed=seed)
 """
 
 
-def GenerateRobotModel(coords_filename, neighbours_filename, save_folder, seed):
+def GenerateRobotModel(coords_filename, neighbours_filename, save_folder, seed, data_filename=None):
     # save_folder  = root_folder + 'seed' + str(seed) + '/'
-    print save_folder
+    # print save_folder
     """
     try:
         os.makedirs(save_folder)
@@ -55,7 +55,8 @@ def GenerateRobotModel(coords_filename, neighbours_filename, save_folder, seed):
             raise
     """
     m = RobotValueDict(seed=seed, save_folder=save_folder,
-                       coords_filename=coords_filename, neighbours_filename=neighbours_filename)
+                       coords_filename=coords_filename, neighbours_filename=neighbours_filename,
+                       data_filename=data_filename)
     return m
 
 
