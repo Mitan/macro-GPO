@@ -112,10 +112,14 @@ def PlotData(results, dataset, output_file_name, plottingType):
     elif dataset == 'road':
         if plottingType == PlottingMethods.TotalReward:
             plt.ylabel("Total Rewards")
+            """
             plt.yticks(range(-1, 14))
             plt.yticks(range(0, 8))
             axes.set_ylim([-1.5, 13])
             axes.set_ylim([0, 7])
+            """
+            axes.set_ylim([-1.5, 6])
+            plt.yticks(range(-1, 7))
             legend_loc = 2
         elif plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total Rewards")
@@ -190,7 +194,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
             raise
     """
 
-    plt.legend(handles=handles, loc=legend_loc)
+    plt.legend(handles=handles, loc=legend_loc, prop={'size': 12})
     # plt.savefig(folder_name + file_name)
 
     # margins on x and y side
