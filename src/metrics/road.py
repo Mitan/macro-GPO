@@ -47,7 +47,8 @@ GetRoad_H2Full_TotalRewards()
 
 GetRoadBeta3Rewards()
 GetRoadBeta3Regrets()
-"""
-
 GetRoadBeta2Rewards()
 GetRoadBeta2Regrets()
+"""
+
+GetRoadBeta3Regrets()
