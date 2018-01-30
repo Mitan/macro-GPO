@@ -29,7 +29,7 @@ def GetRobotBeta2Rewards():
     root_path = '../../noise_robot_tests/release/beta2_release/'
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2*float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/noise_robot_beta2_rewards.eps'
     output_file = '../../result_graphs/eps/additional/noise_robot_beta2_rewards.eps'
@@ -67,7 +67,7 @@ def GetRobotBeta3Rewards():
 
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2*float(x)), str_beta)
     """
     output_file = '../../result_graphs/eps/robot_beta3_rewards.eps'
     output_file = '../../result_graphs/eps/noise_robot_beta3_rewards.eps'
@@ -105,9 +105,7 @@ def GetRobot_H4Samples_TotalRewards():
     output_file = '../../result_graphs/eps/noise_robot_h4samples_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                 seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
-
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot, plottingType=PlottingMethods.TotalReward)
 
 """
 def GetRobotTotalRewards():
@@ -138,7 +136,6 @@ def GetRobotTotalRewards():
                  plottingType=PlottingMethods.TotalReward)
 """
 
-
 def GetRobotTotalRewards():
     seeds = range(35)
 
@@ -146,140 +143,78 @@ def GetRobotTotalRewards():
 
     time_slot = 16
 
-    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
-    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'my_qEI']
+    # methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'fixed_pe', 'gp-bucb']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+    methods = [ 'new_anytime_h4_300','anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
+    # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3','mle_h4', 'r_qei', 'pe', 'gp-bucb']
+
+    method_names = [ r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
-                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+                     'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',  r'$q$-EI']
 
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
     output_file = '../../result_graphs/eps/robot/r_ei/robot_total_rewards.eps'
-    output_file = '../../result_graphs/eps/robot/my_ei/robot_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
                  plottingType=PlottingMethods.TotalReward)
-
-
-def GetRobotTotalRewards_onlyH4():
-    seeds = range(35)
-
-    batch_size = 5
-
-    time_slot = 16
-
-    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
-    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'my_qEI']
-
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$',
-                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
-
-    root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
-
-    output_file = '../../result_graphs/eps/robot/r_ei/onlyh4_robot_total_rewards.eps'
-    output_file = '../../result_graphs/eps/robot/my_ei/onlyh4_robot_total_rewards.eps'
-
-    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                 seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
-
-
-def GetRobotTotalRewards_ours():
-    seeds = range(35)
-
-    batch_size = 5
-
-    time_slot = 16
-
-    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1']
-
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
-                    'DB-GP-UCB']
-
-    root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
-
-    output_file = '../../result_graphs/eps/robot/ours_robot_total_rewards.eps'
-
-    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                 seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
-
 
 def GetRobot_H2Full_TotalRewards():
     seeds = range(35)
     batch_size = 5
     time_slot = 16
 
-    methods = ['new_anytime_h4_300', 'anytime_h2_full', 'anytime_h2', 'ei']
+    # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4']
+    # methods = ['anytime_h2_full', 'anytime_h2', 'anytime_h4', 'ei']
+    methods = ['anytime_h2_full', 'anytime_h2', 'new_anytime_h4_300', 'ei']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all MA)',
+    # methods = ['anytime_h2_full']
+
+    # method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
+    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all MA)',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
                     'EI (all MA)']
 
+    root_path = '../../noise_robot_tests/all_tests/'
     root_path = '../../noise_robot_tests/release/all_tests_release/'
 
+    output_file = '../../result_graphs/eps/robot_h2_full_total_rewards.eps'
     output_file = '../../result_graphs/eps/robot/robot_h2_full_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                 seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot, plottingType=PlottingMethods.TotalReward)
 
 
 def GetRobotTotalRegrets():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
-    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'my_qEI']
+    """
+    methods = ['h1', 'anytime_h2', 'anytime_h3', 'anytime_h4', 'mle_h4', 'r_qei', 'fixed_pe', 'gp-bucb']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
-                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+    method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime-$\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
-    root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
+    root_path = '../../releaseTests/robot/slot_16/'
+    """
+    methods = ['anytime_h1', 'anytime_h2', 'anytime_h3', 'new_anytime_h4_300', 'mle_h4', 'r_qei', 'pe', 'gp-bucb']
+    # methods = ['anytime_h1', 'anytime_h2', 'anytime_h3','mle_h4', 'r_qei', 'pe', 'gp-bucb']
 
-    output_file = '../../result_graphs/eps/robot/r_ei/robot_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/robot/my_ei/robot_simple_regrets.eps'
+    method_names = ['DB-GP-UCB', r'Anytime $\epsilon$-Macro-GPO  $H = 2$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
-    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
-                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+    # method_names = ['DB-GP-UCB', r'Anytime-$\epsilon$-Macro-GPO  $H = 2$', r'Anytime-$\epsilon$-Macro-GPO  $H = 3$',
+    #                r'MLE $H = 4$', r'$q$-EI', 'GP-UCB-PE', 'GP-BUCB']
 
-def GetRobotTotalRegrets_onlyH4():
-    seeds = range(35)
-    batch_size = 5
+    # method_names = [r'$H = 1$', r'$H = 2$', r'$H = 3$']
 
-    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
-    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'my_qEI']
+    # root_path = '../../releaseTests/robot/slot_16/'
+    root_path = '../../noise_robot_tests/release/all_tests_release/'
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$',
-                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
-
-    root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
-
-    output_file = '../../result_graphs/eps/robot/r_ei/onlyh4_robot_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/robot/my_ei/onlyh4_robot_simple_regrets.eps'
-
-    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
-                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
-
-
-def GetRobotTotalRegrets_ours():
-    seeds = range(35)
-    batch_size = 5
-
-    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1']
-
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
-                    'DB-GP-UCB']
-
-    root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
-
-    output_file = '../../result_graphs/eps/robot/r_ei/ours_robot_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/noise_robot_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot/robot_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -290,13 +225,17 @@ def GetRobotTotalRegrets_H2Full():
     batch_size = 5
     time_slot = 16
 
-    methods = ['new_anytime_h4_300', 'anytime_h2_full', 'anytime_h2', 'ei']
+    methods = ['anytime_h2_full', 'anytime_h2', 'new_anytime_h4_300', 'ei']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all MA)',
+    # methods = ['anytime_h2_full']
+
+    # method_names = [r'$H^* = 2$ (all MA)', r'$H^* = 2$ (selected MA)', r'$H^* = 4$ (selected MA)']
+    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all MA)',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
                     'EI (all MA)']
 
+    root_path = '../../noise_robot_tests/all_tests/'
     root_path = '../../noise_robot_tests/release/all_tests_release/'
 
     output_file = '../../result_graphs/eps/robot/robot_h2_full_simple_regrets.eps'
@@ -311,7 +250,7 @@ def GetRobotTotalRegrets_H4Samples():
 
     methods = ['new_anytime_h4_5', 'new_anytime_h4_50', 'new_anytime_h4_300']
 
-    method_names = [r'$N = 5$', r'$N = 50$', r'$N = 300$']
+    method_names = [r'$N = 5$',r'$N = 50$', r'$N = 300$']
 
     root_path = '../../noise_robot_tests/h4_tests/'
     root_path = '../../releaseTests/noised_robot/h4_tests/'
@@ -320,7 +259,6 @@ def GetRobotTotalRegrets_H4Samples():
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
-
 
 def GetRobotTotalRegrets_beta2():
     seeds = range(35)
