@@ -44,9 +44,9 @@ def TestScenario_QEI(my_save_folder_root, seed, time_steps, num_samples, batch_s
 
     assert filename is not None
     m = GenerateModelFromFile(filename)
-    testWithFixedParameters(model=m, method=Methods.qEI, horizon=1,
+    testWithFixedParameters(model=m, method=Methods.MLE, horizon=4,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "new_qei/",
+                            save_folder=save_folder + "new_mle_h4/",
                             num_samples=num_samples, batch_size=batch_size)
 
 
