@@ -44,9 +44,9 @@ def TestScenario_QEI(my_save_folder_root, seed, time_steps, num_samples, batch_s
 
     assert filename is not None
     m = GenerateModelFromFile(filename)
-    testWithFixedParameters(model=m, method=Methods.new_qEI, horizon=1,
+    testWithFixedParameters(model=m, method=Methods.qEI, horizon=1,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "r_qei/",
+                            save_folder=save_folder + "new_qei/",
                             num_samples=num_samples, batch_size=batch_size)
 
 
@@ -347,12 +347,12 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
     if batch_size > 1:
         method_name = 'qEI'
         qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1, num_timesteps_test=time_steps,
-                                      save_folder=save_folder + "qEI/",
+                                      save_folder=save_folder + "new_qEI/",
                                       num_samples=num_samples, batch_size=batch_size)
         result_graphs.append([method_name, qEI])
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(qEI) + '\n')
-
+    """
     method_name = 'Myopic DB-GP-UCB'
     myopic_ucb = testWithFixedParameters(model=m, method=Methods.MyopicUCB, horizon=1, num_timesteps_test=time_steps,
                                          save_folder=save_folder + "h1/",
@@ -391,7 +391,7 @@ def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batc
 
     output_rewards.close()
     PlotData(result_graphs, save_folder)
-
+    """
 
 def TestScenario_Beta(my_save_folder_root, seed, time_steps, num_samples, batch_size, beta, test_horizon,
                       filename=None):
