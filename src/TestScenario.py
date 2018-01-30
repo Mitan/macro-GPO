@@ -24,12 +24,12 @@ def TestScenario_PE_BUCB(my_save_folder_root, seed, time_steps, num_samples, bat
 
     testWithFixedParameters(model=m, method=Methods.BUCB_PE, horizon=1,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "new_fixed_pe/",
+                            save_folder=save_folder + "new_new_pe/",
                             num_samples=num_samples, batch_size=batch_size)
 
-    testWithFixedParameters(model=m, method=Methods.BUCB, horizon=1,
+    testWithFixedParameters(model=m, method=Methods.MLE, horizon=4,
                             num_timesteps_test=time_steps,
-                            save_folder=save_folder + "gp-bucb/",
+                            save_folder=save_folder + "new_new_mle_h4/",
                             num_samples=num_samples, batch_size=batch_size)
 
 
