@@ -8,7 +8,10 @@ print
 GetSimulatedBeta2Rewards()
 """
 print
-GetSimulatedBeta3Regrets()
+# GetSimulatedBeta3Regrets()
 print
-GetSimulatedBeta3Rewards()
+# GetSimulatedBeta3Rewards()
+
+GetSimulatedTotalRewards()
+GetSimulatedTotalRegrets()
 

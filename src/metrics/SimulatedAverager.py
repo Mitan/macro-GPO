@@ -7,27 +7,26 @@ def GetSimulatedTotalRewards():
     batch_size = 4
 
     root_path = '../../releaseTests/simulated/rewards-sAD/'
-    methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
-    methods = ['h1', 'h2', 'h3', 'h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
+    """
+    methods = ['h4', 'h3', 'h2', 'h1',  'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
-    method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
-                    r'$\epsilon$-Macro-GPO  $H = 4$',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+    method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 2$',
+                     'DB-GP-UCB',
+                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI']
+    
+    output_file = '../../result_graphs/eps/simulated/r_ei/simulated_total_rewards.eps'
+    """
+    methods = ['h4', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
-    method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
-                    r'$\epsilon$-Macro-GPO  $H = 4$',
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
+                    'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI']
 
-    output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/r_ei/h4_simulated_total_rewards.eps'
 
-    """
-    root_path = '../../simulated_tests/anytime/'
-    methods = ['anytime_h4_300']
-    method_names = ['Anytime']
-    output_file = '../../result_graphs/eps/simulated_total_rewards.eps'
-    """
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 

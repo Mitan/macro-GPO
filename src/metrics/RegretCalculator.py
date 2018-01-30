@@ -131,22 +131,27 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
 def GetSimulatedTotalRegrets():
     seeds = range(66, 102)
     batch_size = 4
+
     root_path = '../../releaseTests/simulated/rewards-sAD/'
+    """
+    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
-    methods = ['h1', 'h2', 'h3', 'h4', '2_s250_100k_anytime_h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
-    methods = ['h1', 'h2', 'h3', 'h4', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
-
-    method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
-                    r'$\epsilon$-Macro-GPO  $H = 4$',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
-                    r'$q$-EI']
-
-    method_names = ['DB-GP-UCB', r'$\epsilon$-Macro-GPO  $H = 2$', r'$\epsilon$-Macro-GPO  $H = 3$',
-                    r'$\epsilon$-Macro-GPO  $H = 4$',
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 2$',
+                    'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI']
+    
+    output_file = '../../result_graphs/eps/simulated/r_ei/simulated_simple_regrets.eps'
+    """
+    methods = ['h4', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
 
-    output_file = '../../result_graphs/eps/simulated_simple_regrets.eps'
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
+                    'DB-GP-UCB',
+                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                    r'$q$-EI']
+    output_file = '../../result_graphs/eps/simulated/r_ei/h4_simulated_simple_regrets.eps'
+
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
                      output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
