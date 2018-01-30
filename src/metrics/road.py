@@ -34,10 +34,10 @@ GetRoadTotalRegrets(seeds)
 # old
 
 GetRoadTotalRewards()
-# GetRoadTotalRewards_onlyH4()
+GetRoadTotalRewards_onlyH4()
 
 GetRoadTotalRegrets()
-# GetRoadTotalRegrets_onlyH4()
+GetRoadTotalRegrets_onlyH4()
 """
 GetRoadTotalRegrets_our()
 GetRoadTotalRewards_ours()

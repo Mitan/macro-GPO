@@ -113,7 +113,7 @@ def GetRoadTotalRewards():
     batch_size = 5
 
     methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
-    methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4','new_ixed_pe', 'bucb', 'newqEI']
+    methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4','new_ixed_pe', 'bucb', 'my_qEI']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$', 'DB-GP-UCB',
@@ -151,6 +151,7 @@ def GetRoadTotalRewards_onlyH4():
     batch_size = 5
 
     methods = [ 'anytime_h4',  'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    methods = [ 'anytime_h4',  'h1', 'mle_h4','new_ixed_pe', 'bucb', 'my_qEI']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', 'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
@@ -158,6 +159,7 @@ def GetRoadTotalRewards_onlyH4():
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
     output_file = '../../result_graphs/eps/road/r_ei/onlyh4_road_total_rewards.eps'
+    output_file = '../../result_graphs/eps/road/my_ei/onlyh4_road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
@@ -167,7 +169,7 @@ def GetRoadTotalRegrets():
     batch_size = 5
 
     methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
-    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'newqEI']
+    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'my_qEI']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$', 'DB-GP-UCB',
@@ -186,6 +188,7 @@ def GetRoadTotalRegrets_onlyH4():
     batch_size = 5
 
     methods = ['anytime_h4','h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
+    methods = ['anytime_h4','h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'my_qEI']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', 'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
@@ -193,6 +196,7 @@ def GetRoadTotalRegrets_onlyH4():
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
     output_file = '../../result_graphs/eps/road/r_ei/onlyh4_road_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/road/my_ei/onlyh4_road_simple_regrets.eps'
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
