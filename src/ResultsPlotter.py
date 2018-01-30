@@ -34,12 +34,14 @@ def PlotData(results, dataset, output_file_name, plottingType):
     # 0 is width, 1 is height
     plt.rcParams["figure.figsize"] = [6, 9]
 
-    color_sequence = ['red', 'green', 'blue', '#e377c2', '#17becf', 'orange',
+    color_sequence = [ 'green', 'blue', '#e377c2', 'red', '#17becf', 'orange',
                       '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#7f7f7f',
                       '#8c564b', '#c49c94', '#7f7f7f',
                       '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5', 'yellow']
 
-    markers = ["o", "v", "^", "s", "*", "1", "2", "3"]
+    color_sequence = ['#e41a1c', '#377eb8', '#4daf4a','#984ea3' ,'#ff7f00' ,'black','#a65628','#f781bf']
+
+    markers = ["o", "v", "^", "s", "*", "1", "2", "x"]
 
     # include first step before planning
     number_of_steps = len((results[0])[1])
