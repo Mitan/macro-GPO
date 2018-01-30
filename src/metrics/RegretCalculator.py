@@ -128,32 +128,6 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
 
 #### Simulated ####
 
-def GetSimulatedTotalRegrets():
-    seeds = range(66, 102)
-    batch_size = 4
-
-    root_path = '../../releaseTests/simulated/rewards-sAD/'
-    """
-    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
-
-    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
-                    r'$\epsilon$-Macro-GPO  $H = 2$',
-                    'DB-GP-UCB',
-                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
-                    r'$q$-EI']
-    
-    output_file = '../../result_graphs/eps/simulated/r_ei/simulated_simple_regrets.eps'
-    """
-    methods = ['h4', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
-
-    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-                    'DB-GP-UCB',
-                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
-                    r'$q$-EI']
-    output_file = '../../result_graphs/eps/simulated/r_ei/h4_simulated_simple_regrets.eps'
-
-    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
-                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 def GetSimulatedTotalRegrets_H4Samples():
     seeds = range(66, 102)
