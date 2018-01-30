@@ -32,16 +32,22 @@ GetRoadTotalRewards(seeds)
 GetRoadTotalRegrets(seeds)
 """
 # old
-
+"""
 GetRoadTotalRewards()
 GetRoadTotalRewards_onlyH4()
 
 GetRoadTotalRegrets()
 GetRoadTotalRegrets_onlyH4()
-"""
+
 GetRoadTotalRegrets_our()
 GetRoadTotalRewards_ours()
 
 GetRoadTotalRegrets_H2Full()
 GetRoad_H2Full_TotalRewards()
+
+GetRoadBeta3Rewards()
+GetRoadBeta3Regrets()
 """
+
+GetRoadBeta2Rewards()
+GetRoadBeta2Regrets()

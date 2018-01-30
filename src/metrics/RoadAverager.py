@@ -5,7 +5,7 @@ from RegretCalculator import RoadRegrets
 
 def GetRoadBeta2Rewards():
     seeds = range(35)
-    seeds = range(42)
+    # seeds = range(42)
     # seeds = list(set(range(35))
     # root_path = '../../road_tests/beta2/'
     batch_size = 5
@@ -23,6 +23,7 @@ def GetRoadBeta2Rewards():
     beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
     """
     root_path = '../../road_tests/new_new_new_beta2/'
+    # root_path = '../../releaseTests/updated_release/road/new_new_new_beta2/'
     beta_list = [0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
@@ -41,15 +42,14 @@ def GetRoadBeta2Rewards():
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
     
-    """
     root_path = '../../new_road_tests/beta2/'
     beta_list = [0.0, 0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names =   map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
-
+    """
     output_file = '../../result_graphs/eps/road/road_beta2_rewards.eps'
-    output_file = '../../result_graphs/eps/road/n_road_beta2_rewards.eps'
+    # output_file = '../../result_graphs/eps/road/n_road_beta2_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
@@ -70,6 +70,7 @@ def GetRoadBeta3Rewards():
     root_path = '../../releaseTests/road/beta3/'
     """
     root_path = '../../road_tests/new_beta3/'
+    # root_path = '../../releaseTests/updated_release/road/new_beta3/'
     beta_list = [0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
@@ -420,15 +421,22 @@ def GetRoadBeta2Regrets():
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
     """
+    """
     seed = range(42)
     root_path = '../../new_road_tests/beta2/'
     beta_list = [0.0, 0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
     str_beta = map(str, beta_list)
     methods = map(lambda x: 'beta' + x, str_beta)
     method_names =   map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
-
+    """
+    root_path = '../../releaseTests/updated_release/road/beta2r/'
+    # root_path = '../../road_tests/new_new_new_beta2/'
+    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
+    str_beta = map(str, beta_list)
+    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
+    output_file = '../../result_graphs/eps/road/road_beta2_regrets.eps'
     output_file = '../../result_graphs/eps/road/n_road_beta2_regrets.eps'
-    # output_file = '../../result_graphs/eps/road/n_road_beta2_regrets.eps'
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
