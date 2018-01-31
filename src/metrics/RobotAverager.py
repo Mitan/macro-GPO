@@ -345,6 +345,7 @@ def GetRobotTotalRegrets_beta2():
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/robot/unfixed_robot_beta2_simple_regrets.eps'
 
@@ -379,6 +380,7 @@ def GetRobotTotalRegrets_beta3():
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/robot/unfixed_robot_beta3_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/robot_beta3_simple_regrets.eps'
@@ -388,11 +390,4 @@ def GetRobotTotalRegrets_beta3():
 
 
 if __name__ == "__main__":
-    # GetRobotTotalRewards()
-    # GetRobotTotalRegrets()
-    # GetRobotBeta2Rewards()
-    # GetRobotBeta3Rewards()
-    GetRobot_H2Full_TotalRewards()
-    GetRobotTotalRegrets_H2Full()
-    # GetRobot_H4Samples_TotalRewards()
-    # GetRobotBeta2Rewards()
+    pass
