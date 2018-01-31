@@ -51,4 +51,4 @@ GetRoadBeta2Rewards()
 GetRoadBeta2Regrets()
 """
 
-GetRoadBeta3Regrets()
+GetRoadBeta2Regrets()
