@@ -53,7 +53,7 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
         neighb = m.GetNeighbours(start_location)
         fake_location = choice(neighb)
         fake_location = choice(m.locations[m.informative_locations_indexes, :])
-        fake_location = np.array([25.0, 50.0])
+        fake_location = np.array([49.0, 48.0])
         # print fake_location,start_location
         # fake_location = m.GetRandomStartLocation(batch_size=batch_size)
 
@@ -79,7 +79,7 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
 
 
 def Visualize_LLP(found_locations, found_values, save_folder, model, batch_size):
-    method_folder = save_folder + 'bbo-llp_center/'
+    method_folder = save_folder + 'bbo-llp4/'
     try:
         os.makedirs(method_folder)
     except OSError:
