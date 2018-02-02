@@ -13,9 +13,9 @@ GetSimulatedTotalRewards_our()
 GetSimulatedTotalRegrets_our()
 """
 GetSimulatedTotalRewards()
-GetSimulatedTotalRewards_onlyH4()
+# GetSimulatedTotalRewards_onlyH4()
 
 
 GetSimulatedTotalRegrets()
-GetSimulatedTotalRegrets_onlyH4()
+# GetSimulatedTotalRegrets_onlyH4()
 

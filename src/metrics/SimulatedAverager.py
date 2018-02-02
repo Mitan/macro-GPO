@@ -7,16 +7,19 @@ def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
 
-    root_path = '../../releaseTests/simulated/rewards-sAD/'
+    # root_path = '../../releaseTests/simulated/rewards-sAD/'
+    root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
-    methods = ['h4', 'h3', 'h2', 'h1',  'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
+    methods = ['h4', 'h3', 'h2', 'h1',
+               'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei',  'bbo-llp']
 
     method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
                      'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
-                    r'$q$-EI']
+                    r'$q$-EI',
+                     'BBO-LP']
     
     output_file = '../../result_graphs/eps/simulated/r_ei/simulated_total_rewards.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_total_rewards.eps'
@@ -69,15 +72,19 @@ def GetSimulatedTotalRegrets():
     batch_size = 4
 
     root_path = '../../releaseTests/simulated/rewards-sAD/'
+    root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
-    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
+    methods = ['h4', 'h3', 'h2', 'h1',
+               'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei',
+               'bbo-llp']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
                     'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
-                    r'$q$-EI']
+                    r'$q$-EI',
+                    'BBO-LP']
 
     output_file = '../../result_graphs/eps/simulated/r_ei/simulated_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_simple_regrets.eps'
