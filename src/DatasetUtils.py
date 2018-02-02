@@ -108,7 +108,7 @@ def GetAccumulatedRewards(measurements, batch_size):
 # get all the measurements collected by the method including initial value
 # these values are not normalized
 def GetAllMeasurements(root_folder, method_name, batch_size):
-    if method_name == 'bbo-llp2':
+    if method_name == 'bbo-llp4':
         return GetAllMeasurementsBBOLP(root_folder, method_name, batch_size)
 
     n_steps = 20 / batch_size

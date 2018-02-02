@@ -12,7 +12,7 @@ def GetSimulatedTotalRewards():
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
     methods = ['h4', 'h3', 'h2', 'h1',
-               'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei',  'bbo-llp']
+               'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei',  'bbo-llp4']
 
     method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
@@ -77,7 +77,7 @@ def GetSimulatedTotalRegrets():
 
     methods = ['h4', 'h3', 'h2', 'h1',
                'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei',
-               'bbo-llp']
+               'bbo-llp4']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
