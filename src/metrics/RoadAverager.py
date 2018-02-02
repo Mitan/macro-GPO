@@ -114,11 +114,12 @@ def GetRoadTotalRewards():
     batch_size = 5
 
     methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
-    methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4','new_ixed_pe', 'bucb', 'my_qEI']
+    methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
+                'mle_h4','new_ixed_pe', 'bucb', 'my_qEI','bbo-llp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$', 'DB-GP-UCB',
-                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
@@ -170,11 +171,12 @@ def GetRoadTotalRegrets():
     batch_size = 5
 
     methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
-    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'my_qEI']
+    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
+               'mle_h4', 'new_ixed_pe', 'bucb', 'my_qEI', 'bbo-llp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$', 'DB-GP-UCB',
-                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
