@@ -77,7 +77,7 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
 
 
 def Visualize_LLP(found_locations, found_values, save_folder, model, batch_size):
-    method_folder = save_folder + 'bbo-llp/'
+    method_folder = save_folder + 'bbo-llp2/'
     try:
         os.makedirs(method_folder)
     except OSError:
@@ -106,4 +106,5 @@ if __name__ == '__main__':
 
     model = GenerateRoadModelFromFile(filename=filename)
     for seed_0 in range(35):
+        print seed_0
         PerformBOForOneSeed(seed=seed_0, m=model, my_save_folder_root=my_save_folder_root, batch_size=batch_size)
