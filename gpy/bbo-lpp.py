@@ -52,6 +52,7 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
         # doesn't work with only one starting location
         neighb = m.GetNeighbours(start_location)
         fake_location = choice(neighb)
+        fake_location = choice(m.locations[m.informative_locations_indexes, :])
         # fake_location = m.GetRandomStartLocation(batch_size=batch_size)
 
         if np.array_equal(start_location, fake_location):
