@@ -108,14 +108,21 @@ def GetRoad_H4Samples_TotalRewards():
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
-def GetRoadTotalRewards():
+def GetRoadTotalRewards(my_ei = True):
+    if my_ei:
+        ei_method = 'my_qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(35)
 
     batch_size = 5
 
-    methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    # methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
     methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
-                'mle_h4','new_ixed_pe', 'bucb', 'my_qEI','bbo-llp4']
+                'mle_h4','new_ixed_pe', 'bucb', ei_method,'bbo-llp4']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$', 'DB-GP-UCB',
@@ -123,8 +130,8 @@ def GetRoadTotalRewards():
 
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
-    output_file = '../../result_graphs/eps/road/r_ei/road_total_rewards.eps'
-    output_file = '../../result_graphs/eps/road/my_ei/road_total_rewards.eps'
+    output_file = '../../result_graphs/eps/road/'+ ei_folder + '/road_total_rewards.eps'
+    # output_file = '../../result_graphs/eps/road/my_ei/road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
@@ -147,32 +154,47 @@ def GetRoadTotalRewards_ours():
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
-def GetRoadTotalRewards_onlyH4():
+def GetRoadTotalRewards_onlyH4(my_ei = True):
+    if my_ei:
+        ei_method = 'my_qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(35)
 
     batch_size = 5
 
-    methods = [ 'anytime_h4',  'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
-    methods = [ 'anytime_h4',  'h1', 'mle_h4','new_ixed_pe', 'bucb', 'my_qEI']
+    # methods = [ 'anytime_h4',  'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
+    methods = [ 'anytime_h4',  'h1', 'mle_h4','new_ixed_pe', 'bucb', ei_method, 'bbo-llp4']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', 'DB-GP-UCB',
-                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
-    output_file = '../../result_graphs/eps/road/r_ei/onlyh4_road_total_rewards.eps'
-    output_file = '../../result_graphs/eps/road/my_ei/onlyh4_road_total_rewards.eps'
+    output_file = '../../result_graphs/eps/road/' + ei_folder + '/onlyh4_road_total_rewards.eps'
+    # output_file = '../../result_graphs/eps/road/my_ei/onlyh4_road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
-def GetRoadTotalRegrets():
+
+def GetRoadTotalRegrets(my_ei = True):
+    if my_ei:
+        ei_method = 'my_qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(35)
     batch_size = 5
 
-    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
+    # methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
     methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
-               'mle_h4', 'new_ixed_pe', 'bucb', 'my_qEI', 'bbo-llp4']
+               'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp4']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$', 'DB-GP-UCB',
@@ -180,26 +202,34 @@ def GetRoadTotalRegrets():
 
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
-    output_file = '../../result_graphs/eps/road/r_ei/road_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/road/my_ei/road_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/road/'+ ei_folder + '/road_simple_regrets.eps'
+    # output_file = '../../result_graphs/eps/road/my_ei/road_simple_regrets.eps'
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
-def GetRoadTotalRegrets_onlyH4():
+
+def GetRoadTotalRegrets_onlyH4(my_ei=True):
+    if my_ei:
+        ei_method = 'my_qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(35)
     batch_size = 5
 
-    methods = ['anytime_h4','h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
-    methods = ['anytime_h4','h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'my_qEI']
+    # methods = ['anytime_h4','h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
+    methods = ['anytime_h4','h1', 'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp4']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', 'DB-GP-UCB',
-                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
-    output_file = '../../result_graphs/eps/road/r_ei/onlyh4_road_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/road/my_ei/onlyh4_road_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/road/' + ei_folder + '/onlyh4_road_simple_regrets.eps'
+    # output_file = '../../result_graphs/eps/road/my_ei/onlyh4_road_simple_regrets.eps'
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)

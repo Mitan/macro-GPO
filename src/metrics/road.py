@@ -51,6 +51,10 @@ GetRoadBeta2Rewards()
 GetRoadBeta2Regrets()
 """
 
-# GetRoadBeta2Regrets()
-GetRoadTotalRewards()
-GetRoadTotalRegrets()
+
+for ei in [True, False]:
+    GetRoadTotalRewards(ei)
+    GetRoadTotalRewards_onlyH4(ei)
+
+    GetRoadTotalRegrets(ei)
+    GetRoadTotalRegrets_onlyH4(ei)
