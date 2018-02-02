@@ -1,6 +1,6 @@
 import sys
 import os
-
+from random import choice
 import GPyOpt
 import numpy as np
 
@@ -50,7 +50,9 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
 
     while X_ans.shape[0] != 22:
         # doesn't work with only one starting location
-        fake_location = m.GetRandomStartLocation(batch_size=batch_size)
+        neighb = m.GetNeighbours(start_location)
+        fake_location = choice(neighb)
+        # fake_location = m.GetRandomStartLocation(batch_size=batch_size)
 
         if np.array_equal(start_location, fake_location):
             fake_location = m.GetRandomStartLocation(batch_size=batch_size)
@@ -100,7 +102,8 @@ if __name__ == '__main__':
 
     t, batch_size = (4, 5)
 
-    my_save_folder_root = "../noise_robot_tests/release/all_tests_release/"
+    # my_save_folder_root = "../noise_robot_tests/release/all_tests_release/"
+    my_save_folder_root = '../releaseTests/updated_release/robot/all_tests_release/'
 
     data_file = '../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(
         time_slot) + '.txt'

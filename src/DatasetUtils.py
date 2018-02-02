@@ -1,4 +1,6 @@
 from StringIO import StringIO
+import random
+
 import numpy as np
 
 from GaussianProcess import SquareExponential, GaussianProcess, MapValueDict
@@ -106,6 +108,9 @@ def GetAccumulatedRewards(measurements, batch_size):
 # get all the measurements collected by the method including initial value
 # these values are not normalized
 def GetAllMeasurements(root_folder, method_name, batch_size):
+    if method_name == 'bbo-llp':
+        return GetAllMeasurementsBBOLP(root_folder, method_name, batch_size)
+
     n_steps = 20 / batch_size
     i = n_steps - 1
 
@@ -133,6 +138,24 @@ def GetAllMeasurements(root_folder, method_name, batch_size):
     # assert we parsed them all as numbers
     assert not np.isnan(measurements).any()
 
+    return measurements.tolist()
+
+
+def GetAllMeasurementsBBOLP(root_folder, method_name, batch_size):
+
+    measurements_file_name = root_folder + method_name + '/rewards.txt'
+    measurements = np.genfromtxt(measurements_file_name)
+
+    assert measurements.shape[0] == 22
+    random.seed()
+
+    # remove one index randomly
+    ind = random.randint(1, 21)
+    ind = 1
+    measurements = np.delete(measurements, ind)
+    # assert we parsed them all as numbers
+    assert not np.isnan(measurements).any()
+    assert measurements.shape[0] == 21
     return measurements.tolist()
 
 

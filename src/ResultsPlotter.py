@@ -39,9 +39,10 @@ def PlotData(results, dataset, output_file_name, plottingType):
                       '#8c564b', '#c49c94', '#7f7f7f',
                       '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5', 'yellow']
 
-    color_sequence = ['#e41a1c', '#377eb8', '#4daf4a','#984ea3' ,'#ff7f00' ,'black','#a65628','#f781bf']
+    color_sequence = ['#e41a1c', '#377eb8', '#4daf4a','#984ea3' ,'#ff7f00' ,'black','#a65628','#f781bf', 'yellow']
+    color_sequence = ['#e41a1c', '#377eb8', '#4daf4a','#984ea3' ,'#ff7f00' ,'black','#a65628','#f781bf', 'blue']
 
-    markers = ["o", "v", "^", "s", "*", "1", "2", "x"]
+    markers = ["o", "v", "^", "s", "*", "1", "2", "x", "|"]
 
     # include first step before planning
     number_of_steps = len((results[0])[1])
@@ -65,10 +66,12 @@ def PlotData(results, dataset, output_file_name, plottingType):
         # previous version with small filled markers
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])
 
-        marker_index = i if i < 8 else 0
+        # marker_index = i if i < 8 else 0
+        linestyle = '-' if i < 8 else '--'
+        marker_index = i
 
         # dirty hack to make it unfilled
-        plt.plot(adjusted_time_steps, rewards, lw=1.0, marker=markers[marker_index], markersize=15,
+        plt.plot(adjusted_time_steps, rewards, lw=1.0,linestyle=linestyle, marker=markers[marker_index], markersize=15,
                  markerfacecolor="None",
                  markeredgewidth=1, markeredgecolor=color_sequence[i], color=color_sequence[i])
 
