@@ -19,6 +19,9 @@ GetRobotTotalRewards_onlyH4()
 
 # GetRobot_H2Full_TotalRewards()
 # GetRobotTotalRegrets_H2Full()
+for ei in [True, False]:
+    GetRobotTotalRewards(ei)
+    GetRobotTotalRegrets(ei)
 
-GetRobotTotalRewards()
-GetRobotTotalRegrets()
+    GetRobotTotalRewards_onlyH4(ei)
+    GetRobotTotalRegrets_onlyH4(ei)

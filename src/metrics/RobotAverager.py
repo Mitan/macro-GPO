@@ -139,16 +139,23 @@ def GetRobotTotalRewards():
 """
 
 
-def GetRobotTotalRewards():
+def GetRobotTotalRewards(my_ei = True):
+    if my_ei:
+        ei_method = 'my_qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(35)
 
     batch_size = 5
 
     time_slot = 16
 
-    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
+    # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
-               'mle_h4', 'pe', 'gp-bucb', 'my_qEI', 'bbo-llp']
+               'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
@@ -156,31 +163,38 @@ def GetRobotTotalRewards():
 
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
-    output_file = '../../result_graphs/eps/robot/r_ei/robot_total_rewards.eps'
-    output_file = '../../result_graphs/eps/robot/my_ei/t_robot_total_rewards.eps'
+    # output_file = '../../result_graphs/eps/robot/r_ei/robot_total_rewards.eps'
+    output_file = '../../result_graphs/eps/robot/'+ ei_folder + '/robot_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
                  plottingType=PlottingMethods.TotalReward)
 
 
-def GetRobotTotalRewards_onlyH4():
+def GetRobotTotalRewards_onlyH4(my_ei = True):
+    if my_ei:
+        ei_method = 'my_qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(35)
 
     batch_size = 5
 
     time_slot = 16
 
-    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
-    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'my_qEI']
+    # methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
+    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$',
-                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
-    output_file = '../../result_graphs/eps/robot/r_ei/onlyh4_robot_total_rewards.eps'
-    output_file = '../../result_graphs/eps/robot/my_ei/onlyh4_robot_total_rewards.eps'
+    # output_file = '../../result_graphs/eps/robot/r_ei/onlyh4_robot_total_rewards.eps'
+    output_file = '../../result_graphs/eps/robot/' + ei_folder + '/onlyh4_robot_total_rewards.eps'
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
@@ -230,13 +244,19 @@ def GetRobot_H2Full_TotalRewards():
                  plottingType=PlottingMethods.TotalReward)
 
 
-def GetRobotTotalRegrets():
+def GetRobotTotalRegrets(my_ei = True):
+    if my_ei:
+        ei_method = 'my_qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
     seeds = range(35)
     batch_size = 5
 
-    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
+    # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
-               'mle_h4', 'pe', 'gp-bucb', 'my_qEI', 'bbo-llp']
+               'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
@@ -244,26 +264,34 @@ def GetRobotTotalRegrets():
 
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
-    output_file = '../../result_graphs/eps/robot/r_ei/robot_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/robot/my_ei/t_robot_simple_regrets.eps'
+    # output_file = '../../result_graphs/eps/robot/r_ei/robot_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot/' + ei_folder+ '/t_robot_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
-def GetRobotTotalRegrets_onlyH4():
+
+def GetRobotTotalRegrets_onlyH4(my_ei = True):
+    if my_ei:
+        ei_method = 'my_qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(35)
     batch_size = 5
 
-    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
-    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'my_qEI']
+    # methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
+    methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$',
-                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI']
+                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI','BBO-LP']
 
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
-    output_file = '../../result_graphs/eps/robot/r_ei/onlyh4_robot_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/robot/my_ei/onlyh4_robot_simple_regrets.eps'
+    # output_file = '../../result_graphs/eps/robot/r_ei/onlyh4_robot_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot/' + ei_folder + '/onlyh4_robot_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
