@@ -12,10 +12,12 @@ GetSimulatedBeta3Rewards()
 GetSimulatedTotalRewards_our()
 GetSimulatedTotalRegrets_our()
 """
-GetSimulatedTotalRewards()
-# GetSimulatedTotalRewards_onlyH4()
+for ei in [True, False]:
+    GetSimulatedTotalRewards(ei)
+    GetSimulatedTotalRewards_onlyH4(ei)
 
+    GetSimulatedTotalRegrets(ei)
+    GetSimulatedTotalRegrets_onlyH4(ei)
+    print
 
-GetSimulatedTotalRegrets()
-# GetSimulatedTotalRegrets_onlyH4()
 

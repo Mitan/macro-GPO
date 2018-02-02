@@ -3,7 +3,14 @@ from src.PlottingEnum import PlottingMethods
 from RegretCalculator import SimulatedRegrets
 
 
-def GetSimulatedTotalRewards():
+def GetSimulatedTotalRewards(my_ei = True):
+    if my_ei:
+        ei_method = 'qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(66, 102)
     batch_size = 4
 
@@ -12,7 +19,7 @@ def GetSimulatedTotalRewards():
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
     methods = ['h4', 'h3', 'h2', 'h1',
-               'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei',  'bbo-llp4']
+               'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method,  'bbo-llp4']
 
     method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
@@ -21,28 +28,35 @@ def GetSimulatedTotalRewards():
                     r'$q$-EI',
                      'BBO-LP']
     
-    output_file = '../../result_graphs/eps/simulated/r_ei/simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/simulated_total_rewards.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_total_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
-def GetSimulatedTotalRewards_onlyH4():
+def GetSimulatedTotalRewards_onlyH4(my_ei = True):
+    if my_ei:
+        ei_method = 'qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(66, 102)
     batch_size = 4
 
-    root_path = '../../releaseTests/simulated/rewards-sAD/'
+    root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
-    methods = ['h4', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
+    methods = ['h4', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'bbo-llp4']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
                     'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
-                    r'$q$-EI']
+                    r'$q$-EI', 'BBO-LP']
 
-    output_file = '../../result_graphs/eps/simulated/r_ei/h4_simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/h4_simulated_total_rewards.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/h4_simulated_total_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
@@ -67,16 +81,24 @@ def GetSimulatedTotalRewards_our():
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
-def GetSimulatedTotalRegrets():
+def GetSimulatedTotalRegrets(my_ei = True):
+    if my_ei:
+        ei_method = 'qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(66, 102)
     batch_size = 4
 
-    root_path = '../../releaseTests/simulated/rewards-sAD/'
+    # root_path = '../../releaseTests/simulated/rewards-sAD/'
+        # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
+
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
-    # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
     methods = ['h4', 'h3', 'h2', 'h1',
-               'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei',
+               'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method,
                'bbo-llp4']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
@@ -86,28 +108,36 @@ def GetSimulatedTotalRegrets():
                     r'$q$-EI',
                     'BBO-LP']
 
-    output_file = '../../result_graphs/eps/simulated/r_ei/simulated_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/simulated/'+ ei_folder + '/simulated_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_simple_regrets.eps'
 
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
                      output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
-def GetSimulatedTotalRegrets_onlyH4():
+def GetSimulatedTotalRegrets_onlyH4(my_ei= True):
+    if my_ei:
+        ei_method = 'qEI'
+        ei_folder = 'my_ei'
+    else:
+        ei_method = 'r_qei'
+        ei_folder = 'r_ei'
+
     seeds = range(66, 102)
     batch_size = 4
 
-    root_path = '../../releaseTests/simulated/rewards-sAD/'
+    # root_path = '../../releaseTests/simulated/rewards-sAD/'
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
+    root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
-    methods = ['h4', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'r_qei']
+    methods = ['h4', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'bbo-llp4']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
                     'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
-                    r'$q$-EI']
+                    r'$q$-EI', 'BBO-LP']
     # output_file = '../../result_graphs/eps/simulated/my_ei/h4_simulated_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/simulated/r_ei/h4_simulated_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/h4_simulated_simple_regrets.eps'
 
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
                      output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)

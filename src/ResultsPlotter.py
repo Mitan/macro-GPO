@@ -77,7 +77,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
 
         # patch = mpatches.Patch(color=color_sequence[i], label=name)
 
-        patch = mlines.Line2D([], [], color=color_sequence[i], marker=markers[marker_index], markerfacecolor="None",
+        patch = mlines.Line2D([], [],linestyle=linestyle, color=color_sequence[i], marker=markers[marker_index], markerfacecolor="None",
                               markeredgewidth=1, markeredgecolor=color_sequence[i], markersize=10, label=name)
 
         handles.append(patch)
@@ -102,7 +102,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
             legend_loc = 2
         elif plottingType == PlottingMethods.SimpleRegret:
             plt.ylabel("Simple regret")
-            plt.yticks(np.arange(1.4, 3.2, 0.2))
+            plt.yticks(np.arange(1.0, 3.2, 0.2))
             legend_loc = 1
         elif plottingType == PlottingMethods.Nodes:
             plt.ylabel("No. of nodes expanded")
