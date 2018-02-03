@@ -265,7 +265,7 @@ def GetRobotTotalRegrets(my_ei = True):
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
     # output_file = '../../result_graphs/eps/robot/r_ei/robot_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/robot/' + ei_folder+ '/t_robot_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot/' + ei_folder+ '/robot_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
