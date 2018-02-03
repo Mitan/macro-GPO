@@ -9,7 +9,47 @@ from src.DatasetUtils import GenerateModelFromFile
 from BBOVisualize import drawPlot
 
 
-def BOLoop(start_location, fake_location, domain, f):
+def BOLoop1(start_location, fake_location, domain, f):
+    X_init = np.vstack((start_location, fake_location))
+    # Y_init = np.array([func_model(start_location)[0], func_model(fake_location)[0]])
+    Y_init = np.vstack((f([start_location]), f([fake_location])))
+    # print Y_init
+    X_step = X_init
+    Y_step = Y_init
+
+    max_iter = 20 / batch_size  # evaluation budget
+    for i in range(max_iter):
+        current_lookahead = 20 - i * batch_size
+        print current_lookahead
+        myBopt = GPyOpt.methods.BayesianOptimization(f=f,  # function to optimize
+                                                     domain=domain,
+                                                     X=X_step,
+                                                     Y=Y_step,
+                                                     initial_design_numdata=-1,
+                                                     acquisition_type='EI',
+                                                     # exact_feval=True,
+                                                     normalize_Y=True,
+                                                     optimize_restarts=10,
+                                                     # acquisition_weight=2,
+                                                     evaluator_type='local_penalization',
+                                                     batch_size=current_lookahead,
+                                                     num_cores=4,
+                                                     de_duplication=True,
+                                                     maximize=True)
+        # take only first batch_size_points
+        x_next = myBopt.suggest_next_locations()[:batch_size, :]
+        print x_next.shape
+        y_next = f(x_next)
+        X_step = np.vstack((X_step, x_next))
+        print X_step.shape
+        Y_step = np.vstack((Y_step, y_next))
+
+    print myBopt.X.shape
+    # print myBopt.x_opt, func_model([myBopt.x_opt])
+    return myBopt.X
+
+
+def BOLoop(start_location, fake_location, domain, f, batch_size):
     X_init = np.vstack((start_location, fake_location))
     # Y_init = np.array([func_model(start_location)[0], func_model(fake_location)[0]])
     Y_init = np.vstack((f([start_location]), f([fake_location])))
@@ -25,20 +65,19 @@ def BOLoop(start_location, fake_location, domain, f):
                                                  optimize_restarts=10,
                                                  # acquisition_weight=2,
                                                  evaluator_type='local_penalization',
-                                                 batch_size=5,
+                                                 batch_size=batch_size,
                                                  num_cores=4,
                                                  de_duplication=True,
                                                  maximize=True)
-    max_iter = 4  # evaluation budget
+    max_iter = 20 / batch_size  # evaluation budget
     myBopt.run_optimization(max_iter)
     myBopt._print_convergence()
-    print myBopt.X.shape
+    print myBopt.X.shape, batch_size, max_iter
     # print myBopt.x_opt, func_model([myBopt.x_opt])
     return myBopt.X
 
 
 def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
-
     def func_model(location):
         return np.array([[m(location[0])]])
 
@@ -54,13 +93,12 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
         # fake_location = choice(neighb)
         # fake_location = m.GetRandomStartLocation(batch_size=batch_size)
         fake_location = choice(m.locations)
-        fake_location = np.array(choice([[0.95, 0.95], [1.05, 0.95], [1.05, 1.05], [1.0, 1.05]]))
+        # fake_location = np.array(choice([[0.95, 0.95], [1.05, 0.95], [1.05, 1.05], [1.0, 1.05]]))
+        fake_location = np.array([0.1, 0.1])
         print fake_location, start_location
-        if np.array_equal(start_location, fake_location):
-            fake_location = m.GetRandomStartLocation(batch_size=batch_size)
 
         X_ans = BOLoop(start_location=start_location, fake_location=fake_location,
-                       domain=domain, f=func_model)
+                       domain=domain, f=func_model, batch_size=batch_size)
 
     # delete fake point
     # X_ans = np.delete(X_ans, 1, 0)
@@ -78,7 +116,7 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
 
 
 def Visualize_LLP(found_locations, found_values, save_folder, model, batch_size):
-    method_folder = save_folder + 'bbo-llp2/'
+    method_folder = save_folder + 'bbo-llp6/'
     try:
         os.makedirs(method_folder)
     except OSError:
@@ -97,12 +135,12 @@ def Visualize_LLP(found_locations, found_values, save_folder, model, batch_size)
 if __name__ == '__main__':
     args = sys.argv
 
-    #seed_0 = int(args[1])
+    # seed_0 = int(args[1])
     # seed_0 = 1
 
     time_slot = 16
 
-    t, batch_size = (4, 5)
+    t, batch_size = (5, 4)
 
     # my_save_folder_root = "../noise_robot_tests/release/all_tests_release/"
     my_save_folder_root = '../releaseTests/updated_release/simulated/rewards-sAD/'
