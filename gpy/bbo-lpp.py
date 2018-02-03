@@ -59,7 +59,7 @@ def BOLoop(start_location, fake_location, domain, f, batch_size):
                                                  X=X_init,
                                                  Y=Y_init,
                                                  initial_design_numdata=5,
-                                                 acquisition_type='EI',
+                                                 acquisition_type='MPI',
                                                  # exact_feval=True,
                                                  normalize_Y=True,
                                                  optimize_restarts=10,
@@ -116,7 +116,7 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
 
 
 def Visualize_LLP(found_locations, found_values, save_folder, model, batch_size):
-    method_folder = save_folder + 'bbo-llp6/'
+    method_folder = save_folder + 'bbo-llp7/'
     try:
         os.makedirs(method_folder)
     except OSError:
