@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from matplotlib  import cm
 
-plt.rcParams["figure.figsize"] = [11, 6]
+plt.rcParams["figure.figsize"] = [10, 6]
 
 locations_file = '../../datasets/robot/selected_slots/slot_16/exact_final_slot_16.txt'
 all_locations_data = np.genfromtxt(locations_file)
@@ -35,6 +35,8 @@ plt.colorbar(sc)
 
 save_path = './'
 # plt.savefig(save_path + "robot_dataset.png")
+axes.set_ylim([-2, 33])
+axes.set_xlim([-2, 43])
 plt.savefig(save_path + "intel_lab_circled.eps", format='eps', dpi=1000, bbox_inches='tight')
 plt.clf()
 plt.close()
