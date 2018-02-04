@@ -423,8 +423,16 @@ def GetRoadTotalRegrets_H2Full():
     root_path = '../../releaseTests/road/tests2full-r/'
     # root_path = '../../releaseTests/road/tests2full-NEW/'
 
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds,
+    results = RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+    h4 = results[0]
+    h2_all = results[1]
+    h2 = results[2]
+    # print h4, h2_all, h2
+    sigma = math.sqrt(0.7486)
+
+    print "Regrets H4 -  H2 all %f sigma " % ((h2_all[1][-1] - h4[1][-1]) / sigma)
+    print "Regrets H2 all  -  H2 %f sigma" % ((h2[1][-1] - h2_all[1][-1]) / sigma)
 
 
 def GetRoadTotalRegrets_H4Samples():
@@ -440,14 +448,7 @@ def GetRoadTotalRegrets_H4Samples():
 
     results = RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
-    h4 = results[0]
-    h2_all = results[1]
-    h2 = results[2]
-    # print h4, h2_all, h2
-    sigma = math.sqrt(0.7486)
 
-    print "Regrets H4 -  H2 all %f sigma " % ((h4[1][-1] - h2_all[1][-1]) / sigma)
-    print "Regrets H2 all  -  H2 %f sigma" % ((h2[1][-1] - h2_all[1][-1]) / sigma)
 
 
 def GetRoadBeta2Regrets():
