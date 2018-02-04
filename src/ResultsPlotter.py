@@ -61,7 +61,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
         rewards = result[1]
 
         # hack for EI
-        adjusted_time_steps = range(21) if (name == 'EI (all MA)' or name == 'PI') else time_steps
+        adjusted_time_steps = range(21) if (name == 'EI (all)' or name == 'PI') else time_steps
 
         # previous version with small filled markers
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])
@@ -71,37 +71,40 @@ def PlotData(results, dataset, output_file_name, plottingType):
         marker_index = i
 
         # dirty hack to make it unfilled
-        plt.plot(adjusted_time_steps, rewards, lw=1.0,linestyle=linestyle, marker=markers[marker_index], markersize=15,
+        plt.plot(adjusted_time_steps, rewards, lw=1.0,linestyle=linestyle, marker=markers[marker_index], markersize=20,
                  markerfacecolor="None",
                  markeredgewidth=1, markeredgecolor=color_sequence[i], color=color_sequence[i])
 
         # patch = mpatches.Patch(color=color_sequence[i], label=name)
 
-        patch = mlines.Line2D([], [],linestyle=linestyle, color=color_sequence[i], marker=markers[marker_index], markerfacecolor="None",
+        patch = mlines.Line2D([], [],linestyle=linestyle, color=color_sequence[i], marker=markers[marker_index],
+                              markerfacecolor="None",
                               markeredgewidth=1, markeredgecolor=color_sequence[i], markersize=10, label=name)
 
         handles.append(patch)
 
     plt.xticks(time_steps)
-    plt.xlabel("No. of measurements collected")
+    plt.xlabel("No. of observations",fontsize=15 )
     axes = plt.axes()
     axes.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
     if dataset == 'simulated':
-        if plottingType == PlottingMethods.TotalReward:
-            plt.ylabel("Total Rewards")
+        if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
+            plt.ylabel("Total normalized output measurements observed by UAV", fontsize=15)
             plt.yticks(range(-4, 13))
             axes.set_ylim([-3.5, 11])
             legend_loc = 2
-        elif plottingType == PlottingMethods.TotalRewardBeta:
-            plt.ylabel("Total Rewards")
-            # plt.yticks(range(-5, 12))
-            # axes.set_ylim([-5, 11])
-            plt.yticks(range(-4, 13))
-            axes.set_ylim([-3.5, 11])
-            legend_loc = 2
+            """
+            elif plottingType == PlottingMethods.TotalRewardBeta:
+                plt.ylabel("Total normalized output measurements observed by UAV")
+                # plt.yticks(range(-5, 12))
+                # axes.set_ylim([-5, 11])
+                plt.yticks(range(-4, 13))
+                axes.set_ylim([-3.5, 11])
+                legend_loc = 2
+            """
         elif plottingType == PlottingMethods.SimpleRegret:
-            plt.ylabel("Simple regret")
+            plt.ylabel("Simple regret", fontsize=15)
             plt.yticks(np.arange(1.0, 3.2, 0.2))
             legend_loc = 1
         elif plottingType == PlottingMethods.Nodes:
@@ -113,8 +116,8 @@ def PlotData(results, dataset, output_file_name, plottingType):
         else:
             raise
     elif dataset == 'road':
-        if plottingType == PlottingMethods.TotalReward:
-            plt.ylabel("Total Rewards")
+        if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
+            plt.ylabel("Total normalized output measurements observed by AV", fontsize=15)
             """
             plt.yticks(range(-1, 14))
             plt.yticks(range(0, 8))
@@ -124,13 +127,15 @@ def PlotData(results, dataset, output_file_name, plottingType):
             axes.set_ylim([-1.5, 6])
             plt.yticks(range(-1, 7))
             legend_loc = 2
-        elif plottingType == PlottingMethods.TotalRewardBeta:
-            plt.ylabel("Total Rewards")
-            axes.set_ylim([-1.5, 6])
-            plt.yticks(range(-1, 7))
-            legend_loc = 2
+            """
+            elif plottingType == PlottingMethods.TotalRewardBeta:
+                plt.ylabel("Total normalized output measurements observed by AV")
+                axes.set_ylim([-1.5, 6])
+                plt.yticks(range(-1, 7))
+                legend_loc = 2
+            """
         elif plottingType == PlottingMethods.SimpleRegret:
-            plt.ylabel("Simple regret")
+            plt.ylabel("Simple regret", fontsize=15)
             plt.yticks(np.arange(1.5, 4, 0.5))
             legend_loc = 1
         elif plottingType == PlottingMethods.Nodes:
@@ -140,18 +145,20 @@ def PlotData(results, dataset, output_file_name, plottingType):
         else:
             raise
     elif dataset == 'robot':
-        if plottingType == PlottingMethods.TotalReward:
-            plt.ylabel("Total Rewards")
+        if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
+            plt.ylabel("Total normalized output measurements observed by mobile robot", fontsize=15)
             axes.set_ylim([-0.5, 14])
             plt.yticks(range(0, 15))
             legend_loc = 2
-        elif plottingType == PlottingMethods.TotalRewardBeta:
-            plt.ylabel("Total Rewards")
-            axes.set_ylim([-0.5, 14])
-            plt.yticks(range(0, 15))
-            legend_loc = 2
+            """
+            elif plottingType == PlottingMethods.TotalRewardBeta:
+                plt.ylabel("Total normalized output measurements observed by mobile robot")
+                axes.set_ylim([-0.5, 14])
+                plt.yticks(range(0, 15))
+                legend_loc = 2
+            """
         elif plottingType == PlottingMethods.SimpleRegret:
-            plt.ylabel("Simple regret")
+            plt.ylabel("Simple regret", fontsize=15)
             legend_loc = 1
         elif plottingType == PlottingMethods.Nodes:
             plt.ylabel("No. of nodes expanded")
@@ -197,14 +204,14 @@ def PlotData(results, dataset, output_file_name, plottingType):
             raise
     """
 
-    plt.legend(handles=handles, loc=legend_loc, prop={'size': 12})
+    plt.legend(handles=handles, loc=legend_loc, prop={'size': 13.5})
     # plt.savefig(folder_name + file_name)
 
     # margins on x and y side
-    axes.margins(x=0.02)
+    axes.margins(x=0.035)
 
     # if not isTotalReward:
-    axes.margins(y=0.02)
+    axes.margins(y=0.035)
 
     # plt.savefig(output_file_name, bbox_inches='tight')
     # plt.savefig(output_file_name, format='eps', dpi=1000)
