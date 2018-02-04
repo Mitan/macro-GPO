@@ -62,6 +62,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
 
         # hack for EI
         adjusted_time_steps = range(21) if (name == 'EI (all)' or name == 'PI') else time_steps
+        marker_size = 10 if (name == 'EI (all)' or name == 'PI') else 20
 
         # previous version with small filled markers
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])
@@ -71,7 +72,8 @@ def PlotData(results, dataset, output_file_name, plottingType):
         marker_index = i
 
         # dirty hack to make it unfilled
-        plt.plot(adjusted_time_steps, rewards, lw=1.0,linestyle=linestyle, marker=markers[marker_index], markersize=20,
+        plt.plot(adjusted_time_steps, rewards, lw=1.0,linestyle=linestyle, marker=markers[marker_index],
+                 markersize=marker_size,
                  markerfacecolor="None",
                  markeredgewidth=1, markeredgecolor=color_sequence[i], color=color_sequence[i])
 
