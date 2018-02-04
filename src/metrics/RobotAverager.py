@@ -155,11 +155,12 @@ def GetRobotTotalRewards(my_ei = True):
 
     # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
-               'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
+               'mle_h4', 'pe', 'gp-bucb', ei_method]
+               # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
-                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
+                    'DB-GP-UCB', r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
@@ -230,10 +231,10 @@ def GetRobot_H2Full_TotalRewards():
 
     methods = ['new_anytime_h4_300', 'anytime_h2_full', 'anytime_h2', 'ei']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all MA)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
-                    'EI (all MA)']
+    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$  ($20$)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$  ($20$)',
+                    'EI (all)']
 
     root_path = '../../noise_robot_tests/release/all_tests_release/'
 
@@ -256,11 +257,12 @@ def GetRobotTotalRegrets(my_ei = True):
 
     # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
-               'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
+               'mle_h4', 'pe', 'gp-bucb', ei_method]
+               # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
-                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
+                    'DB-GP-UCB', r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
@@ -322,10 +324,10 @@ def GetRobotTotalRegrets_H2Full():
 
     methods = ['new_anytime_h4_300', 'anytime_h2_full', 'anytime_h2', 'ei']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$  (selected MA)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all MA)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$  (selected MA)',
-                    'EI (all MA)']
+    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$  ($20$)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all)',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$  ($20$)',
+                    'EI (all)']
 
     root_path = '../../noise_robot_tests/release/all_tests_release/'
 

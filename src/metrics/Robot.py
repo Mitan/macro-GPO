@@ -17,11 +17,15 @@ GetRobotTotalRewards_onlyH4()
 # GetRobotTotalRegrets_onlyH4()
 # GetRobotTotalRegrets_ours()
 
-# GetRobot_H2Full_TotalRewards()
-# GetRobotTotalRegrets_H2Full()
+GetRobotBeta2Rewards()
+GetRobotBeta3Rewards()
+
+GetRobot_H2Full_TotalRewards()
+GetRobotTotalRegrets_H2Full()
+
 for ei in [True, False]:
     GetRobotTotalRewards(ei)
     GetRobotTotalRegrets(ei)
 
-    GetRobotTotalRewards_onlyH4(ei)
-    GetRobotTotalRegrets_onlyH4(ei)
+    # GetRobotTotalRewards_onlyH4(ei)
+    # GetRobotTotalRegrets_onlyH4(ei)

@@ -55,6 +55,8 @@ def PlotData(results, dataset, output_file_name, plottingType):
     time_steps = [i * batch_size for i in range(number_of_steps)]
     # for legends
     handles = []
+
+    labels_font_size = 18
     for i, result in enumerate(results):
         name = ParseName(result[0])
 
@@ -86,13 +88,13 @@ def PlotData(results, dataset, output_file_name, plottingType):
         handles.append(patch)
 
     plt.xticks(time_steps)
-    plt.xlabel("No. of observations",fontsize=15 )
+    plt.xlabel("No. of observations",fontsize=labels_font_size )
     axes = plt.axes()
     axes.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
     if dataset == 'simulated':
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
-            plt.ylabel("Total normalized output measurements observed by UAV", fontsize=15)
+            plt.ylabel("Total normalized output measurements observed by UAV", fontsize=labels_font_size)
             plt.yticks(range(-4, 13))
             axes.set_ylim([-3.5, 11])
             legend_loc = 2
@@ -106,7 +108,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
                 legend_loc = 2
             """
         elif plottingType == PlottingMethods.SimpleRegret:
-            plt.ylabel("Simple regret", fontsize=15)
+            plt.ylabel("Simple regret", fontsize=labels_font_size)
             plt.yticks(np.arange(1.0, 3.2, 0.2))
             legend_loc = 1
         elif plottingType == PlottingMethods.Nodes:
@@ -119,7 +121,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
             raise
     elif dataset == 'road':
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
-            plt.ylabel("Total normalized output measurements observed by AV", fontsize=15)
+            plt.ylabel("Total normalized output measurements observed by AV", fontsize=labels_font_size)
             """
             plt.yticks(range(-1, 14))
             plt.yticks(range(0, 8))
@@ -137,7 +139,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
                 legend_loc = 2
             """
         elif plottingType == PlottingMethods.SimpleRegret:
-            plt.ylabel("Simple regret", fontsize=15)
+            plt.ylabel("Simple regret", fontsize=labels_font_size)
             plt.yticks(np.arange(1.5, 4, 0.5))
             legend_loc = 1
         elif plottingType == PlottingMethods.Nodes:
@@ -148,7 +150,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
             raise
     elif dataset == 'robot':
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
-            plt.ylabel("Total normalized output measurements observed by mobile robot", fontsize=15)
+            plt.ylabel("Total normalized output measurements observed by mobile robot", fontsize=labels_font_size)
             axes.set_ylim([-0.5, 14])
             plt.yticks(range(0, 15))
             legend_loc = 2
@@ -160,7 +162,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
                 legend_loc = 2
             """
         elif plottingType == PlottingMethods.SimpleRegret:
-            plt.ylabel("Simple regret", fontsize=15)
+            plt.ylabel("Simple regret", fontsize=labels_font_size)
             legend_loc = 1
         elif plottingType == PlottingMethods.Nodes:
             plt.ylabel("No. of nodes expanded")
