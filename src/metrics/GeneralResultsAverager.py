@@ -35,7 +35,7 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
 
     # check that we collected data for every location
     # print method
-    print number_of_location, len(seeds)
+    # print number_of_location, len(seeds)
     assert number_of_location == len(seeds)
     # print results_for_method
 
@@ -47,7 +47,7 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
     print np.std(all_measurements, axis=0)
     """
     scaled_results = results_for_method - scaled_model_mean
-    print method, scaled_results
+    # print method, scaled_results
     # result = [method_names[index], scaled_results.tolist()]
     return scaled_results.tolist()
 
@@ -99,7 +99,7 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
         results.append(result)
 
     PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='road')
-
+    return results
 
 def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, plottingType):
     """

@@ -1,3 +1,5 @@
+import math
+
 from GeneralResultsAverager import RoadRewards
 from src.PlottingEnum import PlottingMethods
 from RegretCalculator import RoadRegrets
@@ -51,8 +53,13 @@ def GetRoadBeta2Rewards():
     output_file = '../../result_graphs/eps/road/road_beta2_rewards.eps'
     # output_file = '../../result_graphs/eps/road/n_road_beta2_rewards.eps'
 
-    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+    results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
+    beta0 = results[0]
+    beta02 = results[1]
+    # print beta0, beta02
+
+    print "Rewards beta0.2 / beta0.0 %f" % (beta02[1][-1] / beta0[1][-1])
 
 
 def GetRoadBeta3Rewards():
@@ -134,8 +141,14 @@ def GetRoadTotalRewards(my_ei = True):
     output_file = '../../result_graphs/eps/road/'+ ei_folder + '/road_total_rewards.eps'
     # output_file = '../../result_graphs/eps/road/my_ei/road_total_rewards.eps'
 
-    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+    results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+    h4 = results[0]
+    h1 = results[3]
+    mle = results[4]
+    # print h4, h1, mle
+    print "Rewards H4 / H1 %f" % (h4[1][-1] / h1[1][-1])
+    print "Rewards H4 / MLE %f" % (h4[1][-1] / mle[1][-1])
 
 def GetRoadTotalRewards_ours():
     seeds = range(35)
@@ -207,8 +220,19 @@ def GetRoadTotalRegrets(my_ei = True):
     output_file = '../../result_graphs/eps/road/'+ ei_folder + '/road_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/road/my_ei/road_simple_regrets.eps'
 
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds,
+    results = RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+    sigma = math.sqrt(0.7486)
+    h4 = results[0]
+    h1 = results[3]
+    mle = results[4]
+    """
+    print h4
+    print h1
+    print mle
+    """
+    print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
+    print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
 
 
 def GetRoadTotalRegrets_onlyH4(my_ei=True):
@@ -326,8 +350,16 @@ def GetRoad_H2Full_TotalRewards():
 
     output_file = '../../result_graphs/eps/road/road_h2_full_total_rewards.eps'
 
-    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+    results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+    # print results
+    h4 = results[0]
+    h2_all = results[1]
+    h2 = results[2]
+    # print h4, h2_all, h2
+    print "Rewards H4 / H2 all %f" % (h4[1][-1] / h2_all[1][-1])
+    print "Rewards H2 all / H2 %f" % (h2_all[1][-1] / h2[1][-1])
+
 
 
 """
@@ -406,9 +438,16 @@ def GetRoadTotalRegrets_H4Samples():
 
     output_file = '../../result_graphs/eps/road_h4samples_simple_regrets.eps'
 
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds,
+    results = RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+    h4 = results[0]
+    h2_all = results[1]
+    h2 = results[2]
+    # print h4, h2_all, h2
+    sigma = math.sqrt(0.7486)
 
+    print "Regrets H4 -  H2 all %f sigma " % ((h4[1][-1] - h2_all[1][-1]) / sigma)
+    print "Regrets H2 all  -  H2 %f sigma" % ((h2[1][-1] - h2_all[1][-1]) / sigma)
 
 
 def GetRoadBeta2Regrets():
