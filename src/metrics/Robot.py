@@ -19,12 +19,14 @@ GetRobotTotalRewards_onlyH4()
 
 GetRobotBeta2Rewards()
 # GetRobotBeta3Rewards()
-
+print
 GetRobot_H2Full_TotalRewards()
+print
 GetRobotTotalRegrets_H2Full()
-
+print
 for ei in [True]:
     GetRobotTotalRewards(ei)
+    print
     GetRobotTotalRegrets(ei)
 
     # GetRobotTotalRewards_onlyH4(ei)

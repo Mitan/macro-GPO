@@ -123,6 +123,8 @@ def GetSimulatedTotalRegrets(my_ei = True):
     h4 = results[0]
     h1 = results[3]
     mle = results[4]
+    # print h4, h1, mle
+
     """
     print h4
     print h1
