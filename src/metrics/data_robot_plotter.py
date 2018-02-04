@@ -7,8 +7,9 @@ import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from matplotlib  import cm
 
+plt.rcParams["figure.figsize"] = [11, 6]
 
-locations_file = '../../datasets/robot/selected_slots/slot_16/final_slot_16.txt'
+locations_file = '../../datasets/robot/selected_slots/slot_16/exact_final_slot_16.txt'
 all_locations_data = np.genfromtxt(locations_file)
 locations = all_locations_data[:, 1:3]
 values = all_locations_data[:, -1:
@@ -23,12 +24,14 @@ mmax = np.amax(np.amax(values))
 mmin = np.amin(np.amin(values))
 axes = plt.axes()
 
-axes.scatter(X, Y, s=30, c=values, vmin=mmin, vmax=mmax, cmap=cm.jet)
+sc = axes.scatter(X, Y, s=30, c=values, vmin=mmin, vmax=mmax, cmap=cm.jet)
 
 
 for loc in true_locations:
     circle = plt.Circle(loc, 0.8, color='black', fill=False)
     axes.add_artist(circle)
+
+plt.colorbar(sc)
 
 save_path = './'
 # plt.savefig(save_path + "robot_dataset.png")
