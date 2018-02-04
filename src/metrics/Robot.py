@@ -2,11 +2,11 @@ from RobotAverager import *
 from RegretCalculator import *
 
 # GetRobotTotalRegrets_beta2()
-print
+# print
 # GetRobotTotalRegrets_beta3()
-print
+# print
 # GetRobotBeta2Rewards()
-print
+# print
 # GetRobotBeta3Rewards()
 """
 GetRobotTotalRewards()
@@ -18,12 +18,12 @@ GetRobotTotalRewards_onlyH4()
 # GetRobotTotalRegrets_ours()
 
 GetRobotBeta2Rewards()
-GetRobotBeta3Rewards()
+# GetRobotBeta3Rewards()
 
 GetRobot_H2Full_TotalRewards()
 GetRobotTotalRegrets_H2Full()
 
-for ei in [True, False]:
+for ei in [True]:
     GetRobotTotalRewards(ei)
     GetRobotTotalRegrets(ei)
 

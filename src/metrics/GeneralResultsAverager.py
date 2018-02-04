@@ -71,6 +71,7 @@ def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, ou
         results.append(result)
 
     PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='robot')
+    return results
 
 
 def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, plottingType):

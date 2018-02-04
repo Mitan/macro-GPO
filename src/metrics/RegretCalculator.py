@@ -45,9 +45,10 @@ def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_fil
         regrets = GetRoadResultsForMethod(seeds, adjusted_batch_size, method, root_path, model_max)
         result = [method_names[index], regrets]
         results.append(result)
-        print result
+        # print result
 
     PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='robot')
+    return results
 
 
 def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):

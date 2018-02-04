@@ -1,3 +1,5 @@
+import math
+
 from GeneralResultsAverager import RobotRewards
 from src.PlottingEnum import PlottingMethods
 from RegretCalculator import RobotRegrets
@@ -36,9 +38,14 @@ def GetRobotBeta2Rewards():
     output_file = '../../result_graphs/eps/robot_beta2_rewards.eps'
     output_file = '../../result_graphs/eps/robot/robot_beta2_rewards.eps'
 
-    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+    results = RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
                  plottingType=PlottingMethods.TotalRewardBeta)
+    beta0 = results[0]
+    beta1 = results[1]
+    # print beta0, beta1
+
+    print "Rewards beta0.2 / beta0.0 %f" % (beta1[1][-1] / beta0[1][-1])
 
 
 def GetRobotBeta3Rewards():
@@ -167,9 +174,15 @@ def GetRobotTotalRewards(my_ei = True):
     # output_file = '../../result_graphs/eps/robot/r_ei/robot_total_rewards.eps'
     output_file = '../../result_graphs/eps/robot/'+ ei_folder + '/robot_total_rewards.eps'
 
-    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+    results= RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
                  plottingType=PlottingMethods.TotalReward)
+    h4 = results[0]
+    h1 = results[3]
+    mle = results[4]
+    # print h4, h1, mle
+    print "Rewards H4 / H1 %f" % (h4[1][-1] / h1[1][-1])
+    print "Rewards H4 / MLE %f" % (h4[1][-1] / mle[1][-1])
 
 
 def GetRobotTotalRewards_onlyH4(my_ei = True):
@@ -240,9 +253,16 @@ def GetRobot_H2Full_TotalRewards():
 
     output_file = '../../result_graphs/eps/robot/robot_h2_full_total_rewards.eps'
 
-    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+    results= RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
                  plottingType=PlottingMethods.TotalReward)
+    # print results
+    h4 = results[0]
+    h2_all = results[1]
+    h2 = results[2]
+
+    print "Rewards H4 / H2 all %f" % (h4[1][-1] / h2_all[1][-1])
+    print "Rewards H2  / H2 all %f" % (1 - h2[1][-1] / h2_all[1][-1])
 
 
 def GetRobotTotalRegrets(my_ei = True):
@@ -269,8 +289,15 @@ def GetRobotTotalRegrets(my_ei = True):
     # output_file = '../../result_graphs/eps/robot/r_ei/robot_simple_regrets.eps'
     output_file = '../../result_graphs/eps/robot/' + ei_folder+ '/robot_simple_regrets.eps'
 
-    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
+    results = RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+    sigma = math.sqrt(0.596355)
+    h4 = results[0]
+    h1 = results[3]
+    mle = results[4]
+    # print h4, h1, mle
+    print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
+    print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
 
 
 def GetRobotTotalRegrets_onlyH4(my_ei = True):
@@ -333,8 +360,16 @@ def GetRobotTotalRegrets_H2Full():
 
     output_file = '../../result_graphs/eps/robot/robot_h2_full_simple_regrets.eps'
 
-    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
+    results = RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+    h4 = results[0]
+    h2_all = results[1]
+    h2 = results[2]
+    # print h4, h2_all, h2
+    sigma = math.sqrt(0.596355)
+
+    print "Regrets H4 -  H2 all %f sigma " % ((h2_all[1][-1] - h4[1][-1]) / sigma)
+    print "Regrets H2 all  -  H2 %f sigma" % ((h2[1][-1] - h2_all[1][-1]) / sigma)
 
 
 def GetRobotTotalRegrets_H4Samples():

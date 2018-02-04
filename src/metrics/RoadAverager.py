@@ -333,6 +333,7 @@ def GetRoadTotalRewards(seeds):
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 """
 
+
 def GetRoad_H2Full_TotalRewards():
     seeds = range(35)
     batch_size = 5
@@ -358,7 +359,7 @@ def GetRoad_H2Full_TotalRewards():
     h2 = results[2]
     # print h4, h2_all, h2
     print "Rewards H4 / H2 all %f" % (h4[1][-1] / h2_all[1][-1])
-    print "Rewards H2 all / H2 %f" % (h2_all[1][-1] / h2[1][-1])
+    print "Rewards H2  / H2 all %f" % (1 - h2[1][-1] / h2_all[1][-1])
 
 
 
