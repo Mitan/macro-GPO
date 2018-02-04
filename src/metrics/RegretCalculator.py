@@ -119,10 +119,10 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         regrets = [average_model_max - res for res in results_for_method.tolist()]
         result = [method_names[index], regrets]
         results.append(result)
-        print result
+        # print result
 
     PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='simulated')
-
+    return results
 
 
 

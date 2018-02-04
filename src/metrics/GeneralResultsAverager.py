@@ -122,7 +122,7 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
 
     average_model_mean = sum_model_mean / len_seeds
     scaled_model_mean = np.array([(1 + batch_size * i) * average_model_mean for i in range(steps + 1)])
-    print scaled_model_mean
+    # print scaled_model_mean
 
     for index, method in enumerate(methods):
         number_of_location = 0
@@ -152,5 +152,6 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
         scaled_results = results_for_method - scaled_model_mean
         result = [method_names[index], scaled_results.tolist()]
         results.append(result)
-        print result
+
     PlotData(results=results, output_file_name=output_filename, dataset='simulated', plottingType=plottingType)
+    return results

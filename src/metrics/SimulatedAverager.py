@@ -32,9 +32,13 @@ def GetSimulatedTotalRewards(my_ei = True):
     output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/simulated_total_rewards.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_total_rewards.eps'
 
-    SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+    results = SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
-
+    h4 = results[0]
+    h1 = results[3]
+    mle = results[4]
+    print "Rewards H4 / H1 %f" % (h4[1][-1] / h1[1][-1])
+    print "Rewards H4 / MLE %f" % (h4[1][-1]/ mle[1][-1])
 
 def GetSimulatedTotalRewards_onlyH4(my_ei = True):
     if my_ei:
@@ -112,8 +116,20 @@ def GetSimulatedTotalRegrets(my_ei = True):
     output_file = '../../result_graphs/eps/simulated/'+ ei_folder + '/simulated_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_simple_regrets.eps'
 
-    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
+    results = SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
                      output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+    # print results
+    sigma = 1.0
+    h4 = results[0]
+    h1 = results[3]
+    mle = results[4]
+    """
+    print h4
+    print h1
+    print mle
+    """
+    print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
+    print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
 
 
 def GetSimulatedTotalRegrets_onlyH4(my_ei= True):
@@ -178,8 +194,12 @@ def GetSimulatedBeta2Rewards():
 
     output_file = '../../result_graphs/eps/simulated/simulated_beta2_rewards.eps'
 
-    SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+    results = SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
+    beta0 = results[0]
+    beta02 = results[1]
+
+    print "Rewards beta0.2 / beta0.0 %f" % (beta02[1][-1] / beta0[1][-1])
 
 
 def GetSimulatedBeta3Rewards():
@@ -220,9 +240,9 @@ def GetSimulated_H4Samples_TotalRewards():
 
 
 if __name__ == "__main__":
-
-    GetSimulatedBeta2Rewards()
-    GetSimulatedBeta3Rewards()
+    pass
+    # GetSimulatedBeta2Rewards()
+    # GetSimulatedBeta3Rewards()
     # GetSimulatedTotalRewards()
 
     # GetSimulated_H4Samples_TotalRewards()

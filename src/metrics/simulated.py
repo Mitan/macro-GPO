@@ -22,10 +22,10 @@ for ei in [True, False]:
 
 GetSimulatedBeta2Rewards()
 
-
-GetSimulatedBeta3Rewards()
+print
+# GetSimulatedBeta3Rewards()
 
 for ei in [True]:
     GetSimulatedTotalRewards(ei)
-
+    print
     GetSimulatedTotalRegrets(ei)
