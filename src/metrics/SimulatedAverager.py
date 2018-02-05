@@ -19,8 +19,8 @@ def GetSimulatedTotalRewards(my_ei = True):
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
     methods = ['h4', 'h3', 'h2', 'h1',
-               'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method]
-               # 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method,  'bbo-llp4']
+               #'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method]
+               'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method,  'bbo-llp7']
 
     method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
@@ -37,8 +37,9 @@ def GetSimulatedTotalRewards(my_ei = True):
     h4 = results[0]
     h1 = results[3]
     mle = results[4]
-    print "Rewards H4 / H1 %f" % (h4[1][-1] / h1[1][-1])
-    print "Rewards H4 / MLE %f" % (h4[1][-1]/ mle[1][-1])
+    # print "Rewards H4 / H1 %f" % (h4[1][-1] / h1[1][-1])
+    # print "Rewards H4 / MLE %f" % (h4[1][-1]/ mle[1][-1])
+    print results
 
 def GetSimulatedTotalRewards_onlyH4(my_ei = True):
     if my_ei:
@@ -103,8 +104,8 @@ def GetSimulatedTotalRegrets(my_ei = True):
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
     methods = ['h4', 'h3', 'h2', 'h1',
-               'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method]
-               # 'bbo-llp4']
+               'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method,
+               'bbo-llp7']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
@@ -130,8 +131,9 @@ def GetSimulatedTotalRegrets(my_ei = True):
     print h1
     print mle
     """
-    print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
-    print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
+    # print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
+    # print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
+    print results
 
 
 def GetSimulatedTotalRegrets_onlyH4(my_ei= True):

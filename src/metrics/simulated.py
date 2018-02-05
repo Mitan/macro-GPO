@@ -20,7 +20,7 @@ for ei in [True, False]:
     print
 """
 
-GetSimulatedBeta2Rewards()
+# GetSimulatedBeta2Rewards()
 
 print
 # GetSimulatedBeta3Rewards()
