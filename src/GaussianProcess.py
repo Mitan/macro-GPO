@@ -171,7 +171,7 @@ class SquareExponential(CovarianceFunction):
 
 
 class MapValueDict():
-    def __init__(self, locations, values, epsilon=None):
+    def __init__(self, locations, values, epsilon=0.001):
         """
         @param epsilon - minimum tolerance level to determine equivalence between two points
         """
@@ -194,6 +194,7 @@ class MapValueDict():
             temp = list(set(np.squeeze(locations[:, dim]).tolist()))
             temp = sorted(temp)
             self.epsilon[dim] = (min([temp[i] - temp[i - 1] for i in xrange(1, len(temp))])) / 4
+
 
     def __call__(self, query_location):
         """

@@ -9,7 +9,7 @@ from src.DatasetUtils import GenerateModelFromFile
 from BBOVisualize import drawPlot
 
 
-def BOLoop1(start_location, fake_location, domain, f):
+def BOLoop1(start_location, fake_location, domain, f, batch_size):
     X_init = np.vstack((start_location, fake_location))
     # Y_init = np.array([func_model(start_location)[0], func_model(fake_location)[0]])
     Y_init = np.vstack((f([start_location]), f([fake_location])))
@@ -20,15 +20,15 @@ def BOLoop1(start_location, fake_location, domain, f):
     max_iter = 20 / batch_size  # evaluation budget
     for i in range(max_iter):
         current_lookahead = 20 - i * batch_size
-        print current_lookahead
+        print "lookahead %d" % current_lookahead
         myBopt = GPyOpt.methods.BayesianOptimization(f=f,  # function to optimize
                                                      domain=domain,
                                                      X=X_step,
                                                      Y=Y_step,
                                                      initial_design_numdata=-1,
-                                                     acquisition_type='EI',
+                                                     acquisition_type='MPI',
                                                      # exact_feval=True,
-                                                     normalize_Y=True,
+                                                     normalize_Y=None,
                                                      optimize_restarts=10,
                                                      # acquisition_weight=2,
                                                      evaluator_type='local_penalization',
@@ -36,16 +36,19 @@ def BOLoop1(start_location, fake_location, domain, f):
                                                      num_cores=4,
                                                      de_duplication=True,
                                                      maximize=True)
-        # take only first batch_size_points
-        x_next = myBopt.suggest_next_locations()[:batch_size, :]
-        print x_next.shape
-        y_next = f(x_next)
-        X_step = np.vstack((X_step, x_next))
-        print X_step.shape
-        Y_step = np.vstack((Y_step, y_next))
+        myBopt.run_optimization(1)
+        myBopt._print_convergence()
+        current_data_size = 2 + batch_size * (i+1)
+        print "current obtained data size %d" % current_data_size
+        X_step = myBopt.X[:current_data_size, :]
+        Y_step = np.array([f(X_step[k, :])[0] for k in range(current_data_size)])
+        print X_step
+        print
+        print Y_step
+        print
+        print myBopt.Y[:current_data_size, :]
+        print a
 
-    print myBopt.X.shape
-    # print myBopt.x_opt, func_model([myBopt.x_opt])
     return myBopt.X
 
 
@@ -65,7 +68,7 @@ def BOLoop(start_location, fake_location, domain, f, batch_size):
                                                  optimize_restarts=10,
                                                  # acquisition_weight=2,
                                                  evaluator_type='local_penalization',
-                                                 batch_size=batch_size,
+                                                 batch_size=20,
                                                  num_cores=4,
                                                  de_duplication=True,
                                                  maximize=True)
@@ -97,7 +100,7 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
         fake_location = np.array([0.1, 0.1])
         print fake_location, start_location
 
-        X_ans = BOLoop(start_location=start_location, fake_location=fake_location,
+        X_ans = BOLoop1(start_location=start_location, fake_location=fake_location,
                        domain=domain, f=func_model, batch_size=batch_size)
 
     # delete fake point
@@ -150,4 +153,5 @@ if __name__ == '__main__':
         print seed_0
         filename = my_save_folder_root + "seed" + str(seed_0) + "/dataset.txt"
         model = GenerateModelFromFile(filename)
+        print model(np.array([-0.2,  -0.25]))
         PerformBOForOneSeed(seed=seed_0, m=model, my_save_folder_root=my_save_folder_root, batch_size=batch_size)
