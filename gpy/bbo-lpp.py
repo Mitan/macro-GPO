@@ -22,6 +22,7 @@ def BOLoop1(start_location, fake_location, domain, f, batch_size):
     bo_data_size = 0
     for i in range(max_iter):
         current_lookahead = 20 - i * batch_size
+        current_lookahead = 20
         print "lookahead %d" % current_lookahead
         current_data_size = 2 + batch_size * (i + 1)
         while bo_data_size < current_data_size:
@@ -47,7 +48,9 @@ def BOLoop1(start_location, fake_location, domain, f, batch_size):
 
         # print "current obtained data size %d" % current_data_size
         X_step = myBopt.X[:current_data_size, :]
-        Y_step = np.array([f(X_step[k, :])[0] for k in range(current_data_size)])
+        Y_step = np.array([f(X_step[k:k+1, :])[0] for k in range(current_data_size)])
+        # print Y_step
+        # print myBopt.Y
     return myBopt.X
 
 
@@ -80,7 +83,8 @@ def BOLoop(start_location, fake_location, domain, f, batch_size):
 
 def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
     def func_model(location):
-        return np.array([[m(location[0])]])
+        location = location[0]
+        return  - np.array([[m(location)]])
 
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
     start_location = m.LoadRandomLocation(save_folder)
@@ -92,16 +96,18 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
         # doesn't work with only one starting location
         neighb = m.GetNeighbours(start_location)
         fake_location = choice(neighb)
-        fake_location = choice(m.locations[m.informative_locations_indexes, :])
-        fake_location = np.array([49.0, 48.0])
+
+        while np.array_equal(start_location, fake_location):
+            fake_location = choice(neighb)
+
+        print start_location, fake_location
+        # fake_location = choice(m.locations[m.informative_locations_indexes, :])
+        # fake_location = np.array([49.0, 48.0])
         # print fake_location,start_location
         # fake_location = m.GetRandomStartLocation(batch_size=batch_size)
 
-        if np.array_equal(start_location, fake_location):
-            fake_location = m.GetRandomStartLocation(batch_size=batch_size)
-
-        X_ans = BOLoop1(start_location=start_location, fake_location=fake_location,
-                       domain=domain, f=func_model)
+        X_ans = BOLoop(start_location=start_location, fake_location=fake_location,
+                        domain=domain, f=func_model, batch_size=batch_size)
 
     # delete fake point
     # X_ans = np.delete(X_ans, 1, 0)
@@ -119,7 +125,7 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
 
 
 def Visualize_LLP(found_locations, found_values, save_folder, model, batch_size):
-    method_folder = save_folder + 'bbo-llp4/'
+    method_folder = save_folder + 'bbo-llp9/'
     try:
         os.makedirs(method_folder)
     except OSError:
