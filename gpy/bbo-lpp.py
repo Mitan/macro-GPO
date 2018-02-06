@@ -116,7 +116,7 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
 
 
 def Visualize_LLP(found_locations, found_values, save_folder, model, batch_size):
-    method_folder = save_folder + 'bbo-llp13_pi20/'
+    method_folder = save_folder + 'bbo-llp18_pi20/'
     try:
         os.makedirs(method_folder)
     except OSError:
