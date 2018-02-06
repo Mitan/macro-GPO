@@ -26,6 +26,6 @@ print
 # GetSimulatedBeta3Rewards()
 
 for ei in [True]:
-    GetSimulatedTotalRewards(ei)
+    # GetSimulatedTotalRewards(ei)
     print
     GetSimulatedTotalRegrets(ei)
