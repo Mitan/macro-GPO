@@ -208,7 +208,7 @@ def GetRoadTotalRegrets(my_ei = True):
 
     # methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
     methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
-               'mle_h4', 'new_ixed_pe', 'bucb', ei_method]
+               'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp8']
                # 'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp4']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
@@ -231,8 +231,9 @@ def GetRoadTotalRegrets(my_ei = True):
     print h1
     print mle
     """
-    print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
-    print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
+    # print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
+    # print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
+    print results
 
 
 def GetRoadTotalRegrets_onlyH4(my_ei=True):

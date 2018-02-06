@@ -57,13 +57,15 @@ GetRoadTotalRegrets_H2Full()
 GetRoadBeta3Rewards()
 GetRoadBeta2Rewards()
 """
+"""
 GetRoad_H2Full_TotalRewards()
 GetRoadTotalRegrets_H2Full()
 print
 GetRoadBeta2Rewards()
+"""
 print
 for ei in [True]:
-    GetRoadTotalRewards(ei)
+    # GetRoadTotalRewards(ei)
     # GetRoadTotalRewards_onlyH4(ei)
     print
     GetRoadTotalRegrets(ei)
