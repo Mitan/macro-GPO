@@ -9,7 +9,7 @@ from src.DatasetUtils import GenerateRobotModelFromFile
 from BBOVisualize import drawPlot
 
 
-def BOLoop(start_location, fake_location, domain, f):
+def BOLoop(start_location, fake_location, domain, f, batch_size):
     X_init = np.vstack((start_location, fake_location))
     # Y_init = np.array([func_model(start_location)[0], func_model(fake_location)[0]])
     Y_init = np.vstack((f([start_location]), f([fake_location])))
@@ -19,17 +19,16 @@ def BOLoop(start_location, fake_location, domain, f):
                                                  X=X_init,
                                                  Y=Y_init,
                                                  initial_design_numdata=5,
-                                                 acquisition_type='EI',
+                                                 acquisition_type='MPI',
                                                  # exact_feval=True,
                                                  normalize_Y=True,
                                                  optimize_restarts=10,
                                                  # acquisition_weight=2,
                                                  evaluator_type='local_penalization',
-                                                 batch_size=5,
+                                                 batch_size=batch_size,
                                                  num_cores=4,
-                                                 de_duplication=True,
-                                                 maximize=True)
-    max_iter = 4  # evaluation budget
+                                                 de_duplication=True)
+    max_iter = 20 / batch_size  # evaluation budget
     myBopt.run_optimization(max_iter)
     myBopt._print_convergence()
     print myBopt.X.shape
@@ -37,10 +36,56 @@ def BOLoop(start_location, fake_location, domain, f):
     return myBopt.X
 
 
+def BOLoop1(start_location, fake_location, domain, f, batch_size):
+    X_init = np.vstack((start_location, fake_location))
+    # Y_init = np.array([func_model(start_location)[0], func_model(fake_location)[0]])
+
+    Y_init = np.vstack((f([start_location]), f([fake_location])))
+    # print Y_init
+    X_step = X_init
+    Y_step = Y_init
+
+    max_iter = 20 / batch_size  # evaluation budget
+    bo_data_size = 0
+    for i in range(max_iter):
+        current_lookahead = 20 - i * batch_size
+        current_lookahead = 20
+        print "lookahead %d" % current_lookahead
+        current_data_size = 2 + batch_size * (i + 1)
+        while bo_data_size < current_data_size:
+            myBopt = GPyOpt.methods.BayesianOptimization(f=f,  # function to optimize
+                                                         domain=domain,
+                                                         X=X_step,
+                                                         Y=Y_step,
+                                                         initial_design_numdata=-1,
+                                                         acquisition_type='MPI',
+                                                         # exact_feval=True,
+                                                         normalize_Y=None,
+                                                         optimize_restarts=10,
+                                                         # acquisition_weight=2,
+                                                         evaluator_type='local_penalization',
+                                                         batch_size=current_lookahead,
+                                                         num_cores=4,
+                                                         de_duplication=True)
+            # maximize=True)
+            myBopt.run_optimization(1)
+            myBopt._print_convergence()
+            bo_data_size = myBopt.X.shape[0]
+            print "BO data size %d" % bo_data_size
+
+        # print "current obtained data size %d" % current_data_size
+        X_step = myBopt.X[:current_data_size, :]
+        Y_step = np.array([f(X_step[k:k+1, :])[0] for k in range(current_data_size)])
+        # print Y_step
+        # print myBopt.Y
+    return myBopt.X
+
+
 def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
 
     def func_model(location):
-        return np.array([[m(location[0])]])
+        location = location[0]
+        return  - np.array([[m(location)]])
 
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
     start_location = m.LoadRandomLocation(save_folder)
@@ -52,21 +97,16 @@ def PerformBOForOneSeed(seed, m, my_save_folder_root, batch_size):
         # doesn't work with only one starting location
         neighb = m.GetNeighbours(start_location)
         fake_location = choice(neighb)
-        # fake_location = m.GetRandomStartLocation(batch_size=batch_size)
 
-        if np.array_equal(start_location, fake_location):
-            fake_location = m.GetRandomStartLocation(batch_size=batch_size)
+        while np.array_equal(start_location, fake_location):
+            fake_location = choice(neighb)
 
-        X_ans = BOLoop(start_location=start_location, fake_location=fake_location,
+        print start_location, fake_location
+
+        X_ans = BOLoop1(start_location=start_location, fake_location=fake_location,
                        domain=domain, f=func_model)
 
-    # delete fake point
-    # X_ans = np.delete(X_ans, 1, 0)
-    """
-    for i in range(21):
-        print func_model(X_ans[i:i + 1, :])
-    """
-    Y_ans = np.array([model(X_ans[i, :]) for i in range(X_ans.shape[0])])
+    Y_ans = np.array([model(X_ans[k:k+1, :]) for k in range(X_ans.shape[0])])
     print X_ans
     print X_ans.shape
     print Y_ans
@@ -94,9 +134,6 @@ def Visualize_LLP(found_locations, found_values, save_folder, model, batch_size)
 
 if __name__ == '__main__':
     args = sys.argv
-
-    #seed_0 = int(args[1])
-    # seed_0 = 1
 
     time_slot = 16
 
