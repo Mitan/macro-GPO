@@ -162,8 +162,8 @@ def GetRobotTotalRewards(my_ei = True):
 
     # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
-               'mle_h4', 'pe', 'gp-bucb', ei_method]
-               # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
+               # 'mle_h4', 'pe', 'gp-bucb', ei_method]
+               'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp12_pi20']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
@@ -177,12 +177,15 @@ def GetRobotTotalRewards(my_ei = True):
     results= RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
                  plottingType=PlottingMethods.TotalReward)
+    """
     h4 = results[0]
     h1 = results[3]
     mle = results[4]
     # print h4, h1, mle
     print "Rewards H4 / H1 %f" % (h4[1][-1] / h1[1][-1])
     print "Rewards H4 / MLE %f" % (h4[1][-1] / mle[1][-1])
+    """
+    print results
 
 
 def GetRobotTotalRewards_onlyH4(my_ei = True):
@@ -277,8 +280,8 @@ def GetRobotTotalRegrets(my_ei = True):
 
     # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
-               'mle_h4', 'pe', 'gp-bucb', ei_method]
-               # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
+               # 'mle_h4', 'pe', 'gp-bucb', ei_method]
+               'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp12_pi20']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
@@ -291,6 +294,7 @@ def GetRobotTotalRegrets(my_ei = True):
 
     results = RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+    """
     sigma = math.sqrt(0.596355)
     h4 = results[0]
     h1 = results[3]
@@ -298,6 +302,8 @@ def GetRobotTotalRegrets(my_ei = True):
     # print h4, h1, mle
     print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
     print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
+    """
+    print results
 
 
 def GetRobotTotalRegrets_onlyH4(my_ei = True):

@@ -16,7 +16,7 @@ GetRobotTotalRewards_onlyH4()
 # GetRobotTotalRegrets()
 # GetRobotTotalRegrets_onlyH4()
 # GetRobotTotalRegrets_ours()
-
+"""
 GetRobotBeta2Rewards()
 # GetRobotBeta3Rewards()
 print
@@ -24,6 +24,7 @@ GetRobot_H2Full_TotalRewards()
 print
 GetRobotTotalRegrets_H2Full()
 print
+"""
 for ei in [True]:
     GetRobotTotalRewards(ei)
     print

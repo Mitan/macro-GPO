@@ -143,12 +143,15 @@ def GetRoadTotalRewards(my_ei = True):
 
     results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+    """
     h4 = results[0]
     h1 = results[3]
     mle = results[4]
     # print h4, h1, mle
     print "Rewards H4 / H1 %f" % (h4[1][-1] / h1[1][-1])
     print "Rewards H4 / MLE %f" % (h4[1][-1] / mle[1][-1])
+    """
+    print results
 
 def GetRoadTotalRewards_ours():
     seeds = range(35)
