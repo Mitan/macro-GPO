@@ -99,6 +99,9 @@ class TreePlanTester:
             elif method == Methods.BUCB:
                 _, x_temp, nodes_expanded = tp.BUCB(x_0, time)
 
+            elif method == Methods.LP:
+                _, x_temp, nodes_expanded = tp.LP(x_0, time)
+
             elif method == Methods.MyopicUCB:
                 vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, 1)
 
