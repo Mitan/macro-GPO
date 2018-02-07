@@ -67,7 +67,8 @@ def BOLoop1(start_location, fake_location, domain, f, batch_size):
                                                          batch_size=current_lookahead,
                                                          num_cores=4,
                                                          de_duplication=True)
-            # maximize=True)
+
+
             myBopt.run_optimization(1)
             myBopt._print_convergence()
             bo_data_size = myBopt.X.shape[0]

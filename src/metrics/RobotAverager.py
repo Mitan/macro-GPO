@@ -162,8 +162,8 @@ def GetRobotTotalRewards(my_ei = True):
 
     # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
-               # 'mle_h4', 'pe', 'gp-bucb', ei_method]
-               'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp15_pi20']
+               'mle_h4', 'pe', 'gp-bucb', ei_method]
+               # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp15_pi20']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
@@ -280,8 +280,8 @@ def GetRobotTotalRegrets(my_ei = True):
 
     # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
-               # 'mle_h4', 'pe', 'gp-bucb', ei_method]
-               'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp15_pi20']
+               'mle_h4', 'pe', 'gp-bucb', ei_method]
+               # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp15_pi20']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',

@@ -94,7 +94,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
 
     if dataset == 'simulated':
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
-            plt.ylabel("Total normalized output measurements observed by UAV", fontsize=labels_font_size)
+            plt.ylabel("Total normalized output measurements observed by AUV", fontsize=labels_font_size)
             plt.yticks(range(-4, 13))
             axes.set_ylim([-3.5, 11])
             legend_loc = 2
