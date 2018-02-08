@@ -10,6 +10,23 @@ from MethodEnum import Methods
 from DatasetUtils import GenerateModelFromFile, GenerateSimulatedModel
 
 
+def TestScenario_LP(my_save_folder_root, seed, time_steps, num_samples, batch_size, filename=None):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    assert filename is not None
+    m = GenerateModelFromFile(filename)
+
+    testWithFixedParameters(model=m, method=Methods.LP, horizon=1,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "my_lp/",
+                            num_samples=num_samples, batch_size=batch_size)
+
 def TestScenario_PE_BUCB(my_save_folder_root, seed, time_steps, num_samples, batch_size, filename=None):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 

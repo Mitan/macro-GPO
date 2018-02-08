@@ -167,6 +167,9 @@ class TreePlanTester:
             elif method == Methods.BUCB:
                 vBest, a, nodes_expanded = tp.BUCB(x_0, time)
 
+            elif method == Methods.LP:
+                vBest, a, nodes_expanded = tp.LP(x_0, time)
+
             elif method == Methods.qEI:
                 vBest, a, nodes_expanded = tp.qEI(x_0)
                 a = tp.TransitionP(x_0, a)
@@ -246,7 +249,7 @@ class TreePlanTester:
                 f.close()
 
         # Save for the whole trial
-        self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary")
+        # self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary")
         # Save to file
         f = open(save_folder + "summary" + ".txt", "w")
 
