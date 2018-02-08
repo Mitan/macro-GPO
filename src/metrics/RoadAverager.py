@@ -129,7 +129,7 @@ def GetRoadTotalRewards(my_ei = True):
 
     # methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
     methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
-               'mle_h4','new_ixed_pe', 'bucb', ei_method]
+               'mle_h4','new_ixed_pe', 'bucb', ei_method, 'my_lp']
                #  'mle_h4','new_ixed_pe', 'bucb', ei_method,'bbo-llp7']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
@@ -211,7 +211,7 @@ def GetRoadTotalRegrets(my_ei = True):
 
     # methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
     methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
-               'mle_h4', 'new_ixed_pe', 'bucb', ei_method]
+               'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'my_lp']
                # 'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp7']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
