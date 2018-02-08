@@ -23,4 +23,5 @@ Methods = enum(Exact=1,
                EI=7,
                PI=8,
                new_qEI=9,
-               BUCB=10)
+               BUCB=10,
+               LP=11)

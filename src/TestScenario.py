@@ -42,6 +42,35 @@ def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_s
     output_rewards.close()
 
 
+def TestScenario_LP(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    m = GenerateRoadModelFromFile(filename)
+    m.LoadSelectedMacroactions(save_folder, batch_size)
+
+    start_location = m.LoadRandomLocation(save_folder)
+
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+
+    lp = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.LP, horizon=1,
+                                  num_timesteps_test=time_steps,
+                                  save_folder=save_folder + "my_lp/",
+                                  num_samples=num_samples, batch_size=batch_size,
+                                  start_location=start_location)
+
+
 def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
