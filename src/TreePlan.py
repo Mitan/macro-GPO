@@ -333,17 +333,24 @@ class TreePlan:
         return mu[0], Sigma[0, 0]
 
     # acquizition function
-    def __transformed_ei(self, current_point, history_locations, history_measurements, max_measurement, cholesky):
+    def __transformed_ei(self, current_point, history_locations, history_measurements, max_measurement, cholesky, t):
         # first_point = next_state.physical_state[0:1, :]
         mu, Sigma = self.__get_gp_prediction(current_point, history_locations, history_measurements, cholesky)
+
+        domain_size = (self.grid_domain[0][1] - self.grid_domain[0][0]) * (
+            self.grid_domain[1][1] - self.grid_domain[1][0]) / self.grid_gap ** 2
+        delta = 0.1
+        t_squared = (t + 1) ** 2
+        beta_t1 = 2 * math.log(domain_size * t_squared * (math.pi ** 2) / (6 * delta))
         # predicted_val = mu[0] + math.sqrt(beta_t1) * math.sqrt(Sigma[0, 0])
         Z = (mu - max_measurement) / Sigma
-        predicted_val = (mu - max_measurement) * norm.cdf(x=Z, loc=0, scale=1.0)  + Sigma * norm.pdf(x=Z, loc=0, scale=1.0)
+        # predicted_val = (mu - max_measurement) * norm.cdf(x=Z, loc=0, scale=1.0)  + Sigma * norm.pdf(x=Z, loc=0, scale=1.0)
+        predicted_val = mu + math.sqrt(beta_t1) * math.sqrt(Sigma)
 
         # print predicted_val, mu, Sigma
         # transform ei value
-        if predicted_val <= 0:
-            predicted_val = math.log(1 + math.exp(predicted_val))
+        # if predicted_val <= 0:
+        predicted_val = math.log(1 + math.exp(predicted_val))
         return predicted_val
 
     # mu and var a posterior mean and variance in old_x
@@ -380,7 +387,7 @@ class TreePlan:
                                                   history_locations=history_locations,
                                                   history_measurements=history_measurements,
                                                   max_measurement=M,
-                                                  cholesky=current_chol)
+                                                  cholesky=current_chol, t=t)
             # print first_point[0]
 
             predict_val_dict[tuple(first_point[0])] = predicted_val
@@ -391,7 +398,7 @@ class TreePlan:
         available_states = [next_state for next_state in available_states if
                             abs(predict_val_dict[tuple(next_state.physical_state[0, :])]
                                 - best_current_measurement) < tolerance_eps]
-
+        print len(available_states)
         # Penalization part
         for num_steps in range(1, self.batch_size):
             penalized_value_dict = {}
@@ -406,7 +413,7 @@ class TreePlan:
                                                   history_locations=history_locations,
                                                   history_measurements=history_measurements,
                                                   max_measurement=M,
-                                                  cholesky=current_chol)
+                                                  cholesky=current_chol, t=t)
                 # print ac_value
                 # old points
                 for j in range(num_steps):

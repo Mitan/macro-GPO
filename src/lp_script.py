@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     # end = 102
 
-    for seed in range(72, 102):
+    for seed in range(66, 102):
         filename = my_save_folder_root + "seed" + str(seed) + "/dataset.txt"
         print seed
         TestScenario_LP(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t,
