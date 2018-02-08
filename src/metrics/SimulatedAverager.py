@@ -25,7 +25,7 @@ def GetSimulatedTotalRewards(my_ei = True):
     method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
                      'DB-GP-UCB',
-                    r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                    r'Nonm. GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI',
                      'BBO-LP']
     
@@ -110,7 +110,7 @@ def GetSimulatedTotalRegrets(my_ei = True):
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
                     'DB-GP-UCB',
-                     r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                     r'Nonm. GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI',
                     'BBO-LP']
 
