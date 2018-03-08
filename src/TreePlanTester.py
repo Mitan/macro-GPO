@@ -2,7 +2,7 @@ import os
 
 from GaussianProcess import SquareExponential, GaussianProcess
 from TreePlan import *
-from src.plotting.Vis2d import Vis2d
+from src.plotting.DatasetPlotGenerator import DatasetPlotGenerator
 from src.enum.MethodEnum import Methods
 from DynamicHorizon import DynamicHorizon
 from HypersStorer import *
@@ -162,14 +162,6 @@ class TreePlanTester:
             total_nodes_expanded += nodes_expanded
             nodes_expanded_history.append(nodes_expanded)
 
-            """
-            if debug:
-                print "A = ", a
-                print "M = ", percieved_measurement
-                print "X = "
-                print "Noise = ", noise_component
-                print x_0.to_str()
-            """
             # Add to plot history
             state_history.append(x_0)
 
@@ -210,12 +202,12 @@ class TreePlanTester:
 
     def Visualize(self, state_history, save_path):
 
-        vis = Vis2d()
+        plot_generator = DatasetPlotGenerator(self.model.dataset_type)
 
-        vis.MapPlot(locations=self.model.locations,
-                    values=self.model.values,
-                    path_points=[x.physical_state for x in state_history],
-                    save_path=save_path)
+        plot_generator.GeneratePlot(locations=self.model.locations,
+                                    values=self.model.values,
+                                    path_points=[x.physical_state for x in state_history],
+                                    save_path=save_path)
 
 
 def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size,
@@ -272,17 +264,3 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                     save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
                     num_samples=num_samples)
-
-
-if __name__ == "__main__":
-    # assert len(sys.argv) == 2, "Wrong number of arguments"
-    print "bla"
-
-    # Transect(seed=i)
-
-    # print "Performing sanity checks"
-    # SanityCheck()
-    # print "Performing Exploratory"
-    # Exploratory(1.0) # This goes to weird places
-    # print "Performing Exploratory 2"
-    # Exploratory(0.5)

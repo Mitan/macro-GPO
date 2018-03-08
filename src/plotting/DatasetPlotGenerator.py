@@ -1,18 +1,26 @@
 import matplotlib as mpl
 
 # Force matplotlib to not use any Xwindows backend.
+from src.enum.DatasetEnum import DatasetEnum
+
 mpl.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
 
-class Vis2d:
-    def __init__(self):
-        pass
+class DatasetPlotGenerator:
+    def __init__(self, dataset_type):
+        self.type = dataset_type
+
+    def GeneratePlot(self, locations, values, path_points, save_path):
+        if self.type == DatasetEnum.Robot:
+            self.__generate_robot_plot(locations, values, path_points, save_path)
+        else:
+            raise ValueError("Unknown dataset")
 
     @staticmethod
-    def MapPlot(locations, values, path_points, save_path):
+    def __generate_robot_plot(locations, values, path_points, save_path):
 
         X = locations[:, 0]
         Y = locations[:, 1]

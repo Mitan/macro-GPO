@@ -2,6 +2,7 @@ from random import choice, sample
 
 from src.model.MapValueDictBase import MapValueDict
 import numpy as np
+from src.enum.DatasetEnum import DatasetEnum
 
 batch_road_macroactions = []
 
@@ -9,6 +10,8 @@ batch_road_macroactions = []
 class RobotValueDict(MapValueDict):
 
     def __init__(self, data_filename, coords_filename, neighbours_filename):
+
+        self.dataset_type = DatasetEnum.Robot
 
         data_lines = np.genfromtxt(data_filename)
 
