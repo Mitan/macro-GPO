@@ -7,6 +7,7 @@ from GaussianProcess import SquareExponential, GaussianProcess
 from src.model.MapValueDictBase import MapValueDict
 from RoadMapValueDict import RoadMapValueDict
 
+
 def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
                            num_samples, mean_function):
     covariance_function = SquareExponential(length_scale, signal_variance=signal_variance,
@@ -31,42 +32,6 @@ def GenerateRoadModelFromFile(filename):
     # m.AddTwoSidedRoads()
     # m.LogTransformValues()
     return m
-
-
-"""
-def GetGCoefficient(root_folder, method_name):
-    summary_path = root_folder + method_name + '/summary.txt'
-    dataset_path = root_folder + 'dataset.txt'
-    # dateset_path = root_folder + 'dataset.txt'
-    lines = open(summary_path).readlines()
-
-    first_line_index = 28
-    # todo NB
-    # a hack
-    # for some cases strangely numbers are written to file in scientific format, then measurements
-    # occupy different number of lines
-    last_line_index = 31 if lines[31].strip()[-1] == ']' else 33
-
-    stripped_lines = map(lambda x: x.strip(), lines[first_line_index: last_line_index + 1])
-    joined_lines = " ".join(stripped_lines)[1:-1]
-    a = StringIO(joined_lines)
-
-    # all measurements obtained by the robot
-    measurements = np.genfromtxt(a)
-
-    #    assert that we have 21 measurement (1 initial + 4 * 5)
-    assert measurements.shape[0] == 21
-    # assert we parsed them all as numbers
-    assert not np.isnan(measurements).any()
-
-    initial_measurement = measurements[0]
-    max_found = max(measurements)
-    model = GenerateModelFromFile(dataset_path)
-    true_max = model.GetMax()
-    G = (max_found - initial_measurement) / (true_max - initial_measurement)
-    return G
-    """
-
 
 # todo refact this and next method in one
 def GetMaxValues(measurements, batch_size):

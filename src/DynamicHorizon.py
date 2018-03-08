@@ -1,7 +1,7 @@
 # todo change into class
 
 
-def DynamicHorizon(t, H_max,  t_max):
+def DynamicHorizon(t, H_max, t_max):
     """
     :param t: current timestep
     :param H_max: maximum allowed horizon
@@ -10,7 +10,8 @@ def DynamicHorizon(t, H_max,  t_max):
     """
     return min(t_max - t, H_max)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     T = 5
     H = 2
     for i in range(T):
