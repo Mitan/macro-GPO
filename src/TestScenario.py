@@ -73,8 +73,8 @@ def TestScenario_LP(my_save_folder_root, seed, time_steps, num_samples, batch_si
                                   start_location=start_location)
 
 
-def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, coords_filename,
-                             data_filename, neighbours_filename):
+def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot):
+
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -88,10 +88,12 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
     m.LoadSelectedMacroactions(save_folder, batch_size)
 
     start_location = m.LoadRandomLocation(save_folder)
-    """
     m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
                                    neighbours_filename=neighbours_filename)
-
+    """
+    dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Robot, dataset_mode=DatasetModeEnum.Load,
+                                         time_slot=time_slot)
+    m = dataset_generator.get_dataset_model()
     m.LoadSelectedMacroactions(save_folder, batch_size)
     # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
 
@@ -104,20 +106,18 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
         append_write = 'w'
 
     output_rewards = open(filename_rewards, append_write)
-    """
-    qEI = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.new_qEI, horizon=1,
+    
+    qEI = testWithFixedParameters(model=m, method=Methods.new_qEI, horizon=1,
                                   num_timesteps_test=time_steps,
                                   save_folder=save_folder + "r_qEI/",
                                   num_samples=num_samples, batch_size=batch_size,
                                   start_location=start_location)
-    """
     method_name = 'r_QEI'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(qEI) + '\n')
     """
 
-    """
-    PE = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BucbPE, horizon=1,
+    PE = testWithFixedParameters(model=m, method=Methods.BucbPE, horizon=1,
                                  num_timesteps_test=time_steps,
                                  save_folder=save_folder + "fixed_pe/",
                                  num_samples=num_samples, batch_size=batch_size,
@@ -125,10 +125,10 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
 
     method_name = 'FIXED-BUCB-PE'
 
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(PE) + '\n')
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(PE) + '\n')
 
-    bucb = testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.BUCB, horizon=1,
+    bucb = testWithFixedParameters(model=m, method=Methods.BUCB, horizon=1,
                                    num_timesteps_test=time_steps,
                                    save_folder=save_folder + "gp-bucb/",
                                    num_samples=num_samples, batch_size=batch_size,
@@ -136,9 +136,9 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
 
     method_name = 'BUCB'
 
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(bucb) + '\n')
-    """
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(bucb) + '\n')
+
     # output_rewards.close()
 
 
@@ -168,12 +168,17 @@ def TestScenario_EI_PI(my_save_folder_root, seed, time_steps, num_samples, batch
     start_location = m.LoadRandomLocation(save_folder)
     h = -1
 
+    testWithFixedParameters(model=m, method=Methods.PI, horizon=h,
+                            num_timesteps_test=time_steps,
+                            save_folder=save_folder + "pi/",
+                            num_samples=num_samples, batch_size=batch_size,
+                            start_location=start_location)
+
     testWithFixedParameters(model=m, method=Methods.EI, horizon=h,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "ei/",
                             num_samples=num_samples, batch_size=batch_size,
                             start_location=start_location)
-
 
 def TestScenario_2Full(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, coords_filename,
                        data_filename, neighbours_filename):

@@ -23,10 +23,10 @@ class DatasetGenerator:
         if self.mode == DatasetModeEnum.Generate:
             raise ValueError("Generate mode is available only for simulated dataset")
 
-        data_filename = '../datasets/robot/selected_slots/slot_' + str(self.time_slot) + '/noise_final_slot_' + \
+        data_filename = '../../datasets/robot/selected_slots/slot_' + str(self.time_slot) + '/noise_final_slot_' + \
                         str(self.time_slot) + '.txt'
-        neighbours_filename = '../datasets/robot/all_neighbours.txt'
-        coords_filename = '../datasets/robot/all_coords.txt'
+        neighbours_filename = '../../datasets/robot/all_neighbours.txt'
+        coords_filename = '../../datasets/robot/all_coords.txt'
 
         if self.time_slot == 2:
             hyper_storer = RobotHypersStorer_2()
