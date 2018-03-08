@@ -11,9 +11,9 @@ from MacroActionGenerator import GenerateSimpleMacroactions
 from qEI import qEI
 from SampleFunctionBuilder import GetNumberOfSamples
 
-
 # from src.r_qei import newQEI
 from src.methods.BUCB import method_BUCB
+from src.methods.BUCB_PE import method_BUCB_PE
 from src.methods.EI import method_EI
 from src.methods.PI import method_PI
 
@@ -51,7 +51,7 @@ class TreePlan:
         self.l2 = lambda sigma: 1
 
         self.reward_analytical = lambda mu, sigma: (
-            self.AcquizitionFunction(mu, sigma) - self.batch_size * self.gp.mean_function)
+                self.AcquizitionFunction(mu, sigma) - self.batch_size * self.gp.mean_function)
 
         # unused
         self.reward_sampled = lambda f: 0
@@ -278,7 +278,7 @@ class TreePlan:
         # todo note hardcoded
         L = 10
 
-        z = 1/ math.sqrt(2 * var) * (L * np.linalg.norm(new_x - old_x) - M  + mu)
+        z = 1 / math.sqrt(2 * var) * (L * np.linalg.norm(new_x - old_x) - M + mu)
         return 0.5 * special.erfc(-z)
 
     def LP(self, x_0, t):
@@ -328,11 +328,11 @@ class TreePlan:
 
                 # current_chol = self.gp.Cholesky(current_locations)
                 next_point = next_state.physical_state[num_steps: num_steps + 1, :]
-                ac_value =  self.__transformed_ei(current_point=next_point,
-                                                  history_locations=history_locations,
-                                                  history_measurements=history_measurements,
-                                                  max_measurement=M,
-                                                  cholesky=current_chol)
+                ac_value = self.__transformed_ei(current_point=next_point,
+                                                 history_locations=history_locations,
+                                                 history_measurements=history_measurements,
+                                                 max_measurement=M,
+                                                 cholesky=current_chol)
                 print ac_value
                 # old points
                 for j in range(num_steps):
@@ -341,8 +341,8 @@ class TreePlan:
                                                              history_locations=history_locations,
                                                              history_measurements=history_measurements,
                                                              cholesky=current_chol)
-                    penalizer_j = self. __local_penalizer(new_x=next_point, old_x=x_j, mu=mu_j,
-                                                          var=Sigma_j, M=M)
+                    penalizer_j = self.__local_penalizer(new_x=next_point, old_x=x_j, mu=mu_j,
+                                                         var=Sigma_j, M=M)
 
                     ac_value = ac_value * penalizer_j
 
@@ -358,68 +358,12 @@ class TreePlan:
     def BUCB(self, x_0, t):
         return method_BUCB(x_0=x_0, gp=self.gp, t=t,
                            available_states=self.GetNextAugmentedStates(x_0),
-                           batch_size = self.batch_size)
+                           batch_size=self.batch_size)
 
     def BUCB_PE(self, x_0, t):
-
-        tolerance_eps = 10 ** (-8)
-
-        available_states = self.GetNextAugmentedStates(x_0)
-
-        if not available_states:
-            raise Exception("BUCB-PE could not move from  location " + str(x_0.physical_state))
-
-        domain_size = 145
-        delta = 0.1
-        t_squared = (t + 1) ** 2
-        beta_t1 = 2 * math.log(domain_size * t_squared * (math.pi ** 2) / (6 * delta))
-
-        best_current_measurement = - float("inf")
-        history_locations = x_0.history.locations
-        current_chol = self.gp.Cholesky(x_0.history.locations)
-
-        predict_val_dict = {}
-        # first step is ucb
-        for next_state in available_states:
-            first_point = next_state.physical_state[0:1, :]
-            Sigma = self.gp.GPVariance(locations=history_locations, current_location=first_point,
-                                       cholesky=current_chol)
-            weights = self.gp.GPWeights(locations=history_locations, current_location=first_point,
-                                        cholesky=current_chol)
-            mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)
-
-            predicted_val = mu[0] + math.sqrt(beta_t1) * math.sqrt(Sigma[0, 0])
-
-            predict_val_dict[tuple(first_point[0])] = predicted_val
-            if predicted_val > best_current_measurement:
-                best_current_measurement = predicted_val
-
-        # the states with selected several points according to batch construction
-        available_states = [next_state for next_state in available_states if
-                            abs(predict_val_dict[tuple(next_state.physical_state[0, :])]
-                                - best_current_measurement) < tolerance_eps]
-
-        # Pure exploration part
-        for num_steps in range(1, self.batch_size):
-            sigma_dict = {}
-            best_next_sigma = - float("inf")
-
-            for next_state in available_states:
-                current_locations = np.append(history_locations, next_state.physical_state[:num_steps, :], axis=0)
-
-                current_chol = self.gp.Cholesky(current_locations)
-                next_point = next_state.physical_state[num_steps: num_steps + 1, :]
-                # current_points = self.GetSetOfNextPoints(available_states, num_steps)
-                sigma = self.gp.GPVariance(locations=current_locations, current_location=next_point,
-                                           cholesky=current_chol)[0, 0]
-                best_next_sigma = max(sigma, best_next_sigma)
-                sigma_dict[tuple(map(tuple, next_state.physical_state))] = sigma
-
-            available_states = [next_state for next_state in available_states if
-                                abs(sigma_dict[tuple(map(tuple, next_state.physical_state))]
-                                    - best_next_sigma) < tolerance_eps]
-
-        return -1.0, random.choice(available_states), -1.0
+        return method_BUCB_PE(x_0=x_0, gp=self.gp, t=t,
+                              available_states=self.GetNextAugmentedStates(x_0),
+                              batch_size=self.batch_size)
 
     def StochasticFull(self, x_0, H):
         # by default physical state length is self.batch_size
@@ -569,8 +513,6 @@ class TreePlan:
         # 	if bestavg < avg:
         # 		best_a = a
         # 		bestavg = avg
-
-
 
         # Select according to maximum lower bound node
         best_lower = -float('inf')
@@ -762,7 +704,8 @@ class TreePlan:
                     max(obs_node.BoundsChildren[i][0], lower), min(obs_node.BoundsChildren[i][1], upper))
 
             else:  # Observation has already been made, expand further
-                lower, upper, num_nodes_expanded = self.ConstructTree(obs_node.ActionChildren[i], new_semi_tree, T - 1, l)
+                lower, upper, num_nodes_expanded = self.ConstructTree(obs_node.ActionChildren[i], new_semi_tree, T - 1,
+                                                                      l)
                 obs_node.BoundsChildren[i] = (
                     max(lower, obs_node.BoundsChildren[i][0]), min(upper, obs_node.BoundsChildren[i][1]))
         else:
@@ -1098,8 +1041,8 @@ class MCTSObservationNode:
                 self.BoundsChildren[i] = (self.BoundsChildren[i][0], testUpper)
 
             assert (
-                self.BoundsChildren[i][0] <= self.BoundsChildren[i][
-                    1]), "lower bound greater than upper bound %f, %f" % (
+                    self.BoundsChildren[i][0] <= self.BoundsChildren[i][
+                1]), "lower bound greater than upper bound %f, %f" % (
                 self.BoundsChildren[i][0], self.BoundsChildren[i][1])
 
     def SkeletalExpand(self):
@@ -1144,7 +1087,8 @@ class MCTSObservationNode:
             # print lower, upper, self.BoundsChildren[index_to_expand]
             self.BoundsChildren[index_to_expand] = (
                 # tighten the bounds
-                max(self.BoundsChildren[index_to_expand][0], lower), min(self.BoundsChildren[index_to_expand][1], upper))
+                max(self.BoundsChildren[index_to_expand][0], lower),
+                min(self.BoundsChildren[index_to_expand][1], upper))
             # print self.BoundsChildren[index_to_expand]
             assert self.BoundsChildren[index_to_expand][0] <= self.BoundsChildren[index_to_expand][1]
             self.UpdateChildrenBounds(index_to_expand)
