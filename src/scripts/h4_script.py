@@ -1,28 +1,31 @@
 import sys
 
-from src.TestScenario import *
+from TestScenario import *
 
 if __name__ == '__main__':
 
     args = sys.argv
 
-    # seeds = map(int, args[1:])
     seed_0 = int(args[1])
 
-    # time_slot = int(args[2])
+    time_slot = 16
+    # t, batch_size, num_samples = (4, 5, 300)
+    t, batch_size = (4, 5)
 
-    # note hardcoded
-    time_slot = 18
-    t, batch_size, num_samples = (4, 5, 250)
+    my_save_folder_root = "../robot_tests/tests1/"
+    my_save_folder_root = "../robot_tests/h4_samples/"
+    my_save_folder_root = "../robot_tests/all_tests/"
+    # my_save_folder_root = "../noise_robot_tests/all_tests/"
 
-    filename = '../datasets/slot' + str(time_slot) + '/tlog' + str(time_slot) + '.dom'
+    data_file = '../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
+    neighbours_file = '../datasets/robot/all_neighbours.txt'
+    coords_file = '../datasets/robot/all_coords.txt'
 
-    my_save_folder_root = "../testsRoad2/b" + str(batch_size) + "/" + str(time_slot) + "/"
-    my_save_folder_root = "../testsRoad_4/"
-    my_save_folder_root = "../testsRoad_4/"
-    my_save_folder_root = "../tests2full/"
-
-    for seed in range(seed_0, seed_0 + 3):
-        # for seed in seeds:
-        TestScenario_2Full(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t, num_samples=num_samples,
-                           batch_size=batch_size, filename=filename, time_slot=time_slot)
+    num_samples = 300
+    # samples = [5, 50]
+    h = 4
+    # for num_samples in samples:
+    for seed in range(seed_0, seed_0 + 1):
+            TestScenario_H4(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t, num_samples=num_samples,
+                            batch_size=batch_size, time_slot=time_slot, coords_filename=coords_file,
+                            data_filename=data_file, neighbours_filename=neighbours_file, h=h)

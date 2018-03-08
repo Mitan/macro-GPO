@@ -148,6 +148,7 @@ class RobotValueDict(MapValueDict):
         assert len(location) == 2
         return np.array(location)
 
+
 if __name__ == "__main__":
     """
     filename = './taxi18.dom'
