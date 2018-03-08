@@ -3,7 +3,8 @@ import random
 
 import numpy as np
 
-from GaussianProcess import SquareExponential, GaussianProcess, MapValueDict
+from GaussianProcess import SquareExponential, GaussianProcess
+from src.model.MapValueDictBase import MapValueDict
 from RoadMapValueDict import RoadMapValueDict
 from RobotMapValueDict import RobotValueDict
 

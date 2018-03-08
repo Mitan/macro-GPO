@@ -1,7 +1,7 @@
 from StringIO import StringIO
 from random import choice, sample
 
-from GaussianProcess import MapValueDict
+from src.model.MapValueDictBase import MapValueDict
 import numpy as np
 import math
 
