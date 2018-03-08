@@ -48,7 +48,7 @@ class TreePlanTester:
         # Compute measurements
         self.past_measurements = np.apply_along_axis(self.model, 1, past_locations)
 
-    def Test(self, num_timesteps_test, method, num_samples, visualize=False, action_set=None, save_per_step=True,
+    def Test(self, num_timesteps_test, method, num_samples, action_set=None, save_per_step=True,
              save_folder="default_results/", MCTSMaxNodes=10 ** 15):
 
         # history includes currrent state
@@ -174,7 +174,7 @@ class TreePlanTester:
             state_history.append(x_0)
 
             if save_per_step:
-                self.Visualize(state_history=state_history, display=visualize,
+                self.Visualize(state_history=state_history,
                                save_path=save_folder + "step" + str(time))
                 # Save to file
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
@@ -184,7 +184,7 @@ class TreePlanTester:
                 f.close()
 
         # Save for the whole trial
-        self.Visualize(state_history=state_history, display=visualize, save_path=save_folder + "summary")
+        self.Visualize(state_history=state_history, save_path=save_folder + "summary")
         # Save to file
         f = open(save_folder + "summary" + ".txt", "w")
 
@@ -208,28 +208,13 @@ class TreePlanTester:
         # return state_history, reward_history, nodes_expanded_history, base_measurement_history, total_reward_history
         return normalized_total_reward_history
 
-    def Visualize(self, state_history, display=True, save_path=None):
-        """
-        XGrid = np.arange(self.grid_domain[0][0], self.grid_domain[0][1] - 1e-10, self.grid_gap)
-        YGrid = np.arange(self.grid_domain[1][0], self.grid_domain[1][1] - 1e-10, self.grid_gap)
-        XGrid, YGrid = np.meshgrid(XGrid, YGrid)
-
-        ground_truth = np.vectorize(lambda x, y: self.model([x, y]))
-        """
+    def Visualize(self, state_history, save_path):
 
         vis = Vis2d()
-        """
-        vis.MapPlot(grid_extent=[self.grid_domain[0][0], self.grid_domain[0][1], self.grid_domain[1][0],
-                                 self.grid_domain[1][1]],
-                    ground_truth=ground_truth(XGrid, YGrid),
-                    path_points=[x.physical_state for x in state_history],
-                    display=display,
-                    save_path=save_path)
-        """
+
         vis.MapPlot(locations=self.model.locations,
                     values=self.model.values,
                     path_points=[x.physical_state for x in state_history],
-                    display=display,
                     save_path=save_path)
 
 
@@ -283,7 +268,7 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                     batch_size=batch_size)
     TPT.InitTestParameters(initial_physical_state=initial_physical_state, past_locations=past_locations)
 
-    return TPT.Test(num_timesteps_test=num_timesteps_test, visualize=False,
+    return TPT.Test(num_timesteps_test=num_timesteps_test,
                     save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
                     num_samples=num_samples)
