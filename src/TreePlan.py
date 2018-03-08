@@ -251,6 +251,7 @@ class TreePlan:
         return map(lambda x: np.atleast_2d(x), list(next_points))
 
     def PI(self, x_0):
+        return method_PI(x_0=x_0, gp=self.gp, next_states=self.GetNextAugmentedStates(x_0))
 
         best_observation = max(x_0.history.measurements)
 
