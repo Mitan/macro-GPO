@@ -1,7 +1,7 @@
 import matplotlib
 
 # Force matplotlib to not use any Xwindows backend.
-from src.PlottingEnum import PlottingMethods
+from src.enum.PlottingEnum import PlottingMethods
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -118,7 +118,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
             # plt.yticks(np.arange(0, 10 ** 8, 10 ** 7))
             legend_loc = 1
         else:
-            raise
+            raise Exception
     elif dataset == 'road':
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total normalized output measurements observed by AV", fontsize=labels_font_size)
@@ -147,7 +147,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
             axes.set_yscale('log')
             legend_loc = 1
         else:
-            raise
+            raise Exception
     elif dataset == 'robot':
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total normalized output measurements observed by mobile robot", fontsize=labels_font_size)
@@ -169,7 +169,7 @@ def PlotData(results, dataset, output_file_name, plottingType):
             axes.set_yscale('log')
             legend_loc = 1
         else:
-            raise
+            raise Exception
 
     """ 
     if isTotalReward:

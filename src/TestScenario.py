@@ -1,13 +1,14 @@
 import os
 
 from DatasetUtils import GenerateRoadModelFromFile
-from MethodEnum import Methods
+from src.enum.MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
 
 
 # from ResultsPlotter import PlotData
 from src.model.DatasetGenerator import DatasetGenerator
-from DatasetEnum import *
+from src.enum.DatasetEnum import DatasetEnum
+from src.enum.DatasetModeEnum import DatasetModeEnum
 
 
 def TestScenario_MLE(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, filename):

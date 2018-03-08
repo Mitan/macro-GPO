@@ -1,4 +1,5 @@
-from src.DatasetEnum import *
+from src.enum.DatasetEnum import DatasetEnum
+from src.enum.DatasetModeEnum import DatasetModeEnum
 from src.model.RobotMapValueDict import RobotValueDict
 
 
@@ -12,7 +13,8 @@ class DatasetGenerator:
         # select_all select all macro-actions
         if self.type == DatasetEnum.Robot:
             return self.__get_robot_dataset_model()
-
+        else:
+            raise ValueError("Unknown dataset")
             # private methods
 
     def __get_robot_dataset_model(self):

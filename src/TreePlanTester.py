@@ -3,7 +3,7 @@ import os
 from GaussianProcess import SquareExponential, GaussianProcess
 from TreePlan import *
 from Vis2d import Vis2d
-from MethodEnum import Methods
+from src.enum.MethodEnum import Methods
 from DynamicHorizon import DynamicHorizon
 from HypersStorer import *
 
