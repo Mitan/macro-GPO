@@ -6,8 +6,6 @@ import numpy as np
 from GaussianProcess import SquareExponential, GaussianProcess
 from src.model.MapValueDictBase import MapValueDict
 from RoadMapValueDict import RoadMapValueDict
-from RobotMapValueDict import RobotValueDict
-
 
 def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
                            num_samples, mean_function):
@@ -32,11 +30,6 @@ def GenerateRoadModelFromFile(filename):
     m = RoadMapValueDict(filename)
     # m.AddTwoSidedRoads()
     # m.LogTransformValues()
-    return m
-
-
-def GenerateRobotModelFromFile(data_filename, coords_filename, neighbours_filename):
-    m = RobotValueDict(data_filename, coords_filename, neighbours_filename)
     return m
 
 

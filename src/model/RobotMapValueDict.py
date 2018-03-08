@@ -1,11 +1,7 @@
-from StringIO import StringIO
 from random import choice, sample
 
 from src.model.MapValueDictBase import MapValueDict
 import numpy as np
-import math
-
-from Utils import LineToTuple
 
 batch_road_macroactions = []
 
@@ -156,9 +152,11 @@ if __name__ == "__main__":
      m = GenerateRoadModelFromFile(filename)
     for i in m.locations:
         print i, m.GetNeighbours(i)
-    """
+    
     data_file = '../datasets/robot/selected_slots/slot_2/final_slot_2.txt'
     neighbours_file = '../datasets/robot/all_neighbours.txt'
     coords_file = '../datasets/robot/all_coords.txt'
 
     RobotValueDict(data_filename=data_file, coords_filename=coords_file, neighbours_filename=neighbours_file)
+    """
+    pass
