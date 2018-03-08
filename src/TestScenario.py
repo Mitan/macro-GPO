@@ -158,7 +158,8 @@ def TestScenario_EI_PI(my_save_folder_root, seed, time_steps, num_samples, batch
     start_location = m.LoadRandomLocation(save_folder)
     """
 
-    dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Robot, dataset_mode=DatasetModeEnum.Load)
+    dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Robot, dataset_mode=DatasetModeEnum.Load,
+                                         time_slot=time_slot)
     m = dataset_generator.get_dataset_model()
 
     # m.LoadSelectedMacroactions(save_folder, batch_size)
@@ -167,7 +168,7 @@ def TestScenario_EI_PI(my_save_folder_root, seed, time_steps, num_samples, batch
     start_location = m.LoadRandomLocation(save_folder)
     h = -1
 
-    testWithFixedParameters(time_slot=time_slot, model=m, method=Methods.EI, horizon=h,
+    testWithFixedParameters(model=m, method=Methods.EI, horizon=h,
                             num_timesteps_test=time_steps,
                             save_folder=save_folder + "ei/",
                             num_samples=num_samples, batch_size=batch_size,

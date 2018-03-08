@@ -5,7 +5,6 @@ from TreePlan import *
 from src.plotting.DatasetPlotGenerator import DatasetPlotGenerator
 from src.enum.MethodEnum import Methods
 from DynamicHorizon import DynamicHorizon
-from HypersStorer import *
 
 
 class TreePlanTester:
@@ -211,7 +210,6 @@ class TreePlanTester:
 
 
 def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size,
-                            time_slot,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
@@ -224,15 +222,8 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
         raise Exception("wrong tzxi time slot")
     """
 
-    if time_slot == 2:
-        hyper_storer = RobotHypersStorer_2()
-    elif time_slot == 16:
-        hyper_storer = RobotHypersStorer_16()
-    else:
-        raise Exception("wrong robot time slot")
-
     # hyper_storer = RoadHypersStorer_18()
-
+    hyper_storer = model.hyper_storer
     initial_physical_state = hyper_storer.GetInitialPhysicalState(start_location)
 
     # print model.GenerateRoadMacroActions(initial_physical_state[-1], batch_size)

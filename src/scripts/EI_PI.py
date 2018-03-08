@@ -17,5 +17,9 @@ if __name__ == '__main__':
 
     for seed in seeds:
         print seed
-        TestScenario_EI_PI(my_save_folder_root=my_save_folder_root, seed=seed, time_steps=t, num_samples=num_samples,
-                           batch_size=batch_size,  time_slot=time_slot)
+        TestScenario_EI_PI(my_save_folder_root=my_save_folder_root,
+                           seed=seed,
+                           time_steps=t,
+                           num_samples=num_samples,
+                           batch_size=batch_size,
+                           time_slot=time_slot)
