@@ -107,9 +107,9 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
 
     output_rewards = open(filename_rewards, append_write)
     """
-    qEI = testWithFixedParameters(model=m, method=Methods.new_qEI, horizon=1,
+    qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1,
                                   num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "r_qEI/",
+                                  save_folder=save_folder + "qEI/",
                                   num_samples=num_samples, batch_size=batch_size,
                                   start_location=start_location)
     method_name = 'r_QEI'
