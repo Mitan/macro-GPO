@@ -6,7 +6,36 @@ from rpy2.robjects import numpy2ri
 from rpy2.robjects.packages import importr
 
 
-class newQEI:
+def method_qEI_R(x_0, gp, next_states):
+    # x_0 stores a 2D np array of k points with history
+
+    best_action = None
+    best_expected_improv = -float('inf')
+
+    qei = RqEI(length_scale=gp.length_scale, signal_variance=gp.signal_variance,
+               noise_variance=gp.noise,
+               locations=x_0.history.locations,
+               Y=x_0.history.measurements - np.mean(x_0.history.measurements))
+
+    # next_states = self.GetNextAugmentedStates(x_0)
+    if not next_states:
+        raise Exception("qEI could not move from  location " + str(x_0.physical_state))
+
+    for x_next in next_states:
+        # x_next = self.TransitionP(x_0, a)
+
+        expectedImprov = qei.acquisition(x_next.physical_state)
+
+        # comparison
+        if expectedImprov >= best_expected_improv:
+            best_expected_improv = expectedImprov
+            best_action = x_next
+
+    return best_expected_improv, best_action, len(next_states)
+
+
+# private
+class RqEI:
     def __init__(self, length_scale, signal_variance, noise_variance, locations, Y):
         importr('DiceOptim')  # Import DiceOptim R package
         # Enables the conversion of numpy objects to rpy2 objects
