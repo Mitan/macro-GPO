@@ -188,7 +188,7 @@ class TreePlan:
     def qEI(self, x_0):
         return method_qEI(x_0=x_0, next_states=self.GetNextAugmentedStates(x_0),
                           gp=self.gp, batch_size=self.batch_size)
-        
+
     def PI(self, x_0):
         return method_PI(x_0=x_0, gp=self.gp, next_states=self.GetNextAugmentedStates(x_0))
 
