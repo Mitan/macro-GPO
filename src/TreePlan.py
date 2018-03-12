@@ -47,15 +47,15 @@ class TreePlan:
         self.max_nodes = float("inf") if max_nodes is None else max_nodes
         self.beta = beta
 
-        self.l1 = 0
+        # self.l1 = 0
         # unused
-        self.l2 = lambda sigma: 1
+        # self.l2 = lambda sigma: 1
 
         self.reward_analytical = lambda mu, sigma: (
                 self.AcquizitionFunction(mu, sigma) - self.batch_size * self.gp.mean_function)
 
         # unused
-        self.reward_sampled = lambda f: 0
+        # self.reward_sampled = lambda f: 0
 
     # heuristic
     # we use batch UCB version from Erik
@@ -381,7 +381,7 @@ class TreePlan:
 
         print "Total nodes expanded %d" % total_nodes_expanded
         return root_action_node.BoundsChildren[best_a], np.asarray(best_a), total_nodes_expanded
-
+    """
     def Preprocess(self, physical_state, locations, H, suggested_epsilon):
 
         root_ss = SemiState(physical_state, locations)
@@ -402,7 +402,7 @@ class TreePlan:
 
         print "Suggested epsilon=%f, Using epsilon=%f, num_nodes=%f" % (suggested_epsilon, ep, num_nodes)
         return root_node, ep, l, num_nodes
-
+    """
     # todo need fix?
     def BuildTree(self, node, H, isRoot=False):
         """
