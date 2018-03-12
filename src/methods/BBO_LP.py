@@ -70,7 +70,7 @@ def method_LP(x_0, available_states, gp, batch_size):
                                          max_measurement=M,
                                          cholesky=current_chol,
                                          gp=gp)
-        print first_point[0]
+        # print first_point[0]
 
         predict_val_dict[tuple(first_point[0])] = predicted_val
         if predicted_val > best_current_measurement:
@@ -97,7 +97,7 @@ def method_LP(x_0, available_states, gp, batch_size):
                                         max_measurement=M,
                                         cholesky=current_chol,
                                         gp=gp)
-            print ac_value
+            # print ac_value
             # old points
             for j in range(num_steps):
                 x_j = next_state.physical_state[j: j + 1, :]
