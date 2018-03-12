@@ -7,7 +7,7 @@ from SampleFunctionBuilder import GetNumberOfSamples
 from src.AnytimeNode import MCTSActionNode
 from src.core.SemiTree import SemiTree
 from src.core.SemiState import SemiState
-from src.core.Transitions import TransitionH, PhysicalTransition, TransitionP
+from src.core.Transitions import TransitionH, TransitionP
 from src.Utils import ToTuple
 
 from src.methods.BBO_LP import method_LP
@@ -121,12 +121,12 @@ class TreePlan:
             return []
 
         # print new_physical_states
-        fake_action = np.zeros(new_physical_states[0].shape)
+        # fake_action = np.zeros(new_physical_states[0].shape)
         next_states = []
 
         for next_p_state in new_physical_states:
-            next_st = TransitionP(current_augmented_state, fake_action)
-            next_st.physical_state = next_p_state
+            next_st = TransitionP(current_augmented_state, next_p_state)
+            # next_st.physical_state = next_p_state
             next_states.append(next_st)
 
         return next_states

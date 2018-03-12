@@ -1,14 +1,15 @@
-import numpy as np
 import copy
 
 
-def TransitionP(augmented_state, action):
+# transition of state to new_physical_state
+def TransitionP(augmented_state, new_physical_state):
     """
         @return - copy of augmented state with physical_state updated
         """
     new_augmented_state = copy.deepcopy(augmented_state)
     # new macroaction
-    new_augmented_state.physical_state = PhysicalTransition(new_augmented_state.physical_state, action)
+    new_augmented_state.physical_state = new_physical_state
+    # new_augmented_state.physical_state = PhysicalTransition(new_augmented_state.physical_state, action)
     return new_augmented_state
 
 
@@ -21,7 +22,7 @@ def TransitionH(augmented_state, measurements):
     new_augmented_state.history.append(new_augmented_state.physical_state, measurements)
     return new_augmented_state
 
-
+"""
 def PhysicalTransition(physical_state, macroaction):
     current_location = physical_state[-1, :]
     batch_size = macroaction.shape[0]
@@ -36,3 +37,4 @@ def PhysicalTransition(physical_state, macroaction):
     # check that it is 2d
     assert new_physical_state.ndim == 2
     return new_physical_state
+"""

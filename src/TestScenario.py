@@ -274,10 +274,10 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
     m.LoadSelectedMacroactions(save_folder, batch_size)
 
     start_location = m.LoadRandomLocation(save_folder)
-
+    """
     h1 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=1,
                                  num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "pe/",
+                                 save_folder=save_folder + "h1/",
                                  num_samples=num_samples, batch_size=batch_size,
                                  start_location=start_location)
 
@@ -286,10 +286,10 @@ def TestScenario_H4(my_save_folder_root, seed, time_steps, num_samples, batch_si
                                   save_folder=save_folder + "mle_h2/",
                                   num_samples=num_samples, batch_size=batch_size,
                                   start_location=start_location)
-
-    h2 = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=2,
+    """
+    h2 = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=1,
                                  num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "anytime_h" + str(2) + "_" + str(num_samples) + "/",
+                                 save_folder=save_folder + "anytime_h" + str(22) + "_" + str(num_samples) + "/",
                                  num_samples=num_samples, batch_size=batch_size,
                                  start_location=start_location)
 

@@ -69,9 +69,9 @@ class MCTSActionNode:
         for a, semi_child in self.semi_tree.children.iteritems():
             # TODO bad design
             next_physical_state = np.asarray(a)
-            fake_action = np.zeros(next_physical_state.shape)
-            next_augmented_state = TransitionP(self.augmented_state, fake_action)
-            next_augmented_state.physical_state = next_physical_state
+            # fake_action = np.zeros(next_physical_state.shape)
+            next_augmented_state = TransitionP(self.augmented_state, next_physical_state)
+            # next_augmented_state.physical_state = next_physical_state
             c = MCTSObservationNode(augmented_state=next_augmented_state, semi_tree=semi_child, treeplan=self.treeplan,
                                     l=self.lamb,
                                     number_of_samples=self.number_of_samples, level=self.level)
