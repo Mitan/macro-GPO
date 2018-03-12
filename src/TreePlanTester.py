@@ -88,7 +88,7 @@ class TreePlanTester:
                                                                               max_nodes=MCTSMaxNodes)
                 # TODO fix this ugly hack
                 a = np.zeros(x_temp_physical.shape)
-                x_temp = tp.TransitionP(x_0, a)
+                x_temp = TransitionP(x_0, a)
                 x_temp.physical_state = x_temp_physical
 
             elif method == Methods.Exact:
@@ -141,7 +141,7 @@ class TreePlanTester:
             # percieved_measurements = np.add(baseline_measurements, noise_components)
             percieved_measurements = baseline_measurements
 
-            x_next = tp.TransitionH(x_temp, percieved_measurements)
+            x_next = TransitionH(x_temp, percieved_measurements)
 
             # Update future state
             x_0 = x_next

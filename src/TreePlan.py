@@ -125,7 +125,7 @@ class TreePlan:
         next_states = []
 
         for next_p_state in new_physical_states:
-            next_st = self.TransitionP(current_augmented_state, fake_action)
+            next_st = TransitionP(current_augmented_state, fake_action)
             next_st.physical_state = next_p_state
             next_states.append(next_st)
 
@@ -182,7 +182,7 @@ class TreePlan:
         mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
         # mu = self.gp.GPMean(locations=x.history.locations, measurements=x.history.measurements,
         # current_location=x.physical_state, cholesky=new_st.cholesky)
-        return self.ComputeVMLE(T - 1, self.TransitionH(x, mu), new_st)[0]
+        return self.ComputeVMLE(T - 1, TransitionH(x, mu), new_st)[0]
 
     def new_qEI(self, x_0):
         return method_qEI_R(x_0=x_0, gp=self.gp, next_states=self.GetNextAugmentedStates(x_0))
@@ -293,7 +293,7 @@ class TreePlan:
         # sams = np.random.multivariate_normal(mu, sd, self.samples_per_stage)
         sams = np.random.multivariate_normal(mu, sd, number_of_samples)
 
-        rrr = [self.ComputeVRandom(T - 1, self.TransitionH(x, sam),
+        rrr = [self.ComputeVRandom(T - 1, TransitionH(x, sam),
                                    new_st)[0] for sam in sams]
         avg = np.mean(rrr)
 
@@ -576,14 +576,16 @@ class TreePlan:
         return action_node.Eval() + (num_nodes_expanded,)
 
     # Hacks to overcome bad design
+    """
     def TransitionP(self, augmented_state, action):
-        return TransitionP(augmented_state, action)
-
+         return TransitionP(augmented_state, action)
+    
     def TransitionH(self, augmented_state, measurement):
         return TransitionH(augmented_state, measurement)
-
+    
     def PhysicalTransition(self, physical_state, action):
         return PhysicalTransition(physical_state, action)
+    """
 
 
 if __name__ == "__main__":
