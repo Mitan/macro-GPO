@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.Transitions import TransitionP, TransitionH
+from src.core.Transitions import TransitionP, TransitionH
 
 
 class MCTSActionNode:

@@ -5,8 +5,9 @@ import numpy as np
 
 from SampleFunctionBuilder import GetNumberOfSamples
 from src.AnytimeNode import MCTSActionNode
-from src.SemiTreeAndState import SemiState, SemiTree
-from src.Transitions import TransitionH, PhysicalTransition, TransitionP
+from src.core.SemiTree import SemiTree
+from src.core.SemiState import SemiState
+from src.core.Transitions import TransitionH, PhysicalTransition, TransitionP
 from src.Utils import ToTuple
 
 from src.methods.BBO_LP import method_LP

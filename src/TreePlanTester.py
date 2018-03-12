@@ -2,8 +2,8 @@ import os
 
 from GaussianProcess import SquareExponential, GaussianProcess
 from TreePlan import *
-from src.AugmentedState import AugmentedState
-from src.History import History
+from src.core.AugmentedState import AugmentedState
+from src.core.History import History
 from src.plotting.DatasetPlotGenerator import DatasetPlotGenerator
 from src.enum.MethodEnum import Methods
 from DynamicHorizon import DynamicHorizon
