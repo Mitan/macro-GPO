@@ -47,12 +47,12 @@ class RoadHypersStorer_44(AbstarctHypersStorer):
         self.signal_variance = 8.1167
         self.noise_variance = 0.0100
         self.mean_function = 4.6038
-
+        """
         self.grid_gap = 1.0
 
         # upper values are not included
         self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
-
+        """
         self.PrintParams()
 
     def GetInitialPhysicalState(self, start_location):
@@ -66,12 +66,12 @@ class RoadHypersStorer_18(AbstarctHypersStorer):
         self.signal_variance = 6.0016
         self.noise_variance = 0.0100
         self.mean_function = 4.9934
-
+        """
         self.grid_gap = 1.0
 
         # upper values are not included
         self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
-
+        """
         self.PrintParams()
 
     def GetInitialPhysicalState(self, start_location):
@@ -87,12 +87,12 @@ class RoadHypersStorer_Log18(AbstarctHypersStorer):
         noise_cov = 0.0111
         self.noise_variance = noise_cov
         self.mean_function = 1.5673
-
+        """
         self.grid_gap = 1.0
 
         # upper values are not included
         self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
-
+        """
         self.PrintParams()
 
     def GetInitialPhysicalState(self, start_location):
@@ -108,12 +108,12 @@ class RoadHypersStorer_Log44(AbstarctHypersStorer):
         noise_cov = 0.0117
         self.noise_variance = noise_cov**2
         self.mean_function = 1.4646
-
+        """
         self.grid_gap = 1.0
 
         # upper values are not included
         self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
-
+        """
         self.PrintParams()
 
     def GetInitialPhysicalState(self, start_location):

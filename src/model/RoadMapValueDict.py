@@ -15,9 +15,10 @@ class RoadMapValueDict(MapValueDict):
 
     # format of files is assumed to be
     # loc_x, loc_y, demand, supp, n_count, n_1, ....n_{n_count}
-    def __init__(self, filename, hyper_storer):
+    def __init__(self, filename, hyper_storer, domain_descriptor):
         self.dataset_type = DatasetEnum.Road
         self.hyper_storer = hyper_storer
+        self.domain_descriptor = domain_descriptor
 
         # TODO note hardcoded size of dataset
         self.dim_1 = 50

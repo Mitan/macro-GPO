@@ -60,5 +60,6 @@ class DatasetGenerator:
         else:
             raise Exception("wrong taxi time slot")
 
-        m = RoadMapValueDict(filename, hyper_storer)
+        domain_descriptor = get_domain_descriptor(DatasetEnum.Road)
+        m = RoadMapValueDict(filename=filename, hyper_storer=hyper_storer, domain_descriptor=domain_descriptor)
         return m
