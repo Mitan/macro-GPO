@@ -5,7 +5,6 @@ import numpy as np
 
 from GaussianProcess import SquareExponential, GaussianProcess
 from src.model.MapValueDictBase import MapValueDict
-from RoadMapValueDict import RoadMapValueDict
 
 
 def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
@@ -26,12 +25,13 @@ def GenerateModelFromFile(filename):
     vals = data[:, -1]
     return MapValueDict(locs, vals)
 
-
+"""
 def GenerateRoadModelFromFile(filename):
     m = RoadMapValueDict(filename)
     # m.AddTwoSidedRoads()
     # m.LogTransformValues()
     return m
+"""
 
 # todo refact this and next method in one
 def GetMaxValues(measurements, batch_size):

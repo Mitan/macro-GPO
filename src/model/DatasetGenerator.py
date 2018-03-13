@@ -1,6 +1,8 @@
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
-from src.model.HypersStorer import RobotHypersStorer_2, RobotHypersStorer_16
+from src.model.HypersStorer import RobotHypersStorer_2, RobotHypersStorer_16, RoadHypersStorer_Log18, \
+    RoadHypersStorer_Log44
+from src.model.RoadMapValueDict import RoadMapValueDict
 from src.model.RobotMapValueDict import RobotValueDict
 
 
@@ -15,6 +17,8 @@ class DatasetGenerator:
         # select_all select all macro-actions
         if self.type == DatasetEnum.Robot:
             return self.__get_robot_dataset_model()
+        elif self.type == DatasetEnum.Road:
+            return self.__get_road_dataset_model()
         else:
             raise ValueError("Unknown dataset")
             # private methods
@@ -36,4 +40,19 @@ class DatasetGenerator:
             raise Exception("wrong robot time slot")
 
         m = RobotValueDict(data_filename, coords_filename, neighbours_filename, hyper_storer)
+        return m
+
+    def __get_road_dataset_model(self):
+        if self.mode == DatasetModeEnum.Generate:
+            raise ValueError("Generate mode is available only for simulated dataset")
+
+        filename = '../../datasets/slot' + str(self.time_slot) + '/tlog' + str(self.time_slot) + '.dom'
+
+        if self.time_slot == 44:
+            hyper_storer = RoadHypersStorer_Log44()
+        elif self.time_slot == 18:
+            hyper_storer = RoadHypersStorer_Log18()
+        else:
+            raise Exception("wrong taxi time slot")
+        m = RoadMapValueDict(filename, hyper_storer)
         return m

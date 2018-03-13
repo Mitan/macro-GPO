@@ -1,6 +1,5 @@
 import os
 
-from DatasetUtils import GenerateRoadModelFromFile
 from src.enum.MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
 
@@ -72,7 +71,7 @@ def TestScenario_LP(my_save_folder_root, seed, time_steps, num_samples, batch_si
                                  start_location=start_location)
 
 
-def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot):
+def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, dataset_type):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -89,9 +88,10 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
     m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
                                    neighbours_filename=neighbours_filename)
     """
-    dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Robot, dataset_mode=DatasetModeEnum.Load,
+    dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=DatasetModeEnum.Load,
                                          time_slot=time_slot)
     m = dataset_generator.get_dataset_model()
+    print m.dataset_type
     m.LoadSelectedMacroactions(save_folder, batch_size)
     # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
 

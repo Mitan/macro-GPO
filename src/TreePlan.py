@@ -16,7 +16,7 @@ from src.methods.BUCB_PE import method_BUCB_PE
 from src.methods.EI import method_EI
 from src.methods.PI import method_PI
 from src.methods.qEI import method_qEI
-from src.methods.qEI_R import method_qEI_R
+# from src.methods.qEI_R import method_qEI_R
 
 
 class TreePlan:
