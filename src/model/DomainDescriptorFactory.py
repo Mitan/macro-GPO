@@ -29,3 +29,18 @@ class RoadDomainDescriptor:
         self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
 
         self.domain_size = 50 * 100
+
+
+class SimulatedDomainDescriptor:
+
+    def __init__(self):
+
+        self.grid_gap = 0.05
+
+        # unused
+        # number of samples in each dimension
+        self.num_samples_grid = (50, 50)
+
+        # upper values are not included
+        self.grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
+        self.domain_size = 50 * 50

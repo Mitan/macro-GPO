@@ -18,6 +18,8 @@ def get_hyper_storer(dataset_type, time_slot):
             return RoadHypersStorer_Log18()
         else:
             raise Exception("wrong taxi time slot")
+    elif dataset_type == DatasetEnum.Simulated:
+        return SimulatedHyperStorer()
     else:
         raise ValueError("Unknown dataset")
 
@@ -45,14 +47,6 @@ class SimulatedHyperStorer(AbstarctHypersStorer):
         self.signal_variance = 1.0
         self.noise_variance = 0.00001
         self.mean_function = 0.0
-
-        self.grid_gap = 0.05
-
-        # number of samples in each dimension
-        self.num_samples_grid = (50, 50)
-
-        # upper values are not included
-        self.grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
 
         self.PrintParams()
 
