@@ -113,7 +113,7 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
     method_name = 'r_QEI'
     # output_rewards.write(method_name + '\n')
     # output_rewards.write(str(qEI) + '\n')
-    """
+
 
     PE = testWithFixedParameters(model=m, method=Methods.BucbPE, horizon=1,
                                  num_timesteps_test=time_steps,
@@ -133,7 +133,7 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
                                    start_location=start_location)
 
     method_name = 'BUCB'
-    """
+
     # output_rewards.write(method_name + '\n')
     # output_rewards.write(str(bucb) + '\n')
 

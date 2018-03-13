@@ -32,10 +32,11 @@ class TreePlanTester:
         self.empirical_mean = model.mean
         self.hyper_storer = hyper_storer
 
-    def InitPlanner(self, grid_domain, grid_gap, epsilon, gamma, batch_size, horizon):
+    def InitPlanner(self, domain_descriptor, epsilon, gamma, batch_size, horizon):
 
-        self.grid_domain = grid_domain
-        self.grid_gap = grid_gap
+        # self.grid_domain = grid_domain
+        # self.grid_gap = grid_gap
+        self.domain_descriptor = domain_descriptor
         self.epsilon = epsilon
         self.gamma = gamma
         self.H = horizon
@@ -76,7 +77,7 @@ class TreePlanTester:
 
         for time in xrange(num_timesteps_test):
             allowed_horizon = DynamicHorizon(t=time, H_max=self.H, t_max=num_timesteps_test)
-            tp = TreePlan(grid_domain=self.grid_domain, grid_gap=self.grid_gap, gaussian_process=self.gp,
+            tp = TreePlan(domain_descriptor=self.domain_descriptor, gaussian_process=self.gp,
                           macroaction_set=action_set,
                           beta=self.beta,
                           num_samples=num_samples, batch_size=self.batch_size, horizon=allowed_horizon,
@@ -248,7 +249,7 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
                mean_function=hyper_storer.mean_function)
     # adds noise to observations
     TPT.InitEnvironment(environment_noise=hyper_storer.noise_variance, model=model, hyper_storer=hyper_storer)
-    TPT.InitPlanner(grid_domain=hyper_storer.grid_domain, grid_gap=hyper_storer.grid_gap, gamma=1, epsilon=epsilon_,
+    TPT.InitPlanner(domain_descriptor=model.domain_descriptor, gamma=1, epsilon=epsilon_,
                     horizon=horizon,
                     batch_size=batch_size)
     TPT.InitTestParameters(initial_physical_state=initial_physical_state, past_locations=past_locations)

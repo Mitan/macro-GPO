@@ -1,5 +1,6 @@
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
+from src.model.DomainDescriptorFactory import get_domain_descriptor
 from src.model.HypersStorer import RobotHypersStorer_2, RobotHypersStorer_16, RoadHypersStorer_Log18, \
     RoadHypersStorer_Log44
 from src.model.RoadMapValueDict import RoadMapValueDict
@@ -39,7 +40,11 @@ class DatasetGenerator:
         else:
             raise Exception("wrong robot time slot")
 
-        m = RobotValueDict(data_filename, coords_filename, neighbours_filename, hyper_storer)
+        domain_descriptor = get_domain_descriptor(DatasetEnum.Robot)
+
+        m = RobotValueDict(data_filename=data_filename, coords_filename=coords_filename,
+                           neighbours_filename=neighbours_filename, hyper_storer=hyper_storer,
+                           domain_descriptor=domain_descriptor)
         return m
 
     def __get_road_dataset_model(self):
@@ -54,5 +59,6 @@ class DatasetGenerator:
             hyper_storer = RoadHypersStorer_Log18()
         else:
             raise Exception("wrong taxi time slot")
+
         m = RoadMapValueDict(filename, hyper_storer)
         return m

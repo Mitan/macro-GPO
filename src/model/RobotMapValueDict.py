@@ -9,10 +9,11 @@ batch_road_macroactions = []
 
 class RobotValueDict(MapValueDict):
 
-    def __init__(self, data_filename, coords_filename, neighbours_filename, hyper_storer):
+    def __init__(self, data_filename, coords_filename, neighbours_filename, hyper_storer, domain_descriptor):
 
         self.dataset_type = DatasetEnum.Robot
         self.hyper_storer = hyper_storer
+        self.domain_descriptor = domain_descriptor
 
         data_lines = np.genfromtxt(data_filename)
 

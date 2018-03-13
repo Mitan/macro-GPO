@@ -3,7 +3,7 @@ import math
 import random
 
 
-def method_BUCB_PE(x_0, gp, t, available_states, batch_size):
+def method_BUCB_PE(x_0, gp, t, available_states, batch_size, domain_size):
     tolerance_eps = 10 ** (-8)
 
     # available_states = self.GetNextAugmentedStates(x_0)
@@ -11,7 +11,7 @@ def method_BUCB_PE(x_0, gp, t, available_states, batch_size):
     if not available_states:
         raise Exception("BUCB-PE could not move from  location " + str(x_0.physical_state))
 
-    domain_size = 145
+    domain_size = domain_size
     delta = 0.1
     t_squared = (t + 1) ** 2
     beta_t1 = 2 * math.log(domain_size * t_squared * (math.pi ** 2) / (6 * delta))

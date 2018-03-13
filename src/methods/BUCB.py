@@ -12,7 +12,7 @@ def __GetSetOfNextPoints(available_states, step):
     return map(lambda x: np.atleast_2d(x), list(next_points))
 
 
-def method_BUCB(x_0, gp, t, available_states, batch_size):
+def method_BUCB(x_0, gp, t, available_states, batch_size, domain_size):
     tolerance_eps = 10 ** (-8)
 
     # available_states = self.GetNextAugmentedStates(x_0)
@@ -22,7 +22,7 @@ def method_BUCB(x_0, gp, t, available_states, batch_size):
 
     # first_points = self.GetSetOfNextPoints(available_states, 0)
 
-    domain_size = 145
+    domain_size = domain_size
     delta = 0.1
     beta_multiplier = 0.2
 

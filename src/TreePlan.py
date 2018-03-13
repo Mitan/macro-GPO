@@ -20,13 +20,13 @@ from src.methods.qEI import method_qEI
 
 
 class TreePlan:
-    def __init__(self, batch_size, grid_domain, horizon, grid_gap, num_samples, gaussian_process, model,
+    def __init__(self, batch_size, domain_descriptor, horizon, num_samples, gaussian_process, model,
                  macroaction_set=None,
                  max_nodes=None,
                  beta=0.0):
 
         self.model = model
-
+        self.domain_descriptor = domain_descriptor
         self.batch_size = batch_size
 
         self.H = horizon
@@ -34,7 +34,7 @@ class TreePlan:
         self.samples_per_stage = num_samples
 
         # Problem parameters
-        self.grid_gap = grid_gap
+        # self.grid_gap = grid_gap
         self.macroaction_set = macroaction_set
 
         # only for simulated
@@ -42,7 +42,7 @@ class TreePlan:
         if macroaction_set is None:
             self.macroaction_set = GenerateSimpleMacroactions(self.batch_size, self.grid_gap)
         """
-        self.grid_domain = grid_domain
+        # self.grid_domain = grid_domain
         self.gp = gaussian_process
         self.max_nodes = float("inf") if max_nodes is None else max_nodes
         self.beta = beta
@@ -204,12 +204,14 @@ class TreePlan:
     def BUCB(self, x_0, t):
         return method_BUCB(x_0=x_0, gp=self.gp, t=t,
                            available_states=self.GetNextAugmentedStates(x_0),
-                           batch_size=self.batch_size)
+                           batch_size=self.batch_size,
+                           domain_size=self.domain_descriptor.domain_size)
 
     def BUCB_PE(self, x_0, t):
         return method_BUCB_PE(x_0=x_0, gp=self.gp, t=t,
                               available_states=self.GetNextAugmentedStates(x_0),
-                              batch_size=self.batch_size)
+                              batch_size=self.batch_size,
+                              domain_size=self.domain_descriptor.domain_size)
 
     def StochasticFull(self, x_0, H):
         # by default physical state length is self.batch_size

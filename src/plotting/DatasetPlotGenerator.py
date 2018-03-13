@@ -68,7 +68,7 @@ class DatasetPlotGenerator:
         plt.close()
 
     @staticmethod
-    def __generate_road_plot(locations, values, path_points, save_path):
+    # def __generate_road_plot(locations, values, path_points, save_path):
     def MapPlot(self, grid_extent, ground_truth=None, posterior_mean_before=None, posterior_mean_after=None,
                 path_points=None, display=True,
                 save_path=None):

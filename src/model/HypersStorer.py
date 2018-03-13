@@ -130,11 +130,6 @@ class RobotHypersStorer_2(AbstarctHypersStorer):
         self.noise_variance = 0.022834
         self.mean_function = 22.924200
 
-        # domain is not grid-like
-        self.grid_gap = None
-
-        self.grid_domain = None
-
         self.PrintParams()
 
     def GetInitialPhysicalState(self, start_location):
@@ -150,11 +145,6 @@ class RobotHypersStorer_16(AbstarctHypersStorer):
 
         self.noise_variance = 0.059732
         self.mean_function = 17.851283
-
-        # domain is not grid-like
-        self.grid_gap = None
-
-        self.grid_domain = None
 
         self.PrintParams()
 
