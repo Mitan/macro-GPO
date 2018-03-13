@@ -206,8 +206,7 @@ class TreePlanTester:
 
         plot_generator = DatasetPlotGenerator(self.model.dataset_type)
 
-        plot_generator.GeneratePlot(locations=self.model.locations,
-                                    values=self.model.values,
+        plot_generator.GeneratePlot(model=self.model,
                                     path_points=[x.physical_state for x in state_history],
                                     save_path=save_path)
 

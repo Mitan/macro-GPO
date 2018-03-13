@@ -13,18 +13,19 @@ class DatasetPlotGenerator:
     def __init__(self, dataset_type):
         self.type = dataset_type
 
-    def GeneratePlot(self, locations, values, path_points, save_path):
+    def GeneratePlot(self, model, path_points, save_path):
         if self.type == DatasetEnum.Robot:
-            self.__generate_robot_plot(locations, values, path_points, save_path)
+            self.__generate_robot_plot(model, path_points, save_path)
         elif self.type == DatasetEnum.Road:
-            self.__generate_road_plot(locations, values, path_points, save_path)
+            self.__generate_road_plot(model, path_points, save_path)
 
         else:
             raise ValueError("Unknown dataset")
 
     @staticmethod
-    def __generate_robot_plot(locations, values, path_points, save_path):
-
+    def __generate_robot_plot(model,  path_points, save_path):
+        locations = model.locations
+        values = model.values
         X = locations[:, 0]
         Y = locations[:, 1]
 
@@ -68,70 +69,54 @@ class DatasetPlotGenerator:
         plt.close()
 
     @staticmethod
-    # def __generate_road_plot(locations, values, path_points, save_path):
-    def MapPlot(self, grid_extent, ground_truth=None, posterior_mean_before=None, posterior_mean_after=None,
-                path_points=None, display=True,
-                save_path=None):
-        """
-        Plots original field and path taken, as well as
-        Saves data to file if required
-        @param ground_truth, posterior mean, posterior variance - 2d-array of relvant data.
-        - Each 2d array represents 1 field (eg. posterior, ground truth)
-        - Note that these are all indexed in integers etc
-        - We will need to scale and translate accordingly
-        @param grid_extent - axis mesh points as a 4-tuple of numpy arrays comprising (x-min, xmax, ymin, ymax)
-        @param path_points - path coordinates in "world" space (ie. actual coordinates, not just (5,3) etc ... )
-        @param display - shows plot on screen, useful for debugging
-        @param save_path
-        """
+    def __generate_road_plot(model, path_points, save_path):
+        grid_00, grid_01 = model.domain_descriptor.grid_domain[0]
+        grid_10, grid_11 = model.domain_descriptor.grid_domain[1]
+        XGrid = np.arange(grid_00, grid_01 - 1e-10, model.domain_descriptor.grid_gap)
+        YGrid = np.arange(grid_10, grid_11 - 1e-10, model.domain_descriptor.grid_gap)
+        XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
+        ground_truth_function = np.vectorize(lambda x, y: model([x, y]))
+
+        # grid_extent = [grid_00, grid_01, grid_10, grid_11]
+        """
         grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
                         grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
+        """
+        ground_truth = ground_truth_function(XGrid, YGrid)
 
-        mmax = -10 ** 10
-        mmin = 10 ** 10
-        for q in [ground_truth, posterior_mean_before, posterior_mean_after]:
-            # for q in [ground_truth, posterior_mean_before, posterior_mean_after]:
-            if q is not None:
-                mmax = max(np.amax(np.amax(q)), mmax)
-                mmin = min(np.amin(np.amin(q)), mmin)
         axes = plt.axes()
-        # fig, axes = plt.subplots(nrows=1, ncols=1, sharex=True, sharey=True)
-        if ground_truth is not None:
-            im = axes.imshow(ground_truth, interpolation='nearest', aspect='auto', extent=grid_extent2,
-                             cmap='Greys', vmin=mmin, vmax=mmax)
-            if not path_points == None and path_points:
-                # batch size
-                # path points is a list
-                number_of_points = len(path_points)
 
-                for i in xrange(1, number_of_points):
-                    # both are batches of points
-                    prev = path_points[i - 1]
-                    current = path_points[i]
+        axes.imshow(ground_truth, interpolation='nearest', aspect='auto', cmap='Greys')
+        # batch size
+        # path points is a list
+        number_of_points = len(path_points)
 
-                    prev_end = prev[-1, :]
-                    current_start = current[0, :]
-                    axes.arrow(prev_end[0], prev_end[1],
-                               current_start[0] - prev_end[0],
-                               current_start[1] - prev_end[1], edgecolor='green')
+        for i in xrange(1, number_of_points):
+            # both are batches of points
+            prev = path_points[i - 1]
+            current = path_points[i]
 
-                    # here we need to draw k - 1 arrows
-                    # coz in total there will be k and the first on is already drawn
+            prev_end = prev[-1, :]
+            current_start = current[0, :]
+            axes.arrow(prev_end[0], prev_end[1],
+                       current_start[0] - prev_end[0],
+                       current_start[1] - prev_end[1], edgecolor='green')
 
-                    # k should always be equal to batch_size though
-                    k = current.shape[0]
+            # here we need to draw k - 1 arrows
+            # coz in total there will be k and the first on is already drawn
 
-                    for j in xrange(0, k - 1):
-                        # both a locations [x,y]
-                        current_point = current[j, :]
-                        next_point = current[j + 1, :]
-                        axes.arrow(current_point[0], current_point[1],
-                                   next_point[0] - current_point[0],
-                                   next_point[1] - current_point[1], edgecolor='red')
+            # k should always be equal to batch_size though
+            k = current.shape[0]
 
-        if not save_path == None:
-            plt.savefig(save_path + ".png")
-        if display: plt.show()
+            for j in xrange(0, k - 1):
+                # both a locations [x,y]
+                current_point = current[j, :]
+                next_point = current[j + 1, :]
+                axes.arrow(current_point[0], current_point[1],
+                           next_point[0] - current_point[0],
+                           next_point[1] - current_point[1], edgecolor='red')
+
+        plt.savefig(save_path + ".png")
         plt.clf()
         plt.close()
