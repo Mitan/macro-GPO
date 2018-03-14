@@ -6,6 +6,8 @@ def get_domain_descriptor(dataset_type):
         return RobotDomainDescriptor()
     elif dataset_type == DatasetEnum.Road:
         return RoadDomainDescriptor()
+    elif dataset_type == DatasetEnum.Simulated:
+        return SimulatedDomainDescriptor()
     else:
         raise ValueError("Unknown dataset")
 

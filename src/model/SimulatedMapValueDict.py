@@ -17,10 +17,11 @@ class SimulatedMapValueDict(MapValueDictBase):
                                                 signal_variance=hyper_storer.signal_variance,
                                                 noise_variance=hyper_storer.noise_variance)
 
-        gp = GaussianProcess(covariance_function)
+        gp = GaussianProcess(covariance_function=covariance_function,
+                             mean_function=hyper_storer.mean_function)
         locs, vals =  self.__generate_values(gp=gp,
                                              grid_domain=domain_descriptor.grid_domain,
-                                             num_samples=domain_descriptor.num_samples,
+                                             num_samples=domain_descriptor.num_samples_grid,
                                              seed=seed,
                                              noise_variance=hyper_storer.noise_variance)
 
@@ -34,6 +35,7 @@ class SimulatedMapValueDict(MapValueDictBase):
         return [self.PhysicalTransition(current_state, a)
                 for a in self.macroaction_set if self.__isValidMacroAction(current_state, a)]
 
+    # generates values with zero mean
     def __generate_values(self, gp, grid_domain, num_samples, seed, noise_variance):
 
         assert (len(grid_domain) == len(num_samples))
