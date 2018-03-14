@@ -4,26 +4,14 @@ import random
 import numpy as np
 
 from GaussianProcess import SquareExponential, GaussianProcess
-from src.model.MapValueDictBase import MapValueDict
-
-
-def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
-                           num_samples, mean_function):
-    covariance_function = SquareExponential(length_scale, signal_variance=signal_variance,
-                                            noise_variance=noise_variance)
-    # Generate a drawn vector from GP with noise
-    gpgen = GaussianProcess(covariance_function, mean_function=mean_function)
-    m = gpgen.GPGenerate(predict_range=predict_range, num_samples=num_samples, seed=seed, noiseVariance=noise_variance)
-    # write the dataset to file
-    m.WriteToFile(save_folder + "dataset.txt")
-    return m
+from src.model.MapValueDictBase import MapValueDictBase
 
 
 def GenerateModelFromFile(filename):
     data = np.genfromtxt(filename)
     locs = data[:, :-1]
     vals = data[:, -1]
-    return MapValueDict(locs, vals)
+    return MapValueDictBase(locs, vals)
 
 """
 def GenerateRoadModelFromFile(filename):
