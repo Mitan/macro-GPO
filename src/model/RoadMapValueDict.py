@@ -1,7 +1,7 @@
 from StringIO import StringIO
 from random import choice, sample
 
-from src.model.MapValueDictBase import MapValueDict
+from src.model.MapValueDictBase import MapValueDictBase
 import numpy as np
 
 from src.Utils import LineToTuple
@@ -11,7 +11,7 @@ from src.enum.DatasetEnum import DatasetEnum
 batch_road_macroactions = []
 
 
-class RoadMapValueDict(MapValueDict):
+class RoadMapValueDict(MapValueDictBase):
 
     # format of files is assumed to be
     # loc_x, loc_y, demand, supp, n_count, n_1, ....n_{n_count}
@@ -80,7 +80,7 @@ class RoadMapValueDict(MapValueDict):
             # copy location
             np.copyto(locs[i, :], current_loc)
 
-        MapValueDict.__init__(self, locations=locs, values=vals)
+        MapValueDictBase.__init__(self, locations=locs, values=vals)
 
         # TODO change mean so that it doesn't include self.NO_DATA locations
         self.mean = np.mean(vals[self.informative_locations_indexes])

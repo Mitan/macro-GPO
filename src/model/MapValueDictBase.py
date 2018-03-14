@@ -2,7 +2,7 @@ import numpy as np
 from random import choice
 
 
-class MapValueDict():
+class MapValueDictBase():
     # needed for rounding while adding into dict
     ROUNDING_CONST = 2
 

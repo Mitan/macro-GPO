@@ -1,13 +1,13 @@
 from random import choice, sample
 
-from src.model.MapValueDictBase import MapValueDict
+from src.model.MapValueDictBase import MapValueDictBase
 import numpy as np
 from src.enum.DatasetEnum import DatasetEnum
 
 batch_road_macroactions = []
 
 
-class RobotValueDict(MapValueDict):
+class RobotValueDict(MapValueDictBase):
 
     def __init__(self, data_filename, coords_filename, neighbours_filename, hyper_storer, domain_descriptor):
 
@@ -28,7 +28,7 @@ class RobotValueDict(MapValueDict):
         # dict of selected macroactions
         self.selected_actions_dict = None
 
-        MapValueDict.__init__(self, locations=locs, values=vals)
+        MapValueDictBase.__init__(self, locations=locs, values=vals)
 
         self.mean = np.mean(vals)
 
