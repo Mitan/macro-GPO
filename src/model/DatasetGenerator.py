@@ -64,9 +64,15 @@ class DatasetGenerator:
         # todo
         seed = 0
         save_folder = "./"
+
         if self.mode == DatasetModeEnum.Generate:
-            m = SimulatedMapValueDict(hyper_storer=hyper_storer, domain_descriptor=domain_descriptor, seed=seed)
+            m = SimulatedMapValueDict(hyper_storer=hyper_storer,
+                                      domain_descriptor=domain_descriptor,
+                                      seed=seed)
             m.WriteToFile(save_folder + "dataset.txt")
         else:
-            m = None
+            filename = save_folder + 'dataset.txt'
+            m = SimulatedMapValueDict(hyper_storer=hyper_storer,
+                                      domain_descriptor=domain_descriptor,
+                                      filename=filename)
         return m

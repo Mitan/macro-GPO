@@ -8,22 +8,26 @@ from scipy.stats import multivariate_normal
 
 class SimulatedMapValueDict(MapValueDictBase):
 
-    def __init__(self, hyper_storer, domain_descriptor, seed):
+    def __init__(self, hyper_storer, domain_descriptor, seed=None, filename=None):
         self.dataset_type = DatasetEnum.Simulated
         self.hyper_storer = hyper_storer
         self.domain_descriptor = domain_descriptor
+        if filename:
+            data = np.genfromtxt(filename)
+            locs = data[:, :-1]
+            vals = data[:, -1]
+        else:
+            covariance_function = SquareExponential(length_scale=hyper_storer.length_scale,
+                                                    signal_variance=hyper_storer.signal_variance,
+                                                    noise_variance=hyper_storer.noise_variance)
 
-        covariance_function = SquareExponential(length_scale=hyper_storer.length_scale,
-                                                signal_variance=hyper_storer.signal_variance,
+            gp = GaussianProcess(covariance_function=covariance_function,
+                                 mean_function=hyper_storer.mean_function)
+            locs, vals = self.__generate_values(gp=gp,
+                                                grid_domain=domain_descriptor.grid_domain,
+                                                num_samples=domain_descriptor.num_samples_grid,
+                                                seed=seed,
                                                 noise_variance=hyper_storer.noise_variance)
-
-        gp = GaussianProcess(covariance_function=covariance_function,
-                             mean_function=hyper_storer.mean_function)
-        locs, vals = self.__generate_values(gp=gp,
-                                            grid_domain=domain_descriptor.grid_domain,
-                                            num_samples=domain_descriptor.num_samples_grid,
-                                            seed=seed,
-                                            noise_variance=hyper_storer.noise_variance)
 
         MapValueDictBase.__init__(self, locations=locs, values=vals)
 
@@ -127,7 +131,8 @@ class SimulatedMapValueDict(MapValueDictBase):
         for i in range(physical_state.shape[0]):
             current_agent_postion = physical_state[i, :]
             for dim in xrange(ndims):
-                if current_agent_postion[dim] < self.domain_descriptor.grid_domain[dim][0] or current_agent_postion[dim] >= \
+                if current_agent_postion[dim] < self.domain_descriptor.grid_domain[dim][0] or current_agent_postion[
+                    dim] >= \
                         self.domain_descriptor.grid_domain[dim][1]:
                     return False
         return True
