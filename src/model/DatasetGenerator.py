@@ -5,6 +5,7 @@ from src.model.HypersStorerFactory import RobotHypersStorer_2, RobotHypersStorer
     RoadHypersStorer_Log44, get_hyper_storer
 from src.model.RoadMapValueDict import RoadMapValueDict
 from src.model.RobotMapValueDict import RobotValueDict
+from src.model.SimulatedMapValueDict import SimulatedMapValueDict
 
 
 class DatasetGenerator:
@@ -57,13 +58,15 @@ class DatasetGenerator:
         return m
 
     def __get_simulated_dataset_model(self):
-        if self.mode == DatasetModeEnum.Generate:
-            raise ValueError("Generate mode is available only for simulated dataset")
-
-        filename = '../../datasets/slot' + str(self.time_slot) + '/tlog' + str(self.time_slot) + '.dom'
-
         hyper_storer = get_hyper_storer(DatasetEnum.Simulated, self.time_slot)
 
         domain_descriptor = get_domain_descriptor(DatasetEnum.Simulated)
-        m = MapValueDict(filename=filename, hyper_storer=hyper_storer, domain_descriptor=domain_descriptor)
+        # todo
+        seed = 0
+        save_folder = "./"
+        if self.mode == DatasetModeEnum.Generate:
+            m = SimulatedMapValueDict(hyper_storer=hyper_storer, domain_descriptor=domain_descriptor, seed=seed)
+            m.WriteToFile(save_folder + "dataset.txt")
+        else:
+            m = None
         return m

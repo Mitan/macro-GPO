@@ -448,34 +448,6 @@ class TreePlan:
             new_st.ComputeWeightsAndVariance(self.gp)
             self.BuildTree(new_st, H - 1)
 
-    # used only for simulated
-    def GetValidActionSet(self, physical_state):
-        return [a for a in self.macroaction_set if self.IsValidMacroAction(physical_state, a)]
-
-    def IsValidMacroAction(self, physical_state, a):
-        # TODO: ensure scalability to multiple dimensions
-        # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
-
-        # Physical state is a macro-action (batch)
-
-        # both should be equal to 2, since the points are 2-d.
-        # the first dimension is the length of state. should be equal to batch size
-        #  but can't compare because of the first step
-        assert physical_state.shape[1] == a.shape[1]
-        new_state = PhysicalTransition(physical_state, a)
-        assert new_state.shape == a.shape
-        # print new_state
-        ndims = 2
-        eps = 0.001
-        # a.shape[0] is batch_size
-        for i in range(a.shape[0]):
-            current_agent_postion = new_state[i, :]
-            for dim in xrange(ndims):
-                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
-                        self.grid_domain[dim][1]:
-                    return False
-        return True
-
     def PreprocessLipchitz(self, node):
 
         # Base case
