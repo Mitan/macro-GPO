@@ -38,12 +38,10 @@ class SimulatedDomainDescriptor:
     def __init__(self):
 
         self.grid_gap = 0.05
-        self.grid_gap = 0.25
 
         # unused
         # number of samples in each dimension
         self.num_samples_grid = (50, 50)
-        self.num_samples_grid = (10, 10)
 
         # upper values are not included
         self.grid_domain = ((-0.25, 2.25), (-0.25, 2.25))

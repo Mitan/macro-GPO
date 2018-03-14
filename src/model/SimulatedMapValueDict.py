@@ -9,7 +9,7 @@ from scipy.stats import multivariate_normal
 class SimulatedMapValueDict(MapValueDictBase):
 
     def __init__(self, hyper_storer, domain_descriptor, seed):
-        self.dataset_type = DatasetEnum.Road
+        self.dataset_type = DatasetEnum.Simulated
         self.hyper_storer = hyper_storer
         self.domain_descriptor = domain_descriptor
 
@@ -103,7 +103,6 @@ class SimulatedMapValueDict(MapValueDictBase):
 
         # check that it is 2d
         assert new_physical_state.ndim == 2
-        print current_location, new_physical_state, macroaction
         return new_physical_state
 
     def __isValidMacroAction(self, physical_state):

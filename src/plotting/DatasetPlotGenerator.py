@@ -15,15 +15,17 @@ class DatasetPlotGenerator:
 
     def GeneratePlot(self, model, path_points, save_path):
         if self.type == DatasetEnum.Robot:
-            self.__generate_robot_plot(model, path_points, save_path)
+            self.__generate_scatter_plot(model, path_points, save_path)
         elif self.type == DatasetEnum.Road:
-            self.__generate_road_plot(model, path_points, save_path)
+            self.__generate_plot(model, path_points, save_path)
+        elif self.type == DatasetEnum.Simulated:
+            self.__generate_plot(model, path_points, save_path)
 
         else:
             raise ValueError("Unknown dataset")
 
     @staticmethod
-    def __generate_robot_plot(model,  path_points, save_path):
+    def __generate_scatter_plot(model, path_points, save_path):
         locations = model.locations
         values = model.values
         X = locations[:, 0]
@@ -69,16 +71,17 @@ class DatasetPlotGenerator:
         plt.close()
 
     @staticmethod
-    def __generate_road_plot(model, path_points, save_path):
+    def __generate_plot(model, path_points, save_path):
         grid_00, grid_01 = model.domain_descriptor.grid_domain[0]
         grid_10, grid_11 = model.domain_descriptor.grid_domain[1]
+
         XGrid = np.arange(grid_00, grid_01 - 1e-10, model.domain_descriptor.grid_gap)
         YGrid = np.arange(grid_10, grid_11 - 1e-10, model.domain_descriptor.grid_gap)
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
         ground_truth_function = np.vectorize(lambda x, y: model([x, y]))
 
-        # grid_extent = [grid_00, grid_01, grid_10, grid_11]
+        grid_extent = [grid_00, grid_01, grid_10, grid_11]
         """
         grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
                         grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
@@ -87,7 +90,7 @@ class DatasetPlotGenerator:
 
         axes = plt.axes()
 
-        axes.imshow(ground_truth, interpolation='nearest', aspect='auto', cmap='Greys')
+        axes.imshow(ground_truth, interpolation='nearest', aspect='auto', cmap='Greys', extent=grid_extent)
         # batch size
         # path points is a list
         number_of_points = len(path_points)
@@ -120,3 +123,4 @@ class DatasetPlotGenerator:
         plt.savefig(save_path + ".png")
         plt.clf()
         plt.close()
+
