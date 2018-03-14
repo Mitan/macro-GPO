@@ -19,11 +19,11 @@ class SimulatedMapValueDict(MapValueDictBase):
 
         gp = GaussianProcess(covariance_function=covariance_function,
                              mean_function=hyper_storer.mean_function)
-        locs, vals =  self.__generate_values(gp=gp,
-                                             grid_domain=domain_descriptor.grid_domain,
-                                             num_samples=domain_descriptor.num_samples_grid,
-                                             seed=seed,
-                                             noise_variance=hyper_storer.noise_variance)
+        locs, vals = self.__generate_values(gp=gp,
+                                            grid_domain=domain_descriptor.grid_domain,
+                                            num_samples=domain_descriptor.num_samples_grid,
+                                            seed=seed,
+                                            noise_variance=hyper_storer.noise_variance)
 
         MapValueDictBase.__init__(self, locations=locs, values=vals)
 
@@ -32,8 +32,10 @@ class SimulatedMapValueDict(MapValueDictBase):
 
     # for given state
     def GetSelectedMacroActions(self, current_state):
-        return [self.PhysicalTransition(current_state, a)
-                for a in self.macroaction_set if self.__isValidMacroAction(current_state, a)]
+        all_available_macroactions = [self.PhysicalTransition(current_state, a)
+                                      for a in self.macroaction_set]
+        return [physical_state for physical_state in all_available_macroactions
+                if self.__isValidMacroAction(physical_state)]
 
     # generates values with zero mean
     def __generate_values(self, gp, grid_domain, num_samples, seed, noise_variance):
@@ -87,8 +89,9 @@ class SimulatedMapValueDict(MapValueDictBase):
         return m
     """
 
-    def PhysicalTransition(self, physical_state, macroaction):
-        current_location = physical_state[-1, :]
+    def PhysicalTransition(self, current_location, macroaction):
+
+        # current_location = physical_state[-1, :]
         batch_size = macroaction.shape[0]
 
         repeated_location = np.asarray([current_location for i in range(batch_size)])
@@ -100,9 +103,10 @@ class SimulatedMapValueDict(MapValueDictBase):
 
         # check that it is 2d
         assert new_physical_state.ndim == 2
+        print current_location, new_physical_state, macroaction
         return new_physical_state
 
-    def __isValidMacroAction(self, physical_state, a):
+    def __isValidMacroAction(self, physical_state):
         # TODO: ensure scalability to multiple dimensions
         # TODO: ensure epsilon comparison for floating point comparisons (currently comparing directly like a noob)
 
@@ -111,18 +115,21 @@ class SimulatedMapValueDict(MapValueDictBase):
         # both should be equal to 2, since the points are 2-d.
         # the first dimension is the length of state. should be equal to batch size
         #  but can't compare because of the first step
-        assert physical_state.shape[1] == a.shape[1]
-        new_state = self.PhysicalTransition(physical_state, a)
-        assert new_state.shape == a.shape
+
+        #  print physical_state, a
+        # assert physical_state.shape[1] == a.shape[1]
+        # new_state = self.PhysicalTransition(physical_state, a)
+        # assert new_state.shape == a.shape
         # print new_state
+        assert physical_state.shape[1] == 2
         ndims = 2
         eps = 0.001
         # a.shape[0] is batch_size
-        for i in range(a.shape[0]):
-            current_agent_postion = new_state[i, :]
+        for i in range(physical_state.shape[0]):
+            current_agent_postion = physical_state[i, :]
             for dim in xrange(ndims):
-                if current_agent_postion[dim] < self.grid_domain[dim][0] or current_agent_postion[dim] >= \
-                        self.grid_domain[dim][1]:
+                if current_agent_postion[dim] < self.domain_descriptor.grid_domain[dim][0] or current_agent_postion[dim] >= \
+                        self.domain_descriptor.grid_domain[dim][1]:
                     return False
         return True
 
@@ -134,6 +141,8 @@ class SimulatedMapValueDict(MapValueDictBase):
         grid_gap = self.domain_descriptor.grid_gap
         action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0), (-grid_gap, 0))
         return [self.__GetStraightLineMacroAction(direction, batch_size) for direction in action_set]
+
+
 """
 def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
     result_graphs = []
