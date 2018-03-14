@@ -16,7 +16,6 @@ class GaussianProcess:
     def CovarianceFunction(self, s1, s2):
         return self.covariance_function.Cov(s1, s2)
 
-    @staticmethod
     def CovarianceMesh(self, col, row):
         """
         @param col, row - array of shape (number of dimensions * number of data points)
