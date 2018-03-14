@@ -20,6 +20,8 @@ class DatasetGenerator:
             return self.__get_robot_dataset_model()
         elif self.type == DatasetEnum.Road:
             return self.__get_road_dataset_model()
+        elif self.type == DatasetEnum.Simulated:
+            return self.__get_simulated_dataset_model()
         else:
             raise ValueError("Unknown dataset")
             # private methods
@@ -52,4 +54,16 @@ class DatasetGenerator:
 
         domain_descriptor = get_domain_descriptor(DatasetEnum.Road)
         m = RoadMapValueDict(filename=filename, hyper_storer=hyper_storer, domain_descriptor=domain_descriptor)
+        return m
+
+    def __get_simulated_dataset_model(self):
+        if self.mode == DatasetModeEnum.Generate:
+            raise ValueError("Generate mode is available only for simulated dataset")
+
+        filename = '../../datasets/slot' + str(self.time_slot) + '/tlog' + str(self.time_slot) + '.dom'
+
+        hyper_storer = get_hyper_storer(DatasetEnum.Simulated, self.time_slot)
+
+        domain_descriptor = get_domain_descriptor(DatasetEnum.Simulated)
+        m = MapValueDict(filename=filename, hyper_storer=hyper_storer, domain_descriptor=domain_descriptor)
         return m
