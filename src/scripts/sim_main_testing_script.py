@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     args = sys.argv
 
-    start = 1
+    start = 2
     end = start + 1
     assert start < end
     for seed in range(start, end):
@@ -28,6 +28,7 @@ if __name__ == '__main__':
                                  time_steps=t,
                                  num_samples=num_samples,
                                  batch_size=batch_size,
-                                 time_slot=None,
-                                 dataset_type=DatasetEnum.Simulated,
-                                 dataset_mode=DatasetModeEnum.Load)
+                                 time_slot=16,
+                                 dataset_type=DatasetEnum.Robot,
+                                 dataset_mode=DatasetModeEnum.Load,
+                                 ma_treshold=20)

@@ -16,19 +16,19 @@ class DatasetGenerator:
         self.time_slot = time_slot
         self.batch_size = batch_size
 
-    def get_dataset_model(self, root_folder, seed):
+    def get_dataset_model(self, root_folder, seed, ma_treshold):
         # select_all select all macro-actions
         if self.type == DatasetEnum.Robot:
-            return self.__get_robot_dataset_model(root_folder, seed)
+            return self.__get_robot_dataset_model(root_folder, ma_treshold)
         elif self.type == DatasetEnum.Road:
-            return self.__get_road_dataset_model(root_folder, seed)
+            return self.__get_road_dataset_model(root_folder)
         elif self.type == DatasetEnum.Simulated:
             return self.__get_simulated_dataset_model(root_folder, seed)
         else:
             raise ValueError("Unknown dataset")
             # private methods
 
-    def __get_robot_dataset_model(self, root_folder, seed):
+    def __get_robot_dataset_model(self, root_folder, ma_treshold):
 
         data_filename = '../../datasets/robot/selected_slots/slot_' + str(self.time_slot) + '/noise_final_slot_' + \
                         str(self.time_slot) + '.txt'
@@ -45,15 +45,21 @@ class DatasetGenerator:
 
         location_filename = root_folder + 'start_location.txt'
 
+        actions_filename = root_folder + 'actions_selected.txt'
+
         if self.mode == DatasetModeEnum.Generate:
             m.GenerateStartLocation()
+            m.SelectMacroActions(actions_filename=actions_filename, ma_treshold=ma_treshold)
             with open(location_filename, 'w') as f:
-                f.write(str(m.start_location[0]) + " " + str(m.start_location[1]))
+                f.write(str(m.start_location[0,0]) + " " + str(m.start_location[0,1]))
+            print "Generating start location and macro-actions"
         else:
             m.LoadStartLocation(location_filename)
+            m.LoadSelectedMacroactions(actions_filename=actions_filename)
+            print "Loading start location and macro-actions"
         return m
 
-    def __get_road_dataset_model(self, root_folder, seed):
+    def __get_road_dataset_model(self, root_folder):
 
         filename = '../../datasets/slot' + str(self.time_slot) + '/tlog' + str(self.time_slot) + '.dom'
 
@@ -69,12 +75,12 @@ class DatasetGenerator:
 
         if self.mode == DatasetModeEnum.Generate:
             m.GenerateStartLocation()
-
             with open(location_filename, 'w') as f:
-                f.write(str(m.start_location[0]) + " " + str(m.start_location[1]))
+                f.write(str(m.start_location[0,0]) + " " + str(m.start_location[0,1]))
+            print "Generating start location and macro-actions"
         else:
             m.LoadStartLocation(location_filename)
-
+            print "Loading start location and macro-actions"
         return m
 
     def __get_simulated_dataset_model(self, root_folder, seed):

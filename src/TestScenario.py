@@ -70,7 +70,7 @@ def TestScenario_LP(my_save_folder_root, seed, time_steps, num_samples, batch_si
 
 
 def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps,
-                             num_samples, batch_size, time_slot, dataset_type, dataset_mode):
+                             num_samples, batch_size, time_slot, dataset_type, dataset_mode, ma_treshold):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -89,7 +89,7 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps,
     """
     dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=dataset_mode,
                                          time_slot=time_slot, batch_size=batch_size)
-    m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed)
+    m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed, ma_treshold=ma_treshold)
 
     # m.LoadSelectedMacroactions(save_folder, batch_size)
     # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)
