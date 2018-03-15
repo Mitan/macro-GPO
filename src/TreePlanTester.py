@@ -43,7 +43,6 @@ class TreePlanTester:
         self.batch_size = batch_size
 
     def InitTestParameters(self, initial_physical_state, past_locations):
-
         self.initial_physical_state = initial_physical_state
         self.past_locations = past_locations
 
@@ -211,7 +210,7 @@ class TreePlanTester:
                                     save_path=save_path)
 
 
-def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, method, num_samples, batch_size,
+def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samples,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
@@ -226,7 +225,8 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
 
     # hyper_storer = RoadHypersStorer_18()
     hyper_storer = model.hyper_storer
-    initial_physical_state = hyper_storer.GetInitialPhysicalState(start_location)
+    initial_physical_state = model.start_location
+
 
     # print model.GenerateRoadMacroActions(initial_physical_state[-1], batch_size)
 
@@ -250,7 +250,7 @@ def testWithFixedParameters(model, horizon, start_location, num_timesteps_test, 
     TPT.InitEnvironment(environment_noise=hyper_storer.noise_variance, model=model, hyper_storer=hyper_storer)
     TPT.InitPlanner(domain_descriptor=model.domain_descriptor, gamma=1, epsilon=epsilon_,
                     horizon=horizon,
-                    batch_size=batch_size)
+                    batch_size=model.batch_size)
     TPT.InitTestParameters(initial_physical_state=initial_physical_state, past_locations=past_locations)
 
     return TPT.Test(num_timesteps_test=num_timesteps_test,

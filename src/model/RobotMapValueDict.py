@@ -9,11 +9,12 @@ batch_road_macroactions = []
 
 class RobotValueDict(MapValueDictBase):
 
-    def __init__(self, data_filename, coords_filename, neighbours_filename, hyper_storer, domain_descriptor):
+    def __init__(self, data_filename, coords_filename, neighbours_filename, hyper_storer, domain_descriptor, batch_size):
 
         self.dataset_type = DatasetEnum.Robot
         self.hyper_storer = hyper_storer
         self.domain_descriptor = domain_descriptor
+        self.batch_size = batch_size
 
         data_lines = np.genfromtxt(data_filename)
 
@@ -65,9 +66,9 @@ class RobotValueDict(MapValueDictBase):
         return self.neighbours[tuple_loc]
 
     # list of 2D arrays
-    def ___ExpandActions(self, start, batch_size):
+    def ___ExpandActions(self, start):
         # including the start, hence +1
-        if len(start) == batch_size + 1:
+        if len(start) == self.batch_size + 1:
             yield np.asarray(start[1:])
         else:
             current = start[-1]
@@ -77,17 +78,17 @@ class RobotValueDict(MapValueDictBase):
                 if (next_node in start):
                     continue
                 # print self.__call__(next_node)
-                for state in self.___ExpandActions(start + [next_node], batch_size):
+                for state in self.___ExpandActions(start + [next_node]):
                     yield state
 
-    def SelectMacroActions(self, batch_size, folder_name, select_all=False):
+    def SelectMacroActions(self, folder_name, select_all=False):
         self.selected_actions_dict = {}
 
         treshhold = 20
         actions_file  = open(folder_name + 'actions_selected.txt', 'w') if not select_all else None
 
         for loc in self.locations:
-            all_macro_actions = self.GenerateAllMacroActions(loc, batch_size)
+            all_macro_actions = self.GenerateAllMacroActions(loc)
 
             if select_all:
                 self.selected_actions_dict[tuple(loc)] = all_macro_actions
@@ -115,14 +116,11 @@ class RobotValueDict(MapValueDictBase):
         return self.selected_actions_dict[current_state] if current_state in self.selected_actions_dict.keys() else []
 
     # for given state
-    def GenerateAllMacroActions(self, current_state, batch_size):
+    def GenerateAllMacroActions(self, current_state):
         current_state = tuple(current_state)
-        return list(self.___ExpandActions([current_state], batch_size))
+        return list(self.___ExpandActions([current_state]))
 
-    def GetRandomStartLocation(self, batch_size):
-        return choice(list(self.locations))
-
-    def LoadSelectedMacroactions(self, folder_name, batch_size):
+    def LoadSelectedMacroactions(self, folder_name):
 
         self.selected_actions_dict = {}
 
@@ -135,19 +133,22 @@ class RobotValueDict(MapValueDictBase):
             loc = ( numbers[0], numbers[1])
             indexes = map(int, numbers[2:])
             # print loc, indexes
-            all_macro_actions = self.GenerateAllMacroActions(loc, batch_size)
+            all_macro_actions = self.GenerateAllMacroActions(loc)
             length = len(indexes)
             assert length <= 20
 
             self.selected_actions_dict[tuple(loc)] = [all_macro_actions[i] for i in indexes]
 
-    def LoadRandomLocation(self, folder_name):
+    def GenerateStartLocation(self):
+        self.start_location = np.array([choice(list(self.locations))])
+
+    def LoadStartLocation(self, folder_name):
         location_file_name = folder_name + 'start_location.txt'
         # should contain only one line
         string_locations = open(location_file_name).readline().split()
         location = map(float, string_locations)
         assert len(location) == 2
-        return np.array(location)
+        self.start_location = np.array([location])
 
 
 if __name__ == "__main__":

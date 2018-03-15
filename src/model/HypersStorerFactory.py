@@ -49,10 +49,10 @@ class SimulatedHyperStorer(AbstarctHypersStorer):
         self.mean_function = 0.0
 
         self.PrintParams()
-
+    """
     def GetInitialPhysicalState(self, start_location):
         return np.array([[1.0, 1.0]])
-
+    """
 
 class RoadHypersStorer_Log18(AbstarctHypersStorer):
     def __init__(self):
@@ -65,10 +65,10 @@ class RoadHypersStorer_Log18(AbstarctHypersStorer):
         self.mean_function = 1.5673
 
         self.PrintParams()
-
+    """
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
-
+    """
 
 class RoadHypersStorer_Log44(AbstarctHypersStorer):
     def __init__(self):
@@ -81,10 +81,10 @@ class RoadHypersStorer_Log44(AbstarctHypersStorer):
         self.mean_function = 1.4646
 
         self.PrintParams()
-
+    """
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
-
+    """
 
 class RobotHypersStorer_2(AbstarctHypersStorer):
     def __init__(self):
@@ -97,10 +97,10 @@ class RobotHypersStorer_2(AbstarctHypersStorer):
         self.mean_function = 22.924200
 
         self.PrintParams()
-
+    """
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
-
+    """
 
 class RobotHypersStorer_16(AbstarctHypersStorer):
     def __init__(self):
@@ -113,10 +113,10 @@ class RobotHypersStorer_16(AbstarctHypersStorer):
         self.mean_function = 17.851283
 
         self.PrintParams()
-
+    """
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
-
+    """
 
 # unused
 class RoadHypersStorer_44(AbstarctHypersStorer):

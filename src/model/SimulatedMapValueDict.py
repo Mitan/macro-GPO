@@ -8,10 +8,12 @@ from scipy.stats import multivariate_normal
 
 class SimulatedMapValueDict(MapValueDictBase):
 
-    def __init__(self, hyper_storer, domain_descriptor, seed=None, filename=None):
+    def __init__(self, hyper_storer, domain_descriptor, batch_size, seed=None, filename=None):
         self.dataset_type = DatasetEnum.Simulated
         self.hyper_storer = hyper_storer
         self.domain_descriptor = domain_descriptor
+        self.batch_size = batch_size
+
         if filename:
             data = np.genfromtxt(filename)
             locs = data[:, :-1]
@@ -31,8 +33,7 @@ class SimulatedMapValueDict(MapValueDictBase):
 
         MapValueDictBase.__init__(self, locations=locs, values=vals)
 
-        batch_size = 4
-        self.macroaction_set = self.__GenerateSimpleMacroactions(batch_size)
+        self.macroaction_set = self.__GenerateSimpleMacroactions()
 
     # for given state
     def GetSelectedMacroActions(self, current_state):
@@ -96,9 +97,8 @@ class SimulatedMapValueDict(MapValueDictBase):
     def PhysicalTransition(self, current_location, macroaction):
 
         # current_location = physical_state[-1, :]
-        batch_size = macroaction.shape[0]
 
-        repeated_location = np.asarray([current_location for i in range(batch_size)])
+        repeated_location = np.asarray([current_location for i in range(self.batch_size)])
         # repeated_location = np.tile(current_location, batch_size)
 
         assert repeated_location.shape == macroaction.shape
@@ -137,15 +137,20 @@ class SimulatedMapValueDict(MapValueDictBase):
                     return False
         return True
 
-    def __GetStraightLineMacroAction(self, direction, length):
-        return np.asarray([[direction[0] * i, direction[1] * i] for i in range(1, length + 1)])
+    def __GetStraightLineMacroAction(self, direction):
+        return np.asarray([[direction[0] * i, direction[1] * i] for i in range(1, self.batch_size + 1)])
 
     # Generates simple macroactions allowing to move straight in specified directions
-    def __GenerateSimpleMacroactions(self, batch_size):
+    def __GenerateSimpleMacroactions(self):
         grid_gap = self.domain_descriptor.grid_gap
         action_set = ((0, grid_gap), (0, -grid_gap), (grid_gap, 0), (-grid_gap, 0))
-        return [self.__GetStraightLineMacroAction(direction, batch_size) for direction in action_set]
+        return [self.__GetStraightLineMacroAction(direction) for direction in action_set]
 
+    def GenerateStartLocation(self):
+        self.start_location = np.array([[1.0, 1.0]])
+
+    def LoadStartLocation(self, folder_name):
+        self.start_location = np.array([[1.0, 1.0]])
 
 """
 def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):

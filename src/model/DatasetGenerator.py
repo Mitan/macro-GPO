@@ -10,10 +10,11 @@ from src.model.SimulatedMapValueDict import SimulatedMapValueDict
 
 class DatasetGenerator:
 
-    def __init__(self, dataset_type, dataset_mode, time_slot):
+    def __init__(self, dataset_type, dataset_mode, time_slot, batch_size):
         self.type = dataset_type
         self.mode = dataset_mode
         self.time_slot = time_slot
+        self.batch_size = batch_size
 
     def get_dataset_model(self):
         # select_all select all macro-actions
@@ -28,8 +29,6 @@ class DatasetGenerator:
             # private methods
 
     def __get_robot_dataset_model(self):
-        if self.mode == DatasetModeEnum.Generate:
-            raise ValueError("Generate mode is available only for simulated dataset")
 
         data_filename = '../../datasets/robot/selected_slots/slot_' + str(self.time_slot) + '/noise_final_slot_' + \
                         str(self.time_slot) + '.txt'
@@ -42,19 +41,30 @@ class DatasetGenerator:
 
         m = RobotValueDict(data_filename=data_filename, coords_filename=coords_filename,
                            neighbours_filename=neighbours_filename, hyper_storer=hyper_storer,
-                           domain_descriptor=domain_descriptor)
+                           domain_descriptor=domain_descriptor, batch_size=self.batch_size)
+        if self.mode == DatasetModeEnum.Generate:
+            m.GenerateStartLocation()
+        else:
+            m.LoadStartLocation('')
         return m
 
     def __get_road_dataset_model(self):
-        if self.mode == DatasetModeEnum.Generate:
-            raise ValueError("Generate mode is available only for simulated dataset")
 
         filename = '../../datasets/slot' + str(self.time_slot) + '/tlog' + str(self.time_slot) + '.dom'
 
         hyper_storer = get_hyper_storer(DatasetEnum.Road, self.time_slot)
 
         domain_descriptor = get_domain_descriptor(DatasetEnum.Road)
-        m = RoadMapValueDict(filename=filename, hyper_storer=hyper_storer, domain_descriptor=domain_descriptor)
+        m = RoadMapValueDict(filename=filename,
+                             hyper_storer=hyper_storer,
+                             domain_descriptor=domain_descriptor,
+                             batch_size=self.batch_size)
+
+        if self.mode == DatasetModeEnum.Generate:
+            m.GenerateStartLocation()
+        else:
+            m.LoadStartLocation('')
+            
         return m
 
     def __get_simulated_dataset_model(self):
@@ -68,11 +78,16 @@ class DatasetGenerator:
         if self.mode == DatasetModeEnum.Generate:
             m = SimulatedMapValueDict(hyper_storer=hyper_storer,
                                       domain_descriptor=domain_descriptor,
-                                      seed=seed)
+                                      seed=seed,
+                                      batch_size=self.batch_size)
             m.WriteToFile(save_folder + "dataset.txt")
+            m.GenerateStartLocation()
         else:
-            filename = save_folder + 'dataset.txt'
+            dataset_filename = save_folder + 'dataset.txt'
             m = SimulatedMapValueDict(hyper_storer=hyper_storer,
                                       domain_descriptor=domain_descriptor,
-                                      filename=filename)
+                                      filename=dataset_filename,
+                                      batch_size=self.batch_size)
+
+            m.LoadStartLocation(save_folder)
         return m

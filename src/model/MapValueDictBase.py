@@ -18,6 +18,8 @@ class MapValueDictBase():
         # self.values = values - self.mean
         self.values = values
 
+        self.start_location = None
+
         """
         if not epsilon == None:
             self.epsilon = epsilon
@@ -40,10 +42,10 @@ class MapValueDictBase():
         #self.StartLocations = list(self.locations)
         # print self.__vals_dict
 
-    def GetRandomStartLocation(self, batch_size):
+    """
+    def GenerateStartLocation(self, batch_size):
         return choice(list(self.locations))
-
-
+    """
     def __call__(self, query_location):
         """
         Search for nearest grid point iteratively. Uses L1 norm as the distance metric

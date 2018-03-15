@@ -15,10 +15,11 @@ class RoadMapValueDict(MapValueDictBase):
 
     # format of files is assumed to be
     # loc_x, loc_y, demand, supp, n_count, n_1, ....n_{n_count}
-    def __init__(self, filename, hyper_storer, domain_descriptor):
+    def __init__(self, filename, hyper_storer, domain_descriptor, batch_size):
         self.dataset_type = DatasetEnum.Road
         self.hyper_storer = hyper_storer
         self.domain_descriptor = domain_descriptor
+        self.batch_size = batch_size
 
         # TODO note hardcoded size of dataset
         self.dim_1 = 50
@@ -92,9 +93,9 @@ class RoadMapValueDict(MapValueDictBase):
         return self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
 
     # list of 2D arrays
-    def ___ExpandActions(self, start, batch_size):
+    def ___ExpandActions(self, start):
         # including the start, hence +1
-        if len(start) == batch_size + 1:
+        if len(start) == self.batch_size + 1:
             yield np.asarray(start[1:])
         else:
             current = start[-1]
@@ -104,17 +105,17 @@ class RoadMapValueDict(MapValueDictBase):
                 if (next_node in start) or (self.__call__(next_node) == self.NO_DATA_CONST):
                     continue
                 # print self.__call__(next_node)
-                for state in self.___ExpandActions(start + [next_node], batch_size):
+                for state in self.___ExpandActions(start + [next_node]):
                     yield state
 
-    def SelectMacroActions(self, batch_size, folder_name, select_all=False):
+    def SelectMacroActions(self, folder_name, select_all=False):
         self.selected_actions_dict = {}
 
         treshhold = 20
         actions_file  = open(folder_name + 'actions_selected.txt', 'w')
 
         for loc in self.locations:
-            all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)
+            all_macro_actions = self.GenerateAllRoadMacroActions(loc)
 
             if select_all:
                 self.selected_actions_dict[tuple(loc)] = all_macro_actions
@@ -141,20 +142,9 @@ class RoadMapValueDict(MapValueDictBase):
         return self.selected_actions_dict[current_state] if current_state in self.selected_actions_dict.keys() else []
 
     # for given state
-    def GenerateAllRoadMacroActions(self, current_state, batch_size):
+    def GenerateAllRoadMacroActions(self, current_state):
         current_state = tuple(current_state)
-        return list(self.___ExpandActions([current_state], batch_size))
-
-    def GetRandomStartLocation(self, batch_size):
-        # now StartLocations point to all locations
-        start_Locations = []
-        for i in range(self.locations.shape[0]):
-            loc = self.locations[i]
-
-            # if we have at least one macroaction
-            if self.GenerateAllRoadMacroActions(loc, batch_size) and self.__call__(loc) != self.NO_DATA_CONST:
-                start_Locations.append(loc)
-        return choice(start_Locations)
+        return list(self.___ExpandActions([current_state]))
 
     # the content is moved to class constructor
     # unused
@@ -184,7 +174,7 @@ class RoadMapValueDict(MapValueDictBase):
                         self.neighbours[tuple(n)].append(tuple_loc)
     """
 
-    def LoadSelectedMacroactions(self, folder_name, batch_size):
+    def LoadSelectedMacroactions(self, folder_name):
 
         self.selected_actions_dict = {}
 
@@ -197,19 +187,30 @@ class RoadMapValueDict(MapValueDictBase):
             loc = ( numbers[0], numbers[1])
             indexes = map(int, numbers[2:])
             # print loc, indexes
-            all_macro_actions = self.GenerateAllRoadMacroActions(loc, batch_size)
+            all_macro_actions = self.GenerateAllRoadMacroActions(loc)
             length = len(indexes)
             assert length <= 20
 
             self.selected_actions_dict[tuple(loc)] = [all_macro_actions[i] for i in indexes]
 
-    def LoadRandomLocation(self, folder_name):
+    def GenerateStartLocation(self):
+        # now StartLocations point to all locations
+        start_Locations = []
+        for i in range(self.locations.shape[0]):
+            loc = self.locations[i]
+
+            # if we have at least one macroaction
+            if self.GenerateAllRoadMacroActions(loc) and self.__call__(loc) != self.NO_DATA_CONST:
+                start_Locations.append(loc)
+        self.start_location = np.array([choice(start_Locations)])
+
+    def LoadStartLocation(self, folder_name):
         location_file_name = folder_name + 'start_location.txt'
         # should contain only one line
         string_locations = open(location_file_name).readline().split()
         location = map(float, string_locations)
         assert len(location) == 2
-        return np.array(location)
+        self.start_location = np.array([location])
 
 
 
