@@ -16,19 +16,19 @@ class DatasetGenerator:
         self.time_slot = time_slot
         self.batch_size = batch_size
 
-    def get_dataset_model(self):
+    def get_dataset_model(self, root_folder, seed):
         # select_all select all macro-actions
         if self.type == DatasetEnum.Robot:
-            return self.__get_robot_dataset_model()
+            return self.__get_robot_dataset_model(root_folder, seed)
         elif self.type == DatasetEnum.Road:
-            return self.__get_road_dataset_model()
+            return self.__get_road_dataset_model(root_folder, seed)
         elif self.type == DatasetEnum.Simulated:
-            return self.__get_simulated_dataset_model()
+            return self.__get_simulated_dataset_model(root_folder, seed)
         else:
             raise ValueError("Unknown dataset")
             # private methods
 
-    def __get_robot_dataset_model(self):
+    def __get_robot_dataset_model(self, root_folder, seed):
 
         data_filename = '../../datasets/robot/selected_slots/slot_' + str(self.time_slot) + '/noise_final_slot_' + \
                         str(self.time_slot) + '.txt'
@@ -42,13 +42,18 @@ class DatasetGenerator:
         m = RobotValueDict(data_filename=data_filename, coords_filename=coords_filename,
                            neighbours_filename=neighbours_filename, hyper_storer=hyper_storer,
                            domain_descriptor=domain_descriptor, batch_size=self.batch_size)
+
+        location_filename = root_folder + 'start_location.txt'
+
         if self.mode == DatasetModeEnum.Generate:
             m.GenerateStartLocation()
+            with open(location_filename, 'w') as f:
+                f.write(str(m.start_location[0]) + " " + str(m.start_location[1]))
         else:
-            m.LoadStartLocation('')
+            m.LoadStartLocation(location_filename)
         return m
 
-    def __get_road_dataset_model(self):
+    def __get_road_dataset_model(self, root_folder, seed):
 
         filename = '../../datasets/slot' + str(self.time_slot) + '/tlog' + str(self.time_slot) + '.dom'
 
@@ -60,34 +65,41 @@ class DatasetGenerator:
                              domain_descriptor=domain_descriptor,
                              batch_size=self.batch_size)
 
+        location_filename = root_folder + 'start_location.txt'
+
         if self.mode == DatasetModeEnum.Generate:
             m.GenerateStartLocation()
+
+            with open(location_filename, 'w') as f:
+                f.write(str(m.start_location[0]) + " " + str(m.start_location[1]))
         else:
-            m.LoadStartLocation('')
-            
+            m.LoadStartLocation(location_filename)
+
         return m
 
-    def __get_simulated_dataset_model(self):
+    def __get_simulated_dataset_model(self, root_folder, seed):
         hyper_storer = get_hyper_storer(DatasetEnum.Simulated, self.time_slot)
 
         domain_descriptor = get_domain_descriptor(DatasetEnum.Simulated)
-        # todo
-        seed = 0
-        save_folder = "./"
+
+        location_filename = root_folder + 'start_location.txt'
 
         if self.mode == DatasetModeEnum.Generate:
             m = SimulatedMapValueDict(hyper_storer=hyper_storer,
                                       domain_descriptor=domain_descriptor,
                                       seed=seed,
                                       batch_size=self.batch_size)
-            m.WriteToFile(save_folder + "dataset.txt")
+            m.WriteToFile(root_folder + "dataset.txt")
             m.GenerateStartLocation()
+
+            with open(location_filename, 'w') as f:
+                f.write(str(m.start_location[0, 0]) + " " + str(m.start_location[0,1]))
         else:
-            dataset_filename = save_folder + 'dataset.txt'
+            dataset_filename = root_folder + 'dataset.txt'
             m = SimulatedMapValueDict(hyper_storer=hyper_storer,
                                       domain_descriptor=domain_descriptor,
                                       filename=dataset_filename,
                                       batch_size=self.batch_size)
 
-            m.LoadStartLocation(save_folder)
+            m.LoadStartLocation(location_filename)
         return m

@@ -69,7 +69,8 @@ def TestScenario_LP(my_save_folder_root, seed, time_steps, num_samples, batch_si
                                  batch_size=batch_size)
 
 
-def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples, batch_size, time_slot, dataset_type):
+def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps,
+                             num_samples, batch_size, time_slot, dataset_type, dataset_mode):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -86,9 +87,9 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps, num_samples,
     m = GenerateRobotModelFromFile(data_filename=data_filename, coords_filename=coords_filename,
                                    neighbours_filename=neighbours_filename)
     """
-    dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=DatasetModeEnum.Generate,
+    dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=dataset_mode,
                                          time_slot=time_slot, batch_size=batch_size)
-    m = dataset_generator.get_dataset_model()
+    m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed)
 
     # m.LoadSelectedMacroactions(save_folder, batch_size)
     # m.SelectMacroActions(folder_name=save_folder, batch_size=batch_size, select_all=True)

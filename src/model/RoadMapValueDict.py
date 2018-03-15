@@ -204,10 +204,9 @@ class RoadMapValueDict(MapValueDictBase):
                 start_Locations.append(loc)
         self.start_location = np.array([choice(start_Locations)])
 
-    def LoadStartLocation(self, folder_name):
-        location_file_name = folder_name + 'start_location.txt'
+    def LoadStartLocation(self, location_filename):
         # should contain only one line
-        string_locations = open(location_file_name).readline().split()
+        string_locations = open(location_filename).readline().split()
         location = map(float, string_locations)
         assert len(location) == 2
         self.start_location = np.array([location])

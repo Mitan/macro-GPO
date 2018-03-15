@@ -149,7 +149,7 @@ class SimulatedMapValueDict(MapValueDictBase):
     def GenerateStartLocation(self):
         self.start_location = np.array([[1.0, 1.0]])
 
-    def LoadStartLocation(self, folder_name):
+    def LoadStartLocation(self, location_filename):
         self.start_location = np.array([[1.0, 1.0]])
 
 """
