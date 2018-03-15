@@ -108,16 +108,15 @@ class RoadMapValueDict(MapValueDictBase):
                 for state in self.___ExpandActions(start + [next_node]):
                     yield state
 
-    def SelectMacroActions(self, folder_name, select_all=False):
+    def SelectMacroActions(self, actions_filename, ma_treshold):
         self.selected_actions_dict = {}
 
-        treshhold = 20
-        actions_file  = open(folder_name + 'actions_selected.txt', 'w')
+        actions_file  = open(actions_filename, 'w') if ma_treshold else None
 
         for loc in self.locations:
             all_macro_actions = self.GenerateAllRoadMacroActions(loc)
 
-            if select_all:
+            if not ma_treshold:
                 self.selected_actions_dict[tuple(loc)] = all_macro_actions
                 continue
 
@@ -126,15 +125,15 @@ class RoadMapValueDict(MapValueDictBase):
             if length == 0:
                 # do nothing
                 continue
-            elif length < treshhold:
+            elif length < ma_treshold:
                 self.selected_actions_dict[tuple(loc)] = all_macro_actions
                 actions_file.write(str(loc[0]) + ' ' + str(loc[1]) + ' ' + str(range(length)) + '\n')
             else:
-                generated_indexes = sample(xrange(length), treshhold)
+                generated_indexes = sample(xrange(length), ma_treshold)
                 self.selected_actions_dict[tuple(loc)] = [all_macro_actions[i] for i in generated_indexes]
                 actions_file.write(str(loc[0]) + ' ' + str(loc[1]) + ' ' + str(generated_indexes) + '\n')
-
-        actions_file.close()
+        if actions_file:
+            actions_file.close()
 
     # for given state
     def GetSelectedMacroActions(self, current_state):
@@ -174,12 +173,11 @@ class RoadMapValueDict(MapValueDictBase):
                         self.neighbours[tuple(n)].append(tuple_loc)
     """
 
-    def LoadSelectedMacroactions(self, folder_name):
+    def LoadSelectedMacroactions(self, actions_filename):
 
         self.selected_actions_dict = {}
 
-        actions_file_name = folder_name + 'actions_selected.txt'
-        lines = open(actions_file_name).readlines()
+        lines = open(actions_filename).readlines()
 
         for line in lines:
             string_numbers = line.replace(',',' ').replace('[',' ').replace(']',' ').split()

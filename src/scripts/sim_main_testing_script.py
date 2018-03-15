@@ -11,15 +11,16 @@ if __name__ == '__main__':
     # max horizon
     h_max = 4
     # time steps
-    t = 5
 
-    batch_size = 4
+    batch_size = 5
+
+    t =  20 / batch_size
 
     num_samples = 300
 
     args = sys.argv
 
-    start = 2
+    start = 4
     end = start + 1
     assert start < end
     for seed in range(start, end):
@@ -28,7 +29,7 @@ if __name__ == '__main__':
                                  time_steps=t,
                                  num_samples=num_samples,
                                  batch_size=batch_size,
-                                 time_slot=16,
-                                 dataset_type=DatasetEnum.Robot,
-                                 dataset_mode=DatasetModeEnum.Load,
+                                 time_slot=18,
+                                 dataset_type=DatasetEnum.Road,
+                                 dataset_mode=DatasetModeEnum.Generate,
                                  ma_treshold=20)
