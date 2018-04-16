@@ -1,3 +1,6 @@
+from src.enum.DatasetEnum import DatasetEnum
+from src.enum.DatasetModeEnum import DatasetModeEnum
+from src.model.DatasetGenerator import DatasetGenerator
 from src.plotting.ResultsPlotter import PlotData
 import numpy as np
 
@@ -117,8 +120,10 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
 
     sum_model_mean = 0
     for seed in seeds:
-        seed_dataset_path = tests_source_path + 'seed' + str(seed) + '/dataset.txt'
-        m = GenerateModelFromFile(seed_dataset_path)
+        seed_dataset_path = tests_source_path + 'seed' + str(seed) + '/'
+        dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Simulated, dataset_mode=DatasetModeEnum.Load,
+                                             time_slot=None, batch_size=batch_size)
+        m = dataset_generator.get_dataset_model(root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
         sum_model_mean += m.mean
 
     average_model_mean = sum_model_mean / len_seeds

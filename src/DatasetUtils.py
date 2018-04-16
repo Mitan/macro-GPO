@@ -5,7 +5,7 @@ import numpy as np
 
 from GaussianProcess import SquareExponential, GaussianProcess
 from src.model.MapValueDictBase import MapValueDictBase
-
+"""
 
 def GenerateModelFromFile(filename):
     data = np.genfromtxt(filename)
@@ -13,7 +13,6 @@ def GenerateModelFromFile(filename):
     vals = data[:, -1]
     return MapValueDictBase(locs, vals)
 
-"""
 def GenerateRoadModelFromFile(filename):
     m = RoadMapValueDict(filename)
     # m.AddTwoSidedRoads()

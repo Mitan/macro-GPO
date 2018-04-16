@@ -1,5 +1,5 @@
 from GeneralResultsAverager import SimulatedRewards
-from src.PlottingEnum import PlottingMethods
+from src.enum.PlottingEnum import PlottingMethods
 from RegretCalculator import SimulatedRegrets
 
 
@@ -82,6 +82,25 @@ def GetSimulatedTotalRewards_our():
                     'DB-GP-UCB']
 
     output_file = '../../result_graphs/eps/simulated/our_simulated_total_rewards.eps'
+
+    SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                     seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+
+
+def GetSimulatedTotalRewards_our_ucb():
+    seeds = range(66, 102)
+    batch_size = 4
+
+    root_path = '../../releaseTests/simulated/rewards-sAD/'
+    root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
+
+    methods = ['h4', 'h3', 'h2', 'h1','mle_h4', 'new_mle_h3', 'new_mle_h2' ]
+
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 2$',
+                    'DB-GP-UCB', r'Nonmyopic GP-UCB $H = 4$', r'Nonmyopic GP-UCB $H = 3$', r'Nonmyopic GP-UCB $H = 2$']
+
+    output_file = '../../result_graphs/eps/simulated/ucb_our_simulated_total_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
@@ -182,6 +201,24 @@ def GetSimulatedTotalRegrets_our():
                      output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
+def GetSimulatedTotalRegrets_our_ucb():
+    seeds = range(66, 102)
+    batch_size = 4
+
+    root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
+
+    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'new_mle_h3', 'new_mle_h2']
+
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 2$',
+                    'DB-GP-UCB', r'Nonmyopic GP-UCB $H = 4$', r'Nonmyopic GP-UCB $H = 3$', r'Nonmyopic GP-UCB $H = 2$']
+
+    output_file = '../../result_graphs/eps/simulated/ucb_our_simulated_simple_regrets.eps'
+
+    SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
+                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+
+
 def GetSimulatedBeta2Rewards():
     seeds = range(66, 102)
     batch_size = 4
@@ -250,3 +287,5 @@ if __name__ == "__main__":
     # GetSimulatedTotalRewards()
 
     # GetSimulated_H4Samples_TotalRewards()
+    GetSimulatedTotalRewards_our_ucb()
+    GetSimulatedTotalRegrets_our_ucb()

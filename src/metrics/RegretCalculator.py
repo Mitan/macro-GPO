@@ -1,10 +1,12 @@
 from StringIO import StringIO
 import numpy as np
 
-from src.DatasetUtils import GenerateRoadModelFromFile, GetAllMeasurements, GetMaxValues, GenerateModelFromFile, \
-    GenerateRobotModelFromFile
-from src.PlottingEnum import PlottingMethods
-from src.ResultsPlotter import PlotData
+from src.DatasetUtils import GetAllMeasurements, GetMaxValues
+from src.enum.DatasetEnum import DatasetEnum
+from src.enum.DatasetModeEnum import DatasetModeEnum
+from src.enum.PlottingEnum import PlottingMethods
+from src.model.DatasetGenerator import DatasetGenerator
+from src.plotting.ResultsPlotter import PlotData
 
 
 def GetRoadResultsForMethod(seeds, batch_size, method, root_path, model_max):
@@ -97,8 +99,10 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
     # average max is sum over all max seeds / len
     sum_model_max = 0
     for seed in seeds:
-        seed_dataset_path = root_path + 'seed' + str(seed) + '/dataset.txt'
-        m = GenerateModelFromFile(seed_dataset_path)
+        seed_dataset_path = root_path + 'seed' + str(seed) + '/'
+        dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Simulated, dataset_mode=DatasetModeEnum.Load,
+                                             time_slot=None, batch_size=batch_size)
+        m = dataset_generator.get_dataset_model(root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
         sum_model_max += m.GetMax()
 
     average_model_max = sum_model_max / len_seeds
@@ -246,4 +250,3 @@ if __name__ == "__main__":
     """
     # GetRobotTotalRegrets()
     # GetRobotTotalRegrets_H2Full()
-    GetRobotTotalRegrets_H4Samples()
