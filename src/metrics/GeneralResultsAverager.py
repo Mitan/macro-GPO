@@ -90,8 +90,11 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
     """
     results = []
 
-    dataset_file_name = '../../datasets/slot18/tlog18.dom'
-    m = GenerateRoadModelFromFile(dataset_file_name)
+    dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Road,
+                                 dataset_mode=DatasetModeEnum.Load,
+                                         time_slot=18, batch_size=batch_size)
+    m = dataset_generator.get_dataset_model(root_folder=tests_source_path+'seed0/', seed=0, ma_treshold=None)
+
     model_mean = m.mean
 
     for index, method in enumerate(methods):

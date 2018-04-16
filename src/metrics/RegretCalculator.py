@@ -63,9 +63,11 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
     method_names = ['qEI', 'Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3']
     """
 
+    dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Road,
+                                 dataset_mode=DatasetModeEnum.Load,
+                                         time_slot=18, batch_size=batch_size)
+    m = dataset_generator.get_dataset_model(root_folder=root_path+'seed0/', seed=0, ma_treshold=None)
 
-    dataset_file_name = '../../datasets/slot18/tlog18.dom'
-    m = GenerateRoadModelFromFile(dataset_file_name)
     model_max = m.GetMax()
 
     results = []
@@ -81,6 +83,7 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
 
     PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='road')
     return results
+
 
 def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):
     """

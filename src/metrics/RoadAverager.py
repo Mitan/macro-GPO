@@ -1,7 +1,7 @@
 import math
 
 from GeneralResultsAverager import RoadRewards
-from src.PlottingEnum import PlottingMethods
+from src.enum.PlottingEnum import PlottingMethods
 from RegretCalculator import RoadRegrets
 
 
@@ -171,6 +171,25 @@ def GetRoadTotalRewards_ours():
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
+def GetRoadTotalRewards_ours_ucb():
+    seeds = range(35)
+
+    batch_size = 5
+
+    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_mle_h3', 'new_mle_h2']
+
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 2$',
+                    'DB-GP-UCB', r'Nonmyopic GP-UCB $H = 4$', r'Nonmyopic GP-UCB $H = 3$', r'Nonmyopic GP-UCB $H = 2$']
+
+    root_path = '../../releaseTests/updated_release/road/b5-18-log/'
+
+    output_file = '../../result_graphs/eps/road/ucb_ours_road_total_rewards.eps'
+
+    RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+
+
 def GetRoadTotalRewards_onlyH4(my_ei = True):
     if my_ei:
         ei_method = 'my_qEI'
@@ -277,6 +296,23 @@ def GetRoadTotalRegrets_our():
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
     output_file = '../../result_graphs/eps/road/ours_road_simple_regrets.eps'
+
+    RoadRegrets(batch_size, root_path, methods, method_names, seeds,
+                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+
+def GetRoadTotalRegrets_our_ucb():
+    seeds = range(35)
+    batch_size = 5
+
+    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_mle_h3', 'new_mle_h2' ]
+
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 2$',
+                    'DB-GP-UCB', r'Nonmyopic GP-UCB $H = 4$', r'Nonmyopic GP-UCB $H = 3$', r'Nonmyopic GP-UCB $H = 2$']
+
+    root_path = '../../releaseTests/updated_release/road/b5-18-log/'
+
+    output_file = '../../result_graphs/eps/road/ucb_ours_road_simple_regrets.eps'
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -582,3 +618,5 @@ if __name__ == "__main__":
     # GetRoadTotalRewards()
     # GetRoadTotalRewards()
     # GetRoad_H2Full_TotalRewards()
+    GetRoadTotalRewards_ours_ucb()
+    GetRoadTotalRegrets_our_ucb()
