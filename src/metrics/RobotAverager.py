@@ -1,7 +1,7 @@
 import math
 
 from GeneralResultsAverager import RobotRewards
-from src.PlottingEnum import PlottingMethods
+from src.enum.PlottingEnum import PlottingMethods
 from RegretCalculator import RobotRegrets
 
 
@@ -240,6 +240,27 @@ def GetRobotTotalRewards_ours():
                  plottingType=PlottingMethods.TotalReward)
 
 
+def GetRobotTotalRewards_ours_ucb():
+    seeds = range(35)
+
+    batch_size = 5
+
+    time_slot = 16
+
+    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',  'mle_h4', 'new_mle_h3', 'new_mle_h2']
+
+    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
+                    'DB-GP-UCB', r'Nonmyopic GP-UCB $H = 4$', r'Nonmyopic GP-UCB $H = 3$', r'Nonmyopic GP-UCB $H = 2$']
+
+    root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
+
+    output_file = '../../result_graphs/eps/robot/ucb_ours_robot_total_rewards.eps'
+
+    RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
+                 seeds=seeds, output_filename=output_file, time_slot=time_slot,
+                 plottingType=PlottingMethods.TotalReward)
+
 def GetRobot_H2Full_TotalRewards():
     seeds = range(35)
     batch_size = 5
@@ -345,6 +366,24 @@ def GetRobotTotalRegrets_ours():
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
     output_file = '../../result_graphs/eps/robot/r_ei/ours_robot_simple_regrets.eps'
+
+    RobotRegrets(batch_size, root_path, methods, method_names, seeds,
+                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+
+
+def GetRobotTotalRegrets_ours_ucb():
+    seeds = range(35)
+    batch_size = 5
+
+    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'new_mle_h3', 'new_mle_h2']
+
+    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
+                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
+                    'DB-GP-UCB', r'Nonmyopic GP-UCB $H = 4$', r'Nonmyopic GP-UCB $H = 3$', r'Nonmyopic GP-UCB $H = 2$']
+
+    root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
+
+    output_file = '../../result_graphs/eps/robot/ucb_ours_robot_simple_regrets.eps'
 
     RobotRegrets(batch_size, root_path, methods, method_names, seeds,
                  output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
@@ -463,4 +502,5 @@ def GetRobotTotalRegrets_beta3():
 
 
 if __name__ == "__main__":
-    pass
+    GetRobotTotalRewards_ours_ucb()
+    GetRobotTotalRegrets_ours_ucb()

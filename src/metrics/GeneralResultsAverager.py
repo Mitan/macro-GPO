@@ -58,11 +58,10 @@ def CalculateRoadResultsForOneMethod(batch_size, model_mean, seeds, method, test
 def RobotRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, time_slot, plottingType):
     results = []
 
-    data_file = '../../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
-    neighbours_file = '../../datasets/robot/all_neighbours.txt'
-    coords_file = '../../datasets/robot/all_coords.txt'
-    m = GenerateRobotModelFromFile(data_filename=data_file, coords_filename=coords_file,
-                                   neighbours_filename=neighbours_file)
+    dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Robot,
+                                         dataset_mode=DatasetModeEnum.Load,
+                                         time_slot=16, batch_size=batch_size)
+    m = dataset_generator.get_dataset_model(root_folder=tests_source_path + 'seed0/', seed=0, ma_treshold=None)
     model_mean = m.mean
 
     for index, method in enumerate(methods):
