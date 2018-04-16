@@ -104,6 +104,7 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps,
 
     output_rewards = open(filename_rewards, append_write)
     """
+    """
     qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1,
                                   num_timesteps_test=time_steps,
                                   save_folder=save_folder + "qEI/",
@@ -128,7 +129,16 @@ def TestScenario_PE_qEI_BUCB(my_save_folder_root, seed, time_steps,
                                    num_samples=num_samples)
 
     method_name = 'BUCB'
+    """
+    mle_2 = testWithFixedParameters(model=m, method=Methods.MLE, horizon=2,
+                                   num_timesteps_test=time_steps,
+                                   save_folder=save_folder + "new_mle_h2/",
+                                   num_samples=num_samples)
 
+    mle_3 = testWithFixedParameters(model=m, method=Methods.MLE, horizon=3,
+                                   num_timesteps_test=time_steps,
+                                   save_folder=save_folder + "new_mle_h3/",
+                                   num_samples=num_samples)
     # output_rewards.write(method_name + '\n')
     # output_rewards.write(str(bucb) + '\n')
 
