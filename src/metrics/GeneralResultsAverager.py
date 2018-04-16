@@ -1,4 +1,4 @@
-from src.ResultsPlotter import PlotData
+from src.plotting.ResultsPlotter import PlotData
 import numpy as np
 
 from src.DatasetUtils import *
@@ -133,13 +133,10 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
         for seed in seeds:
 
             seed_folder = tests_source_path + 'seed' + str(seed) + '/'
-            try:
-                # all measurements, unnormalized
-                measurements = GetAllMeasurements(seed_folder, method, batch_size)
-                number_of_location += 1
-            except:
-                print seed_folder, method
-                continue
+
+            # all measurements, unnormalized
+            measurements = GetAllMeasurements(seed_folder, method, batch_size)
+            number_of_location += 1
 
             rewards = GetAccumulatedRewards(measurements, batch_size)
             results_for_method = np.add(results_for_method, rewards)
