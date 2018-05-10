@@ -243,7 +243,7 @@ def GetRoadTotalRegrets(my_ei = True):
     # output_file = '../../result_graphs/eps/road/my_ei/road_simple_regrets.eps'
 
     results = RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     sigma = math.sqrt(0.7486)
     h4 = results[0]
     h1 = results[3]
@@ -465,7 +465,7 @@ def GetRoadTotalRegrets_H2Full():
     # root_path = '../../releaseTests/road/tests2full-NEW/'
 
     results = RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     h4 = results[0]
     h2_all = results[1]
     h2 = results[2]
@@ -618,5 +618,7 @@ if __name__ == "__main__":
     # GetRoadTotalRewards()
     # GetRoadTotalRewards()
     # GetRoad_H2Full_TotalRewards()
-    GetRoadTotalRewards_ours_ucb()
-    GetRoadTotalRegrets_our_ucb()
+    # GetRoadTotalRewards_ours_ucb()
+    # GetRoadTotalRegrets_our_ucb()
+    GetRoadTotalRegrets()
+    GetRoadTotalRegrets_H2Full()

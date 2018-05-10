@@ -84,7 +84,7 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
                  markeredgewidth=1, markeredgecolor=color_sequence[i], color=color_sequence[i])
 
         if plot_bars and error_bars:
-            plt.errorbar(adjusted_time_steps, rewards, yerr=error_bars, color=color_sequence[i])
+            plt.errorbar(adjusted_time_steps, rewards, yerr=error_bars, color=color_sequence[i],lw=0.1)
 
         # patch = mpatches.Patch(color=color_sequence[i], label=name)
 

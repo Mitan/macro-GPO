@@ -60,7 +60,7 @@ def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_fil
     return results
 
 
-def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):
+def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, plot_bars=False):
     """
     root_path = '../../releaseTests/road/b5-18-log/'
     seeds = range(35)
@@ -83,12 +83,13 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
     for index, method in enumerate(methods):
         # todo hack
         adjusted_batch_size = 1 if method == 'ei' else batch_size
-        regrets = GetRoadResultsForMethod(seeds, adjusted_batch_size, method, root_path, model_max)
-        result = [method_names[index], regrets]
+        regrets, error_bars = GetRoadResultsForMethod(seeds, adjusted_batch_size, method, root_path, model_max)
+        result = [method_names[index], regrets, error_bars]
         results.append(result)
         # print result
 
-    PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='road')
+    PlotData(results=results, output_file_name=output_filename,
+             plottingType=plottingType, dataset='road', plot_bars=plot_bars)
     return results
 
 
