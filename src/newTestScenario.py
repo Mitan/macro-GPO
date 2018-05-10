@@ -5,7 +5,7 @@ from TreePlanTester import testWithFixedParameters
 from src.model.DatasetGenerator import DatasetGenerator
 
 
-def TestScenario_all_tests(my_save_folder_root, seed, time_steps,
+def TestScenario_all_tests(my_save_folder_root, seed, time_steps, anytime_num_samples,
                            num_samples, batch_size, time_slot, dataset_type, dataset_mode, ma_treshold):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
@@ -26,12 +26,20 @@ def TestScenario_all_tests(my_save_folder_root, seed, time_steps,
         append_write = 'w'
 
     output_rewards = open(filename_rewards, append_write)
+    #
+
+    anytime_h4 = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=4,
+                                         num_timesteps_test=time_steps,
+                                         save_folder=save_folder + "anytime_h4/",
+                                         num_samples=anytime_num_samples)
+    method_name = 'Anytime H=4'
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(anytime_h4) + '\n')
 
     lp = testWithFixedParameters(model=m, method=Methods.LP, horizon=1,
                                  num_timesteps_test=time_steps,
                                  save_folder=save_folder + "lp/",
                                  num_samples=num_samples)
-
     method_name = 'LP'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(lp) + '\n')
