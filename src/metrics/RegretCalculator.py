@@ -15,21 +15,28 @@ def GetRoadResultsForMethod(seeds, batch_size, method, root_path, model_max):
     # +1 for initial stage
     results_for_method = np.zeros((steps + 1,))
 
-    for seed in seeds:
+    all_measurements = np.zeros((len_seeds, steps + 1))
+
+    for ind, seed in enumerate(seeds):
         seed_folder = root_path + 'seed' + str(seed) + '/'
         measurements = GetAllMeasurements(seed_folder, method, batch_size)
         max_found_values = GetMaxValues(measurements, batch_size)
         assert max_found_values.shape == results_for_method.shape
 
-        results_for_method = np.add(results_for_method, max_found_values)
+        # results_for_method = np.add(results_for_method, max_found_values)
+        all_measurements[ind, :] = max_found_values
 
-    results_for_method = results_for_method / len_seeds
-    regrets = [model_max - res for res in results_for_method.tolist()]
-    return regrets
+    # results_for_method = results_for_method / len_seeds
+    error_bars = np.std(all_measurements, axis=0) / np.sqrt(len_seeds)
+
+    means = np.mean(all_measurements, axis=0)
+    regrets = [model_max - res for res in means.tolist()]
+    print(error_bars)
+    return regrets, error_bars.tolist()
     # result = [method_names[index], regrets]
 
 
-def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):
+def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, plot_bars):
 
     dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Robot,
                                          dataset_mode=DatasetModeEnum.Load,
@@ -44,12 +51,12 @@ def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_fil
     for index, method in enumerate(methods):
         # todo hack
         adjusted_batch_size = 1 if method == 'ei' else batch_size
-        regrets = GetRoadResultsForMethod(seeds, adjusted_batch_size, method, root_path, model_max)
-        result = [method_names[index], regrets]
+        regrets, error_bars = GetRoadResultsForMethod(seeds, adjusted_batch_size, method, root_path, model_max)
+        result = [method_names[index], regrets, error_bars]
         results.append(result)
         # print result
-
-    PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='robot')
+    PlotData(results=results, output_file_name=output_filename,
+             plottingType=plottingType, dataset='robot',plot_bars=plot_bars)
     return results
 
 

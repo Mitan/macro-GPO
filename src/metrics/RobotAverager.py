@@ -314,7 +314,7 @@ def GetRobotTotalRegrets(my_ei = True):
     output_file = '../../result_graphs/eps/robot/' + ei_folder+ '/robot_simple_regrets.eps'
 
     results = RobotRegrets(batch_size, root_path, methods, method_names, seeds,
-                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     """
     sigma = math.sqrt(0.596355)
     h4 = results[0]
@@ -406,7 +406,7 @@ def GetRobotTotalRegrets_H2Full():
     output_file = '../../result_graphs/eps/robot/robot_h2_full_simple_regrets.eps'
 
     results = RobotRegrets(batch_size, root_path, methods, method_names, seeds,
-                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     h4 = results[0]
     h2_all = results[1]
     h2 = results[2]
@@ -502,5 +502,7 @@ def GetRobotTotalRegrets_beta3():
 
 
 if __name__ == "__main__":
-    GetRobotTotalRewards_ours_ucb()
-    GetRobotTotalRegrets_ours_ucb()
+    # GetRobotTotalRewards_ours_ucb()
+    # GetRobotTotalRegrets_ours_ucb()
+    GetRobotTotalRegrets()
+    GetRobotTotalRegrets_H2Full()

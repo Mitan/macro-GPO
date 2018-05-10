@@ -27,7 +27,7 @@ def ParseName(method_name):
     return method_name
 
 
-def PlotData(results, dataset, output_file_name, plottingType):
+def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
     if not results:
         return
 
@@ -61,10 +61,14 @@ def PlotData(results, dataset, output_file_name, plottingType):
         name = ParseName(result[0])
 
         rewards = result[1]
+        error_bars = result[2]
 
         # hack for EI
         adjusted_time_steps = range(21) if (name == 'EI (all)' or name == 'PI') else time_steps
         marker_size = 10 if (name == 'EI (all)' or name == 'PI') else 20
+        if plot_bars:
+            marker_size = 0
+
 
         # previous version with small filled markers
         # plt.plot(t, rewards, lw=1.0, color=color_sequence[i],  marker=markers[i])
@@ -79,11 +83,15 @@ def PlotData(results, dataset, output_file_name, plottingType):
                  markerfacecolor="None",
                  markeredgewidth=1, markeredgecolor=color_sequence[i], color=color_sequence[i])
 
+        if plot_bars and error_bars:
+            plt.errorbar(adjusted_time_steps, rewards, yerr=error_bars, color=color_sequence[i])
+
         # patch = mpatches.Patch(color=color_sequence[i], label=name)
 
         patch = mlines.Line2D([], [],linestyle=linestyle, color=color_sequence[i], marker=markers[marker_index],
                               markerfacecolor="None",
-                              markeredgewidth=1, markeredgecolor=color_sequence[i], markersize=10, label=name)
+                              markeredgewidth=1, markeredgecolor=color_sequence[i],
+                              markersize=10, label=name)
 
         handles.append(patch)
 
