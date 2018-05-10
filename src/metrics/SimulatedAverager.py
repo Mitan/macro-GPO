@@ -137,7 +137,7 @@ def GetSimulatedTotalRegrets(my_ei = True):
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_simple_regrets.eps'
 
     results = SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
-                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     # print results
     sigma = 1.0
     h4 = results[0]
@@ -287,5 +287,6 @@ if __name__ == "__main__":
     # GetSimulatedTotalRewards()
 
     # GetSimulated_H4Samples_TotalRewards()
-    GetSimulatedTotalRewards_our_ucb()
-    GetSimulatedTotalRegrets_our_ucb()
+    # GetSimulatedTotalRewards_our_ucb()
+    # GetSimulatedTotalRegrets_our_ucb()
+    GetSimulatedTotalRegrets()

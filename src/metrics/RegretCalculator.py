@@ -93,7 +93,8 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
     return results
 
 
-def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType):
+def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename,
+                     plottingType, plot_bars=False):
     """
     seeds = range(66, 102)
     batch_size = 4
@@ -105,6 +106,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
     steps = 20 / batch_size
 
     results = []
+    all_regrets = np.zeros((len_seeds, steps + 1))
 
     # average regret is average max - average reward
     # average max is sum over all max seeds / len
@@ -114,7 +116,8 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Simulated, dataset_mode=DatasetModeEnum.Load,
                                              time_slot=None, batch_size=batch_size)
         m = dataset_generator.get_dataset_model(root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
-        sum_model_max += m.GetMax()
+        current_max = m.GetMax()
+        sum_model_max += current_max
 
     average_model_max = sum_model_max / len_seeds
 
@@ -124,20 +127,27 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         # +1 for initial stage
         results_for_method = np.zeros((steps + 1,))
 
-        for seed in seeds:
+        for ind, seed in enumerate(seeds):
             seed_folder = root_path + 'seed' + str(seed) + '/'
             measurements = GetAllMeasurements(seed_folder, method, batch_size)
             max_found_values = GetMaxValues(measurements, batch_size)
+            print(max_found_values)
+            # all_regrets[ind, :] = model_max_values[seed] - max_found_values
+            all_regrets[ind, :] = max_found_values
+            # results_for_method = np.add(results_for_method, max_found_values)
 
-            results_for_method = np.add(results_for_method, max_found_values)
+        # results_for_method = results_for_method / len_seeds
+        error_bars = np.std(all_regrets, axis=0) / np.sqrt(len_seeds)
+        print(error_bars)
+        means = np.mean(all_regrets, axis=0)
 
-        results_for_method = results_for_method / len_seeds
-        regrets = [average_model_max - res for res in results_for_method.tolist()]
-        result = [method_names[index], regrets]
+        regrets = [average_model_max - res for res in means.tolist()]
+        result = [method_names[index], regrets, error_bars.tolist()]
         results.append(result)
         # print result
 
-    PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='simulated')
+    PlotData(results=results, output_file_name=output_filename,
+             plottingType=plottingType, dataset='simulated', plot_bars=plot_bars)
     return results
 
 
