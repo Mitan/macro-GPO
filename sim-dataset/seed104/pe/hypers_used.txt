@@ -1,0 +1,4 @@
+mean = 0.0
+lengthscale = (0.25, 0.25)
+noise = 1e-05
+signal = 1.0
