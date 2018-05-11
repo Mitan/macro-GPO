@@ -36,7 +36,7 @@ def TestScenario_all_tests(my_save_folder_root, seed, time_steps, anytime_num_sa
     method_name = 'Anytime H=4'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(anytime_h4) + '\n')
-    
+    """
     lp = testWithFixedParameters(model=m, method=Methods.LP, horizon=1,
                                  num_timesteps_test=time_steps,
                                  save_folder=save_folder + "lp/",
@@ -95,5 +95,5 @@ def TestScenario_all_tests(my_save_folder_root, seed, time_steps, anytime_num_sa
     method_name = 'H=4'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(h_4) + '\n')
-
+    """
     output_rewards.close()
