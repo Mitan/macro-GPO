@@ -131,7 +131,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
             seed_folder = root_path + 'seed' + str(seed) + '/'
             measurements = GetAllMeasurements(seed_folder, method, batch_size)
             max_found_values = GetMaxValues(measurements, batch_size)
-            print(max_found_values)
+            # print(max_found_values)
             # all_regrets[ind, :] = model_max_values[seed] - max_found_values
             all_regrets[ind, :] = max_found_values
             # results_for_method = np.add(results_for_method, max_found_values)

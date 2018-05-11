@@ -11,23 +11,25 @@ def GetSimulatedTotalRewards(my_ei = True):
         ei_method = 'r_qei'
         ei_folder = 'r_ei'
 
-    seeds = range(66, 102)
+    seeds = range(66, 175)
+    seeds = list(set(range(66, 178)) - set([110, 115, 117, 133, 168]))
     batch_size = 4
 
     # root_path = '../../releaseTests/simulated/rewards-sAD/'
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
-    # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
-    methods = ['h4', 'h3', 'h2', 'h1',
-                'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'my_lp']
-               # 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method,  'bbo-llp22']
+    root_path = '../../sim/'
 
-    method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
+    methods = [ 'h3', 'h2', 'h1',
+               'mle_h4', 'pe', 'bucb', ei_method, 'lp']
+               # 'bbo-llp22']
+
+    method_names = [ r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
-                     'DB-GP-UCB',
-                    r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                    'DB-GP-UCB',
+                     r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI',
-                     'BBO-LP']
+                    'BBO-LP']
     
     output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/simulated_total_rewards.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_total_rewards.eps'
@@ -114,19 +116,21 @@ def GetSimulatedTotalRegrets(my_ei = True):
         ei_method = 'r_qei'
         ei_folder = 'r_ei'
 
-    seeds = range(66, 102)
+    seeds = range(66, 175)
+    seeds = list(set(range(66, 178)) - set([110, 115, 117, 133, 168]))
     batch_size = 4
 
     # root_path = '../../releaseTests/simulated/rewards-sAD/'
         # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
+    root_path = '../../sim/'
 
-    methods = ['h4', 'h3', 'h2', 'h1',
-               'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'my_lp']
+    methods = [ 'h3', 'h2', 'h1',
+               'mle_h4', 'pe', 'bucb', ei_method, 'lp']
                # 'bbo-llp22']
 
-    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
+    method_names = [ r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
                     'DB-GP-UCB',
                      r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
@@ -284,7 +288,7 @@ if __name__ == "__main__":
     pass
     # GetSimulatedBeta2Rewards()
     # GetSimulatedBeta3Rewards()
-    # GetSimulatedTotalRewards()
+    GetSimulatedTotalRewards()
 
     # GetSimulated_H4Samples_TotalRewards()
     # GetSimulatedTotalRewards_our_ucb()

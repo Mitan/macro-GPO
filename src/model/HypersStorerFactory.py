@@ -29,7 +29,8 @@ class AbstarctHypersStorer:
         pass
 
     def PrintParams(self):
-        print self.length_scale, self.signal_variance, self.noise_variance, self.mean_function
+        pass
+        # print self.length_scale, self.signal_variance, self.noise_variance, self.mean_function
 
     def PrintParamsToFile(self, file_name):
         f = open(file_name, 'w')
