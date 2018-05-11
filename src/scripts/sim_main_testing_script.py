@@ -4,9 +4,9 @@ from src.newTestScenario import *
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
 
-if __name__ == '__main__':
 
-    my_save_folder_root = "../../sim/"
+def hack_script(start):
+    my_save_folder_root = "./sim/"
     # max horizon
     h_max = 4
     # time steps
@@ -17,9 +17,9 @@ if __name__ == '__main__':
 
     num_samples = 100
     anytime_num_samples = 300
-    args = sys.argv
+    # args = sys.argv
 
-    start = args[1]
+    # start = args[1]
     end = start + 16
     assert start < end
     for seed in range(start, end):
