@@ -103,8 +103,8 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
     if dataset == 'simulated':
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total normalized output measurements observed by AUV", fontsize=labels_font_size)
-            plt.yticks(range(-4, 13))
-            axes.set_ylim([-3.5, 11])
+            plt.yticks(range(-1, 14))
+            axes.set_ylim([-1.0, 14])
             legend_loc = 2
             """
             elif plottingType == PlottingMethods.TotalRewardBeta:

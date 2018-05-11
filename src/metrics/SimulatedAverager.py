@@ -108,7 +108,7 @@ def GetSimulatedTotalRewards_our_ucb():
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
-def GetSimulatedTotalRegrets(my_ei = True):
+def GetSimulatedTotalRegrets(my_ei=True):
     if my_ei:
         ei_method = 'qEI'
         ei_folder = 'my_ei'
