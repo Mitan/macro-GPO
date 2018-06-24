@@ -12,19 +12,20 @@ def GetSimulatedTotalRewards(my_ei = True):
         ei_folder = 'r_ei'
 
     seeds = range(66, 175)
-    seeds = list(set(range(66, 178)) - set([110, 115, 117, 133, 168]))
+    seeds = list(set(range(66, 175)) - set([154, 152]))
     batch_size = 4
 
     # root_path = '../../releaseTests/simulated/rewards-sAD/'
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
-    root_path = '../../sim/'
+    root_path = '../../sim-fixed-temp/'
 
-    methods = [ 'h3', 'h2', 'h1',
+    methods = [ 'h4', 'h3', 'h2', 'h1',
                'mle_h4', 'pe', 'bucb', ei_method, 'lp']
                # 'bbo-llp22']
 
-    method_names = [ r'$\epsilon$-Macro-GPO  $H = 3$',
+    method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$',
+                     r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
                     'DB-GP-UCB',
                      r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
@@ -116,21 +117,21 @@ def GetSimulatedTotalRegrets(my_ei=True):
         ei_method = 'r_qei'
         ei_folder = 'r_ei'
 
-    seeds = range(66, 175)
-    seeds = list(set(range(66, 178)) - set([110, 115, 117, 133, 168]))
+    seeds = list(set(range(66, 175)) - set([154, 152]))
     batch_size = 4
 
     # root_path = '../../releaseTests/simulated/rewards-sAD/'
         # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
-    root_path = '../../sim/'
+    root_path = '../../sim-fixed-temp/'
 
-    methods = [ 'h3', 'h2', 'h1',
+    methods = [ 'h4', 'h3', 'h2', 'h1',
                'mle_h4', 'pe', 'bucb', ei_method, 'lp']
                # 'bbo-llp22']
 
-    method_names = [ r'$\epsilon$-Macro-GPO  $H = 3$',
+    method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$',
+                     r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
                     'DB-GP-UCB',
                      r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
