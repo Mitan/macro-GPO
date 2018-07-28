@@ -110,6 +110,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
 
     # average regret is average max - average reward
     # average max is sum over all max seeds / len
+    model_max_values = {}
     sum_model_max = 0
     for seed in seeds:
         seed_dataset_path = root_path + 'seed' + str(seed) + '/'
@@ -117,6 +118,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
                                              time_slot=None, batch_size=batch_size)
         m = dataset_generator.get_dataset_model(root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
         current_max = m.GetMax()
+        model_max_values[seed] = current_max
         sum_model_max += current_max
 
     average_model_max = sum_model_max / len_seeds
@@ -131,9 +133,11 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
             seed_folder = root_path + 'seed' + str(seed) + '/'
             measurements = GetAllMeasurements(seed_folder, method, batch_size)
             max_found_values = GetMaxValues(measurements, batch_size)
-            print(max_found_values)
+            # print(max_found_values)
+
             # all_regrets[ind, :] = model_max_values[seed] - max_found_values
             all_regrets[ind, :] = max_found_values
+
             # results_for_method = np.add(results_for_method, max_found_values)
 
         # results_for_method = results_for_method / len_seeds
@@ -142,6 +146,8 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         means = np.mean(all_regrets, axis=0)
 
         regrets = [average_model_max - res for res in means.tolist()]
+        # regrets = means.tolist()
+
         result = [method_names[index], regrets, error_bars.tolist()]
         results.append(result)
         # print result
