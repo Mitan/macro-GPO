@@ -48,7 +48,7 @@ class SimulatedHyperStorer(AbstarctHypersStorer):
         self.noise_variance = 0.00001
         self.mean_function = 0.0
 
-        self.PrintParams()
+        # self.PrintParams()
     """
     def GetInitialPhysicalState(self, start_location):
         return np.array([[1.0, 1.0]])

@@ -169,7 +169,7 @@ def GetSimulatedTotalRegrets_onlyH4(my_ei= True):
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
-    methods = ['h4', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'bbo-llp4']
+    methods = ['h4', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'my_lp']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
                     'DB-GP-UCB',
@@ -179,7 +179,7 @@ def GetSimulatedTotalRegrets_onlyH4(my_ei= True):
     output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/h4_simulated_simple_regrets.eps'
 
     SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
-                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
 
 
 def GetSimulatedTotalRegrets_our():
@@ -328,5 +328,5 @@ if __name__ == "__main__":
     # GetSimulated_H4Samples_TotalRewards()
     # GetSimulatedTotalRewards_our_ucb()
     # GetSimulatedTotalRegrets_our_ucb()
-    # GetSimulatedTotalRegrets()
+    GetSimulatedTotalRegrets_onlyH4()
     # GetSimulatedTotalRegrets_B1()

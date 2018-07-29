@@ -2,6 +2,7 @@ from StringIO import StringIO
 import numpy as np
 
 from src.DatasetUtils import GetAllMeasurements, GetMaxValues
+from src.Utils import generate_set_of_reachable_locations
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
 from src.enum.PlottingEnum import PlottingMethods
@@ -105,7 +106,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
     len_seeds = len(seeds)
     results = []
 
-
+    reachable_locations = generate_set_of_reachable_locations(b_size=batch_size, start=(1.0, 1.0), gap=0.05)
 
     # average regret is average max - average reward
     # average max is sum over all max seeds / len
@@ -116,9 +117,14 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Simulated, dataset_mode=DatasetModeEnum.Load,
                                              time_slot=None, batch_size=batch_size)
         m = dataset_generator.get_dataset_model(root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
-        current_max = m.GetMax()
-        model_max_values[seed] = current_max
-        sum_model_max += current_max
+        global_max = m.GetMax()
+        reachable_max = max(map(lambda x : m(x), reachable_locations))
+        # print(global_max - reachable_max)
+        #todo nb
+        global_max = reachable_max
+
+        model_max_values[seed] = global_max
+        sum_model_max += global_max
 
     average_model_max = sum_model_max / len_seeds
 
@@ -138,8 +144,8 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
             max_found_values = GetMaxValues(measurements, adjusted_batch_size)
             # print(max_found_values)
 
-            # all_regrets[ind, :] = model_max_values[seed] - max_found_values
-            all_regrets[ind, :] = max_found_values
+            all_regrets[ind, :] = model_max_values[seed] - max_found_values
+            # all_regrets[ind, :] = max_found_values
 
             # results_for_method = np.add(results_for_method, max_found_values)
 
@@ -148,8 +154,8 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         print(error_bars)
         means = np.mean(all_regrets, axis=0)
 
-        regrets = [average_model_max - res for res in means.tolist()]
-        # regrets = means.tolist()
+        # regrets = [average_model_max - res for res in means.tolist()]
+        regrets = means.tolist()
 
         result = [method_names[index], regrets, error_bars.tolist()]
         results.append(result)
