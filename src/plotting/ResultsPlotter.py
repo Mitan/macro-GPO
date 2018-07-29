@@ -64,8 +64,12 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
         error_bars = result[2]
 
         # hack for EI
-        adjusted_time_steps = range(21) if (name == 'EI (all)' or name == 'PI') else time_steps
-        marker_size = 10 if (name == 'EI (all)' or name == 'PI') else 20
+        single_point_methods = name == 'EI (all)' or \
+                               name == 'PI' or\
+                               name == r'$H =4$ $N=20$' or\
+                               name == r'$H =4$ $N=40$'
+        adjusted_time_steps = range(21) if single_point_methods else time_steps
+        marker_size = 10 if single_point_methods else 20
         if plot_bars:
             marker_size = 0
 

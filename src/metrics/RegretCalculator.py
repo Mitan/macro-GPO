@@ -103,10 +103,9 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
     method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
     """
     len_seeds = len(seeds)
-    steps = 20 / batch_size
-
     results = []
-    all_regrets = np.zeros((len_seeds, steps + 1))
+
+
 
     # average regret is average max - average reward
     # average max is sum over all max seeds / len
@@ -125,14 +124,18 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
 
     # for every method
     for index, method in enumerate(methods):
+        adjusted_batch_size = 1 if method == 'h4-b1-40' or method == 'h4-b1-20' else batch_size
+        steps = 20 / adjusted_batch_size
+        all_regrets = np.zeros((len_seeds, steps + 1))
 
         # +1 for initial stage
         results_for_method = np.zeros((steps + 1,))
 
         for ind, seed in enumerate(seeds):
             seed_folder = root_path + 'seed' + str(seed) + '/'
-            measurements = GetAllMeasurements(seed_folder, method, batch_size)
-            max_found_values = GetMaxValues(measurements, batch_size)
+
+            measurements = GetAllMeasurements(seed_folder, method, adjusted_batch_size)
+            max_found_values = GetMaxValues(measurements, adjusted_batch_size)
             # print(max_found_values)
 
             # all_regrets[ind, :] = model_max_values[seed] - max_found_values
