@@ -24,4 +24,5 @@ Methods = enum(Exact=1,
                PI=8,
                new_qEI=9,
                BUCB=10,
-               LP=11)
+               LP=11,
+               Rollout=12)

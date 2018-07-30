@@ -67,7 +67,7 @@ class TreePlan:
         # print np.sum(mu), math.log(np.linalg.det(exploration_matrix))
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
-    def RolloutFiniteBudget(self, x_0, H):
+    def RolloutFiniteBudget(self, x_0, H, gamma):
 
         if H == 1: return self.EI(x_0)
 
@@ -80,7 +80,7 @@ class TreePlan:
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
 
-        Vapprox, Xapprox = self.ComputeURollout(H, x_0, root_node)
+        Vapprox, Xapprox = self.ComputeURollout(T=H, x=x_0, st=root_node, gamma=gamma)
         if math.isinf(Vapprox):
             raise Exception("MLE could not move from  location " + str(x_0.physical_state))
 
@@ -91,7 +91,7 @@ class TreePlan:
         max_found_value = max(augmented_state.history.measurements)
         return max(0, current_value - max_found_value)
 
-    def ComputeURollout(self, T, x, st):
+    def ComputeURollout(self, T, x, st, gamma):
 
         next_states = self.GetNextAugmentedStates(x)
         if not next_states:
@@ -110,10 +110,9 @@ class TreePlan:
             mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
 
             r = self.RolloutAcquizition(current_value=mean, augmented_state=x)
-            gamma = 1.0
 
             # Future reward
-            f = r + gamma * self.ComputeHRollout(T - 1, TransitionH(x_next, mean), new_st)
+            f = r + gamma * self.ComputeHRollout(T=T - 1, x=TransitionH(x_next, mean), st=new_st, gamma=gamma)
 
             if f > vBest:
                 xBest = x_next
@@ -121,7 +120,7 @@ class TreePlan:
         # xBest is augmented state
         return vBest, xBest
 
-    def ComputeHRollout(self, T, x, st):
+    def ComputeHRollout(self, T, x, st, gamma):
         # action selected by PI policy
         _, x_next, _ = self.PI(x)
         next_physical_state = x_next.physical_state
@@ -133,9 +132,8 @@ class TreePlan:
             return EI_Acquizition_Function(mu=mu, sigma=sigma, best_observation=best_observation)
 
         r = self.RolloutAcquizition(current_value=mu, augmented_state=x)
-        gamma = 1.0
 
-        return r + gamma * self.ComputeHRollout(T - 1, TransitionH(x_next, mu), new_st)
+        return r + gamma * self.ComputeHRollout(T=T - 1, x=TransitionH(x_next, mu), st=new_st, gamma=gamma)
 
     def MLE(self, x_0, H):
         """

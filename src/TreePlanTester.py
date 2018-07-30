@@ -125,6 +125,10 @@ class TreePlanTester:
             elif method == Methods.PI:
                 vBest, x_temp, nodes_expanded = tp.PI(x_0)
 
+            elif method == Methods.Rollout:
+                gamma = 1.0
+                vBest, x_temp, nodes_expanded = tp.RolloutFiniteBudget(x_0=x_0, H=allowed_horizon, gamma=gamma)
+
             else:
                 raise Exception("Unknown method type")
 

@@ -6,20 +6,15 @@ from src.enum.DatasetModeEnum import DatasetModeEnum
 
 
 def hack_script(start):
-    my_save_folder_root = "./sim/"
-    # max horizon
-    h_max = 4
-    # time steps
+    my_save_folder_root = "./releaseTests/updated_release/simulated/rewards-sAD"
 
-    batch_size = 4
+    batch_size = 1
 
     t = 20 / batch_size
 
     num_samples = 100
     anytime_num_samples = 300
-    # args = sys.argv
 
-    # start = args[1]
     end = start + 16
     assert start < end
     for seed in range(start, end):
