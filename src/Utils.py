@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.stats import norm
 
 
 def TupleToLine(tuple_location, dim_1, dim_2):
@@ -39,6 +40,12 @@ def generate_set_of_reachable_locations(start, b_size, gap):
 
         return list(set(a))
 
+
+def EI_Acquizition_Function(mu, sigma, best_observation):
+    Z = (mu - best_observation) / sigma
+    expectedImprov = (mu - best_observation) * norm.cdf(x=Z, loc=0, scale=1.0) \
+                     + sigma * norm.pdf(x=Z, loc=0, scale=1.0)
+    return expectedImprov
 
 if __name__ == '__main__':
     b = 4

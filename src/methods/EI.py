@@ -1,5 +1,6 @@
 import math
-from scipy.stats import norm
+
+from src.Utils import EI_Acquizition_Function
 
 
 def method_EI(x_0, gp, next_states):
@@ -24,9 +25,7 @@ def method_EI(x_0, gp, next_states):
                                cholesky=current_chol)
         mu = gp.GPMean(measurements=x_0.history.measurements, weights=weights)[0]
 
-        Z = (mu - best_observation) / sigma
-        expectedImprov = (mu - best_observation) * norm.cdf(x=Z, loc=0, scale=1.0) \
-                         + sigma * norm.pdf(x=Z, loc=0, scale=1.0)
+        expectedImprov = EI_Acquizition_Function(mu=mu, sigma=sigma, best_observation=best_observation)
         if expectedImprov >= vBest:
             vBest = expectedImprov
             xBest = x_next
