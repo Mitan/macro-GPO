@@ -8,7 +8,7 @@ from src.AnytimeNode import MCTSActionNode
 from src.core.SemiTree import SemiTree
 from src.core.SemiState import SemiState
 from src.core.Transitions import TransitionH, TransitionP
-from src.Utils import ToTuple
+from src.Utils import ToTuple, EI_Acquizition_Function
 
 from src.methods.BBO_LP import method_LP
 from src.methods.BUCB import method_BUCB
@@ -66,6 +66,76 @@ class TreePlan:
         exploration_matrix = np.identity(sigma.shape[0]) + (1 / self.gp.covariance_function.noise_variance) * sigma
         # print np.sum(mu), math.log(np.linalg.det(exploration_matrix))
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
+
+    def RolloutFiniteBudget(self, x_0, H):
+
+        if H == 1: return self.EI(x_0)
+
+        physical_state = x_0.physical_state
+        physical_state_size = physical_state.shape[0]
+        past_locations = x_0.history.locations[: -physical_state_size, :]
+
+        root_ss = SemiState(physical_state, past_locations)
+
+        root_node = SemiTree(root_ss)
+        self.BuildTree(root_node, H, isRoot=True)
+
+        Vapprox, Xapprox = self.ComputeURollout(H, x_0, root_node)
+        if math.isinf(Vapprox):
+            raise Exception("MLE could not move from  location " + str(x_0.physical_state))
+
+        return Vapprox, Xapprox, -1
+
+    # calculate improvement
+    def RolloutAcquizition(self, current_value, augmented_state):
+        max_found_value = max(augmented_state.history.measurements)
+        return max(0, current_value - max_found_value)
+
+    def ComputeURollout(self, T, x, st):
+
+        next_states = self.GetNextAugmentedStates(x)
+        if not next_states:
+            return -float("inf"), np.zeros((self.batch_size, 2))
+
+        vBest = - float("inf")
+        xBest = next_states[0]
+        for x_next in next_states:
+
+            # x_next = self.TransitionP(x, a)
+            next_physical_state = x_next.physical_state
+
+            # cannot tuple augmented state, need to use physical state here
+            new_st = st.children[ToTuple(next_physical_state)]
+
+            mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
+
+            r = self.RolloutAcquizition(current_value=mean, augmented_state=x)
+            gamma = 1.0
+
+            # Future reward
+            f = r + gamma * self.ComputeHRollout(T - 1, TransitionH(x_next, mean), new_st)
+
+            if f > vBest:
+                xBest = x_next
+                vBest = f
+        # xBest is augmented state
+        return vBest, xBest
+
+    def ComputeHRollout(self, T, x, st):
+        # action selected by PI policy
+        _, x_next, _ = self.PI(x)
+        next_physical_state = x_next.physical_state
+        new_st = st.children[ToTuple(next_physical_state)]
+        mu = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
+        sigma = new_st.variance
+        if T == 1:
+            best_observation = max(x.history.measurements)
+            return EI_Acquizition_Function(mu=mu, sigma=sigma, best_observation=best_observation)
+
+        r = self.RolloutAcquizition(current_value=mu, augmented_state=x)
+        gamma = 1.0
+
+        return r + gamma * self.ComputeHRollout(T - 1, TransitionH(x_next, mu), new_st)
 
     def MLE(self, x_0, H):
         """
