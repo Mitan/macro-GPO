@@ -107,6 +107,7 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
     PlotData(results=results, output_file_name=output_filename, plottingType=plottingType, dataset='road')
     return results
 
+
 def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, plottingType):
     """
     seeds = range(66, 102)
@@ -129,12 +130,13 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
         sum_model_mean += m.mean
 
     average_model_mean = sum_model_mean / len_seeds
-    scaled_model_mean = np.array([(1 + batch_size * i) * average_model_mean for i in range(steps + 1)])
+
     # print scaled_model_mean
 
     for index, method in enumerate(methods):
         number_of_location = 0
-
+        adjusted_batch_size = 1 if method == 'rollout_h4_gamma1' or method == 'rollout_h4_gamma1_ei' else batch_size
+        steps = 20 / adjusted_batch_size
         # +1 initial point
         results_for_method = np.zeros((steps + 1,))
         for seed in seeds:
@@ -142,10 +144,10 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
             seed_folder = tests_source_path + 'seed' + str(seed) + '/'
 
             # all measurements, unnormalized
-            measurements = GetAllMeasurements(seed_folder, method, batch_size)
+            measurements = GetAllMeasurements(seed_folder, method, adjusted_batch_size)
             number_of_location += 1
 
-            rewards = GetAccumulatedRewards(measurements, batch_size)
+            rewards = GetAccumulatedRewards(measurements, adjusted_batch_size)
             results_for_method = np.add(results_for_method, rewards)
 
         # check that we collected data for every location
@@ -154,8 +156,9 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
         assert number_of_location == len(seeds)
         # print results_for_method
         results_for_method = results_for_method / len_seeds
+        scaled_model_mean = np.array([(1 + adjusted_batch_size * i) * average_model_mean for i in range(steps + 1)])
         scaled_results = results_for_method - scaled_model_mean
-        result = [method_names[index], scaled_results.tolist()]
+        result = [method_names[index], scaled_results.tolist(), []]
         results.append(result)
 
     PlotData(results=results, output_file_name=output_filename, dataset='simulated', plottingType=plottingType)

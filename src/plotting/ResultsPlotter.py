@@ -65,6 +65,7 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
 
         # hack for EI
         single_point_methods = name == 'EI (all)' or \
+                               name == 'EI' or\
                                name == 'PI' or\
                                name == r'$H =4$ $N=20$' or\
                                name == r'$H =4$ $N=40$'

@@ -121,7 +121,7 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         reachable_max = max(map(lambda x : m(x), reachable_locations))
         # print(global_max - reachable_max)
         #todo nb
-        global_max = reachable_max
+        # global_max = reachable_max
 
         model_max_values[seed] = global_max
         sum_model_max += global_max
@@ -130,7 +130,8 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
 
     # for every method
     for index, method in enumerate(methods):
-        adjusted_batch_size = 1 if method == 'h4-b1-40' or method == 'h4-b1-20' else batch_size
+        # adjusted_batch_size = 1 if method == 'h4-b1-40' or method == 'h4-b1-20' else batch_size
+        adjusted_batch_size = 1 if method == 'rollout_h4_gamma1' or method == 'rollout_h4_gamma1_ei' else batch_size
         steps = 20 / adjusted_batch_size
         all_regrets = np.zeros((len_seeds, steps + 1))
 
