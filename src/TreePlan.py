@@ -69,7 +69,8 @@ class TreePlan:
 
     def RolloutFiniteBudget(self, x_0, H, gamma):
 
-        if H == 1: return self.EI(x_0)
+        if H == 1:
+            return self.EI(x_0)
 
         physical_state = x_0.physical_state
         physical_state_size = physical_state.shape[0]
@@ -92,7 +93,6 @@ class TreePlan:
         return max(0, current_value - max_found_value)
 
     def ComputeURollout(self, T, x, st, gamma):
-
         next_states = self.GetNextAugmentedStates(x)
         if not next_states:
             return -float("inf"), np.zeros((self.batch_size, 2))
@@ -122,7 +122,8 @@ class TreePlan:
 
     def ComputeHRollout(self, T, x, st, gamma):
         # action selected by PI policy
-        _, x_next, _ = self.PI(x)
+        # _, x_next, _ = self.PI(x)
+        _, x_next, _ = self.EI(x)
         next_physical_state = x_next.physical_state
         new_st = st.children[ToTuple(next_physical_state)]
         mu = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)

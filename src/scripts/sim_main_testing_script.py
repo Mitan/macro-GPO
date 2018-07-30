@@ -6,7 +6,7 @@ from src.enum.DatasetModeEnum import DatasetModeEnum
 
 
 def hack_script(start):
-    my_save_folder_root = "./releaseTests/updated_release/simulated/rewards-sAD"
+    my_save_folder_root = "../releaseTests/updated_release/simulated/rewards-sAD/"
 
     batch_size = 1
 
@@ -15,7 +15,7 @@ def hack_script(start):
     num_samples = 100
     anytime_num_samples = 300
 
-    end = start + 16
+    end = start + 36
     assert start < end
     for seed in range(start, end):
         TestScenario_all_tests(my_save_folder_root=my_save_folder_root,
