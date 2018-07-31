@@ -282,44 +282,41 @@ def GetSimulated_H4Samples_TotalRewards():
 def GetSimulatedTotalRegrets_B1():
 
     seeds = range(66, 102)
-    # seeds = list(set(range(66, 175)) - set([154, 152]))
+    seeds = list(set(range(66, 175)) - set([154, 152]))
     batch_size = 4
+    batch_size = 1
 
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
-    # root_path = '../../sim-fixed-temp/'
+    root_path = '../../sim-fixed-temp/'
 
-    methods = ['h4', 'h3', 'h2', 'h1', 'rollout_h4_gamma1']
+    methods = ['h4_b1_20', 'rollout_h4_gamma1']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-                    r'$\epsilon$-Macro-GPO  $H = 3$',
-                    r'$\epsilon$-Macro-GPO  $H = 2$',
-                    'DB-GP-UCB',
                     r'Rollout-$H=4 \gamma =1.0$ PI']
 
-    output_file = '../../result_graphs/eps/simulated/' + 'my_ei' + '/simulated_simple_regrets_rollout.eps'
+    output_file = '../../result_graphs/eps/simulated/' + 'my_ei' + '/simulated_simple_regrets_rollout_b1.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_simple_regrets.eps'
 
     results = SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
-                               output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=False)
+                               output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     print results
 
 
 def GetSimulatedTotalRewards_B1():
-
         seeds = range(66, 102)
+        seeds = list(set(range(66, 175)) - set([154, 152]))
         batch_size = 4
+        batch_size = 1
 
         root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
+        root_path = '../../sim-fixed-temp/'
 
-        methods = ['h4', 'h3', 'h2', 'h1', 'rollout_h4_gamma1']
+        methods = ['h4_b1_20', 'rollout_h4_gamma1']
 
         method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-                        r'$\epsilon$-Macro-GPO  $H = 3$',
-                        r'$\epsilon$-Macro-GPO  $H = 2$',
-                        'DB-GP-UCB',
                         r'Rollout-$H=4 \gamma =1.0$ PI']
 
-        output_file = '../../result_graphs/eps/simulated/' + 'my_ei' + '/h4_simulated_total_rewards_rollout.eps'
+        output_file = '../../result_graphs/eps/simulated/' + 'my_ei' + '/h4_simulated_total_rewards_rollout_b1.eps'
         # output_file = '../../result_graphs/eps/simulated/my_ei/h4_simulated_total_rewards.eps'
 
         SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
@@ -336,5 +333,5 @@ if __name__ == "__main__":
     # GetSimulatedTotalRewards_our_ucb()
     # GetSimulatedTotalRegrets_our_ucb()
     # GetSimulatedTotalRegrets_onlyH4()
-    GetSimulatedTotalRegrets_B1()
+    # GetSimulatedTotalRegrets_B1()
     GetSimulatedTotalRewards_B1()

@@ -93,6 +93,9 @@ class TreePlan:
         return max(0, current_value - max_found_value)
 
     def ComputeURollout(self, T, x, st, gamma):
+        gauss_nodes = [-1.22474, 0, 1.22474]
+        gauss_weights = [0.29541,1.18164, 0.29541]
+
         next_states = self.GetNextAugmentedStates(x)
         if not next_states:
             return -float("inf"), np.zeros((self.batch_size, 2))
@@ -108,33 +111,47 @@ class TreePlan:
             new_st = st.children[ToTuple(next_physical_state)]
 
             mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
+            sigma = new_st.variance
 
             r = self.RolloutAcquizition(current_value=mean, augmented_state=x)
-
+            answer = 0
+            for i in range(len(gauss_nodes)):
+                shifted_node = math.sqrt(2) * sigma * gauss_nodes[i] + mean
+                r = self.RolloutAcquizition(current_value=shifted_node, augmented_state=x)
             # Future reward
-            f = r + gamma * self.ComputeHRollout(T=T - 1, x=TransitionH(x_next, mean), st=new_st, gamma=gamma)
-
-            if f > vBest:
+                answer += gauss_weights[i] * \
+                          (r + gamma * self.ComputeHRollout(T=T - 1, x=TransitionH(x_next, shifted_node), st=new_st,
+                                                            gamma=gamma))
+            if answer > vBest:
                 xBest = x_next
-                vBest = f
+                vBest = answer
         # xBest is augmented state
         return vBest, xBest
 
     def ComputeHRollout(self, T, x, st, gamma):
+        #todo note hardcoded
+        gauss_nodes = [-1.22474, 0, 1.22474]
+        gauss_weights = [0.29541,1.18164, 0.29541]
         # action selected by PI policy
-        # _, x_next, _ = self.PI(x)
-        _, x_next, _ = self.EI(x)
+        _, x_next, _ = self.PI(x)
+        # _, x_next, _ = self.EI(x)
         next_physical_state = x_next.physical_state
         new_st = st.children[ToTuple(next_physical_state)]
         mu = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
         sigma = new_st.variance
+
         if T == 1:
             best_observation = max(x.history.measurements)
             return EI_Acquizition_Function(mu=mu, sigma=sigma, best_observation=best_observation)
 
-        r = self.RolloutAcquizition(current_value=mu, augmented_state=x)
+        answer = 0
+        for i in range(len(gauss_nodes)):
+            shifted_node = math.sqrt(2) * sigma * gauss_nodes[i] + mu
+            r = self.RolloutAcquizition(current_value=shifted_node, augmented_state=x)
+            answer +=  gauss_weights[i] * \
+                (r + gamma * self.ComputeHRollout(T=T - 1, x=TransitionH(x_next, shifted_node), st=new_st, gamma=gamma))
 
-        return r + gamma * self.ComputeHRollout(T=T - 1, x=TransitionH(x_next, mu), st=new_st, gamma=gamma)
+        return answer / math.sqrt(math.pi)
 
     def MLE(self, x_0, H):
         """
