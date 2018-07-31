@@ -116,8 +116,8 @@ class TreePlan:
             r = self.RolloutAcquizition(current_value=mean, augmented_state=x)
             answer = 0
             for i in range(len(gauss_nodes)):
-                shifted_node = math.sqrt(2) * sigma * gauss_nodes[i] + mean
-                r = self.RolloutAcquizition(current_value=shifted_node, augmented_state=x)
+                shifted_node = math.sqrt(2) * sigma[0] * gauss_nodes[i] + mean
+                r = self.RolloutAcquizition(current_value=shifted_node[0], augmented_state=x)
             # Future reward
                 answer += gauss_weights[i] * \
                           (r + gamma * self.ComputeHRollout(T=T - 1, x=TransitionH(x_next, shifted_node), st=new_st,
@@ -146,8 +146,8 @@ class TreePlan:
 
         answer = 0
         for i in range(len(gauss_nodes)):
-            shifted_node = math.sqrt(2) * sigma * gauss_nodes[i] + mu
-            r = self.RolloutAcquizition(current_value=shifted_node, augmented_state=x)
+            shifted_node = math.sqrt(2) * sigma[0] * gauss_nodes[i] + mu
+            r = self.RolloutAcquizition(current_value=shifted_node[0], augmented_state=x)
             answer +=  gauss_weights[i] * \
                 (r + gamma * self.ComputeHRollout(T=T - 1, x=TransitionH(x_next, shifted_node), st=new_st, gamma=gamma))
 

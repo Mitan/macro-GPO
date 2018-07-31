@@ -8,7 +8,7 @@ from src.enum.DatasetModeEnum import DatasetModeEnum
 def hack_script(start):
     my_save_folder_root = "../releaseTests/updated_release/simulated/rewards-sAD/"
     my_save_folder_root = "../sim-fixed-temp/"
-    my_save_folder_root = "./h4-b1/"
+    my_save_folder_root = "./rollout_3/"
 
     batch_size = 1
 
@@ -17,7 +17,7 @@ def hack_script(start):
     num_samples = 20
     anytime_num_samples = 300
 
-    end = start + 5
+    end = start + 110
     assert start < end
     for seed in range(start, end):
         print seed
