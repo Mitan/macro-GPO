@@ -86,10 +86,11 @@ def TestScenario_all_tests(my_save_folder_root, seed, time_steps, anytime_num_sa
         method_name = 'H=' + str(h)
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h) + '\n')
-
+    """
+    h = 4
     h_4 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=4,
                                   num_timesteps_test=time_steps,
-                                  save_folder=save_folder + "h" + str(4) + "/",
+                                  save_folder=save_folder + "h" + str(h) + "_b1_" + str(num_samples) + "/",
                                   num_samples=num_samples)
     method_name = 'H=4'
     output_rewards.write(method_name + '\n')
@@ -103,5 +104,5 @@ def TestScenario_all_tests(my_save_folder_root, seed, time_steps, anytime_num_sa
     method_name = 'Rollout H=4'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(rollout) + '\n')
-
+    """
     output_rewards.close()

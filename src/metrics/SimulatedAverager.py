@@ -282,15 +282,19 @@ def GetSimulated_H4Samples_TotalRewards():
 def GetSimulatedTotalRegrets_B1():
 
     seeds = range(66, 102)
+    # seeds = list(set(range(66, 175)) - set([154, 152]))
     batch_size = 4
 
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
+    # root_path = '../../sim-fixed-temp/'
 
-    methods = ['h4', 'rollout_h4_gamma1', 'rollout_h4_gamma1_ei']
+    methods = ['h4', 'h3', 'h2', 'h1', 'rollout_h4_gamma1']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-                    'PI', 'EI']
-                    # r'$H =4$ $N=20$', r'$H =4$ $N=40$']
+                    r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 2$',
+                    'DB-GP-UCB',
+                    r'Rollout-$H=4 \gamma =1.0$ PI']
 
     output_file = '../../result_graphs/eps/simulated/' + 'my_ei' + '/simulated_simple_regrets_rollout.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_simple_regrets.eps'
@@ -307,10 +311,13 @@ def GetSimulatedTotalRewards_B1():
 
         root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
-        methods = ['h4', 'rollout_h4_gamma1', 'rollout_h4_gamma1_ei']
+        methods = ['h4', 'h3', 'h2', 'h1', 'rollout_h4_gamma1']
 
         method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-                        'PI', 'EI']
+                        r'$\epsilon$-Macro-GPO  $H = 3$',
+                        r'$\epsilon$-Macro-GPO  $H = 2$',
+                        'DB-GP-UCB',
+                        r'Rollout-$H=4 \gamma =1.0$ PI']
 
         output_file = '../../result_graphs/eps/simulated/' + 'my_ei' + '/h4_simulated_total_rewards_rollout.eps'
         # output_file = '../../result_graphs/eps/simulated/my_ei/h4_simulated_total_rewards.eps'
@@ -329,5 +336,5 @@ if __name__ == "__main__":
     # GetSimulatedTotalRewards_our_ucb()
     # GetSimulatedTotalRegrets_our_ucb()
     # GetSimulatedTotalRegrets_onlyH4()
-    # GetSimulatedTotalRegrets_B1()
+    GetSimulatedTotalRegrets_B1()
     GetSimulatedTotalRewards_B1()

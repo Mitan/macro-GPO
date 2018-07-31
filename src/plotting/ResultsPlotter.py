@@ -67,6 +67,7 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
         single_point_methods = name == 'EI (all)' or \
                                name == 'EI' or\
                                name == 'PI' or\
+                               name == r'Rollout-$H=4 \gamma =1.0$ PI' or\
                                name == r'$H =4$ $N=20$' or\
                                name == r'$H =4$ $N=40$'
         adjusted_time_steps = range(21) if single_point_methods else time_steps
@@ -108,8 +109,8 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
     if dataset == 'simulated':
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total normalized output measurements observed by AUV", fontsize=labels_font_size)
-            plt.yticks(range(-4, 13))
-            axes.set_ylim([-3.5, 11])
+            plt.yticks(range(-4, 14))
+            axes.set_ylim([-3.5, 14])
             legend_loc = 2
             """
             elif plottingType == PlottingMethods.TotalRewardBeta:
