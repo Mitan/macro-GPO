@@ -10,7 +10,8 @@ from src.plotting.ResultsPlotter import PlotData
 
 def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, time_slot, plot_bars):
 
-    max_extractor = DatasetMaxExtractor(dataset_type=DatasetEnum.Robot, time_slot=time_slot, batch_size=batch_size)
+    dataset_type = DatasetEnum.Robot
+    max_extractor = DatasetMaxExtractor(dataset_type=dataset_type, time_slot=time_slot, batch_size=batch_size)
     model_max = max_extractor.extract_max(root_folder=root_path, seeds=seeds)
 
     results = []
@@ -26,13 +27,16 @@ def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_fil
         results.append([method_names[index], regrets, error_bars])
 
     PlotData(results=results, output_file_name=output_filename,
-             plottingType=plottingType, dataset='robot',plot_bars=plot_bars)
+             plottingType=plottingType, dataset=dataset_type, plot_bars=plot_bars)
     return results
 
 
-def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, time_slot, plot_bars=False):
+def RoadRegrets(batch_size, root_path, methods, method_names, seeds,
+                output_filename, plottingType, time_slot, plot_bars=False):
 
-    max_extractor = DatasetMaxExtractor(dataset_type=DatasetEnum.Road, time_slot=time_slot, batch_size=batch_size)
+    dataset_type = DatasetEnum.Road
+
+    max_extractor = DatasetMaxExtractor(dataset_type=dataset_type, time_slot=time_slot, batch_size=batch_size)
     model_max = max_extractor.extract_max(root_folder=root_path, seeds=seeds)
 
     results = []
@@ -48,7 +52,7 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
         results.append([method_names[index], regrets, error_bars])
 
     PlotData(results=results, output_file_name=output_filename,
-             plottingType=plottingType, dataset='road', plot_bars=plot_bars)
+             plottingType=plottingType, dataset=dataset_type, plot_bars=plot_bars)
     return results
 
 

@@ -1,6 +1,7 @@
 import matplotlib
 
 # Force matplotlib to not use any Xwindows backend.
+from src.enum.DatasetEnum import DatasetEnum
 from src.enum.PlottingEnum import PlottingMethods
 
 matplotlib.use('Agg')
@@ -109,7 +110,7 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
     axes = plt.axes()
     axes.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
-    if dataset == 'simulated':
+    if dataset == DatasetEnum.Simulated:
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total normalized output measurements observed by AUV", fontsize=labels_font_size)
             # plt.yticks(range(-4, 14))
@@ -142,7 +143,8 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
             legend_loc = 1
         else:
             raise Exception
-    elif dataset == 'road':
+
+    elif dataset == DatasetEnum.Road:
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total normalized output measurements observed by AV", fontsize=labels_font_size)
             """
@@ -171,7 +173,8 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
             legend_loc = 1
         else:
             raise Exception
-    elif dataset == 'robot':
+
+    elif dataset == DatasetEnum.Robot:
         if plottingType == PlottingMethods.TotalReward or plottingType == PlottingMethods.TotalRewardBeta:
             plt.ylabel("Total normalized output measurements observed by mobile robot", fontsize=labels_font_size)
             axes.set_ylim([-0.5, 14])
