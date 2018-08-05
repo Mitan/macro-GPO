@@ -2,7 +2,7 @@ import math
 
 from GeneralResultsAverager import RobotRewards
 from src.enum.PlottingEnum import PlottingMethods
-from RegretCalculator import RobotRegrets
+from old_RegretCalculator import RobotRegrets
 
 
 def GetRobotBeta2Rewards():
@@ -38,9 +38,10 @@ def GetRobotBeta2Rewards():
     output_file = '../../result_graphs/eps/robot_beta2_rewards.eps'
     output_file = '../../result_graphs/eps/robot/robot_beta2_rewards.eps'
 
-    results = RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                 seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalRewardBeta)
+    results = RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
+                           method_names=method_names,
+                           seeds=seeds, output_filename=output_file, time_slot=time_slot,
+                           plottingType=PlottingMethods.TotalRewardBeta)
     beta0 = results[0]
     beta1 = results[1]
     # print beta0, beta1
@@ -146,7 +147,7 @@ def GetRobotTotalRewards():
 """
 
 
-def GetRobotTotalRewards(my_ei = True):
+def GetRobotTotalRewards(my_ei=True):
     if my_ei:
         ei_method = 'my_qEI'
         ei_folder = 'my_ei'
@@ -163,7 +164,7 @@ def GetRobotTotalRewards(my_ei = True):
     # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
                'mle_h4', 'pe', 'gp-bucb', ei_method]
-               # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp15_pi20']
+    # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp15_pi20']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
@@ -172,11 +173,12 @@ def GetRobotTotalRewards(my_ei = True):
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
     # output_file = '../../result_graphs/eps/robot/r_ei/robot_total_rewards.eps'
-    output_file = '../../result_graphs/eps/robot/'+ ei_folder + '/robot_total_rewards.eps'
+    output_file = '../../result_graphs/eps/robot/' + ei_folder + '/robot_total_rewards.eps'
 
-    results= RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                 seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
+    results = RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
+                           method_names=method_names,
+                           seeds=seeds, output_filename=output_file, time_slot=time_slot,
+                           plottingType=PlottingMethods.TotalReward)
     """
     h4 = results[0]
     h1 = results[3]
@@ -188,7 +190,7 @@ def GetRobotTotalRewards(my_ei = True):
     print results
 
 
-def GetRobotTotalRewards_onlyH4(my_ei = True):
+def GetRobotTotalRewards_onlyH4(my_ei=True):
     if my_ei:
         ei_method = 'my_qEI'
         ei_folder = 'my_ei'
@@ -247,7 +249,7 @@ def GetRobotTotalRewards_ours_ucb():
 
     time_slot = 16
 
-    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',  'mle_h4', 'new_mle_h3', 'new_mle_h2']
+    methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'new_mle_h3', 'new_mle_h2']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
@@ -260,6 +262,7 @@ def GetRobotTotalRewards_ours_ucb():
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
                  plottingType=PlottingMethods.TotalReward)
+
 
 def GetRobot_H2Full_TotalRewards():
     seeds = range(35)
@@ -277,9 +280,10 @@ def GetRobot_H2Full_TotalRewards():
 
     output_file = '../../result_graphs/eps/robot/robot_h2_full_total_rewards.eps'
 
-    results= RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                 seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
+    results = RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
+                           method_names=method_names,
+                           seeds=seeds, output_filename=output_file, time_slot=time_slot,
+                           plottingType=PlottingMethods.TotalReward)
     # print results
     h4 = results[0]
     h2_all = results[1]
@@ -289,7 +293,7 @@ def GetRobot_H2Full_TotalRewards():
     print "Rewards H2  / H2 all %f" % (1 - h2[1][-1] / h2_all[1][-1])
 
 
-def GetRobotTotalRegrets(my_ei = True):
+def GetRobotTotalRegrets(my_ei=True):
     if my_ei:
         ei_method = 'my_qEI'
         ei_folder = 'my_ei'
@@ -299,10 +303,11 @@ def GetRobotTotalRegrets(my_ei = True):
     seeds = range(35)
     batch_size = 5
 
+    time_slot = 16
     # methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', 'r_qei']
     methods = ['new_anytime_h4_300', 'anytime_h3', 'anytime_h2', 'anytime_h1',
                'mle_h4', 'pe', 'gp-bucb', ei_method]
-               # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp15_pi20']
+    # 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp15_pi20']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
@@ -311,10 +316,12 @@ def GetRobotTotalRegrets(my_ei = True):
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
     # output_file = '../../result_graphs/eps/robot/r_ei/robot_simple_regrets.eps'
-    output_file = '../../result_graphs/eps/robot/' + ei_folder+ '/robot_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/robot/' + ei_folder + '/robot_simple_regrets.eps'
 
-    results = RobotRegrets(batch_size, root_path, methods, method_names, seeds,
-                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
+    results = RobotRegrets(batch_size=batch_size, root_path=root_path, methods=methods,
+                           method_names=method_names, seeds=seeds,
+                           time_slot=time_slot,
+                           output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     """
     sigma = math.sqrt(0.596355)
     h4 = results[0]
@@ -324,10 +331,11 @@ def GetRobotTotalRegrets(my_ei = True):
     print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
     print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
     """
-    print results
+    for result in results:
+        print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 
 
-def GetRobotTotalRegrets_onlyH4(my_ei = True):
+def GetRobotTotalRegrets_onlyH4(my_ei=True):
     if my_ei:
         ei_method = 'my_qEI'
         ei_folder = 'my_ei'
@@ -342,7 +350,7 @@ def GetRobotTotalRegrets_onlyH4(my_ei = True):
     methods = ['new_anytime_h4_300', 'anytime_h1', 'mle_h4', 'pe', 'gp-bucb', ei_method, 'bbo-llp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$',
-                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI','BBO-LP']
+                    'DB-GP-UCB', r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
 
@@ -406,7 +414,7 @@ def GetRobotTotalRegrets_H2Full():
     output_file = '../../result_graphs/eps/robot/robot_h2_full_simple_regrets.eps'
 
     results = RobotRegrets(batch_size, root_path, methods, method_names, seeds,
-                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
+                           output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     h4 = results[0]
     h2_all = results[1]
     h2 = results[2]

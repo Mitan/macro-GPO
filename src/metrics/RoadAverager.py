@@ -2,7 +2,7 @@ import math
 
 from GeneralResultsAverager import RoadRewards
 from src.enum.PlottingEnum import PlottingMethods
-from RegretCalculator import RoadRegrets
+from old_RegretCalculator import RoadRegrets
 
 
 def GetRoadBeta2Rewards():
@@ -26,10 +26,10 @@ def GetRoadBeta2Rewards():
     """
     root_path = '../../road_tests/new_new_new_beta2/'
     # root_path = '../../releaseTests/updated_release/road/new_new_new_beta2/'
-    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
+    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names =  ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
     """
     root_path = '../../road_tests/new_beta225/'
     beta_list = [0.25]
@@ -53,8 +53,9 @@ def GetRoadBeta2Rewards():
     output_file = '../../result_graphs/eps/road/road_beta2_rewards.eps'
     # output_file = '../../result_graphs/eps/road/n_road_beta2_rewards.eps'
 
-    results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
+    results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
+                          method_names=method_names,
+                          seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
     beta0 = results[0]
     beta02 = results[1]
     # print beta0, beta02
@@ -78,11 +79,11 @@ def GetRoadBeta3Rewards():
     """
     root_path = '../../road_tests/new_beta3/'
     # root_path = '../../releaseTests/updated_release/road/new_beta3/'
-    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
+    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
     """
     root_path = '../../road_tests/new_beta325/'
     beta_list = [0.25]
@@ -115,7 +116,7 @@ def GetRoad_H4Samples_TotalRewards():
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
-def GetRoadTotalRewards(my_ei = True):
+def GetRoadTotalRewards(my_ei=True):
     if my_ei:
         ei_method = 'my_qEI'
         ei_folder = 'my_ei'
@@ -128,21 +129,22 @@ def GetRoadTotalRewards(my_ei = True):
     batch_size = 5
 
     # methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
-    methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
-               'mle_h4','new_ixed_pe', 'bucb', ei_method, 'my_lp']
-               #  'mle_h4','new_ixed_pe', 'bucb', ei_method,'bbo-llp7']
+    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
+               'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'my_lp']
+    #  'mle_h4','new_ixed_pe', 'bucb', ei_method,'bbo-llp7']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$', 'DB-GP-UCB',
-                     r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
+                    r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
-    output_file = '../../result_graphs/eps/road/'+ ei_folder + '/road_total_rewards.eps'
+    output_file = '../../result_graphs/eps/road/' + ei_folder + '/road_total_rewards.eps'
     # output_file = '../../result_graphs/eps/road/my_ei/road_total_rewards.eps'
 
-    results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+    results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
+                          method_names=method_names,
+                          seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
     """
     h4 = results[0]
     h1 = results[3]
@@ -153,12 +155,13 @@ def GetRoadTotalRewards(my_ei = True):
     """
     print results
 
+
 def GetRoadTotalRewards_ours():
     seeds = range(35)
 
     batch_size = 5
 
-    methods = [ 'anytime_h4', 'anytime_h3', 'anytime_h2', 'h1']
+    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$', 'DB-GP-UCB']
@@ -190,7 +193,7 @@ def GetRoadTotalRewards_ours_ucb():
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
-def GetRoadTotalRewards_onlyH4(my_ei = True):
+def GetRoadTotalRewards_onlyH4(my_ei=True):
     if my_ei:
         ei_method = 'my_qEI'
         ei_folder = 'my_ei'
@@ -203,7 +206,7 @@ def GetRoadTotalRewards_onlyH4(my_ei = True):
     batch_size = 5
 
     # methods = [ 'anytime_h4',  'h1', 'mle_h4','new_ixed_pe', 'bucb', 'r_qei']
-    methods = [ 'anytime_h4',  'h1', 'mle_h4','new_ixed_pe', 'bucb', ei_method, 'bbo-llp4']
+    methods = ['anytime_h4', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp4']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', 'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
@@ -217,7 +220,7 @@ def GetRoadTotalRewards_onlyH4(my_ei = True):
                 seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
-def GetRoadTotalRegrets(my_ei = True):
+def GetRoadTotalRegrets(my_ei=True):
     if my_ei:
         ei_method = 'my_qEI'
         ei_folder = 'my_ei'
@@ -228,22 +231,26 @@ def GetRoadTotalRegrets(my_ei = True):
     seeds = range(35)
     batch_size = 5
 
+    time_slot = 18
+
     # methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
     methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1',
                'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'my_lp']
-               # 'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp7']
+    # 'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp7']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$', 'DB-GP-UCB',
-                     r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
+                    r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
 
-    output_file = '../../result_graphs/eps/road/'+ ei_folder + '/road_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/road/' + ei_folder + '/road_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/road/my_ei/road_simple_regrets.eps'
 
-    results = RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
+    results = RoadRegrets(batch_size=batch_size, root_path=root_path, methods=methods,
+                          method_names=method_names, seeds=seeds,
+                          output_filename=output_file, plottingType=PlottingMethods.SimpleRegret,
+                          time_slot=time_slot, plot_bars=True)
     sigma = math.sqrt(0.7486)
     h4 = results[0]
     h1 = results[3]
@@ -255,7 +262,8 @@ def GetRoadTotalRegrets(my_ei = True):
     """
     # print "Regrets H4 -  H1 %f sigma " % ((h1[1][-1] - h4[1][-1]) / sigma)
     # print "Regrets H4  -  MLE %f sigma" % ((mle[1][-1] - h4[1][-1]) / sigma)
-    print results
+    for result in results:
+        print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 
 
 def GetRoadTotalRegrets_onlyH4(my_ei=True):
@@ -270,7 +278,7 @@ def GetRoadTotalRegrets_onlyH4(my_ei=True):
     batch_size = 5
 
     # methods = ['anytime_h4','h1', 'mle_h4', 'new_ixed_pe', 'bucb', 'r_qei']
-    methods = ['anytime_h4','h1', 'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp4']
+    methods = ['anytime_h4', 'h1', 'mle_h4', 'new_ixed_pe', 'bucb', ei_method, 'bbo-llp4']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$', 'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
@@ -300,11 +308,12 @@ def GetRoadTotalRegrets_our():
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
+
 def GetRoadTotalRegrets_our_ucb():
     seeds = range(35)
     batch_size = 5
 
-    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_mle_h3', 'new_mle_h2' ]
+    methods = ['anytime_h4', 'anytime_h3', 'anytime_h2', 'h1', 'mle_h4', 'new_mle_h3', 'new_mle_h2']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
@@ -316,6 +325,7 @@ def GetRoadTotalRegrets_our_ucb():
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+
 
 """
 def GetRoadTotalRegrets(seeds):
@@ -391,8 +401,9 @@ def GetRoad_H2Full_TotalRewards():
 
     output_file = '../../result_graphs/eps/road/road_h2_full_total_rewards.eps'
 
-    results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+    results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
+                          method_names=method_names,
+                          seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
     # print results
     h4 = results[0]
     h2_all = results[1]
@@ -400,7 +411,6 @@ def GetRoad_H2Full_TotalRewards():
     # print h4, h2_all, h2
     print "Rewards H4 / H2 all %f" % (h4[1][-1] / h2_all[1][-1])
     print "Rewards H2  / H2 all %f" % (1 - h2[1][-1] / h2_all[1][-1])
-
 
 
 """
@@ -453,7 +463,7 @@ def GetRoadTotalRegrets_H2Full():
 
     # methods = ['anytime_h2_full_2', 'anytime_h2', 'anytime_h4_300', 'ei']
     # methods = ['anytime_h2_full_2', 'anytime_h2', 'anytime_h4_300']
-    methods = ['anytime_h4', 'anytime_h2_full', 'anytime_h2' , 'ei']
+    methods = ['anytime_h4', 'anytime_h2_full', 'anytime_h2', 'ei']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$  ($20$)',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all)',
@@ -465,7 +475,7 @@ def GetRoadTotalRegrets_H2Full():
     # root_path = '../../releaseTests/road/tests2full-NEW/'
 
     results = RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
+                          output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     h4 = results[0]
     h2_all = results[1]
     h2 = results[2]
@@ -488,8 +498,7 @@ def GetRoadTotalRegrets_H4Samples():
     output_file = '../../result_graphs/eps/road_h4samples_simple_regrets.eps'
 
     results = RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
-
+                          output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
 def GetRoadBeta2Regrets():
@@ -586,10 +595,9 @@ def GetRoadBeta3Regrets():
     str_beta = map(str, beta_list)
     methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
     method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/road/road_beta3_regrets.eps'
-
 
     seed = range(42)
     root_path = '../../new_road_tests/beta3n/'
@@ -603,7 +611,6 @@ def GetRoadBeta3Regrets():
                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
 
 
-
 if __name__ == "__main__":
     """
     GetRoadTotalRewards()
@@ -612,7 +619,7 @@ if __name__ == "__main__":
 
     # GetRoad_H2Full_TotalRewards()
     """
-    #GetRoad_H4Samples_TotalRewards()
+    # GetRoad_H4Samples_TotalRewards()
     # GetRoadTotalRegrets_H4Samples()
     # GetRoadBeta2Rewards()
     # GetRoadTotalRewards()

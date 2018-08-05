@@ -4,75 +4,48 @@ from DatasetMaxExtractor import DatasetMaxExtractor
 from src.DatasetUtils import GetAllMeasurements, GetMaxValues
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.PlottingEnum import PlottingMethods
+from RegretCalculator import RegretCalculator
 from src.plotting.ResultsPlotter import PlotData
 
 
-def GetRoadResultsForMethod(seeds, batch_size, method, root_path, model_max):
-    len_seeds = len(seeds)
-    steps = 20 / batch_size
-    # +1 for initial stage
-    results_for_method = np.zeros((steps + 1,))
+def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, time_slot, plot_bars):
 
-    all_measurements = np.zeros((len_seeds, steps + 1))
-
-    for ind, seed in enumerate(seeds):
-        seed_folder = root_path + 'seed' + str(seed) + '/'
-        measurements = GetAllMeasurements(seed_folder, method, batch_size)
-        max_found_values = GetMaxValues(measurements, batch_size)
-        assert max_found_values.shape == results_for_method.shape
-
-        # results_for_method = np.add(results_for_method, max_found_values)
-        all_measurements[ind, :] = max_found_values
-
-    # results_for_method = results_for_method / len_seeds
-    error_bars = np.std(all_measurements, axis=0) / np.sqrt(len_seeds)
-
-    means = np.mean(all_measurements, axis=0)
-    regrets = [model_max - res for res in means.tolist()]
-    print(error_bars)
-    return regrets, error_bars.tolist()
-    # result = [method_names[index], regrets]
-
-
-def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, plot_bars):
-
-    # todo note hardcoded
-    time_slot = 16
     max_extractor = DatasetMaxExtractor(dataset_type=DatasetEnum.Robot, time_slot=time_slot, batch_size=batch_size)
     model_max = max_extractor.extract_max(root_folder=root_path, seeds=seeds)
 
     results = []
 
-    # for every method
+    regret_calculator = RegretCalculator(seeds=seeds, root_path=root_path, model_max=model_max)
+
     for index, method in enumerate(methods):
         # todo hack
         adjusted_batch_size = 1 if method == 'ei' else batch_size
-        regrets, error_bars = GetRoadResultsForMethod(seeds, adjusted_batch_size, method, root_path, model_max)
-        result = [method_names[index], regrets, error_bars]
-        results.append(result)
-        # print result
+
+        regrets, error_bars = regret_calculator.calculate_regrets_for_one_method(method=method,
+                                                                                 batch_size=adjusted_batch_size)
+        results.append([method_names[index], regrets, error_bars])
+
     PlotData(results=results, output_file_name=output_filename,
              plottingType=plottingType, dataset='robot',plot_bars=plot_bars)
     return results
 
 
-def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, plot_bars=False):
+def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, time_slot, plot_bars=False):
 
-    # todo note hardcoded
-    time_slot = 18
     max_extractor = DatasetMaxExtractor(dataset_type=DatasetEnum.Road, time_slot=time_slot, batch_size=batch_size)
     model_max = max_extractor.extract_max(root_folder=root_path, seeds=seeds)
 
     results = []
 
-    # for every method
+    regret_calculator = RegretCalculator(seeds=seeds, root_path=root_path, model_max=model_max)
+
     for index, method in enumerate(methods):
         # todo hack
         adjusted_batch_size = 1 if method == 'ei' else batch_size
-        regrets, error_bars = GetRoadResultsForMethod(seeds, adjusted_batch_size, method, root_path, model_max)
-        result = [method_names[index], regrets, error_bars]
-        results.append(result)
-        # print result
+
+        regrets, error_bars = regret_calculator.calculate_regrets_for_one_method(method=method,
+                                                                                 batch_size=adjusted_batch_size)
+        results.append([method_names[index], regrets, error_bars])
 
     PlotData(results=results, output_file_name=output_filename,
              plottingType=plottingType, dataset='road', plot_bars=plot_bars)
