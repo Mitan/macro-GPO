@@ -93,8 +93,12 @@ class TreePlan:
         return max(0, current_value - max_found_value)
 
     def ComputeURollout(self, T, x, st, gamma):
+        """
         gauss_nodes = [-1.22474, 0, 1.22474]
         gauss_weights = [0.29541,1.18164, 0.29541]
+        """
+        gauss_nodes = [0.0]
+        gauss_weights = [1.0]
 
         next_states = self.GetNextAugmentedStates(x)
         if not next_states:
@@ -128,13 +132,45 @@ class TreePlan:
         # xBest is augmented state
         return vBest, xBest
 
+    def stupid_heuristic(self, x_0, next_states):
+        vBest = - float('inf')
+        xBest = None
+
+        current_locations = x_0.history.locations
+        current_chol = self.gp.Cholesky(x_0.history.locations)
+
+        for x_next in next_states:
+
+            next_physical_state = x_next.physical_state
+
+            weights = self.gp.GPWeights(locations=current_locations, current_location=next_physical_state,
+                                   cholesky=current_chol)
+            mu = self.gp.GPMean(measurements=x_0.history.measurements, weights=weights)[0]
+
+
+            if mu >= vBest:
+                vBest = mu
+                xBest = x_next
+
+        return vBest, xBest, -1
+
     def ComputeHRollout(self, T, x, st, gamma):
         #todo note hardcoded
+        """
         gauss_nodes = [-1.22474, 0, 1.22474]
         gauss_weights = [0.29541,1.18164, 0.29541]
+        """
+        gauss_nodes = [0.0]
+        gauss_weights = [1.0]
+
         # action selected by PI policy
-        _, x_next, _ = self.PI(x)
-        # _, x_next, _ = self.EI(x)
+        # _, x_next, _ = self.PI(x)
+        if T == 1:
+            next_states = self.GetNextAugmentedStates(x)
+            _, x_next, _ = self.stupid_heuristic(x_0=x, next_states=next_states)
+        else:
+            _, x_next, _ = self.EI(x)
+
         next_physical_state = x_next.physical_state
         new_st = st.children[ToTuple(next_physical_state)]
         mu = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
