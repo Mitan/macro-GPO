@@ -8,34 +8,10 @@ from RegretCalculator import RegretCalculator
 from src.plotting.ResultsPlotter import PlotData
 
 
-def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, time_slot, plot_bars):
+def ProcessRegrets(batch_size, root_path, methods, method_names, seeds,
+                   output_filename, plottingType, time_slot, plot_bars, dataset_type):
 
-    dataset_type = DatasetEnum.Robot
-    max_extractor = DatasetMaxExtractor(dataset_type=dataset_type, time_slot=time_slot, batch_size=batch_size)
-    model_max = max_extractor.extract_max(root_folder=root_path, seeds=seeds)
-
-    results = []
-
-    regret_calculator = RegretCalculator(seeds=seeds, root_path=root_path, model_max=model_max)
-
-    for index, method in enumerate(methods):
-        # todo hack
-        adjusted_batch_size = 1 if method == 'ei' else batch_size
-
-        regrets, error_bars = regret_calculator.calculate_regrets_for_one_method(method=method,
-                                                                                 batch_size=adjusted_batch_size)
-        results.append([method_names[index], regrets, error_bars])
-
-    PlotData(results=results, output_file_name=output_filename,
-             plottingType=plottingType, dataset=dataset_type, plot_bars=plot_bars)
-    return results
-
-
-def RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename, plottingType, time_slot, plot_bars=False):
-
-    dataset_type = DatasetEnum.Road
-
+    # dataset_type = DatasetEnum.Robot
     max_extractor = DatasetMaxExtractor(dataset_type=dataset_type, time_slot=time_slot, batch_size=batch_size)
     model_max = max_extractor.extract_max(root_folder=root_path, seeds=seeds)
 

@@ -1,8 +1,9 @@
 import math
 
 from GeneralResultsAverager import RoadRewards
+from src.enum.DatasetEnum import DatasetEnum
 from src.enum.PlottingEnum import PlottingMethods
-from old_RegretCalculator import RoadRegrets
+from old_RegretCalculator import ProcessRegrets
 
 
 def GetRoadBeta2Rewards():
@@ -247,10 +248,10 @@ def GetRoadTotalRegrets(my_ei=True):
     output_file = '../../result_graphs/eps/road/' + ei_folder + '/road_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/road/my_ei/road_simple_regrets.eps'
 
-    results = RoadRegrets(batch_size=batch_size, root_path=root_path, methods=methods,
-                          method_names=method_names, seeds=seeds,
-                          output_filename=output_file, plottingType=PlottingMethods.SimpleRegret,
-                          time_slot=time_slot, plot_bars=True)
+    results = ProcessRegrets(dataset_type=DatasetEnum.Road, batch_size=batch_size, root_path=root_path, methods=methods,
+                             method_names=method_names, seeds=seeds,
+                             output_filename=output_file, plottingType=PlottingMethods.SimpleRegret,
+                             time_slot=time_slot, plot_bars=True)
     sigma = math.sqrt(0.7486)
     h4 = results[0]
     h1 = results[3]
