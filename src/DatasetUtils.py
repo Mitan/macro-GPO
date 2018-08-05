@@ -48,7 +48,7 @@ def GetAccumulatedRewards(measurements, batch_size):
         after_i_step_points = batch_size * (i + 1) + 1
         current_reward = sum(measurements[:after_i_step_points])
         acc_rewards.append(current_reward)
-    return np.array(acc_rewards)
+    return acc_rewards
 
 
 # get all the measurements collected by the method including initial value

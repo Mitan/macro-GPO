@@ -99,7 +99,7 @@ def TestScenario_all_tests(my_save_folder_root, seed, time_steps, anytime_num_sa
     horizon = 4
     rollout = testWithFixedParameters(model=m, method=Methods.Rollout, horizon=horizon,
                                       num_timesteps_test=time_steps,
-                                      save_folder=save_folder + "rollout_h" + str(horizon) + "_gamma1_pi/",
+                                      save_folder=save_folder + "rollout_h" + str(horizon) + "_gamma1_ei_mod/",
                                       num_samples=num_samples)
     method_name = 'Rollout H=4'
     output_rewards.write(method_name + '\n')
