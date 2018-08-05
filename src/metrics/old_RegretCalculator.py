@@ -1,13 +1,9 @@
-from StringIO import StringIO
 import numpy as np
 
-from src.DatasetUtils import GetAllMeasurements, GetMaxValues
-from src.Utils import generate_set_of_reachable_locations
-from src.enum.DatasetEnum import DatasetEnum
-from src.enum.DatasetModeEnum import DatasetModeEnum
-from src.enum.PlottingEnum import PlottingMethods
 from DatasetMaxExtractor import DatasetMaxExtractor
-from src.model.DatasetGenerator import DatasetGenerator
+from src.DatasetUtils import GetAllMeasurements, GetMaxValues
+from src.enum.DatasetEnum import DatasetEnum
+from src.enum.PlottingEnum import PlottingMethods
 from src.plotting.ResultsPlotter import PlotData
 
 
@@ -85,39 +81,13 @@ def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_file
 
 def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output_filename,
                      plottingType, plot_bars=False):
-    """
-    seeds = range(66, 102)
-    batch_size = 4
-    root_path = '../../releaseTests/simulated/rewards-sAD/'
-    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
-    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
-    """
+
     len_seeds = len(seeds)
     results = []
 
-    reachable_locations = generate_set_of_reachable_locations(b_size=batch_size, start=(1.0, 1.0), gap=0.05)
+    max_extractor = DatasetMaxExtractor(dataset_type=DatasetEnum.Simulated, time_slot=None, batch_size=batch_size)
+    model_max = max_extractor.extract_max(root_folder=root_path, seeds=seeds)
 
-    # average regret is average max - average reward
-    # average max is sum over all max seeds / len
-    model_max_values = {}
-    sum_model_max = 0
-    for seed in seeds:
-        seed_dataset_path = root_path + 'seed' + str(seed) + '/'
-        dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Simulated, dataset_mode=DatasetModeEnum.Load,
-                                             time_slot=None, batch_size=batch_size)
-        m = dataset_generator.get_dataset_model(root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
-        global_max = m.GetMax()
-        reachable_max = max(map(lambda x : m(x), reachable_locations))
-        # print(global_max - reachable_max)
-        #todo nb
-        # global_max = reachable_max
-
-        model_max_values[seed] = global_max
-        sum_model_max += global_max
-
-    average_model_max = sum_model_max / len_seeds
-
-    # for every method
     for index, method in enumerate(methods):
         # adjusted_batch_size = 1 if method == 'h4-b1-40' or method == 'h4-b1-20' else batch_size
         adjusted_batch_size = 1 if method == 'rollout_h4_gamma1' or method == 'rollout_h4_gamma1_ei' else batch_size
@@ -134,8 +104,8 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
             max_found_values = GetMaxValues(measurements, adjusted_batch_size)
             # print(max_found_values)
 
-            all_regrets[ind, :] = model_max_values[seed] - max_found_values
-            all_regrets[ind, :] = max_found_values
+            all_regrets[ind, :] = model_max[seed] - max_found_values
+            # all_regrets[ind, :] = max_found_values
 
             # results_for_method = np.add(results_for_method, max_found_values)
 
@@ -144,8 +114,8 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
         # print(error_bars)
         means = np.mean(all_regrets, axis=0)
 
-        regrets = [average_model_max - res for res in means.tolist()]
-        # regrets = means.tolist()
+        # regrets = [average_model_max - res for res in means.tolist()]
+        regrets = means.tolist()
 
         result = [method_names[index], regrets, error_bars.tolist()]
         results.append(result)
