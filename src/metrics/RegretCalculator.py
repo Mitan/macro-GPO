@@ -6,6 +6,7 @@ from src.Utils import generate_set_of_reachable_locations
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
 from src.enum.PlottingEnum import PlottingMethods
+from DatasetMaxExtractor import DatasetMaxExtractor
 from src.model.DatasetGenerator import DatasetGenerator
 from src.plotting.ResultsPlotter import PlotData
 
@@ -39,12 +40,10 @@ def GetRoadResultsForMethod(seeds, batch_size, method, root_path, model_max):
 
 def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, plot_bars):
 
-    dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Robot,
-                                         dataset_mode=DatasetModeEnum.Load,
-                                         time_slot=16, batch_size=batch_size)
-    m = dataset_generator.get_dataset_model(root_folder=root_path + 'seed0/', seed=0, ma_treshold=None)
-
-    model_max = m.GetMax()
+    # todo note hardcoded
+    time_slot = 16
+    max_extractor = DatasetMaxExtractor(dataset_type=DatasetEnum.Robot, time_slot=time_slot, batch_size=batch_size)
+    model_max = max_extractor.extract_max(root_folder=root_path, seeds=seeds)
 
     results = []
 
@@ -62,21 +61,11 @@ def RobotRegrets(batch_size, root_path, methods, method_names, seeds, output_fil
 
 
 def RoadRegrets(batch_size, root_path, methods, method_names, seeds, output_filename, plottingType, plot_bars=False):
-    """
-    root_path = '../../releaseTests/road/b5-18-log/'
-    seeds = range(35)
-    seeds = list(set(seeds) - set([31]))
-    batch_size = 5
-    methods = ['qEI', 'h1', 'anytime_h2', 'anytime_h3', 'mle_h3']
-    method_names = ['qEI', 'Myopic UCB', 'Anytime H = 2', 'Anytime H = 3', 'MLE H = 3']
-    """
 
-    dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Road,
-                                 dataset_mode=DatasetModeEnum.Load,
-                                         time_slot=18, batch_size=batch_size)
-    m = dataset_generator.get_dataset_model(root_folder=root_path+'seed0/', seed=0, ma_treshold=None)
-
-    model_max = m.GetMax()
+    # todo note hardcoded
+    time_slot = 18
+    max_extractor = DatasetMaxExtractor(dataset_type=DatasetEnum.Road, time_slot=time_slot, batch_size=batch_size)
+    model_max = max_extractor.extract_max(root_folder=root_path, seeds=seeds)
 
     results = []
 

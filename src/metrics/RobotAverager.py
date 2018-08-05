@@ -505,4 +505,4 @@ if __name__ == "__main__":
     # GetRobotTotalRewards_ours_ucb()
     # GetRobotTotalRegrets_ours_ucb()
     GetRobotTotalRegrets()
-    GetRobotTotalRegrets_H2Full()
+    # GetRobotTotalRegrets_H2Full()

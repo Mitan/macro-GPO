@@ -621,4 +621,4 @@ if __name__ == "__main__":
     # GetRoadTotalRewards_ours_ucb()
     # GetRoadTotalRegrets_our_ucb()
     GetRoadTotalRegrets()
-    GetRoadTotalRegrets_H2Full()
+    # GetRoadTotalRegrets_H2Full()
