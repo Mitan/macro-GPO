@@ -108,6 +108,93 @@ def RoadRewards(batch_size, tests_source_path, methods, method_names, seeds, out
     return results
 
 
+def SimulatedCumulativeRegrets(batch_size, tests_source_path, methods, method_names, seeds, output_filename, plottingType):
+    """
+    seeds = range(66, 102)
+    batch_size = 4
+    root_path = '../../releaseTests/simulated/rewards-sAD/'
+    methods = ['h1', 'h2', 'h3', 'h4', 'anytime_h3', 'mle_h3', 'qEI']
+    method_names = ['H = 1', 'H = 2', 'H = 3', 'H = 4', 'Anytime', 'MLE H = 3', 'qEI']
+    """
+    steps = 20 / batch_size
+
+    len_seeds = len(seeds)
+    results = []
+
+    # sum_model_mean = 0
+    sum_model_max = 0
+    model_max_values = {}
+
+    for seed in seeds:
+        seed_dataset_path = tests_source_path + 'seed' + str(seed) + '/'
+        dataset_generator = DatasetGenerator(dataset_type=DatasetEnum.Simulated, dataset_mode=DatasetModeEnum.Load,
+                                             time_slot=None, batch_size=batch_size)
+        m = dataset_generator.get_dataset_model(root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
+        # sum_model_mean += m.mean
+        global_max = m.GetMax()
+        # reachable_max = max(map(lambda x: m(x), reachable_locations))
+        # print(global_max - reachable_max)
+        # todo nb
+        # global_max = reachable_max
+
+        model_max_values[seed] = global_max
+        sum_model_max += global_max
+
+    average_model_max = sum_model_max / len_seeds
+
+    # average_model_mean = sum_model_mean / len_seeds
+
+    # print scaled_model_mean
+
+    for index, method in enumerate(methods):
+        number_of_location = 0
+        adjusted_batch_size = 1 if method == 'rollout_h4_gamma1' or method == 'rollout_h4_gamma1_ei' else batch_size
+        steps = 20 / adjusted_batch_size
+        # +1 initial point
+        # results_for_method = np.zeros((steps + 1,))
+        all_regrets = np.zeros((len_seeds, steps + 1))
+        for ind, seed in enumerate(seeds):
+
+            seed_folder = tests_source_path + 'seed' + str(seed) + '/'
+
+            # all measurements, unnormalized
+            measurements = GetAllMeasurements(seed_folder, method, adjusted_batch_size)
+            number_of_location += 1
+
+            # now returns list
+            rewards = GetAccumulatedRewards(measurements, adjusted_batch_size)
+            # rewards divided by the number of points
+
+            averaged_rewards = [rewards[i] / (1 + adjusted_batch_size* i) for i in range(len(rewards))]
+            all_regrets[ind, :] = averaged_rewards
+            # results_for_method = np.add(results_for_method, rewards)
+
+        # check that we collected data for every location
+        # print method
+        # print number_of_location, len(seeds)
+        assert number_of_location == len(seeds)
+        """
+        # print results_for_method
+        results_for_method = results_for_method / len_seeds
+        scaled_model_mean = np.array([(1 + adjusted_batch_size * i) * average_model_mean for i in range(steps + 1)])
+        scaled_results = results_for_method - scaled_model_mean
+        result = [method_names[index], scaled_results.tolist(), []]
+        results.append(result)
+        """
+        error_bars = np.std(all_regrets, axis=0) / (np.sqrt(len_seeds))
+        # print(error_bars)
+        means = np.mean(all_regrets, axis=0)
+
+        # regrets = [average_model_max - res for res in means.tolist()]
+        regrets = means.tolist()
+
+        result = [method_names[index], regrets, error_bars.tolist()]
+        results.append(result)
+
+    PlotData(results=results, output_file_name=output_filename, dataset='simulated', plottingType=plottingType, plot_bars=True)
+    return results
+
+
 def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds, output_filename, plottingType):
     """
     seeds = range(66, 102)
@@ -147,7 +234,9 @@ def SimulatedRewards(batch_size, tests_source_path, methods, method_names, seeds
             measurements = GetAllMeasurements(seed_folder, method, adjusted_batch_size)
             number_of_location += 1
 
-            rewards = GetAccumulatedRewards(measurements, adjusted_batch_size)
+            # now returns list
+            rewards = np.array(GetAccumulatedRewards(measurements, adjusted_batch_size))
+
             results_for_method = np.add(results_for_method, rewards)
 
         # check that we collected data for every location

@@ -146,17 +146,17 @@ def SimulatedRegrets(batch_size, root_path, methods, method_names, seeds, output
             # print(max_found_values)
 
             all_regrets[ind, :] = model_max_values[seed] - max_found_values
-            # all_regrets[ind, :] = max_found_values
+            all_regrets[ind, :] = max_found_values
 
             # results_for_method = np.add(results_for_method, max_found_values)
 
         # results_for_method = results_for_method / len_seeds
-        error_bars = np.std(all_regrets, axis=0) / np.sqrt(len_seeds)
-        print(error_bars)
+        error_bars = np.std(all_regrets, axis=0) / ( np.sqrt(len_seeds))
+        # print(error_bars)
         means = np.mean(all_regrets, axis=0)
 
-        # regrets = [average_model_max - res for res in means.tolist()]
-        regrets = means.tolist()
+        regrets = [average_model_max - res for res in means.tolist()]
+        # regrets = means.tolist()
 
         result = [method_names[index], regrets, error_bars.tolist()]
         results.append(result)

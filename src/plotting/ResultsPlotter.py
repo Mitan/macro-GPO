@@ -76,7 +76,7 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
         adjusted_time_steps = range(21) if single_point_methods else time_steps
         marker_size = 10 if single_point_methods else 20
         if plot_bars:
-            marker_size = 0
+            marker_size = 5
 
 
         # previous version with small filled markers
@@ -128,6 +128,10 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
             """
         elif plottingType == PlottingMethods.SimpleRegret:
             plt.ylabel("Simple regret", fontsize=labels_font_size)
+            plt.yticks(np.arange(1.0, 3.2, 0.2))
+            legend_loc = 1
+        elif plottingType == PlottingMethods.CumulativeRegret:
+            plt.ylabel("Average cumulative regret", fontsize=labels_font_size)
             plt.yticks(np.arange(1.0, 3.2, 0.2))
             legend_loc = 1
         elif plottingType == PlottingMethods.Nodes:
