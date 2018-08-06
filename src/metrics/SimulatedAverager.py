@@ -2,6 +2,7 @@ from GeneralResultsAverager import SimulatedRewards, SimulatedCumulativeRegrets
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.PlottingEnum import PlottingMethods
 from src.metric.RegretCalculator import RegretCalculator
+from src.plotting.ResultsPlotter import PlotData
 
 
 def GetSimulatedTotalRewards(my_ei=True):
@@ -201,6 +202,8 @@ def GetSimulatedTotalRegrets_onlyH4(my_ei=True):
                                                 method_names=method_names,
                                                 output_filename=output_file, plottingType=PlottingMethods.SimpleRegret,
                                                 plot_bars=True)
+    PlotData(results=results, output_file_name=output_file,
+             plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Simulated, plot_bars=True)
     for result in results:
         print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 

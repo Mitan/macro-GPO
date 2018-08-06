@@ -1,8 +1,8 @@
 import numpy as np
+
 from src.DatasetUtils import GetAllMeasurements, GetMaxValues
 from src.enum.SinglePointMethodsDict import single_point_methods
 from src.metric.DatasetMaxExtractor import DatasetMaxExtractor
-from src.plotting.ResultsPlotter import PlotData
 
 
 class RegretCalculator:
@@ -39,8 +39,7 @@ class RegretCalculator:
         means = np.mean(all_regrets, axis=0)
         return means.tolist(), error_bars.tolist()
 
-    def process_regrets(self, batch_size, methods, method_names,
-                        output_filename, plottingType, plot_bars):
+    def process_regrets(self, batch_size, methods, method_names):
 
         max_extractor = DatasetMaxExtractor(dataset_type=self.dataset_type,
                                             time_slot=self.time_slot,
@@ -48,8 +47,6 @@ class RegretCalculator:
         model_max = max_extractor.extract_max(root_folder=self.root_path, seeds=self.seeds)
 
         results = []
-
-        # regret_calculator = RegretCalculator(seeds=seeds, root_path=root_path, model_max=model_max)
 
         for index, method in enumerate(methods):
             # todo hack
@@ -60,6 +57,4 @@ class RegretCalculator:
                                                                           model_max=model_max)
             results.append([method_names[index], regrets, error_bars])
 
-        PlotData(results=results, output_file_name=output_filename,
-                 plottingType=plottingType, dataset=self.dataset_type, plot_bars=plot_bars)
         return results
