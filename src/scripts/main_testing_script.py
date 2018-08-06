@@ -8,13 +8,14 @@ from src.enum.DatasetModeEnum import DatasetModeEnum
 def hack_script(start):
     my_save_folder_root = "../releaseTests/updated_release/simulated/rewards-sAD/"
     my_save_folder_root = "../sim-fixed-temp/"
-    my_save_folder_root = "./rollout_1/"
+    # my_save_folder_root = "./rollout_1/"
+    my_save_folder_root = "./tests/more_simulated/"
 
-    batch_size = 1
+    batch_size = 4
 
     t = 20 / batch_size
 
-    num_samples = 20
+    num_samples = 100
     anytime_num_samples = 300
 
     end = start + 10
@@ -27,7 +28,7 @@ def hack_script(start):
                                num_samples=num_samples,
                                anytime_num_samples=anytime_num_samples,
                                batch_size=batch_size,
-                               time_slot=18,
+                               time_slot=None,
                                dataset_type=DatasetEnum.Simulated,
-                               dataset_mode=DatasetModeEnum.Load,
+                               dataset_mode=DatasetModeEnum.Generate,
                                ma_treshold=20)

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-for loc in {66 .. 101}
+for loc in $(seq 175 10 325)
     do
         python  main.py $loc &
     done
