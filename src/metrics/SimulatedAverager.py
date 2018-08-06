@@ -198,10 +198,9 @@ def GetSimulatedTotalRegrets_onlyH4(my_ei=True):
                                          root_path=root_path,
                                          time_slot=None,
                                          seeds=seeds)
-    results = regret_calculator.process_regrets(batch_size=batch_size, methods=methods,
-                                                method_names=method_names,
-                                                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret,
-                                                plot_bars=True)
+    results = regret_calculator.process_regrets(batch_size=batch_size,
+                                                methods=methods,
+                                                method_names=method_names)
     PlotData(results=results, output_file_name=output_file,
              plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Simulated, plot_bars=True)
     for result in results:
