@@ -1,7 +1,7 @@
 from GeneralResultsAverager import SimulatedRewards, SimulatedCumulativeRegrets
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.PlottingEnum import PlottingMethods
-from old_RegretCalculator import SimulatedRegrets, ProcessRegrets
+from src.metric.RegretCalculator import RegretCalculator
 
 
 def GetSimulatedTotalRewards(my_ei=True):
@@ -192,15 +192,15 @@ def GetSimulatedTotalRegrets_onlyH4(my_ei=True):
     """
     # output_file = '../../result_graphs/eps/simulated/my_ei/h4_simulated_simple_regrets.eps'
     output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/h4_simulated_simple_regrets.eps'
-    """
-    results = SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
-                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)                 
-    """
 
-    results = ProcessRegrets(dataset_type=DatasetEnum.Simulated, batch_size=batch_size, root_path=root_path,
-                             methods=methods, method_names=method_names, seeds=seeds,
-                             output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True,
-                             time_slot=None)
+    regret_calculator = RegretCalculator(dataset_type=DatasetEnum.Simulated,
+                                         root_path=root_path,
+                                         time_slot=None,
+                                         seeds=seeds)
+    results = regret_calculator.process_regrets(batch_size=batch_size, methods=methods,
+                                                method_names=method_names,
+                                                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret,
+                                                plot_bars=True)
     for result in results:
         print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 
