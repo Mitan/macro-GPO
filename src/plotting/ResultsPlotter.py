@@ -197,6 +197,8 @@ def PlotData(results, dataset, output_file_name, plottingType, plot_bars=False):
         else:
             raise Exception
 
+    else:
+        raise Exception
     """ 
     if isTotalReward:
         plt.ylabel("Total Rewards")

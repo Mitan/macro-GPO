@@ -24,8 +24,11 @@ class RegretCalculator:
             measurements = GetAllMeasurements(seed_folder, method, batch_size)
             max_found_values = GetMaxValues(measurements, batch_size)
             assert max_found_values.shape == results_for_method.shape
-
-            all_regrets[ind, :] = self.model_max - max_found_values
+            # hack to distinghiush the cases where the model_max is a dictionary (for simulated realisations)
+            #  or a float (when there's a one dataset)
+            max_of_seed_dataset = self.model_max if isinstance(self.model_max, (int, long, float)) \
+                else self.model_max[seed]
+            all_regrets[ind, :] = max_of_seed_dataset - max_found_values
 
         error_bars = np.std(all_regrets, axis=0) / np.sqrt(len_seeds)
 

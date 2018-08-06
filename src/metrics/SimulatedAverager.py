@@ -1,9 +1,10 @@
 from GeneralResultsAverager import SimulatedRewards, SimulatedCumulativeRegrets
+from src.enum.DatasetEnum import DatasetEnum
 from src.enum.PlottingEnum import PlottingMethods
-from RegretCalculator import SimulatedRegrets
+from old_RegretCalculator import SimulatedRegrets, ProcessRegrets
 
 
-def GetSimulatedTotalRewards(my_ei = True):
+def GetSimulatedTotalRewards(my_ei=True):
     if my_ei:
         ei_method = 'qEI'
         ei_folder = 'my_ei'
@@ -19,21 +20,22 @@ def GetSimulatedTotalRewards(my_ei = True):
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
 
     methods = ['h4', 'h3', 'h2', 'h1',
-                'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'my_lp']
-               # 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method,  'bbo-llp22']
+               'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'my_lp']
+    # 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method,  'bbo-llp22']
 
-    method_names = [ r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
-                     'DB-GP-UCB',
+                    'DB-GP-UCB',
                     r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI',
-                     'BBO-LP']
-    
+                    'BBO-LP']
+
     output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/simulated_total_rewards.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_total_rewards.eps'
 
-    results = SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+    results = SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
+                               method_names=method_names,
+                               seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
     h4 = results[0]
     h1 = results[3]
     mle = results[4]
@@ -41,7 +43,8 @@ def GetSimulatedTotalRewards(my_ei = True):
     # print "Rewards H4 / MLE %f" % (h4[1][-1]/ mle[1][-1])
     print results
 
-def GetSimulatedTotalRewards_onlyH4(my_ei = True):
+
+def GetSimulatedTotalRewards_onlyH4(my_ei=True):
     if my_ei:
         ei_method = 'qEI'
         ei_folder = 'my_ei'
@@ -94,7 +97,7 @@ def GetSimulatedTotalRewards_our_ucb():
     root_path = '../../releaseTests/simulated/rewards-sAD/'
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
-    methods = ['h4', 'h3', 'h2', 'h1','mle_h4', 'new_mle_h3', 'new_mle_h2' ]
+    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'new_mle_h3', 'new_mle_h2']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
@@ -106,7 +109,7 @@ def GetSimulatedTotalRewards_our_ucb():
                      seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
 
 
-def GetSimulatedTotalRegrets(my_ei = True):
+def GetSimulatedTotalRegrets(my_ei=True):
     if my_ei:
         ei_method = 'qEI'
         ei_folder = 'my_ei'
@@ -117,26 +120,25 @@ def GetSimulatedTotalRegrets(my_ei = True):
     seeds = range(66, 102)
     batch_size = 4
 
-
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
-    methods = ['h4', 'h3', 'h2','h1',
+    methods = ['h4', 'h3', 'h2', 'h1',
                'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'my_lp']
-               # 'bbo-llp22']
+    # 'bbo-llp22']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
                     r'$\epsilon$-Macro-GPO  $H = 3$',
                     r'$\epsilon$-Macro-GPO  $H = 2$',
                     'DB-GP-UCB',
-                     r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                    r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI',
                     'BBO-LP']
 
-    output_file = '../../result_graphs/eps/simulated/'+ ei_folder + '/simulated_simple_regrets.eps'
+    output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/simulated_simple_regrets.eps'
     # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_simple_regrets.eps'
 
     results = SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
-                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
+                               output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
     # print results
     """
     sigma = 1.0
@@ -154,7 +156,7 @@ def GetSimulatedTotalRegrets(my_ei = True):
     print results
 
 
-def GetSimulatedTotalRegrets_onlyH4(my_ei= True):
+def GetSimulatedTotalRegrets_onlyH4(my_ei=True):
     if my_ei:
         ei_method = 'qEI'
         ei_folder = 'my_ei'
@@ -170,8 +172,7 @@ def GetSimulatedTotalRegrets_onlyH4(my_ei= True):
     # root_path = '../../releaseTests/simulated/rewards-sAD-qei/'
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
-
-    methods = ['h4','h3','h2', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'my_lp']
+    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', ei_method, 'my_lp']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
                     r'$\epsilon$-Macro-GPO  $H = 3$',
@@ -191,11 +192,17 @@ def GetSimulatedTotalRegrets_onlyH4(my_ei= True):
     """
     # output_file = '../../result_graphs/eps/simulated/my_ei/h4_simulated_simple_regrets.eps'
     output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/h4_simulated_simple_regrets.eps'
-
+    """
     results = SimulatedRegrets(batch_size, root_path, methods, method_names, seeds,
-                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)
+                     output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True)                 
+    """
+
+    results = ProcessRegrets(dataset_type=DatasetEnum.Simulated, batch_size=batch_size, root_path=root_path,
+                             methods=methods, method_names=method_names, seeds=seeds,
+                             output_filename=output_file, plottingType=PlottingMethods.SimpleRegret, plot_bars=True,
+                             time_slot=None)
     for result in results:
-        print result[0], round(result[1][-1], 4), '+-', round(result[2][-1],4)
+        print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 
 
 def GetSimulatedTotalRegrets_our():
@@ -246,12 +253,13 @@ def GetSimulatedBeta2Rewards():
     # beta_list = [0.0, 0.1, 1.0, 2.0, 5.0]
     str_beta = map(str, beta_list)
     methods = ['h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' +  str(2* float(x)), str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/simulated/simulated_beta2_rewards.eps'
 
-    results = SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                     seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
+    results = SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
+                               method_names=method_names,
+                               seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
     beta0 = results[0]
     beta02 = results[1]
 
@@ -273,7 +281,7 @@ def GetSimulatedBeta3Rewards():
 
     str_beta = map(str, beta_list)
     methods = ['h3'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
+    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
 
     output_file = '../../result_graphs/eps/simulated/simulated_beta3_rewards.eps'
 
@@ -288,7 +296,7 @@ def GetSimulated_H4Samples_TotalRewards():
     root_path = '../../simulated_tests/h4_samples/'
     root_path = '../../releaseTests/simulated/h4_samples/'
     methods = ['h4', 'new_new_h4_20', 'h4_5']
-    method_names = ['N=100', 'N=20','N=5']
+    method_names = ['N=100', 'N=20', 'N=5']
     output_file = '../../result_graphs/eps/simulated_h4_samples_total_rewards.eps'
 
     SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
@@ -296,7 +304,6 @@ def GetSimulated_H4Samples_TotalRewards():
 
 
 def GetSimulatedTotalRegrets_B1():
-
     seeds = range(66, 102)
     seeds = list(set(range(66, 175)) - set([154, 152]))
     batch_size = 4
@@ -326,32 +333,33 @@ def GetSimulatedTotalRegrets_B1():
 
 
 def GetSimulatedTotalRewards_B1():
-        seeds = range(66, 102)
-        seeds = list(set(range(66, 175)) - set([154, 152]))
-        batch_size = 4
-        batch_size = 1
+    seeds = range(66, 102)
+    seeds = list(set(range(66, 175)) - set([154, 152]))
+    batch_size = 4
+    batch_size = 1
 
-        root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
-        root_path = '../../sim-fixed-temp/'
+    root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
+    root_path = '../../sim-fixed-temp/'
 
-        methods = ['h4_b1_20', 'rollout_h4_gamma1', 'rollout_h4_q3_pi']
+    methods = ['h4_b1_20', 'rollout_h4_gamma1', 'rollout_h4_q3_pi']
 
-        method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-                        r'Rollout-$4$-$10$,  $q=1$',
-                        r'Rollout-$4$-$10$,  $q=3$']
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
+                    r'Rollout-$4$-$10$,  $q=1$',
+                    r'Rollout-$4$-$10$,  $q=3$']
 
-        methods = ['h4_b1_20', 'rollout_h4_gamma1_ei']
-        method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-                        r'Rollout-$4$-$10$']
+    methods = ['h4_b1_20', 'rollout_h4_gamma1_ei']
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
+                    r'Rollout-$4$-$10$']
 
-        output_file = '../../result_graphs/eps/simulated/' + 'my_ei' + '/h4_simulated_total_rewards_rollout_b1.eps'
-        # output_file = '../../result_graphs/eps/simulated/my_ei/h4_simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/' + 'my_ei' + '/h4_simulated_total_rewards_rollout_b1.eps'
+    # output_file = '../../result_graphs/eps/simulated/my_ei/h4_simulated_total_rewards.eps'
 
-        results = SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                         seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
-        # print results
-        print results[1][1][-1], results[0][1][-1]
-        print results[1][2][-1], results[0][2][-1]
+    results = SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
+                               method_names=method_names,
+                               seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+    # print results
+    print results[1][1][-1], results[0][1][-1]
+    print results[1][2][-1], results[0][2][-1]
 
 
 def GetSimulatedTotalRewards_B1_CUMULATIVE():
@@ -377,12 +385,14 @@ def GetSimulatedTotalRewards_B1_CUMULATIVE():
     # output_file = '../../result_graphs/eps/simulated/my_ei/h4_simulated_total_rewards.eps'
 
     results = SimulatedCumulativeRegrets(batch_size=batch_size, tests_source_path=root_path, methods=methods,
-                               method_names=method_names,
-                               seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.CumulativeRegret)
+                                         method_names=method_names,
+                                         seeds=seeds, output_filename=output_file,
+                                         plottingType=PlottingMethods.CumulativeRegret)
     # print results
     print results[0][1][-1], results[1][1][-1]
     print results[0][2][-1], results[1][2][-1]
     print results
+
 
 if __name__ == "__main__":
     pass
@@ -396,7 +406,7 @@ if __name__ == "__main__":
     GetSimulatedTotalRegrets_onlyH4()
     # GetSimulatedTotalRegrets_B1()
     # GetSimulatedTotalRewards_B1()
-    #GetSimulatedTotalRegrets_onlyH4()
+    # GetSimulatedTotalRegrets_onlyH4()
     # GetSimulatedTotalRewards_B1_CUMULATIVE()
     # GetSimulatedTotalRegrets_B1()
     # GetSimulatedTotalRegrets_onlyH4()
