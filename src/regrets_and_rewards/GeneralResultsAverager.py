@@ -191,7 +191,8 @@ def SimulatedCumulativeRegrets(batch_size, tests_source_path, methods, method_na
         result = [method_names[index], regrets, error_bars.tolist()]
         results.append(result)
 
-    PlotData(results=results, output_file_name=output_filename, dataset='simulated', plottingType=plottingType, plot_bars=True)
+    PlotData(results=results, output_file_name=output_filename, dataset=DatasetEnum.Simulated,
+             plottingType=plottingType, plot_bars=True)
     return results
 
 

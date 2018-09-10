@@ -111,3 +111,4 @@ sim-fix-template
 rollout_3
 rollout_1
 /src/old_scripts/
+alg_tests.py
