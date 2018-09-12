@@ -1,5 +1,5 @@
-from src.metric.DatasetMaxExtractor import DatasetMaxExtractor
-from src.metric.RegretCalculator import RegretCalculator
+from src.metric.DatasetMaxExtractor import DatasetScaleExtractor
+from src.metric.RegretCalculator import ResultCalculator
 from src.enum.PlottingEnum import PlottingMethods
 from src.enum.SinglePointMethodsDict import single_point_methods
 from src.plotting.ResultsPlotter import PlotData

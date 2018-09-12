@@ -3,7 +3,7 @@ import math
 from GeneralResultsAverager import RobotRewards
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.PlottingEnum import PlottingMethods
-from src.metric.RegretCalculator import RegretCalculator
+from src.metric.ResultCalculator import ResultCalculator
 from src.plotting.ResultsPlotter import PlotData
 
 
@@ -379,13 +379,13 @@ def GetRobotTotalRegrets():
 
     output_file = '../../result_graphs/eps/robot/robot_simple_regrets.eps'
 
-    regret_calculator = RegretCalculator(dataset_type=DatasetEnum.Robot,
+    regret_calculator = ResultCalculator(dataset_type=DatasetEnum.Robot,
                                          root_path=root_path,
                                          time_slot=time_slot,
                                          seeds=seeds)
-    results = regret_calculator.process_regrets(batch_size=batch_size,
-                                                methods=methods,
-                                                method_names=method_names)
+    results = regret_calculator.calculate_results(batch_size=batch_size,
+                                                  methods=methods,
+                                                  method_names=method_names)
     PlotData(results=results, output_file_name=output_file,
              plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Robot, plot_bars=True)
 
@@ -419,13 +419,13 @@ def GetRobotTotalRegrets_H2Full():
 
     output_file = '../../result_graphs/eps/robot/robot_h2_full_simple_regrets.eps'
 
-    regret_calculator = RegretCalculator(dataset_type=DatasetEnum.Robot,
+    regret_calculator = ResultCalculator(dataset_type=DatasetEnum.Robot,
                                          root_path=root_path,
                                          time_slot=time_slot,
                                          seeds=seeds)
-    results = regret_calculator.process_regrets(batch_size=batch_size,
-                                                methods=methods,
-                                                method_names=method_names)
+    results = regret_calculator.calculate_results(batch_size=batch_size,
+                                                  methods=methods,
+                                                  method_names=method_names)
     PlotData(results=results, output_file_name=output_file,
              plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Robot, plot_bars=True)
     """

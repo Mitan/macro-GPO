@@ -1,7 +1,7 @@
 from GeneralResultsAverager import SimulatedRewards, SimulatedCumulativeRegrets
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.PlottingEnum import PlottingMethods
-from src.metric.RegretCalculator import RegretCalculator
+from src.metric.ResultCalculator import ResultCalculator
 from src.plotting.ResultsPlotter import PlotData
 
 
@@ -31,18 +31,21 @@ def GetSimulatedTotalRewards(my_ei=True):
                     r'$q$-EI',
                     'BBO-LP']
 
-    output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/simulated_total_rewards.eps'
-    # output_file = '../../result_graphs/eps/simulated/my_ei/simulated_total_rewards.eps'
+    output_file = '../../result_graphs/eps/simulated/' + ei_folder + '/test_simulated_total_rewards.eps'
 
-    results = SimulatedRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
-                               method_names=method_names,
-                               seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
-    h4 = results[0]
-    h1 = results[3]
-    mle = results[4]
-    # print "Rewards H4 / H1 %f" % (h4[1][-1] / h1[1][-1])
-    # print "Rewards H4 / MLE %f" % (h4[1][-1]/ mle[1][-1])
-    print results
+    result_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
+                                         root_path=root_path,
+                                         time_slot=None,
+                                         seeds=seeds)
+    results = result_calculator.calculate_results(batch_size=batch_size,
+                                                  methods=methods,
+                                                  method_names=method_names,
+                                                  plotting_type=PlottingMethods.TotalReward)
+
+    PlotData(results=results, output_file_name=output_file,
+             plottingType=PlottingMethods.TotalReward, dataset=DatasetEnum.Simulated, plot_bars=False)
+    for result in results:
+        print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 
 
 def GetSimulatedTotalRewards_onlyH4(my_ei=True):
@@ -253,13 +256,13 @@ def GetSimulatedTotalRegrets():
 
     output_file = '../../result_graphs/eps/simulated/new_simulated_simple_regrets.eps'
 
-    regret_calculator = RegretCalculator(dataset_type=DatasetEnum.Simulated,
+    regret_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
                                          root_path=root_path,
                                          time_slot=None,
                                          seeds=seeds)
-    results = regret_calculator.process_regrets(batch_size=batch_size,
-                                                methods=methods,
-                                                method_names=method_names)
+    results = regret_calculator.calculate_results(batch_size=batch_size,
+                                                  methods=methods,
+                                                  method_names=method_names)
     PlotData(results=results, output_file_name=output_file,
              plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Simulated, plot_bars=True)
     for result in results:
@@ -279,13 +282,13 @@ def GetSimulatedTotalRegrets_B1():
 
     output_file = '../../result_graphs/eps/simulated/simulated_simple_regrets_rollout_b1.eps'
 
-    regret_calculator = RegretCalculator(dataset_type=DatasetEnum.Simulated,
+    regret_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
                                          root_path=root_path,
                                          time_slot=None,
                                          seeds=seeds)
-    results = regret_calculator.process_regrets(batch_size=batch_size,
-                                                methods=methods,
-                                                method_names=method_names)
+    results = regret_calculator.calculate_results(batch_size=batch_size,
+                                                  methods=methods,
+                                                  method_names=method_names)
     PlotData(results=results, output_file_name=output_file,
              plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Simulated, plot_bars=True)
 
@@ -295,6 +298,6 @@ def GetSimulatedTotalRegrets_B1():
 
 if __name__ == "__main__":
     # GetSimulatedTotalRegrets()
-    GetSimulatedTotalRewards_B1_CUMULATIVE()
+    # GetSimulatedTotalRewards_B1_CUMULATIVE()
     # GetSimulatedTotalRegrets_B1()
-
+    GetSimulatedTotalRewards()
