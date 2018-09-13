@@ -106,8 +106,10 @@ def GetAllMeasurementsBBOLP(root_folder, method_name, batch_size):
 
 
 if __name__ == "__main__":
+    """
     # cannot use - cylcic linking
     file_name = './taxi18.dom'
     m = GenerateRoadModelFromFile(file_name)
     for i in m.locations:
         print i, m.GetNeighbours(i)
+    """
