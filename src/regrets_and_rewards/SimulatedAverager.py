@@ -43,7 +43,7 @@ def GetSimulatedTotalRewards(my_ei=True):
                                                   plotting_type=PlottingMethods.TotalReward)
 
     PlotData(results=results, output_file_name=output_file,
-             plottingType=PlottingMethods.TotalReward, dataset=DatasetEnum.Simulated, plot_bars=False)
+             plotting_type=PlottingMethods.TotalReward, dataset=DatasetEnum.Simulated, plot_bars=False)
     for result in results:
         print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 
