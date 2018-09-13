@@ -1,5 +1,5 @@
 from src.enum.DatasetEnum import DatasetEnum
-from src.enum.PlottingEnum import PlottingMethods
+from src.enum.MetricsEnum import MetricsEnum
 from src.metric.ResultCalculator import ResultCalculator
 from src.plotting.ResultsPlotter import  ResultGraphPlotter
 
@@ -29,10 +29,10 @@ def GetSimulatedTotalRewards():
     results = result_calculator.calculate_results(batch_size=batch_size,
                                                   methods=methods,
                                                   method_names=method_names,
-                                                  plotting_type=PlottingMethods.TotalReward)
+                                                  metric_type=MetricsEnum.TotalReward)
 
     results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
-                                         plotting_type=PlottingMethods.TotalReward,
+                                         plotting_type=MetricsEnum.TotalReward,
                                          batch_size=batch_size)
     results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=False)
 
@@ -82,9 +82,9 @@ def GetSimulatedTotalRegrets():
     results = regret_calculator.calculate_results(batch_size=batch_size,
                                                   methods=methods,
                                                   method_names=method_names,
-                                                  plotting_type=PlottingMethods.SimpleRegret)
+                                                  metric_type=MetricsEnum.SimpleRegret)
     results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
-                                         plotting_type=PlottingMethods.SimpleRegret,
+                                         plotting_type=MetricsEnum.SimpleRegret,
                                          batch_size=batch_size)
 
     results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=False)

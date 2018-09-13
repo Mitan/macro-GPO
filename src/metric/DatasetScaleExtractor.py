@@ -1,4 +1,4 @@
-from src.enum.PlottingEnum import PlottingMethods
+from src.enum.MetricsEnum import MetricsEnum
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
 from src.model.DatasetGenerator import DatasetGenerator
@@ -20,10 +20,10 @@ class DatasetScaleExtractor:
         else:
             raise ValueError("Unknown dataset")
 
-    def extract_mean_or_max(self, root_folder, seeds, plotting_type):
-        if plotting_type == PlottingMethods.SimpleRegret:
+    def extract_mean_or_max(self, root_folder, seeds, metric_type):
+        if metric_type == MetricsEnum.SimpleRegret:
             return self._extract_max(root_folder, seeds)
-        elif plotting_type == PlottingMethods.TotalReward:
+        elif metric_type == MetricsEnum.TotalReward:
             return self._extract_mean(root_folder, seeds)
         else:
             raise Exception("Unknown plotting type")

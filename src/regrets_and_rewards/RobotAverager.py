@@ -2,7 +2,7 @@ import math
 
 from GeneralResultsAverager import RobotRewards
 from src.enum.DatasetEnum import DatasetEnum
-from src.enum.PlottingEnum import PlottingMethods
+from src.enum.PlottingEnum import MetricsEnum
 from src.metric.ResultCalculator import ResultCalculator
 from src.plotting.ResultsPlotter import PlotData
 
@@ -43,7 +43,7 @@ def GetRobotBeta2Rewards():
     results = RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
                            method_names=method_names,
                            seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                           plottingType=PlottingMethods.TotalRewardBeta)
+                           plottingType=MetricsEnum.TotalRewardBeta)
     beta0 = results[0]
     beta1 = results[1]
     # print beta0, beta1
@@ -87,7 +87,7 @@ def GetRobotBeta3Rewards():
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalRewardBeta)
+                 plottingType=MetricsEnum.TotalRewardBeta)
 
 
 def GetRobot_H4Samples_TotalRewards():
@@ -116,7 +116,7 @@ def GetRobot_H4Samples_TotalRewards():
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
+                 plottingType=MetricsEnum.TotalReward)
 
 
 """
@@ -180,7 +180,7 @@ def GetRobotTotalRewards(my_ei=True):
     results = RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
                            method_names=method_names,
                            seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                           plottingType=PlottingMethods.TotalReward)
+                           plottingType=MetricsEnum.TotalReward)
     """
     h4 = results[0]
     h1 = results[3]
@@ -219,7 +219,7 @@ def GetRobotTotalRewards_onlyH4(my_ei=True):
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
+                 plottingType=MetricsEnum.TotalReward)
 
 
 def GetRobotTotalRewards_ours():
@@ -241,7 +241,7 @@ def GetRobotTotalRewards_ours():
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
+                 plottingType=MetricsEnum.TotalReward)
 
 
 def GetRobotTotalRewards_ours_ucb():
@@ -263,7 +263,7 @@ def GetRobotTotalRewards_ours_ucb():
 
     RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
                  seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                 plottingType=PlottingMethods.TotalReward)
+                 plottingType=MetricsEnum.TotalReward)
 
 
 def GetRobot_H2Full_TotalRewards():
@@ -285,7 +285,7 @@ def GetRobot_H2Full_TotalRewards():
     results = RobotRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
                            method_names=method_names,
                            seeds=seeds, output_filename=output_file, time_slot=time_slot,
-                           plottingType=PlottingMethods.TotalReward)
+                           plottingType=MetricsEnum.TotalReward)
     # print results
     h4 = results[0]
     h2_all = results[1]
@@ -323,7 +323,7 @@ def GetRobotTotalRegrets_beta2():
     output_file = '../../result_graphs/eps/robot/unfixed_robot_beta2_simple_regrets.eps'
 
     ProcessRegrets(batch_size, root_path, methods, method_names, seeds,
-                   output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                   output_filename=output_file, plottingType=MetricsEnum.SimpleRegret)
 
 
 def GetRobotTotalRegrets_beta3():
@@ -359,7 +359,7 @@ def GetRobotTotalRegrets_beta3():
     # output_file = '../../result_graphs/eps/robot_beta3_simple_regrets.eps'
 
     ProcessRegrets(batch_size, root_path, methods, method_names, seeds,
-                   output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                   output_filename=output_file, plottingType=MetricsEnum.SimpleRegret)
 
 
 def GetRobotTotalRegrets():
@@ -387,7 +387,7 @@ def GetRobotTotalRegrets():
                                                   methods=methods,
                                                   method_names=method_names)
     PlotData(results=results, output_file_name=output_file,
-             plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Robot, plot_bars=True)
+             plottingType=MetricsEnum.SimpleRegret, dataset=DatasetEnum.Robot, plot_bars=True)
 
     """
     sigma = math.sqrt(0.596355)
@@ -427,7 +427,7 @@ def GetRobotTotalRegrets_H2Full():
                                                   methods=methods,
                                                   method_names=method_names)
     PlotData(results=results, output_file_name=output_file,
-             plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Robot, plot_bars=True)
+             plottingType=MetricsEnum.SimpleRegret, dataset=DatasetEnum.Robot, plot_bars=True)
     """
     h4 = results[0]
     h2_all = results[1]

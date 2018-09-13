@@ -1,17 +1,17 @@
-from src.enum.PlottingEnum import PlottingMethods
+from src.enum.MetricsEnum import MetricsEnum
 
 
 class RobotDatasetPlotParamStorer:
 
-    def __init__(self, plotting_type):
+    def __init__(self, metric_type):
 
-        if plotting_type == PlottingMethods.TotalReward or plotting_type == PlottingMethods.TotalRewardBeta:
+        if metric_type == MetricsEnum.TotalReward:
             self.y_label_caption = "Total normalized output measurements observed by mobile robot"
             self.y_ticks_range = range(0, 15)
             self.y_lim_range = [-0.5, 14]
             self.legend_loc = 2
 
-        elif plotting_type == PlottingMethods.SimpleRegret:
+        elif metric_type == MetricsEnum.SimpleRegret:
             self.y_label_caption = "Simple regret"
             self.y_ticks_range = None
             self.y_lim_range = None

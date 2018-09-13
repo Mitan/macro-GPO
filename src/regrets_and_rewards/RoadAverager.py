@@ -2,7 +2,7 @@ import math
 
 from GeneralResultsAverager import RoadRewards
 from src.enum.DatasetEnum import DatasetEnum
-from src.enum.PlottingEnum import PlottingMethods
+from src.enum.PlottingEnum import MetricsEnum
 from src.metric.ResultCalculator import ResultCalculator
 from src.plotting.ResultsPlotter import PlotData
 
@@ -57,7 +57,7 @@ def GetRoadBeta2Rewards():
 
     results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
                           method_names=method_names,
-                          seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
+                          seeds=seeds, output_filename=output_file, plottingType=MetricsEnum.TotalRewardBeta)
     beta0 = results[0]
     beta02 = results[1]
     # print beta0, beta02
@@ -96,7 +96,7 @@ def GetRoadBeta3Rewards():
     output_file = '../../result_graphs/eps/road/road_beta3_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalRewardBeta)
+                seeds=seeds, output_filename=output_file, plottingType=MetricsEnum.TotalRewardBeta)
 
 
 def GetRoad_H4Samples_TotalRewards():
@@ -115,7 +115,7 @@ def GetRoad_H4Samples_TotalRewards():
     output_file = '../../result_graphs/eps/road_h4samples_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+                seeds=seeds, output_filename=output_file, plottingType=MetricsEnum.TotalReward)
 
 
 def GetRoadTotalRewards(my_ei=True):
@@ -146,7 +146,7 @@ def GetRoadTotalRewards(my_ei=True):
 
     results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
                           method_names=method_names,
-                          seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+                          seeds=seeds, output_filename=output_file, plottingType=MetricsEnum.TotalReward)
     """
     h4 = results[0]
     h1 = results[3]
@@ -173,7 +173,7 @@ def GetRoadTotalRewards_ours():
     output_file = '../../result_graphs/eps/road/ours_road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+                seeds=seeds, output_filename=output_file, plottingType=MetricsEnum.TotalReward)
 
 
 def GetRoadTotalRewards_ours_ucb():
@@ -192,7 +192,7 @@ def GetRoadTotalRewards_ours_ucb():
     output_file = '../../result_graphs/eps/road/ucb_ours_road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+                seeds=seeds, output_filename=output_file, plottingType=MetricsEnum.TotalReward)
 
 
 def GetRoadTotalRewards_onlyH4(my_ei=True):
@@ -219,7 +219,7 @@ def GetRoadTotalRewards_onlyH4(my_ei=True):
     # output_file = '../../result_graphs/eps/road/my_ei/onlyh4_road_total_rewards.eps'
 
     RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods, method_names=method_names,
-                seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+                seeds=seeds, output_filename=output_file, plottingType=MetricsEnum.TotalReward)
 
 
 def GetRoad_H2Full_TotalRewards():
@@ -241,7 +241,7 @@ def GetRoad_H2Full_TotalRewards():
 
     results = RoadRewards(batch_size=batch_size, tests_source_path=root_path, methods=methods,
                           method_names=method_names,
-                          seeds=seeds, output_filename=output_file, plottingType=PlottingMethods.TotalReward)
+                          seeds=seeds, output_filename=output_file, plottingType=MetricsEnum.TotalReward)
     # print results
     h4 = results[0]
     h2_all = results[1]
@@ -365,7 +365,7 @@ def GetRoadBeta2Regrets():
     output_file = '../../result_graphs/eps/road/t_road_beta2_regrets.eps'
 
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                output_filename=output_file, plottingType=MetricsEnum.SimpleRegret)
 
 
 def GetRoadBeta3Regrets():
@@ -402,7 +402,7 @@ def GetRoadBeta3Regrets():
 
     output_file = '../../result_graphs/eps/road/t_road_beta3_regrets.eps'
     RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename=output_file, plottingType=PlottingMethods.SimpleRegret)
+                output_filename=output_file, plottingType=MetricsEnum.SimpleRegret)
 
 
 def GetRoadTotalRegrets():
@@ -433,7 +433,7 @@ def GetRoadTotalRegrets():
                                                   methods=methods,
                                                   method_names=method_names)
     PlotData(results=results, output_file_name=output_file,
-             plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Road, plot_bars=True)
+             plottingType=MetricsEnum.SimpleRegret, dataset=DatasetEnum.Road, plot_bars=True)
     """
     sigma = math.sqrt(0.7486)
     h4 = results[0]
@@ -470,7 +470,7 @@ def GetRoadTotalRegrets_H2Full():
                                                   methods=methods,
                                                   method_names=method_names)
     PlotData(results=results, output_file_name=output_file,
-             plottingType=PlottingMethods.SimpleRegret, dataset=DatasetEnum.Road, plot_bars=True)
+             plottingType=MetricsEnum.SimpleRegret, dataset=DatasetEnum.Road, plot_bars=True)
     """
     h4 = results[0]
     h2_all = results[1]

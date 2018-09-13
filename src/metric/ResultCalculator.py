@@ -1,7 +1,7 @@
 import numpy as np
 
 from src.DatasetUtils import GetAllMeasurements, GetMaxValues, GetAccumulatedRewards
-from src.enum.PlottingEnum import PlottingMethods
+from src.enum.MetricsEnum import MetricsEnum
 from src.enum.SinglePointMethodsDict import single_point_methods
 from src.metric.DatasetScaleExtractor import DatasetScaleExtractor
 
@@ -15,12 +15,12 @@ class ResultCalculator:
         self.seeds = seeds
 
     @staticmethod
-    def __get_results_for_one_seed(measurements, plotting_type, batch_size, model_scale):
+    def __get_results_for_one_seed(measurements, metric_type, batch_size, model_scale):
 
-        if plotting_type == PlottingMethods.SimpleRegret:
+        if metric_type == MetricsEnum.SimpleRegret:
             max_found_values = GetMaxValues(measurements, batch_size)
             results = model_scale - max_found_values
-        elif plotting_type == PlottingMethods.TotalReward:
+        elif metric_type == MetricsEnum.TotalReward:
             accumulated_reward = GetAccumulatedRewards(measurements, batch_size)
             steps = 20 / batch_size
             scaled_model_mean = np.array([(1 + batch_size * i) * model_scale for i in range(steps + 1)])
@@ -29,7 +29,7 @@ class ResultCalculator:
             raise Exception("Unknown plotting type")
         return results
 
-    def _get_results_for_one_method(self, method, batch_size, model_scale, plotting_type):
+    def _get_results_for_one_method(self, method, batch_size, model_scale, metric_type):
 
         steps = 20 / batch_size
 
@@ -42,7 +42,7 @@ class ResultCalculator:
             model_seed_scale = model_scale if isinstance(model_scale, (int, long, float)) \
                 else model_scale[seed]
             all_results[ind, :] = self.__get_results_for_one_seed(measurements=measurements,
-                                                                  plotting_type=plotting_type,
+                                                                  metric_type=metric_type,
                                                                   batch_size=batch_size,
                                                                   model_scale=model_seed_scale)
 
@@ -51,7 +51,7 @@ class ResultCalculator:
 
         return means.tolist(), error_bars.tolist()
 
-    def calculate_results(self, batch_size, methods, method_names, plotting_type):
+    def calculate_results(self, batch_size, methods, method_names, metric_type):
 
         scale_extractor = DatasetScaleExtractor(dataset_type=self.dataset_type,
                                                 time_slot=self.time_slot,
@@ -59,7 +59,7 @@ class ResultCalculator:
         # can be dict or float
         model_scale = scale_extractor.extract_mean_or_max(root_folder=self.root_path,
                                                           seeds=self.seeds,
-                                                          plotting_type=plotting_type)
+                                                          metric_type=metric_type)
 
         results = []
 
@@ -70,7 +70,7 @@ class ResultCalculator:
             means, error_bars = self._get_results_for_one_method(method=method,
                                                                  batch_size=adjusted_batch_size,
                                                                  model_scale=model_scale,
-                                                                 plotting_type=plotting_type)
+                                                                 metric_type=metric_type)
             results.append([method_names[index], means, error_bars])
 
         return results
