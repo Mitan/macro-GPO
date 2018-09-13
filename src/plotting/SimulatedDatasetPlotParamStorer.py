@@ -16,7 +16,7 @@ class SimulatedDatasetPlotParamStorer:
         elif plotting_type == PlottingMethods.SimpleRegret:
             self.y_label_caption = "Simple regret"
             self.y_ticks_range = np.arange(1.0, 3.2, 0.2)
-            self.y_lim_range = None
+            self.y_lim_range = [1.2, 3.0]
             self.legend_loc = 1
 
         elif plotting_type == PlottingMethods.CumulativeRegret:
