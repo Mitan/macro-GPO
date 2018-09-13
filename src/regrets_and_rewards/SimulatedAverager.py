@@ -1,8 +1,7 @@
-from GeneralResultsAverager import SimulatedRewards, SimulatedCumulativeRegrets
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.PlottingEnum import PlottingMethods
 from src.metric.ResultCalculator import ResultCalculator
-from src.plotting.ResultsPlotter import PlotData
+from src.plotting.ResultsPlotter import  ResultGraphPlotter
 
 
 def GetSimulatedTotalRewards(my_ei=True):
@@ -42,8 +41,14 @@ def GetSimulatedTotalRewards(my_ei=True):
                                                   method_names=method_names,
                                                   plotting_type=PlottingMethods.TotalReward)
 
+    results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
+                                         plotting_type=PlottingMethods.TotalReward,
+                                         batch_size=batch_size)
+    results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=False)
+    """
     PlotData(results=results, output_file_name=output_file,
              plotting_type=PlottingMethods.TotalReward, dataset=DatasetEnum.Simulated, plot_bars=False)
+    """
     for result in results:
         print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 

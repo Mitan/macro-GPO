@@ -1,7 +1,7 @@
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
 from src.model.DatasetGenerator import DatasetGenerator
-from src.plotting.ResultsPlotter import PlotData
+# from src.plotting.ResultsPlotter import PlotData
 import numpy as np
 
 from src.DatasetUtils import *
