@@ -38,7 +38,7 @@ def __transformed_ei(current_point, history_locations, history_measurements, max
 # mu and var a posterior mean and variance in old_x
 def __local_penalizer(new_x, old_x, mu, var, M):
     # todo note hardcoded
-    L = 10
+    L = 20
 
     z = 1 / math.sqrt(2 * var) * (L * np.linalg.norm(new_x - old_x) - M + mu)
     return 0.5 * special.erfc(-z)
@@ -46,7 +46,6 @@ def __local_penalizer(new_x, old_x, mu, var, M):
 
 def method_LP(x_0, available_states, gp, batch_size):
     M = max(x_0.history.measurements)
-    L = 10
 
     tolerance_eps = 10 ** (-8)
 

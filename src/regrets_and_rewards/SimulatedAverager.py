@@ -24,7 +24,7 @@ def GetSimulatedTotalRewards():
 
     print(len(seeds))
     root_path = '../../tests/sim-fixed-temp/'
-    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp']
+    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp_1']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
                     r'$\epsilon$-Macro-GPO  $H = 3$',
@@ -76,7 +76,7 @@ def GetSimulatedTotalRegrets():
 
     print(len(seeds))
     root_path = '../../tests/sim-fixed-temp/'
-    methods = ['h4','h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp']
+    methods = ['h4','h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp_1']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
                     r'$\epsilon$-Macro-GPO  $H = 3$',

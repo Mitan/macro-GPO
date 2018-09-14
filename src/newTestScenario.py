@@ -39,12 +39,12 @@ def TestScenario_all_tests(my_save_folder_root, seed, time_steps, anytime_num_sa
     """
     lp = testWithFixedParameters(model=m, method=Methods.LP, horizon=1,
                                  num_timesteps_test=time_steps,
-                                 save_folder=save_folder + "lp/",
+                                 save_folder=save_folder + "lp_1/",
                                  num_samples=num_samples)
     method_name = 'LP'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(lp) + '\n')
-
+    """
     qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1,
                                   num_timesteps_test=time_steps,
                                   save_folder=save_folder + "qEI/",
@@ -86,7 +86,7 @@ def TestScenario_all_tests(my_save_folder_root, seed, time_steps, anytime_num_sa
         method_name = 'H=' + str(h)
         output_rewards.write(method_name + '\n')
         output_rewards.write(str(current_h) + '\n')
-    """
+    
     h = 4
     h_4 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=4,
                                   num_timesteps_test=time_steps,
