@@ -24,7 +24,8 @@ class ResultCalculator:
             accumulated_reward = GetAccumulatedRewards(measurements, batch_size)
             steps = 20 / batch_size
             scaled_model_mean = np.array([(1 + batch_size * i) * model_scale for i in range(steps + 1)])
-            results = accumulated_reward - scaled_model_mean
+            results_normaliser = np.array([1 + batch_size * i for i in range(20 / batch_size + 1)])
+            results = np.divide(accumulated_reward - scaled_model_mean, results_normaliser)
         else:
             raise Exception("Unknown plotting type")
         return results

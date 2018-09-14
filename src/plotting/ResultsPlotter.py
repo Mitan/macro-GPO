@@ -63,7 +63,7 @@ class ResultGraphPlotter:
         plt.xticks(self.samples_collected)
         plt.xlabel("No. of observations", fontsize=self.labels_font_size)
         axes = plt.axes()
-        axes.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+        axes.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
         plt.ylabel(self.param_storer.y_label_caption, fontsize=self.labels_font_size)
         plt.yticks(self.param_storer.y_ticks_range)
@@ -83,7 +83,8 @@ class ResultGraphPlotter:
         # hack for EI
         single_point_methods = len(rewards) == 21
         adjusted_time_steps = range(21) if single_point_methods else self.samples_collected
-        marker_size = 10 if single_point_methods else 20
+        # marker_size = 10 if single_point_methods else 20
+        marker_size = 10
 
         if plot_bars:
             marker_size = 5

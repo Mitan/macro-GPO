@@ -7,7 +7,7 @@ from src.plotting.ResultsPlotter import  ResultGraphPlotter
 def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
-
+    """
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
     methods = ['h4', 'h3', 'h2', 'h1',
@@ -19,7 +19,19 @@ def GetSimulatedTotalRewards():
                     r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI',
                     'BBO-LP']
+    """
+    seeds = range(66, 316)
 
+    print(len(seeds))
+    root_path = '../../tests/sim-fixed-temp/'
+    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp']
+
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
+                    r'$\epsilon$-Macro-GPO  $H = 3$',
+                    r'$\epsilon$-Macro-GPO  $H = 2$',
+                    'DB-GP-UCB',
+                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                    r'$q$-EI', 'BBO-LP']
     output_file = '../../result_graphs/eps/simulated/test_simulated_total_rewards.eps'
 
     result_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
@@ -44,7 +56,7 @@ def GetSimulatedTotalRegrets():
     seeds = range(66, 102)
 
     batch_size = 4
-
+    """
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
     methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'new_fixed_pe', 'gp-bucb', 'qEI', 'my_lp']
@@ -72,7 +84,7 @@ def GetSimulatedTotalRegrets():
                     'DB-GP-UCB',
                     r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI', 'BBO-LP']
-    """
+
     output_file = '../../result_graphs/eps/simulated/test_simulated_simple_regrets.eps'
 
     regret_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
@@ -93,5 +105,5 @@ def GetSimulatedTotalRegrets():
 
 
 if __name__ == "__main__":
-    # GetSimulatedTotalRewards()
+    GetSimulatedTotalRewards()
     GetSimulatedTotalRegrets()
