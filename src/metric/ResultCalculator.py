@@ -20,14 +20,14 @@ class ResultCalculator:
         if metric_type == MetricsEnum.SimpleRegret:
             max_found_values = GetMaxValues(measurements, batch_size)
             results = model_scale - max_found_values
-        elif metric_type == MetricsEnum.TotalReward:
+        elif metric_type == MetricsEnum.AverageTotalReward:
             accumulated_reward = GetAccumulatedRewards(measurements, batch_size)
             steps = 20 / batch_size
             scaled_model_mean = np.array([(1 + batch_size * i) * model_scale for i in range(steps + 1)])
             results_normaliser = np.array([1 + batch_size * i for i in range(20 / batch_size + 1)])
             results = np.divide(accumulated_reward - scaled_model_mean, results_normaliser)
         else:
-            raise Exception("Unknown plotting type")
+            raise Exception("Unknown metric type")
         return results
 
     def _get_results_for_one_method(self, method, batch_size, model_scale, metric_type):
