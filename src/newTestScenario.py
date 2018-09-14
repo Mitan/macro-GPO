@@ -106,3 +106,36 @@ def TestScenario_all_tests(my_save_folder_root, seed, time_steps, anytime_num_sa
     output_rewards.write(str(rollout) + '\n')
     """
     output_rewards.close()
+
+
+def TestScenario_beta(my_save_folder_root, seed, time_steps, h, beta_list,
+                      num_samples, batch_size, time_slot, dataset_type, dataset_mode, ma_treshold):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=dataset_mode,
+                                         time_slot=time_slot, batch_size=batch_size)
+    m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed, ma_treshold=ma_treshold)
+
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+    for beta in beta_list:
+        print(beta)
+        h = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+                                    num_timesteps_test=time_steps,
+                                    save_folder=save_folder + "beta" + str(beta) + "/",
+                                    num_samples=num_samples, beta=beta)
+        method_name = 'beta=' + str(beta)
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(h) + '\n')
+    output_rewards.close()

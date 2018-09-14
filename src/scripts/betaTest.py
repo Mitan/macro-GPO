@@ -1,26 +1,34 @@
-import sys
+from src.newTestScenario import *
+from src.enum.DatasetEnum import DatasetEnum
+from src.enum.DatasetModeEnum import DatasetModeEnum
 
-from TestScenario import TestScenario_Beta
 
-if __name__ == '__main__':
+def hack_script_beta(start):
 
-    args = sys.argv
-    seed_0 = int(args[1])
-    h = int(args[2])
-    beta = float(args[3])
 
-    time_slot = 16
+    batch_size = 4
 
-    t, batch_size, num_samples = (4, 5, 300)
+    t = 20 / batch_size
 
-    my_save_folder_root = "../robot_tests/beta22" + str(h) + "/"
+    num_samples = 500
+    h = 2
 
-    data_file = '../datasets/robot/selected_slots/slot_' + str(time_slot) + '/noise_final_slot_' + str(time_slot) + '.txt'
-    neighbours_file = '../datasets/robot/all_neighbours.txt'
-    coords_file = '../datasets/robot/all_coords.txt'
+    my_save_folder_root = "./tests/beta%d/" % h
 
-    for seed in range(seed_0, seed_0 + 3):
-        TestScenario_Beta(my_save_folder_root=my_save_folder_root, test_horizon=h, seed=seed, time_steps=t,
-                          num_samples=num_samples, batch_size=batch_size, time_slot=time_slot,
-                          beta=beta, coords_filename=coords_file,
-                          data_filename=data_file, neighbours_filename=neighbours_file)
+    beta_list = [0.0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0, 2.0, 3.0, 5.0, 10.0]
+
+    end = start + 25
+    assert start < end
+    for seed in range(start, end):
+        print seed
+        TestScenario_beta(my_save_folder_root=my_save_folder_root,
+                          seed=seed,
+                          time_steps=t,
+                          num_samples=num_samples,
+                          beta_list=beta_list,
+                          batch_size=batch_size,
+                          time_slot=None,
+                          dataset_type=DatasetEnum.Simulated,
+                          dataset_mode=DatasetModeEnum.Load,
+                          ma_treshold=20,
+                          h=h)
