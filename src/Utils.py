@@ -47,6 +47,16 @@ def EI_Acquizition_Function(mu, sigma, best_observation):
                      + sigma * norm.pdf(x=Z, loc=0, scale=1.0)
     return expectedImprov
 
+
+def DynamicHorizon(t, H_max, t_max):
+    """
+    :param t: current timestep
+    :param H_max: maximum allowed horizon
+    :param t_max: maximum number of timesteps
+    :return:
+    """
+    return min(t_max - t, H_max)
+
 if __name__ == '__main__':
     b = 4
     g = 0.05
