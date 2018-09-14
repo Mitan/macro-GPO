@@ -131,11 +131,11 @@ def TestScenario_beta(my_save_folder_root, seed, time_steps, h, beta_list,
     output_rewards = open(filename_rewards, append_write)
     for beta in beta_list:
         print(beta)
-        h = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-                                    num_timesteps_test=time_steps,
-                                    save_folder=save_folder + "beta" + str(beta) + "/",
-                                    num_samples=num_samples, beta=beta)
+        current_res = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+                                              num_timesteps_test=time_steps,
+                                              save_folder=save_folder + "beta" + str(beta) + "/",
+                                              num_samples=num_samples, beta=beta)
         method_name = 'beta=' + str(beta)
         output_rewards.write(method_name + '\n')
-        output_rewards.write(str(h) + '\n')
+        output_rewards.write(str(current_res) + '\n')
     output_rewards.close()
