@@ -5,7 +5,7 @@ class RobotDatasetPlotParamStorer:
 
     def __init__(self, metric_type):
 
-        if metric_type == MetricsEnum.TotalReward:
+        if metric_type == MetricsEnum.AverageTotalReward:
             self.y_label_caption = "Total normalized output measurements observed by mobile robot"
             self.y_ticks_range = range(0, 15)
             self.y_lim_range = [-0.5, 14]

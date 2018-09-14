@@ -6,7 +6,7 @@ class RoadDatasetPlotParamStorer:
 
     def __init__(self, metric_type):
 
-        if metric_type == MetricsEnum.TotalReward:
+        if metric_type == MetricsEnum.AverageTotalReward:
             self.y_label_caption = "Total normalized output measurements observed by AV"
             self.y_ticks_range = range(-1, 7)
             self.y_lim_range = [-1.5, 6]

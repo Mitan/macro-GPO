@@ -6,7 +6,7 @@ class SimulatedDatasetPlotParamStorer:
 
     def __init__(self, metric_type):
 
-        if metric_type == MetricsEnum.TotalReward:
+        if metric_type == MetricsEnum.AverageTotalReward:
             self.y_label_caption = "Average normalized output measurements observed by AUV"
             self.y_ticks_range = np.arange(0, 0.75, 0.05)
             self.y_lim_range = [-0.07, 0.7]

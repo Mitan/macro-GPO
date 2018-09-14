@@ -23,7 +23,7 @@ class DatasetScaleExtractor:
     def extract_mean_or_max(self, root_folder, seeds, metric_type):
         if metric_type == MetricsEnum.SimpleRegret:
             return self._extract_max(root_folder, seeds)
-        elif metric_type == MetricsEnum.TotalReward:
+        elif metric_type == MetricsEnum.AverageTotalReward:
             return self._extract_mean(root_folder, seeds)
         else:
             raise Exception("Unknown plotting type")

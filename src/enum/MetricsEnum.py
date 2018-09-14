@@ -3,5 +3,5 @@ def enum(**enums):
     return type('Enum', (), enums)
 
 
-MetricsEnum = enum(TotalReward=1,
+MetricsEnum = enum(AverageTotalReward=1,
                    SimpleRegret=2)

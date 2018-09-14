@@ -41,10 +41,10 @@ def GetSimulatedTotalRewards():
     results = result_calculator.calculate_results(batch_size=batch_size,
                                                   methods=methods,
                                                   method_names=method_names,
-                                                  metric_type=MetricsEnum.TotalReward)
+                                                  metric_type=MetricsEnum.AverageTotalReward)
 
     results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
-                                         plotting_type=MetricsEnum.TotalReward,
+                                         plotting_type=MetricsEnum.AverageTotalReward,
                                          batch_size=batch_size)
     results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=False)
 
