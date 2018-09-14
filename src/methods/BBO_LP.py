@@ -30,15 +30,16 @@ def __transformed_ei(current_point, history_locations, history_measurements, max
 
     # print predicted_val, mu, Sigma
     # transform ei value
-    if predicted_val <= 0:
-        predicted_val = math.log(1 + math.exp(predicted_val))
+
+    predicted_val = math.log(1 + math.exp(predicted_val))
+
     return predicted_val
 
 
 # mu and var a posterior mean and variance in old_x
 def __local_penalizer(new_x, old_x, mu, var, M):
     # todo note hardcoded
-    L = 20
+    L = 10
 
     z = 1 / math.sqrt(2 * var) * (L * np.linalg.norm(new_x - old_x) - M + mu)
     return 0.5 * special.erfc(-z)
