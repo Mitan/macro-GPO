@@ -3,23 +3,6 @@ import random
 
 import numpy as np
 
-from GaussianProcess import SquareExponential, GaussianProcess
-from src.model.MapValueDictBase import MapValueDictBase
-"""
-
-def GenerateModelFromFile(filename):
-    data = np.genfromtxt(filename)
-    locs = data[:, :-1]
-    vals = data[:, -1]
-    return MapValueDictBase(locs, vals)
-
-def GenerateRoadModelFromFile(filename):
-    m = RoadMapValueDict(filename)
-    # m.AddTwoSidedRoads()
-    # m.LogTransformValues()
-    return m
-"""
-
 # todo refact this and next method in one
 def GetMaxValues(measurements, batch_size):
     assert len(measurements) == 21
