@@ -19,7 +19,8 @@ rc('text', usetex=True)
 
 class ResultGraphPlotter:
 
-    def __init__(self, dataset_type, plotting_type, batch_size):
+    def __init__(self, dataset_type, plotting_type, batch_size, total_budget):
+        self.total_budget = total_budget
         self.plotting_type = plotting_type
         self.dataset_type = dataset_type
         self.param_storer = self._get_param_storer()
@@ -28,7 +29,7 @@ class ResultGraphPlotter:
         self.labels_font_size = 18
 
         # + 1 because of initial point
-        plotting_num_steps = 20 / batch_size + 1
+        plotting_num_steps = self.total_budget / batch_size + 1
 
         self.samples_collected = [i * batch_size for i in range(plotting_num_steps)]
 
@@ -81,8 +82,8 @@ class ResultGraphPlotter:
         error_bars = result[2]
 
         # hack for EI
-        single_point_methods = len(rewards) == 21
-        adjusted_time_steps = range(21) if single_point_methods else self.samples_collected
+        single_point_methods = len(rewards) == self.total_budget + 1
+        adjusted_time_steps = range(self.total_budget + 1) if single_point_methods else self.samples_collected
         # marker_size = 10 if single_point_methods else 20
         marker_size = 10
 

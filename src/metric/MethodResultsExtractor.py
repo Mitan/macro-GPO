@@ -7,11 +7,12 @@ from src.enum.MetricsEnum import MetricsEnum
 
 class MethodResultsExtractor:
 
-    def __init__(self, batch_size, method, metric_type):
+    def __init__(self, batch_size, method, metric_type, total_budget):
+        self.total_budget = total_budget
         self.metric_type = metric_type
         self.method = method
         self.batch_size = batch_size
-        self.num_steps = 20 / batch_size
+        self.num_steps = self.total_budget / batch_size
 
     # get all the measurements collected by the method including initial value
     # these values are not normalized
@@ -37,7 +38,7 @@ class MethodResultsExtractor:
         # all measurements obtained by the robot till that step
         measurements = np.genfromtxt(a)
 
-        assert measurements.shape[0] == 21
+        assert measurements.shape[0] == self.total_budget + 1
 
         # assert we parsed them all as numbers
         assert not np.isnan(measurements).any()
@@ -46,7 +47,7 @@ class MethodResultsExtractor:
 
     def get_results(self, root_folder):
         measurements = self._get_all_measurements(root_folder)
-        assert len(measurements) == 21
+        assert len(measurements) == self.total_budget + 1
         # initial value before planning
         results = [measurements[0]]
 

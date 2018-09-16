@@ -7,6 +7,7 @@ from src.plotting.ResultsPlotter import ResultGraphPlotter
 def GetSimulatedTotalRewards():
     seeds = range(66, 102)
     batch_size = 4
+    total_budget = 20
     """
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
@@ -37,7 +38,8 @@ def GetSimulatedTotalRewards():
     result_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
                                          root_path=root_path,
                                          time_slot=None,
-                                         seeds=seeds)
+                                         seeds=seeds,
+                                         total_budget=total_budget)
     results = result_calculator.calculate_results(batch_size=batch_size,
                                                   methods=methods,
                                                   method_names=method_names,
@@ -45,7 +47,8 @@ def GetSimulatedTotalRewards():
 
     results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
                                          plotting_type=MetricsEnum.AverageTotalReward,
-                                         batch_size=batch_size)
+                                         batch_size=batch_size,
+                                         total_budget=total_budget)
     results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=False)
 
     for result in results:
@@ -56,6 +59,8 @@ def GetSimulatedTotalRegrets():
     seeds = range(66, 102)
 
     batch_size = 4
+    total_budget = 20
+
     """
     root_path = '../../releaseTests/updated_release/simulated/rewards-sAD/'
 
@@ -90,14 +95,16 @@ def GetSimulatedTotalRegrets():
     regret_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
                                          root_path=root_path,
                                          time_slot=None,
-                                         seeds=seeds)
+                                         seeds=seeds,
+                                         total_budget=total_budget)
     results = regret_calculator.calculate_results(batch_size=batch_size,
                                                   methods=methods,
                                                   method_names=method_names,
                                                   metric_type=MetricsEnum.SimpleRegret)
     results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
                                          plotting_type=MetricsEnum.SimpleRegret,
-                                         batch_size=batch_size)
+                                         batch_size=batch_size,
+                                         total_budget=total_budget)
 
     results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=False)
     for result in results:
@@ -120,6 +127,8 @@ def SimpleRegretBeta2():
 
 def CalculateMetricsBeta(h, metric_type, filename, plot_bars):
     batch_size = 4
+    total_budget = 20
+
     seeds = range(66, 316)
 
     root_path = '../../tests/beta%d/' % h
@@ -134,7 +143,8 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars):
     result_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
                                          root_path=root_path,
                                          time_slot=None,
-                                         seeds=seeds)
+                                         seeds=seeds,
+                                         total_budget=total_budget)
     results = result_calculator.calculate_results(batch_size=batch_size,
                                                   methods=methods,
                                                   method_names=method_names,
@@ -142,7 +152,8 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars):
 
     results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
                                          plotting_type=metric_type,
-                                         batch_size=batch_size)
+                                         batch_size=batch_size,
+                                         total_budget=total_budget)
     results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=plot_bars)
 
     for result in results:
@@ -150,7 +161,7 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars):
 
 
 if __name__ == "__main__":
-    # GetSimulatedTotalRewards()
-    # GetSimulatedTotalRegrets()
-    # AverageRewardsBeta2()
+    GetSimulatedTotalRewards()
+    GetSimulatedTotalRegrets()
+    AverageRewardsBeta2()
     SimpleRegretBeta2()

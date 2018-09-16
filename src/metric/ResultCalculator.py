@@ -8,19 +8,20 @@ from src.metric.MethodResultsExtractor import MethodResultsExtractor
 
 class ResultCalculator:
 
-    def __init__(self, dataset_type, seeds, root_path, time_slot):
+    def __init__(self, dataset_type, seeds, root_path, time_slot, total_budget):
+        self.total_budget = total_budget
         self.dataset_type = dataset_type
         self.time_slot = time_slot
         self.root_path = root_path
         self.seeds = seeds
 
     @staticmethod
-    def __get_results_for_one_seed(results, metric_type, batch_size, model_scale):
+    def __get_results_for_one_seed(total_budget, results, metric_type, batch_size, model_scale):
 
         if metric_type == MetricsEnum.SimpleRegret:
             scaled_results = model_scale - results
         elif metric_type == MetricsEnum.AverageTotalReward:
-            steps = 20 / batch_size
+            steps = total_budget / batch_size
             scaled_model_mean = np.array([(1 + batch_size * i) * model_scale for i in range(steps + 1)])
             results_normaliser = np.array([1 + batch_size * i for i in range(20 / batch_size + 1)])
             scaled_results = np.divide(results - scaled_model_mean, results_normaliser)
@@ -34,13 +35,17 @@ class ResultCalculator:
 
         len_seeds = len(self.seeds)
         all_results = np.zeros((len_seeds, steps + 1))
-        results_extractor = MethodResultsExtractor(batch_size=batch_size, method=method, metric_type=metric_type)
+        results_extractor = MethodResultsExtractor(batch_size=batch_size,
+                                                   method=method,
+                                                   metric_type=metric_type,
+                                                   total_budget=self.total_budget)
         for ind, seed in enumerate(self.seeds):
             seed_folder = self.root_path + 'seed' + str(seed) + '/'
             results = results_extractor.get_results(root_folder=seed_folder)
             model_seed_scale = model_scale if isinstance(model_scale, (int, long, float)) \
                 else model_scale[seed]
-            all_results[ind, :] = self.__get_results_for_one_seed(results=results,
+            all_results[ind, :] = self.__get_results_for_one_seed(total_budget=self.total_budget,
+                                                                  results=results,
                                                                   metric_type=metric_type,
                                                                   batch_size=batch_size,
                                                                   model_scale=model_seed_scale)
