@@ -1,9 +1,9 @@
 import numpy as np
 
-from src.DatasetUtils import GetAllMeasurements, GetMaxValues, GetAccumulatedRewards
 from src.enum.MetricsEnum import MetricsEnum
 from src.enum.SinglePointMethodsDict import single_point_methods
 from src.metric.DatasetScaleExtractor import DatasetScaleExtractor
+from src.metric.MethodResultsExtractor import MethodResultsExtractor
 
 
 class ResultCalculator:
@@ -15,20 +15,18 @@ class ResultCalculator:
         self.seeds = seeds
 
     @staticmethod
-    def __get_results_for_one_seed(measurements, metric_type, batch_size, model_scale):
+    def __get_results_for_one_seed(results, metric_type, batch_size, model_scale):
 
         if metric_type == MetricsEnum.SimpleRegret:
-            max_found_values = GetMaxValues(measurements, batch_size)
-            results = model_scale - max_found_values
+            scaled_results = model_scale - results
         elif metric_type == MetricsEnum.AverageTotalReward:
-            accumulated_reward = GetAccumulatedRewards(measurements, batch_size)
             steps = 20 / batch_size
             scaled_model_mean = np.array([(1 + batch_size * i) * model_scale for i in range(steps + 1)])
             results_normaliser = np.array([1 + batch_size * i for i in range(20 / batch_size + 1)])
-            results = np.divide(accumulated_reward - scaled_model_mean, results_normaliser)
+            scaled_results = np.divide(results - scaled_model_mean, results_normaliser)
         else:
             raise Exception("Unknown metric type")
-        return results
+        return scaled_results
 
     def _get_results_for_one_method(self, method, batch_size, model_scale, metric_type):
 
@@ -36,13 +34,13 @@ class ResultCalculator:
 
         len_seeds = len(self.seeds)
         all_results = np.zeros((len_seeds, steps + 1))
-
+        results_extractor = MethodResultsExtractor(batch_size=batch_size, method=method, metric_type=metric_type)
         for ind, seed in enumerate(self.seeds):
             seed_folder = self.root_path + 'seed' + str(seed) + '/'
-            measurements = GetAllMeasurements(seed_folder, method, batch_size)
+            results = results_extractor.get_results(root_folder=seed_folder)
             model_seed_scale = model_scale if isinstance(model_scale, (int, long, float)) \
                 else model_scale[seed]
-            all_results[ind, :] = self.__get_results_for_one_seed(measurements=measurements,
+            all_results[ind, :] = self.__get_results_for_one_seed(results=results,
                                                                   metric_type=metric_type,
                                                                   batch_size=batch_size,
                                                                   model_scale=model_seed_scale)
