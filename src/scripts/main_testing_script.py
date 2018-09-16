@@ -12,8 +12,8 @@ def hack_script(start):
     # my_save_folder_root = "./tests/more_simulated/"
 
     batch_size = 4
-
-    t = 20 / batch_size
+    total_budget = 20
+    # t = 20 / batch_size
 
     num_samples = 100
     anytime_num_samples = 300
@@ -24,7 +24,7 @@ def hack_script(start):
         print seed
         TestScenario_all_tests(my_save_folder_root=my_save_folder_root,
                                seed=seed,
-                               time_steps=t,
+                               total_budget=total_budget,
                                num_samples=num_samples,
                                anytime_num_samples=anytime_num_samples,
                                batch_size=batch_size,

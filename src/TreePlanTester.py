@@ -49,9 +49,10 @@ class TreePlanTester:
         # Compute measurements
         self.past_measurements = np.apply_along_axis(self.model, 1, past_locations)
 
-    def Test(self, num_timesteps_test, method, num_samples, action_set=None, save_per_step=True,
+    def Test(self, total_budget, method, num_samples, action_set=None, save_per_step=True,
              save_folder="default_results/", MCTSMaxNodes=10 ** 15):
 
+        num_time_steps = total_budget / self.batch_size
         # history includes currrent state
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
@@ -74,8 +75,8 @@ class TreePlanTester:
         total_nodes_expanded = 0
         nodes_expanded_history = []
 
-        for time in xrange(num_timesteps_test):
-            allowed_horizon = DynamicHorizon(t=time, H_max=self.H, t_max=num_timesteps_test)
+        for time in xrange(num_time_steps):
+            allowed_horizon = DynamicHorizon(t=time, H_max=self.H, t_max=num_time_steps)
             tp = TreePlan(domain_descriptor=self.domain_descriptor, gaussian_process=self.gp,
                           macroaction_set=action_set,
                           beta=self.beta,
@@ -214,7 +215,7 @@ class TreePlanTester:
                                     save_path=save_path)
 
 
-def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samples,
+def testWithFixedParameters(model, horizon, total_budget, method, num_samples,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
@@ -257,7 +258,7 @@ def testWithFixedParameters(model, horizon, num_timesteps_test, method, num_samp
                     batch_size=model.batch_size)
     TPT.InitTestParameters(initial_physical_state=initial_physical_state, past_locations=past_locations)
 
-    return TPT.Test(num_timesteps_test=num_timesteps_test,
+    return TPT.Test(total_budget=total_budget,
                     save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
                     num_samples=num_samples)

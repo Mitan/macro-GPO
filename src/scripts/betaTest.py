@@ -7,8 +7,8 @@ def hack_script_beta(start):
 
 
     batch_size = 4
-
-    t = 20 / batch_size
+    total_budget = 20
+    # t = 20 / batch_size
 
     num_samples = 500
     h = 2
@@ -23,7 +23,7 @@ def hack_script_beta(start):
         print seed
         TestScenario_beta(my_save_folder_root=my_save_folder_root,
                           seed=seed,
-                          time_steps=t,
+                          total_budget=total_budget,
                           num_samples=num_samples,
                           beta_list=beta_list,
                           batch_size=batch_size,
