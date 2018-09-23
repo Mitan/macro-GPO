@@ -49,7 +49,7 @@ def GetSimulatedTotalRewards():
                                          plotting_type=MetricsEnum.AverageTotalReward,
                                          batch_size=batch_size,
                                          total_budget=total_budget)
-    results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=False)
+    results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=True)
 
     for result in results:
         print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
@@ -106,7 +106,7 @@ def GetSimulatedTotalRegrets():
                                          batch_size=batch_size,
                                          total_budget=total_budget)
 
-    results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=False)
+    results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=True)
     for result in results:
         print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 
@@ -125,15 +125,31 @@ def SimpleRegretBeta2():
                          plot_bars=False)
 
 
+def AverageRewardsBeta3():
+    CalculateMetricsBeta(h=3,
+                         metric_type=MetricsEnum.AverageTotalReward,
+                         filename='test_simulated_beta3_rewards.eps',
+                         plot_bars=False)
+
+
+def SimpleRegretBeta3():
+    CalculateMetricsBeta(h=3,
+                         metric_type=MetricsEnum.SimpleRegret,
+                         filename='test_simulated_beta3_regrets.eps',
+                         plot_bars=False)
+
+
 def CalculateMetricsBeta(h, metric_type, filename, plot_bars):
     batch_size = 4
     total_budget = 20
 
     seeds = range(66, 316)
 
+    root_path = '../../tests/beta%d_t/' % h
     root_path = '../../tests/beta%d/' % h
 
     beta_list = [0.0, 0.05, 0.1, 0.3,  0.5, 1.0, 2.0, 3.0, 5.0]
+    # beta_list = [0.0, 0.05, 0.1]
 
     methods = map(lambda x: 'beta' + str(x), beta_list)
     method_names = map(lambda x: 'beta = ' + str(2 * x), beta_list)
@@ -161,7 +177,11 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars):
 
 
 if __name__ == "__main__":
-    GetSimulatedTotalRewards()
-    GetSimulatedTotalRegrets()
-    AverageRewardsBeta2()
-    SimpleRegretBeta2()
+
+    # GetSimulatedTotalRewards()
+    # GetSimulatedTotalRegrets()
+    # AverageRewardsBeta2()
+    # SimpleRegretBeta2()
+    # print
+    AverageRewardsBeta3()
+    SimpleRegretBeta3()

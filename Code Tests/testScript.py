@@ -134,3 +134,5 @@ for i in range(len(keys)):
 """
 
 print range(3, 1, -1)
+
+print bin(-3)
