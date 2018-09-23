@@ -422,7 +422,8 @@ class TreePlan:
 
         return avg
 
-    def AnytimeAlgorithm(self, epsilon, x_0, H, max_nodes=10 ** 15):
+
+    def AnytimeAlgorithm(self, epsilon, x_0, H, anytime_num_iterations,  max_nodes=10 ** 15):
         print "ANYTIME " + str(H)
         print "Preprocessing weight spaces..."
 
@@ -454,12 +455,13 @@ class TreePlan:
         total_nodes_expanded = root_action_node.SkeletalExpand()
         gc.collect()
         print "Performing search..."
-
+        """
         number_of_iterations = 800 if H == 4 else 1500
         number_of_iterations = 600 if H == 4 else 1500
         number_of_iterations = 2000
         # number_of_iterations = 1500
         # number_of_iterations = 1 if H == 4 else 1
+        """
         counter = 0
         # TODO: Set a proper termination condition
         # whilre resources permit
@@ -471,7 +473,7 @@ class TreePlan:
             gc.collect()
             gc.collect()
             gc.collect()
-            if counter > number_of_iterations:
+            if counter > anytime_num_iterations:
                 break
         print "counter is " + str(counter)
         # TODO: Set action selection scheme

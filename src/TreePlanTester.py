@@ -49,7 +49,7 @@ class TreePlanTester:
         # Compute measurements
         self.past_measurements = np.apply_along_axis(self.model, 1, past_locations)
 
-    def Test(self, total_budget, method, num_samples, action_set=None, save_per_step=True,
+    def Test(self, total_budget, method, num_samples, anytime_num_iterations, action_set=None, save_per_step=True,
              save_folder="default_results/", MCTSMaxNodes=10 ** 15):
 
         num_time_steps = total_budget / self.batch_size
@@ -85,7 +85,10 @@ class TreePlanTester:
 
             if method == Methods.Anytime:
                 print "anytime  " + str(self.epsilon)
-                bounds, x_temp_physical, nodes_expanded = tp.AnytimeAlgorithm(self.epsilon, x_0, allowed_horizon,
+                bounds, x_temp_physical, nodes_expanded = tp.AnytimeAlgorithm(epsilon=self.epsilon,
+                                                                              x_0=x_0,
+                                                                              anytime_num_iterations=anytime_num_iterations,
+                                                                              H=allowed_horizon,
                                                                               max_nodes=MCTSMaxNodes)
                 # TODO fix this ugly hack
                 # a = np.zeros(x_temp_physical.shape)
@@ -218,7 +221,7 @@ class TreePlanTester:
 def testWithFixedParameters(model, horizon, total_budget, method, num_samples,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
-                            action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0):
+                            action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0, anytime_num_iterations=None):
     """
     if time_slot == 44:
         hyper_storer = RoadHypersStorer_Log44()
@@ -261,4 +264,5 @@ def testWithFixedParameters(model, horizon, total_budget, method, num_samples,
     return TPT.Test(total_budget=total_budget,
                     save_folder=save_folder,
                     action_set=action_set, save_per_step=save_per_step, MCTSMaxNodes=MCTSMaxNodes, method=method,
-                    num_samples=num_samples)
+                    num_samples=num_samples,
+                    anytime_num_iterations=anytime_num_iterations)
