@@ -25,7 +25,7 @@ def CalculateMetrics(metric_type,
                'anytime_h2',
                'anytime_h1',
                'mle_h4',
-               'pe', 'gp-bucb', 'my_qEI']
+               'pe', 'bucb', 'my_qEI', 'lp']
 
     method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$',
                     r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
@@ -124,7 +124,7 @@ def CalculateMetricsBeta(h, metric_type, filename, input_folder, plot_bars, plot
 def GetRobotBeta2Rewards():
     CalculateMetricsBeta(h=2,
                          metric_type=MetricsEnum.AverageTotalReward,
-                         plotting_type=PlottingEnum.AverageTotalReward,
+                         plotting_type=PlottingEnum.AverageRewardBeta,
                          input_folder='../../tests/tests_old/noise_robot_tests/release/beta2_release/',
                          filename='robot_beta2_rewards.eps',
                          plot_bars=False)
@@ -133,7 +133,7 @@ def GetRobotBeta2Rewards():
 def GetRobotBeta3Rewards():
     CalculateMetricsBeta(h=3,
                          metric_type=MetricsEnum.AverageTotalReward,
-                         plotting_type=PlottingEnum.AverageTotalReward,
+                         plotting_type=PlottingEnum.AverageRewardBeta,
                          input_folder='../../tests/tests_old/noise_robot_tests/release/beta3_release-r/',
                          filename='robot_beta3_rewards.eps',
                          plot_bars=False)
@@ -141,7 +141,7 @@ def GetRobotBeta3Rewards():
 
 def GetRobot_H2Full_TotalRewards():
     CalculateMetricsFull(metric_type=MetricsEnum.AverageTotalReward,
-                         plotting_type=PlottingEnum.AverageTotalReward,
+                         plotting_type=PlottingEnum.AverageRewardFull,
                          filename='robot_h2_full_total_rewards.eps',
                          plot_bars=False)
 
@@ -272,11 +272,12 @@ def GetRobotTotalRegrets_beta3():
 
 
 if __name__ == "__main__":
-    """
+
     GetRobotTotalRegrets()
     GetRobotTotalRewards()
+
     GetRobotBeta2Rewards()
     GetRobotBeta3Rewards()
-    """
+    
     GetRobotTotalRegrets_H2Full()
     GetRobot_H2Full_TotalRewards()

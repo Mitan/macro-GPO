@@ -4,4 +4,5 @@ def enum(**enums):
 
 PlottingEnum = enum(AverageTotalReward=1,
                     SimpleRegret=2,
-                    AverageRewardBeta=3)
+                    AverageRewardBeta=3,
+                    AverageRewardFull=4)
