@@ -1,10 +1,12 @@
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.MetricsEnum import MetricsEnum
+from src.enum.PlottingEnum import PlottingEnum
 from src.metric.ResultCalculator import ResultCalculator
 from src.plotting.ResultsPlotter import ResultGraphPlotter
 
 
 def CalculateMetrics(metric_type,
+                     plotting_type,
                      filename,
                      plot_bars):
     batch_size = 4
@@ -35,7 +37,7 @@ def CalculateMetrics(metric_type,
                                                   metric_type=metric_type)
 
     results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
-                                         plotting_type=metric_type,
+                                         plotting_type=plotting_type,
                                          batch_size=batch_size,
                                          total_budget=total_budget)
     results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=plot_bars)
@@ -47,7 +49,7 @@ def CalculateMetrics(metric_type,
     print round(results[0][1][-1] - results[4][1][-1], 4)
 
 
-def CalculateMetricsBeta(h, metric_type, filename, plot_bars):
+def CalculateMetricsBeta(h, metric_type, filename, plot_bars, plotting_type):
     batch_size = 4
     total_budget = 20
 
@@ -75,7 +77,7 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars):
                                                   metric_type=metric_type)
 
     results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
-                                         plotting_type=metric_type,
+                                         plotting_type=plotting_type,
                                          batch_size=batch_size,
                                          total_budget=total_budget)
     results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=plot_bars)
@@ -88,12 +90,14 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars):
 
 def GetSimulatedTotalRewards():
     return CalculateMetrics(metric_type=MetricsEnum.AverageTotalReward,
+                            plotting_type=PlottingEnum.AverageTotalReward,
                             filename='simulated_total_rewards.eps',
                             plot_bars=False)
 
 
 def GetSimulatedTotalRegrets():
     return CalculateMetrics(metric_type=MetricsEnum.SimpleRegret,
+                            plotting_type=PlottingEnum.SimpleRegret,
                             filename='simulated_simple_regrets.eps',
                             plot_bars=False)
 
@@ -101,6 +105,7 @@ def GetSimulatedTotalRegrets():
 def AverageRewardsBeta2():
     CalculateMetricsBeta(h=2,
                          metric_type=MetricsEnum.AverageTotalReward,
+                         plotting_type=PlottingEnum.AverageTotalReward,
                          filename='simulated_beta2_rewards.eps',
                          plot_bars=False)
 
@@ -108,6 +113,7 @@ def AverageRewardsBeta2():
 def SimpleRegretBeta2():
     CalculateMetricsBeta(h=2,
                          metric_type=MetricsEnum.SimpleRegret,
+
                          filename='simulated_beta2_regrets.eps',
                          plot_bars=False)
 
@@ -115,6 +121,7 @@ def SimpleRegretBeta2():
 def AverageRewardsBeta3():
     CalculateMetricsBeta(h=3,
                          metric_type=MetricsEnum.AverageTotalReward,
+                         plotting_type=PlottingEnum.AverageTotalReward,
                          filename='simulated_beta3_rewards.eps',
                          plot_bars=False)
 
@@ -128,8 +135,8 @@ def SimpleRegretBeta3():
 
 if __name__ == "__main__":
     GetSimulatedTotalRewards()
-    # GetSimulatedTotalRegrets()
-    # AverageRewardsBeta2()
+    GetSimulatedTotalRegrets()
+    AverageRewardsBeta2()
     # SimpleRegretBeta2()
-    # AverageRewardsBeta3()
+    AverageRewardsBeta3()
     # SimpleRegretBeta3()

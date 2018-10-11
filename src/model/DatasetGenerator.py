@@ -61,7 +61,7 @@ class DatasetGenerator:
 
     def __get_road_dataset_model(self, root_folder, ma_treshold):
 
-        filename = './datasets/slot' + str(self.time_slot) + '/tlog' + str(self.time_slot) + '.dom'
+        filename = '../../datasets/slot' + str(self.time_slot) + '/tlog' + str(self.time_slot) + '.dom'
 
         hyper_storer = get_hyper_storer(DatasetEnum.Road, self.time_slot)
 

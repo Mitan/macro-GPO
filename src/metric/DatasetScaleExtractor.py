@@ -26,7 +26,7 @@ class DatasetScaleExtractor:
         elif metric_type == MetricsEnum.AverageTotalReward:
             return self._extract_mean(root_folder, seeds)
         else:
-            raise Exception("Unknown plotting type")
+            raise Exception("Unknown metric type")
 
     def _extract_max(self, root_folder, seeds):
         # select_all select all macro-actions
