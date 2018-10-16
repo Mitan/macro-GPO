@@ -3,7 +3,7 @@ from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
 
 
-def hack_script_beta(start):
+def hack_script_beta(start, h):
 
 
     batch_size = 4
@@ -11,13 +11,14 @@ def hack_script_beta(start):
     # t = 20 / batch_size
 
     num_samples = 500
-    h = 2
+    # h = 2
 
-    my_save_folder_root = "./tests/beta%d/" % h
+    my_save_folder_root = "./tests/new_beta%d/" % h
 
-    beta_list = [0.0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0, 2.0, 3.0, 5.0, 10.0]
+    # beta_list = [0.0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0, 2.0, 3.0, 5.0, 10.0]
+    beta_list = [0.15]
 
-    end = start + 25
+    end = start + 10
     assert start < end
     for seed in range(start, end):
         print seed
