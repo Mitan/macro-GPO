@@ -58,7 +58,7 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars, plotting_type):
     # root_path = '../../tests/beta%d_t/' % h
     root_path = '../../tests/beta%d/' % h
 
-    beta_list = [0.0, 0.05, 0.3, 0.5, 1.0, 2.0, 5.0]
+    beta_list = [0.0, 0.05, 0.15, 0.3, 0.5, 1.0, 2.0, 5.0]
     # beta_list = [0.0, 0.05, 0.1]
 
     methods = map(lambda x: 'beta' + str(x), beta_list)
@@ -134,8 +134,8 @@ def SimpleRegretBeta3():
 
 
 if __name__ == "__main__":
-    GetSimulatedTotalRewards()
-    GetSimulatedTotalRegrets()
+    #GetSimulatedTotalRewards()
+    # GetSimulatedTotalRegrets()
     AverageRewardsBeta2()
     # SimpleRegretBeta2()
     AverageRewardsBeta3()
