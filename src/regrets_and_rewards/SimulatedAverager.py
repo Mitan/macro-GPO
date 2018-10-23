@@ -1,3 +1,4 @@
+from src.Utils import get_rewards_regrets_latex
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.MetricsEnum import MetricsEnum
 from src.enum.PlottingEnum import PlottingEnum
@@ -47,6 +48,7 @@ def CalculateMetrics(metric_type,
 
     print round(results[0][1][-1] - results[3][1][-1], 4)
     print round(results[0][1][-1] - results[4][1][-1], 4)
+    return results
 
 
 def CalculateMetricsBeta(h, metric_type, filename, plot_bars, plotting_type):
@@ -86,6 +88,7 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars, plotting_type):
         print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 
     print round(results[1][1][-1] - results[0][1][-1], 4)
+    return results
 
 
 def GetSimulatedTotalRewards():
@@ -103,11 +106,11 @@ def GetSimulatedTotalRegrets():
 
 
 def AverageRewardsBeta2():
-    CalculateMetricsBeta(h=2,
-                         metric_type=MetricsEnum.AverageTotalReward,
-                         plotting_type=PlottingEnum.AverageTotalReward,
-                         filename='simulated_beta2_rewards.eps',
-                         plot_bars=False)
+    return CalculateMetricsBeta(h=2,
+                                metric_type=MetricsEnum.AverageTotalReward,
+                                plotting_type=PlottingEnum.AverageTotalReward,
+                                filename='simulated_beta2_rewards.eps',
+                                plot_bars=False)
 
 
 def SimpleRegretBeta2():
@@ -119,11 +122,11 @@ def SimpleRegretBeta2():
 
 
 def AverageRewardsBeta3():
-    CalculateMetricsBeta(h=3,
-                         metric_type=MetricsEnum.AverageTotalReward,
-                         plotting_type=PlottingEnum.AverageTotalReward,
-                         filename='simulated_beta3_rewards.eps',
-                         plot_bars=False)
+    return CalculateMetricsBeta(h=3,
+                                metric_type=MetricsEnum.AverageTotalReward,
+                                plotting_type=PlottingEnum.AverageTotalReward,
+                                filename='simulated_beta3_rewards.eps',
+                                plot_bars=False)
 
 
 def SimpleRegretBeta3():
@@ -134,11 +137,14 @@ def SimpleRegretBeta3():
 
 
 if __name__ == "__main__":
-    GetSimulatedTotalRewards()
-    GetSimulatedTotalRegrets()
     """
-    AverageRewardsBeta2()
-    SimpleRegretBeta2()
-    AverageRewardsBeta3()
-    SimpleRegretBeta3()
+    rewards = GetSimulatedTotalRewards()
+    regrets = GetSimulatedTotalRegrets()
+    print
+    get_rewards_regrets_latex(rewards, regrets)
     """
+    beta2 = AverageRewardsBeta2()
+    beta3 = AverageRewardsBeta3()
+    print
+    print
+    get_rewards_regrets_latex(beta2, beta3, process_beta=True)
