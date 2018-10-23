@@ -134,9 +134,11 @@ def SimpleRegretBeta3():
 
 
 if __name__ == "__main__":
-    #GetSimulatedTotalRewards()
-    # GetSimulatedTotalRegrets()
+    GetSimulatedTotalRewards()
+    GetSimulatedTotalRegrets()
+    """
     AverageRewardsBeta2()
-    # SimpleRegretBeta2()
+    SimpleRegretBeta2()
     AverageRewardsBeta3()
-    # SimpleRegretBeta3()
+    SimpleRegretBeta3()
+    """

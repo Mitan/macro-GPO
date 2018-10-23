@@ -1,5 +1,6 @@
 import math
 
+from src.Utils import get_rewards_regrets_latex
 from src.enum.PlottingEnum import PlottingEnum
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.MetricsEnum import MetricsEnum
@@ -57,20 +58,21 @@ def CalculateMetrics(metric_type,
     mle = results[4]
     print "H4 -  H1 %f sigma " % round(abs((h1[1][-1] - h4[1][-1])) / sigma, 4)
     print "H4  -  MLE %f sigma" % round(abs((mle[1][-1] - h4[1][-1])) / sigma, 4)
+    return results
 
 
 def GetRoadTotalRewards():
-    CalculateMetrics(metric_type=MetricsEnum.AverageTotalReward,
-                     plotting_type=PlottingEnum.AverageTotalReward,
-                     filename='road_total_rewards.eps',
-                     plot_bars=False)
+    return CalculateMetrics(metric_type=MetricsEnum.AverageTotalReward,
+                            plotting_type=PlottingEnum.AverageTotalReward,
+                            filename='road_total_rewards.eps',
+                            plot_bars=False)
 
 
 def GetRoadTotalRegrets():
-    CalculateMetrics(metric_type=MetricsEnum.SimpleRegret,
-                     plotting_type=PlottingEnum.SimpleRegret,
-                     filename='road_simple_regrets.eps',
-                     plot_bars=False)
+    return CalculateMetrics(metric_type=MetricsEnum.SimpleRegret,
+                            plotting_type=PlottingEnum.SimpleRegret,
+                            filename='road_simple_regrets.eps',
+                            plot_bars=False)
 
 
 def CalculateMetricsBeta(h, metric_type, filename, input_folder, plot_bars, plotting_type):
@@ -110,24 +112,25 @@ def CalculateMetricsBeta(h, metric_type, filename, input_folder, plot_bars, plot
     beta0 = results[0]
     beta02 = results[1]
     print "beta=0 -  beta=0.2 %f sigma " % round(abs((beta0[1][-1] - beta02[1][-1])) / sigma, 4)
+    return results
 
 
 def GetRoadBeta2Rewards():
-    CalculateMetricsBeta(h=2,
-                         metric_type=MetricsEnum.AverageTotalReward,
-                         plotting_type=PlottingEnum.AverageRewardBeta,
-                         input_folder='../../releaseTests/updated_release/road/new_new_new_beta2_c/',
-                         filename='road_beta2_rewards.eps',
-                         plot_bars=False)
+    return CalculateMetricsBeta(h=2,
+                                metric_type=MetricsEnum.AverageTotalReward,
+                                plotting_type=PlottingEnum.AverageRewardBeta,
+                                input_folder='../../releaseTests/updated_release/road/new_new_new_beta2_c/',
+                                filename='road_beta2_rewards.eps',
+                                plot_bars=False)
 
 
 def GetRoadBeta3Rewards():
-    CalculateMetricsBeta(h=3,
-                         metric_type=MetricsEnum.AverageTotalReward,
-                         plotting_type=PlottingEnum.AverageRewardBeta,
-                         input_folder='../../releaseTests/updated_release/road/new_beta3_c/',
-                         filename='road_beta3_rewards.eps',
-                         plot_bars=False)
+    return CalculateMetricsBeta(h=3,
+                                metric_type=MetricsEnum.AverageTotalReward,
+                                plotting_type=PlottingEnum.AverageRewardBeta,
+                                input_folder='../../releaseTests/updated_release/road/new_beta3_c/',
+                                filename='road_beta3_rewards.eps',
+                                plot_bars=False)
 
 
 def CalculateMetricsFull(metric_type,
@@ -175,21 +178,21 @@ def CalculateMetricsFull(metric_type,
     h2 = results[2]
     print "H4 -  H2 all %f sigma " % round(abs((h4[1][-1] - h2_all[1][-1])) / sigma, 4)
     print "H2 all  -  H2 %f sigma" % round(abs((h2_all[1][-1] - h2[1][-1])) / sigma, 4)
+    return results
 
 
 def GetRoad_H2Full_TotalRewards():
-    CalculateMetricsFull(metric_type=MetricsEnum.AverageTotalReward,
-                         plotting_type=PlottingEnum.AverageTotalReward,
-                         filename='road_h2_full_total_rewards.eps',
-                         plot_bars=False)
+    return CalculateMetricsFull(metric_type=MetricsEnum.AverageTotalReward,
+                                plotting_type=PlottingEnum.AverageTotalReward,
+                                filename='road_h2_full_total_rewards.eps',
+                                plot_bars=False)
 
 
 def GetRoadTotalRegrets_H2Full():
-    CalculateMetricsFull(metric_type=MetricsEnum.SimpleRegret,
-                         plotting_type=PlottingEnum.SimpleRegret,
-                         filename='road_h2_full_simple_regrets.eps',
-                         plot_bars=False)
-
+    return CalculateMetricsFull(metric_type=MetricsEnum.SimpleRegret,
+                                plotting_type=PlottingEnum.SimpleRegret,
+                                filename='road_h2_full_simple_regrets.eps',
+                                plot_bars=False)
 
 
 def GetRoadBeta2Regrets():
@@ -303,11 +306,21 @@ def GetRoadBeta3Regrets():
 
 
 if __name__ == "__main__":
+    # print(wrap_with_bucks(1.10002, 3.45555))
     """
-    GetRoadTotalRewards()
-    GetRoadTotalRegrets()
-    GetRoadBeta2Rewards()
-    GetRoadBeta3Rewards()
-    GetRoadTotalRegrets_H2Full()
+    rewards = GetRoadTotalRewards()
+    regrets = GetRoadTotalRegrets()
+    print
+    get_rewards_regrets_latex(rewards,regrets)
+    
+    print(" pi = {0:.2f} or {1:.4f}".format(7.11111, 1555.22222))
+    beta2 = GetRoadBeta2Rewards()
+    beta3 = GetRoadBeta3Rewards()
+    print
+    get_rewards_regrets_latex(beta2, beta3, process_beta=True)
+
+
     """
-    GetRoad_H2Full_TotalRewards()
+    regrets_h2 = GetRoadTotalRegrets_H2Full()
+    rewards_h2 = GetRoad_H2Full_TotalRewards()
+    get_rewards_regrets_latex(rewards_h2, regrets_h2)

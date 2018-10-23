@@ -57,15 +57,23 @@ def DynamicHorizon(t, H_max, t_max):
     """
     return min(t_max - t, H_max)
 
-if __name__ == '__main__':
-    b = 4
-    g = 0.05
-    s = (1.0, 1.0)
-    answer = generate_set_of_reachable_locations(b_size=b, gap=g, start=s)
+def wrap_with_bucks(number, var):
+    return '$%6.4f \pm %6.4f$' % (number, var)
 
-    x = [t[0] for t in answer]
-    y = [t[1] for t in answer]
-    import matplotlib.pyplot as plt
 
-    plt.scatter(x, y)
-    plt.show()
+def process_beta_name(method_name):
+    split_name = method_name.split()
+    assert len(split_name) == 3
+    return "$\\beta=" + split_name[2] + "$"
+
+
+# get rewards and regrets with variances in latex format for pasting into the table
+def get_rewards_regrets_latex(rewards, regrets, process_beta=False):
+
+    for i in range(len(rewards)):
+        reward_i = rewards[i]
+        regret_i = regrets[i]
+        assert reward_i[0] == regret_i[0]
+        method_name = process_beta_name(reward_i[0]) if process_beta else reward_i[0]
+        print method_name, '&', wrap_with_bucks(reward_i[1][-1], reward_i[2][-1]), '&', \
+            wrap_with_bucks(regret_i[1][-1], regret_i[2][-1]), '\\\\'
