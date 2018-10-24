@@ -84,7 +84,8 @@ class RoadMapValueDict(MapValueDictBase):
         MapValueDictBase.__init__(self, locations=locs, values=vals)
 
         # TODO change mean so that it doesn't include self.NO_DATA locations
-        self.mean = np.mean(vals[self.informative_locations_indexes])
+        # self.mean = np.mean(vals[self.informative_locations_indexes])
+        self.empirical_mean = self.hyper_storer.empirical_mean
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)

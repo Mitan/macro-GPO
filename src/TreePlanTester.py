@@ -1,9 +1,10 @@
 import os
 
-from GaussianProcess import SquareExponential, GaussianProcess
+from gp.GaussianProcess import GaussianProcess
 from TreePlan import *
 from src.core.AugmentedState import AugmentedState
 from src.core.History import History
+from src.gp.covariance.CovarianceGenerator import CovarianceGenerator
 from src.plotting.DatasetPlotGenerator import DatasetPlotGenerator
 from src.enum.MethodEnum import Methods
 from Utils import DynamicHorizon
@@ -16,12 +17,16 @@ class TreePlanTester:
         self.beta = beta
 
     # just sets the parameters
-    def InitGP(self, length_scale, signal_variance, noise_variance, mean_function):
+    def InitGP(self, hyper_storer):
 
-        self.covariance_function = SquareExponential(np.array(length_scale), signal_variance=signal_variance,
-                                                     noise_variance=noise_variance)
-        self.gp = GaussianProcess(self.covariance_function, mean_function=mean_function)
-        self.noise_variance = noise_variance
+        covariance_generator = CovarianceGenerator(hyper_storer)
+        self.covariance_function = covariance_generator.get_covariance()
+        # self.covariance_function = SquareExponential(np.array(length_scale), signal_variance=signal_variance)
+
+        self.gp = GaussianProcess(covariance_function=self.covariance_function,
+                                  mean_function=hyper_storer.mean_function,
+                                  noise_variance=hyper_storer.noise_variance)
+        self.noise_variance = hyper_storer.noise_variance
 
     def InitEnvironment(self, environment_noise, model, hyper_storer):
 
@@ -29,7 +34,7 @@ class TreePlanTester:
         self.model = model
         # the empirical mean of the dataset
         # required for subtracting from measurements - gives better plotting
-        self.empirical_mean = model.mean
+        self.empirical_mean = model.empirical_mean
         self.hyper_storer = hyper_storer
 
     def InitPlanner(self, domain_descriptor, epsilon, gamma, batch_size, horizon):
@@ -251,9 +256,7 @@ def testWithFixedParameters(model, horizon, total_budget, method, num_samples,
 
     TPT = TreePlanTester(beta=beta)
     # this GP is for prediction
-    TPT.InitGP(length_scale=hyper_storer.length_scale, signal_variance=hyper_storer.signal_variance,
-               noise_variance=hyper_storer.noise_variance,
-               mean_function=hyper_storer.mean_function)
+    TPT.InitGP(hyper_storer=hyper_storer)
     # adds noise to observations
     TPT.InitEnvironment(environment_noise=hyper_storer.noise_variance, model=model, hyper_storer=hyper_storer)
     TPT.InitPlanner(domain_descriptor=model.domain_descriptor, gamma=1, epsilon=epsilon_,

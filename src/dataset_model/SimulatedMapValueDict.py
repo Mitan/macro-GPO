@@ -1,9 +1,11 @@
-from src.GaussianProcess import GaussianProcess, SquareExponential
+from src.gp.GaussianProcess import GaussianProcess
 from src.enum.DatasetEnum import DatasetEnum
 from src.dataset_model.MapValueDictBase import MapValueDictBase
 import numpy as np
 
 from scipy.stats import multivariate_normal
+
+from src.gp.covariance.CovarianceGenerator import CovarianceGenerator
 
 
 class SimulatedMapValueDict(MapValueDictBase):
@@ -19,12 +21,15 @@ class SimulatedMapValueDict(MapValueDictBase):
             locs = data[:, :-1]
             vals = data[:, -1]
         else:
+            covariance_generator = CovarianceGenerator(hyper_storer)
+            covariance_function = covariance_generator.get_covariance()
+            """
             covariance_function = SquareExponential(length_scale=hyper_storer.length_scale,
-                                                    signal_variance=hyper_storer.signal_variance,
-                                                    noise_variance=hyper_storer.noise_variance)
-
+                                                    signal_variance=hyper_storer.signal_variance)
+            """
             gp = GaussianProcess(covariance_function=covariance_function,
-                                 mean_function=hyper_storer.mean_function)
+                                 mean_function=hyper_storer.mean_function,
+                                 noise_variance=hyper_storer.noise_variance)
             locs, vals = self.__generate_values(gp=gp,
                                                 grid_domain=domain_descriptor.grid_domain,
                                                 num_samples=domain_descriptor.num_samples_grid,

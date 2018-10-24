@@ -1,5 +1,6 @@
 import numpy as np
 
+from src.enum.CovarianceEnum import CovarianceEnum
 from src.enum.DatasetEnum import DatasetEnum
 
 
@@ -44,6 +45,7 @@ class AbstarctHypersStorer:
 class SimulatedHyperStorer(AbstarctHypersStorer):
     def __init__(self):
         AbstarctHypersStorer.__init__(self)
+        self.type = CovarianceEnum.SquareExponential
         self.length_scale = (0.25, 0.25)
         self.signal_variance = 1.0
         self.noise_variance = 0.00001
@@ -61,6 +63,9 @@ class SimulatedHyperStorer(AbstarctHypersStorer):
 class RoadHypersStorer_Log18(AbstarctHypersStorer):
     def __init__(self):
         AbstarctHypersStorer.__init__(self)
+
+        self.type = CovarianceEnum.SquareExponential
+
         self.length_scale = (0.5249, 0.5687)
         signal_cov = 0.7486
         self.signal_variance = signal_cov
@@ -112,6 +117,9 @@ class RobotHypersStorer_2(AbstarctHypersStorer):
 class RobotHypersStorer_16(AbstarctHypersStorer):
     def __init__(self):
         AbstarctHypersStorer.__init__(self)
+
+        self.type = CovarianceEnum.SquareExponential
+
         self.length_scale = (4.005779, 11.381141)
 
         self.signal_variance = 0.596355

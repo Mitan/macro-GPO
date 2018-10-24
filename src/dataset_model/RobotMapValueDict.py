@@ -31,7 +31,8 @@ class RobotValueDict(MapValueDictBase):
 
         MapValueDictBase.__init__(self, locations=locs, values=vals)
 
-        self.mean = np.mean(vals)
+        # self.mean = np.mean(vals)
+        self.empirical_mean = self.hyper_storer.empirical_mean
 
     def __IdToCoord(self, all_coords_data, id):
         id = int(id)
