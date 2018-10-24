@@ -3,12 +3,13 @@ from scipy.stats import norm
 
 
 def TupleToLine(tuple_location, dim_1, dim_2):
-    float_line =  tuple_location[0] * dim_2 + tuple_location[1] + 1
+    float_line = tuple_location[0] * dim_2 + tuple_location[1] + 1
     return int(float_line)
 
 
 def LineToTuple(line_location, dim_1, dim_2):
-    return (  float((line_location - 1) / dim_2),   float((line_location - 1) % dim_2)  )
+    return float((line_location - 1) / dim_2), float((line_location - 1) % dim_2)
+
 
 # arguments are lists
 def GenerateGridPairs(first_range, second_range):
@@ -25,20 +26,20 @@ def ToTuple(arr):
 
 # generates a set of reachable locations for simulted agent
 def generate_set_of_reachable_locations(start, b_size, gap):
-        steps = 20 / b_size
-        a = []
-        s_x, s_y = start
-        for st in range(steps):
-            a = a + [(round(s_x + i * gap, 2), s_y + gap * st * b_size) for i in
-                     range(-20 + st * b_size, 21 - st * b_size)]
-            a = a + [(s_x + gap * st * b_size, round(s_y + i * gap, 2)) for i in
-                     range(-20 + st * b_size, 21 - st * b_size)]
-            a = a + [(s_x - gap * st * b_size, round(s_y + i * gap, 2)) for i in
-                     range(-20 + st * b_size, 21 - st * b_size)]
-            a = a + [(round(s_x + i * gap, 2), s_y - gap * st * b_size) for i in
-                     range(-20 + st * b_size, 21 - st * b_size)]
+    steps = 20 / b_size
+    a = []
+    s_x, s_y = start
+    for st in range(steps):
+        a = a + [(round(s_x + i * gap, 2), s_y + gap * st * b_size) for i in
+                 range(-20 + st * b_size, 21 - st * b_size)]
+        a = a + [(s_x + gap * st * b_size, round(s_y + i * gap, 2)) for i in
+                 range(-20 + st * b_size, 21 - st * b_size)]
+        a = a + [(s_x - gap * st * b_size, round(s_y + i * gap, 2)) for i in
+                 range(-20 + st * b_size, 21 - st * b_size)]
+        a = a + [(round(s_x + i * gap, 2), s_y - gap * st * b_size) for i in
+                 range(-20 + st * b_size, 21 - st * b_size)]
 
-        return list(set(a))
+    return list(set(a))
 
 
 def EI_Acquizition_Function(mu, sigma, best_observation):
@@ -57,6 +58,7 @@ def DynamicHorizon(t, H_max, t_max):
     """
     return min(t_max - t, H_max)
 
+
 def wrap_with_bucks(number, var):
     return '$%6.4f \pm %6.4f$' % (number, var)
 
@@ -69,7 +71,6 @@ def process_beta_name(method_name):
 
 # get rewards and regrets with variances in latex format for pasting into the table
 def get_rewards_regrets_latex(rewards, regrets, process_beta=False):
-
     for i in range(len(rewards)):
         reward_i = rewards[i]
         regret_i = regrets[i]
