@@ -57,7 +57,7 @@ class MethodResultsExtractor:
             after_i_step_points = self.batch_size * (i + 1) + 1
             current_result = self.__calculate_metric(measurements[:after_i_step_points], self.metric_type)
             results.append(current_result)
-        return results
+        return np.array(results)
 
     @staticmethod
     def __calculate_metric(measurements, metric_type):

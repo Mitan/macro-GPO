@@ -208,14 +208,3 @@ class RoadMapValueDict(MapValueDictBase):
         location = map(float, string_locations)
         assert len(location) == 2
         self.start_location = np.array([location])
-
-
-
-if __name__ == "__main__":
-    """
-    filename = './taxi18.dom'
-    # cannot use - cylcic linking
-     m = GenerateRoadModelFromFile(filename)
-    for i in m.locations:
-        print i, m.GetNeighbours(i)
-    """

@@ -29,7 +29,8 @@ class AbstarctHypersStorer:
         pass
 
     def PrintParams(self):
-        print self.length_scale, self.signal_variance, self.noise_variance, self.mean_function
+        print self.length_scale, self.signal_variance, self.noise_variance, \
+            self.mean_function, self.max_value, self.empirical_mean
 
     def PrintParamsToFile(self, file_name):
         f = open(file_name, 'w')
@@ -48,6 +49,9 @@ class SimulatedHyperStorer(AbstarctHypersStorer):
         self.noise_variance = 0.00001
         self.mean_function = 0.0
 
+        self.max_value = None
+        self.empirical_mean = None
+
         # self.PrintParams()
     """
     def GetInitialPhysicalState(self, start_location):
@@ -63,6 +67,9 @@ class RoadHypersStorer_Log18(AbstarctHypersStorer):
         noise_cov = 0.0111
         self.noise_variance = noise_cov
         self.mean_function = 1.5673
+
+        self.max_value = 4.04305
+        self.empirical_mean = 0.7401931727853153
 
         self.PrintParams()
     """
@@ -111,6 +118,9 @@ class RobotHypersStorer_16(AbstarctHypersStorer):
 
         self.noise_variance = 0.059732
         self.mean_function = 17.851283
+
+        self.max_value = 19.6688
+        self.empirical_mean = 17.975224827586207
 
         self.PrintParams()
     """

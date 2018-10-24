@@ -44,6 +44,7 @@ class ResultCalculator:
             results = results_extractor.get_results(root_folder=seed_folder)
             model_seed_scale = model_scale if isinstance(model_scale, (int, long, float)) \
                 else model_scale[seed]
+
             all_results[ind, :] = self.__get_results_for_one_seed(total_budget=self.total_budget,
                                                                   results=results,
                                                                   metric_type=metric_type,
@@ -53,7 +54,7 @@ class ResultCalculator:
         error_bars = np.std(all_results, axis=0) / np.sqrt(len_seeds)
         means = np.mean(all_results, axis=0)
 
-        return means.tolist(), error_bars.tolist()
+        return means, error_bars
 
     def calculate_results(self, batch_size, methods, method_names, metric_type):
 

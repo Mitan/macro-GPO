@@ -13,8 +13,7 @@ class MapValueDictBase():
 
         self.locations = locations
         # the original mean of the values
-        self.mean = np.mean(values)
-
+        # self.mean = np.mean(values)
         # self.values = values - self.mean
         self.values = values
 
@@ -74,5 +73,3 @@ class MapValueDictBase():
         concatenated_dataset = np.concatenate((self.locations, vals), axis=1)
         np.savetxt(filename, concatenated_dataset, fmt='%11.8f')
 
-    def GetMax(self):
-        return max(self.values)

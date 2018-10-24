@@ -35,6 +35,9 @@ class SimulatedMapValueDict(MapValueDictBase):
 
         self.macroaction_set = self.__GenerateSimpleMacroactions()
 
+        self.max_value = max(self.values)
+        self.empirical_mean = np.mean(self.values)
+
     # for given state
     def GetSelectedMacroActions(self, current_state):
         all_available_macroactions = [self.PhysicalTransition(current_state, a)
@@ -152,35 +155,10 @@ class SimulatedMapValueDict(MapValueDictBase):
     def LoadStartLocation(self, location_filename):
         self.start_location = np.array([[1.0, 1.0]])
 
-"""
-def TestScenario(my_save_folder_root, h_max, seed, time_steps, num_samples, batch_size, filename=None):
-    result_graphs = []
+    def get_max(self):
+        return self.max_value
 
-    # eps = 10 ** 10
-    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+    def get_empirical_mean(self):
+        return self.empirical_mean
 
-    try:
-        os.makedirs(save_folder)
-    except OSError:
-        if not os.path.isdir(save_folder):
-            raise
 
-    # this model is for observed values
-    length_scale = (0.25, 0.25)
-    signal_variance = 1.0
-    noise_variance = 0.00001
-    predict_range = ((-0.25, 2.25), (-0.25, 2.25))
-    num_samples_grid = (50, 50)
-
-    # file for storing reward histories
-    # so that later we can plot only some of them
-
-    output_rewards = open(save_folder + "reward_histories.txt", 'w')
-
-    if filename is not None:
-        m = GenerateModelFromFile(filename)
-    else:
-        m = GenerateSimulatedModel(length_scale=np.array(length_scale), signal_variance=signal_variance,
-                                   seed=seed, noise_variance=noise_variance, save_folder=save_folder,
-                                   predict_range=predict_range, num_samples=num_samples_grid)
-"""
