@@ -1,11 +1,11 @@
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
-from src.model.DomainDescriptorFactory import get_domain_descriptor
-from src.model.HypersStorerFactory import RobotHypersStorer_2, RobotHypersStorer_16, RoadHypersStorer_Log18, \
+from src.dataset_model.DomainDescriptorFactory import get_domain_descriptor
+from src.dataset_model.HypersStorerFactory import RobotHypersStorer_2, RobotHypersStorer_16, RoadHypersStorer_Log18, \
     RoadHypersStorer_Log44, get_hyper_storer
-from src.model.RoadMapValueDict import RoadMapValueDict
-from src.model.RobotMapValueDict import RobotValueDict
-from src.model.SimulatedMapValueDict import SimulatedMapValueDict
+from src.dataset_model.RoadMapValueDict import RoadMapValueDict
+from src.dataset_model.RobotMapValueDict import RobotValueDict
+from src.dataset_model.SimulatedMapValueDict import SimulatedMapValueDict
 
 
 class DatasetGenerator:

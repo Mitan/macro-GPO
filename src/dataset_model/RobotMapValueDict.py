@@ -1,6 +1,6 @@
 from random import choice, sample
 
-from src.model.MapValueDictBase import MapValueDictBase
+from src.dataset_model.MapValueDictBase import MapValueDictBase
 import numpy as np
 from src.enum.DatasetEnum import DatasetEnum
 

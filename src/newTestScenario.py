@@ -2,7 +2,7 @@ import os
 
 from src.enum.MethodEnum import Methods
 from TreePlanTester import testWithFixedParameters
-from src.model.DatasetGenerator import DatasetGenerator
+from src.dataset_model.DatasetGenerator import DatasetGenerator
 
 
 def TestScenario_all_tests_road(my_save_folder_root, seed, total_budget, anytime_num_samples,

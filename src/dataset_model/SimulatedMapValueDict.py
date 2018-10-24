@@ -1,6 +1,6 @@
 from src.GaussianProcess import GaussianProcess, SquareExponential
 from src.enum.DatasetEnum import DatasetEnum
-from src.model.MapValueDictBase import MapValueDictBase
+from src.dataset_model.MapValueDictBase import MapValueDictBase
 import numpy as np
 
 from scipy.stats import multivariate_normal

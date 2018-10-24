@@ -1,7 +1,7 @@
 from StringIO import StringIO
 from random import choice, sample
 
-from src.model.MapValueDictBase import MapValueDictBase
+from src.dataset_model.MapValueDictBase import MapValueDictBase
 import numpy as np
 
 from src.Utils import LineToTuple

@@ -1,6 +1,6 @@
 from src.enum.MetricsEnum import MetricsEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
-from src.model.DatasetGenerator import DatasetGenerator
+from src.dataset_model.DatasetGenerator import DatasetGenerator
 
 
 class DatasetScaleExtractor:
