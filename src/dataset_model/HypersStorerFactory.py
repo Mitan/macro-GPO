@@ -199,5 +199,5 @@ class BraininHyperStorer(AbstarctHypersStorer):
         self.noise_variance = 1.00000001e-02
         self.mean_function = 0.0
 
-        self.empirical_mean = 0.001
+        self.empirical_mean = 0.00001
         self.max_value = 1.02412647694

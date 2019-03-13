@@ -38,7 +38,8 @@ class ResultCalculator:
         results_extractor = MethodResultsExtractor(batch_size=batch_size,
                                                    method=method,
                                                    metric_type=metric_type,
-                                                   total_budget=self.total_budget)
+                                                   total_budget=self.total_budget,
+                                                   dataset_type=self.dataset_type)
         for ind, seed in enumerate(self.seeds):
             seed_folder = self.root_path + 'seed' + str(seed) + '/'
             results = results_extractor.get_results(root_folder=seed_folder)

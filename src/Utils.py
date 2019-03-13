@@ -78,3 +78,9 @@ def get_rewards_regrets_latex(rewards, regrets, process_beta=False):
         method_name = process_beta_name(reward_i[0]) if process_beta else reward_i[0]
         print method_name, '&', wrap_with_bucks(reward_i[1][-1], reward_i[2][-1]), '&', \
             wrap_with_bucks(regret_i[1][-1], regret_i[2][-1]), '\\\\'
+
+
+def branin_transform(measurement):
+        val_mean = -55.291140616
+        val_std = 53.5417452487
+        return measurement* val_std + val_mean

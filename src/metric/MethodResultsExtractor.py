@@ -2,12 +2,15 @@ from StringIO import StringIO
 
 import numpy as np
 
+from src.Utils import branin_transform
+from src.enum.DatasetEnum import DatasetEnum
 from src.enum.MetricsEnum import MetricsEnum
 
 
 class MethodResultsExtractor:
 
-    def __init__(self, batch_size, method, metric_type, total_budget):
+    def __init__(self, batch_size, method, metric_type, total_budget, dataset_type):
+        self.dataset_type = dataset_type
         self.total_budget = total_budget
         self.metric_type = metric_type
         self.method = method
@@ -42,8 +45,10 @@ class MethodResultsExtractor:
 
         # assert we parsed them all as numbers
         assert not np.isnan(measurements).any()
-
+        if self.dataset_type == DatasetEnum.Branin:
+            return map(lambda x: branin_transform(x), measurements.tolist())
         return measurements.tolist()
+
 
     def get_results(self, root_folder):
         measurements = self._get_all_measurements(root_folder)
