@@ -20,30 +20,33 @@ def branin_function(x):
 
 def optimize_model(X, Y):
     num_points = X.shape[0]
-    assert num_points == 1600
-    sample = np.random.randint(low=0, high=num_points - 1, size=500)
+    assert num_points == 400
+    # sample = np.random.randint(low=0, high=num_points - 1, size=500)
+    # Y = Y[sample, :]
+    outfile = open("./hypers/hypers1.txt", 'w')
 
-    outfile = open("./hypers/hypers.txt", 'w')
     outfile.write("aa")
 
-    X = X[sample, :]
-    Y = Y[sample, :]
-    print scipy.stats.skew(Y)
+    # X = X[sample, :]
 
-    print X.shape, Y.shape
+
+    # print X.shape, Y.shape
 
     k = GPy.kern.RBF(input_dim=2, ARD=True)
     m = GPy.models.GPRegression(X, Y, k)
+    m.constrain_bounded(1e-2, 1e4)
+
+
 
     outfile.write(m.param_array)
-    m.likelihood.variance.fix(1.0)
+    # m.likelihood.variance.fix(1.0)
     # m.constrain_bounded(lower=1.0, upper=1000.)
     #m.kern.variance.fix(1.0)
-    print m
-    # m.randomize()
+    # print m
+    m.randomize()
     # m.optimize()
-    m.optimize(messages=True)
-    m.optimize_restarts(num_restarts=5)
+    m.optimize(messages=False)
+    m.optimize_restarts(num_restarts=20)
     print m.param_array
     outfile.write(m.param_array)
     print m
@@ -72,7 +75,7 @@ def get_brainin_points(num_samples, grid_domain):
     points = grids.reshape(ndims, -1).T
     # vals = - np.atleast_2d(vector_branin(points)).T
     vals = - vector_branin(points)
-    print vals.shape
+    # print vals.shape
     return points, vals
 
 
@@ -80,7 +83,7 @@ if __name__ == "__main__":
 
     vector_branin = np.vectorize(branin_function, signature='(m)->()')
 
-    num_samples = (40, 40)
+    num_samples = (20, 20)
 
     grid_domain = ((-5.0, 10.0), (0, 15))
     points, vals = get_brainin_points(num_samples=num_samples,
@@ -89,14 +92,21 @@ if __name__ == "__main__":
     # np.savetxt(X=dataset, fname='./branin_1600points_inverse_sign.txt', fmt='%10.6f')
     vals_mean = np.mean(vals)
     vals_std = np.std(vals)
+    print scipy.stats.skew(vals)
+
+
     vals = (vals - vals_mean) / vals_std
     points_mean = np.mean(points, axis=0)
     points_std = np.std(points, axis=0)
 
     print vals_mean,vals_std
-    print points_std
+    # print points_std
+    # print max(vals)
+
     vals = np.atleast_2d(vals).T
     # points = np.divide(points - points_mean, points_std)
     dataset = np.concatenate((points, vals), axis=1)
-    np.savetxt(X=dataset, fname='./branin_1600points_inverse_sign_normalised.txt', fmt='%10.6f')
+
+    # np.savetxt(X=dataset, fname='./branin_1600points_inverse_sign_normalised.csv', delimiter=',',fmt='%10.6f')
+    # np.savetxt(X=dataset, fname='./branin_400points_inverse_sign_normalised.txt',fmt='%10.6f')
     # optimize_model(X=points, Y=np.atleast_2d(vector_branin(points)).T)

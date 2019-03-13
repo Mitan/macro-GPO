@@ -120,3 +120,5 @@ Code Tests/branin-generate/hypers
 branin_1600points.txt
 branin_1600points_inverse_sign.txt
 branin_1600points_inverse_sign_normalised.txt
+branin_1600points_inverse_sign_normalised.csv
+branin_400points_inverse_sign_normalised.txt
