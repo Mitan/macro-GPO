@@ -6,13 +6,13 @@ from src.enum.DatasetModeEnum import DatasetModeEnum
 
 
 def hack_script(start):
-    my_save_folder_root = "./tests/branin-b1-h4/"
+    my_save_folder_root = "./tests/branin2/"
 
     batch_size = 1
 
     num_samples = 20
 
-    end = start + 2
+    end = start + 1
     assert start < end
     for seed in range(start, end):
         TestScenario_branin(my_save_folder_root=my_save_folder_root,
