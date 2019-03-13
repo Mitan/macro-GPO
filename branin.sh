@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-for loc in $(seq 66 10 316)
+for loc in $(seq 0 2 100)
     do
-        python  main.py $loc 3 &
+        python2  branin.py $loc &
     done

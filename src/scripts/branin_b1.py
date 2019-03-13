@@ -12,7 +12,7 @@ def hack_script(start):
 
     num_samples = 20
 
-    end = start + 5
+    end = start + 2
     assert start < end
     for seed in range(start, end):
         TestScenario_branin(my_save_folder_root=my_save_folder_root,

@@ -1,7 +1,7 @@
 import os
 
 from src.enum.MethodEnum import Methods
-from TreePlanTester import testWithFixedParameters
+from src.TreePlanTester import testWithFixedParameters
 from src.dataset_model.DatasetGenerator import DatasetGenerator
 
 
