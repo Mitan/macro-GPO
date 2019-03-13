@@ -180,8 +180,8 @@ class TreePlanTester:
             state_history.append(x_0)
 
             if save_per_step:
-                self.Visualize(state_history=state_history,
-                               save_path=save_folder + "step" + str(time))
+                # self.Visualize(state_history=state_history,
+                #                save_path=save_folder + "step" + str(time))
                 # Save to file
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
                 f.write(x_0.to_str() + "\n")
