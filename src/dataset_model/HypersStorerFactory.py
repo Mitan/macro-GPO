@@ -174,3 +174,10 @@ class RoadHypersStorer_18(AbstarctHypersStorer):
 
     def GetInitialPhysicalState(self, start_location):
         return np.array([start_location])
+
+
+    def BraininHyperStorer(self):
+        self.length_scale = (4.2551 * 4.32877364, 18.898* 4.32877364)
+        self.signal_variance = 93024.441
+        self.noise_variance = 1.0
+        self.mean_function =0.0
