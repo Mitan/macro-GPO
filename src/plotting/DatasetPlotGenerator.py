@@ -19,7 +19,7 @@ class DatasetPlotGenerator:
         elif self.type == DatasetEnum.Road:
             aspect = 2
             self.__generate_plot(model=model, path_points=path_points, save_path=save_path, aspect=aspect)
-        elif self.type == DatasetEnum.Simulated:
+        elif self.type == DatasetEnum.Simulated or self.type== DatasetEnum.Branin:
             self.__generate_plot(model, path_points, save_path)
 
         else:

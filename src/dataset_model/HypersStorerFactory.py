@@ -21,6 +21,8 @@ def get_hyper_storer(dataset_type, time_slot):
             raise Exception("wrong taxi time slot")
     elif dataset_type == DatasetEnum.Simulated:
         return SimulatedHyperStorer()
+    if dataset_type == DatasetEnum.Branin:
+        return BraininHyperStorer()
     else:
         raise ValueError("Unknown dataset")
 
@@ -176,8 +178,11 @@ class RoadHypersStorer_18(AbstarctHypersStorer):
         return np.array([start_location])
 
 
-    def BraininHyperStorer(self):
-        self.length_scale = (4.2551 * 4.32877364, 18.898* 4.32877364)
+class BraininHyperStorer(AbstarctHypersStorer):
+    def __init__(self):
+        AbstarctHypersStorer.__init__(self)
+        self.type = CovarianceEnum.SquareExponential
+        self.length_scale = (4.2551 * 4.32877364, 18.898 * 4.32877364)
         self.signal_variance = 93024.441
         self.noise_variance = 1.0
         self.mean_function =0.0

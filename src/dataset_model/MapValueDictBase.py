@@ -4,7 +4,7 @@ from random import choice
 
 class MapValueDictBase():
     # needed for rounding while adding into dict
-    ROUNDING_CONST = 2
+    ROUNDING_CONST = 5
 
     def __init__(self, locations, values, epsilon=None):
         """
