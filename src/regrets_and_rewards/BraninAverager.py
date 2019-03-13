@@ -13,10 +13,10 @@ def CalculateMetrics(metric_type,
     batch_size = 1
     total_budget = 20
 
-    seeds = list(set(range(0, 51)) - set([]))
+    seeds = list(set(range(0, 51)) - set([6, 11, 41, 43]))
 
     print(len(seeds))
-    root_path = '../../tests/branin2/'
+    root_path = '../../tests/branin/branin2/'
     methods = ['h4_b1_20','h2_b1_20', 'ei']
 
     method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
