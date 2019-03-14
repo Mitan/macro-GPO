@@ -34,19 +34,19 @@ def optimize_model(X, Y):
 
     k = GPy.kern.RBF(input_dim=2, ARD=True)
     m = GPy.models.GPRegression(X, Y, k)
-    m.constrain_bounded(1e-2, 1e4)
+    # m.constrain_bounded(1e-2, 1e4)
 
 
 
     outfile.write(m.param_array)
-    # m.likelihood.variance.fix(1.0)
+    m.likelihood.variance.fix(0.01)
     # m.constrain_bounded(lower=1.0, upper=1000.)
     #m.kern.variance.fix(1.0)
     # print m
     m.randomize()
     # m.optimize()
     m.optimize(messages=False)
-    m.optimize_restarts(num_restarts=20)
+    m.optimize_restarts(num_restarts=5)
     print m.param_array
     outfile.write(m.param_array)
     print m
@@ -94,19 +94,20 @@ if __name__ == "__main__":
     vals_std = np.std(vals)
     print scipy.stats.skew(vals)
 
-
     vals = (vals - vals_mean) / vals_std
+    random_noise = np.random.normal(scale=0.01, size=vals.shape)
+    vals += random_noise
+
     points_mean = np.mean(points, axis=0)
     points_std = np.std(points, axis=0)
 
     print vals_mean,vals_std
-    # print points_std
-    # print max(vals)
+    print points_std
+    print max(vals), np.mean(vals)
 
     vals = np.atleast_2d(vals).T
     # points = np.divide(points - points_mean, points_std)
     dataset = np.concatenate((points, vals), axis=1)
-
     # np.savetxt(X=dataset, fname='./branin_1600points_inverse_sign_normalised.csv', delimiter=',',fmt='%10.6f')
-    # np.savetxt(X=dataset, fname='./branin_400points_inverse_sign_normalised.txt',fmt='%10.6f')
-    # optimize_model(X=points, Y=np.atleast_2d(vector_branin(points)).T)
+    np.savetxt(X=dataset, fname='./branin_400points_inverse_sign_normalised.txt',fmt='%10.6f')
+    optimize_model(X=points, Y=vals)
