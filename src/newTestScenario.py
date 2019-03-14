@@ -133,6 +133,15 @@ def TestScenario_branin(my_save_folder_root, seed, total_budget,
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(h_2) + '\n')
 
+    h = 3
+    h_3 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+                                  total_budget=total_budget,
+                                  save_folder=save_folder + "h" + str(h) + "_b1_" + str(num_samples) + "/",
+                                  num_samples=num_samples)
+    method_name = 'H=3'
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(h_3) + '\n')
+
     h = 4
     h_4 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
                                   total_budget=total_budget,
