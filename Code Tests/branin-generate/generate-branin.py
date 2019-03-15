@@ -20,7 +20,7 @@ def branin_function(x):
 
 def optimize_model(X, Y):
     num_points = X.shape[0]
-    assert num_points == 400
+    # assert num_points == 400
     # sample = np.random.randint(low=0, high=num_points - 1, size=500)
     # Y = Y[sample, :]
     outfile = open("./hypers/hypers1.txt", 'w')
@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
     vector_branin = np.vectorize(branin_function, signature='(m)->()')
 
-    num_samples = (20, 20)
+    num_samples = (40, 40)
 
     grid_domain = ((-5.0, 10.0), (0, 15))
     points, vals = get_brainin_points(num_samples=num_samples,
@@ -109,5 +109,5 @@ if __name__ == "__main__":
     # points = np.divide(points - points_mean, points_std)
     dataset = np.concatenate((points, vals), axis=1)
     # np.savetxt(X=dataset, fname='./branin_1600points_inverse_sign_normalised.csv', delimiter=',',fmt='%10.6f')
-    np.savetxt(X=dataset, fname='./branin_400points_inverse_sign_normalised.txt',fmt='%10.6f')
+    np.savetxt(X=dataset, fname='./branin_1600points_inverse_sign_normalised.txt',fmt='%10.6f')
     optimize_model(X=points, Y=vals)

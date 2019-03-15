@@ -193,7 +193,8 @@ class BraininHyperStorer(AbstarctHypersStorer):
 
         self.empirical_mean = 0.001
         self.max_value = 1.04001929678
-        """
+        
+        # 400 with noise
         self.length_scale = (4.55891903e+00, 2.41301070e+01)
         self.signal_variance = 54.1469461108397
         self.noise_variance = 0.01
@@ -201,3 +202,22 @@ class BraininHyperStorer(AbstarctHypersStorer):
 
         self.empirical_mean = 0.000187585472341
         self.max_value = 1.03275606571
+        """
+        # 1600 ok
+
+        self.length_scale = (4.85609470e+00, 4.46323187e+01)
+        self.signal_variance = 428.88925324174573
+        self.noise_variance = 0.001
+        self.mean_function = 0.0
+
+        self.empirical_mean = 1.61137748492e-05
+        self.max_value = 1.0417132636
+        """
+        self.length_scale = (4.63154827e+00, 2.89546722e+01)
+        self.signal_variance = 9.77273955e+01
+        self.noise_variance = 0.01
+        self.mean_function = 0.0
+
+        self.empirical_mean = -0.00013565954387
+        self.max_value = 1.05862584444
+        """
