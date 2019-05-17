@@ -26,7 +26,7 @@ class ResultGraphPlotter:
         self.param_storer = self._get_param_storer()
 
         # size of font at x and y label
-        self.labels_font_size = 18
+        self.labels_font_size = 23
 
         # + 1 because of initial point
         plotting_num_steps = self.total_budget / batch_size + 1
@@ -52,7 +52,7 @@ class ResultGraphPlotter:
             handle = self.__plot_one_method(i, result, plot_bars)
             handles.append(handle)
 
-        plt.legend(handles=handles, loc=self.param_storer.legend_loc, prop={'size': 13.5})
+        plt.legend(handles=handles, loc=self.param_storer.legend_loc, prop={'size': 14})
 
         self.__ticks_and_margins()
 
@@ -70,7 +70,13 @@ class ResultGraphPlotter:
         plt.yticks(self.param_storer.y_ticks_range)
         axes.set_ylim(self.param_storer.y_lim_range)
 
-        # margins on x and y side
+        tick_size = 15
+        for tick in axes.xaxis.get_major_ticks():
+            tick.label.set_fontsize(tick_size)
+        for tick in axes.yaxis.get_major_ticks():
+                tick.label.set_fontsize(tick_size)
+
+            # margins on x and y side
         axes.margins(x=0.035)
         axes.margins(y=0.035)
 
@@ -85,7 +91,7 @@ class ResultGraphPlotter:
         single_point_methods = len(rewards) == self.total_budget + 1
         adjusted_time_steps = range(self.total_budget + 1) if single_point_methods else self.samples_collected
         # marker_size = 10 if single_point_methods else 20
-        marker_size = 10
+        marker_size = 20
 
         if plot_bars:
             marker_size = 5
@@ -99,7 +105,9 @@ class ResultGraphPlotter:
                  markerfacecolor="None",
                  markeredgewidth=1, markeredgecolor=self.color_sequence[i], color=self.color_sequence[i])
 
-        if plot_bars and error_bars:
+        if plot_bars:
+        # if plot_bars and error_bars:
+
             plt.errorbar(adjusted_time_steps, rewards, yerr=error_bars, color=self.color_sequence[i], lw=0.1)
 
         patch = mlines.Line2D([], [], linestyle=line_style, color=self.color_sequence[i],

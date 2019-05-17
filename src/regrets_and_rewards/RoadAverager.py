@@ -320,7 +320,10 @@ if __name__ == "__main__":
     get_rewards_regrets_latex(beta2, beta3, process_beta=True)
 
 
-    """
+    
     regrets_h2 = GetRoadTotalRegrets_H2Full()
     rewards_h2 = GetRoad_H2Full_TotalRewards()
     get_rewards_regrets_latex(rewards_h2, regrets_h2)
+    """
+    GetRoadTotalRewards()
+    GetRoadTotalRegrets()

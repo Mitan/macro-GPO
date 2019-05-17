@@ -9,22 +9,27 @@ from src.plotting.ResultsPlotter import ResultGraphPlotter
 def CalculateMetrics(metric_type,
                      plotting_type,
                      filename,
-                     plot_bars):
+                     plot_bars,
+                     methods=None,
+                     method_names=None):
     batch_size = 4
     total_budget = 20
 
-    seeds = range(66, 316)
+    # seeds = range(66, 66 + 107)
+    seeds = list(set(range(66, 66 + 109)) - set([116, 152, 154]))
 
     print(len(seeds))
     root_path = '../../tests/sim-fixed-temp/'
-    methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp_1']
+    if not methods:
+        methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp_1']
 
-    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-                    r'$\epsilon$-Macro-GPO  $H = 3$',
-                    r'$\epsilon$-Macro-GPO  $H = 2$',
-                    'DB-GP-UCB',
-                    r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
-                    r'$q$-EI', 'BBO-LP']
+    if not method_names:
+        method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
+                        r'$\epsilon$-Macro-GPO  $H = 3$',
+                        r'$\epsilon$-Macro-GPO  $H = 2$',
+                        'DB-GP-UCB',
+                        r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                        r'$q$-EI', 'BBO-LP']
     output_file = '../../result_graphs/eps/simulated/' + filename
 
     result_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
@@ -45,9 +50,10 @@ def CalculateMetrics(metric_type,
 
     for result in results:
         print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
-
+    """
     print round(results[0][1][-1] - results[3][1][-1], 4)
     print round(results[0][1][-1] - results[4][1][-1], 4)
+    """
     return results
 
 
@@ -136,15 +142,47 @@ def SimpleRegretBeta3():
                          plot_bars=False)
 
 
+def GetSimulatedTotalRewardsRollout():
+    methods = ['h4_b1_20', 'rollout_h4_gamma1_ei_mod']
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', 'Rollout-$4$-$10$']
+    return CalculateMetrics(metric_type=MetricsEnum.AverageTotalReward,
+                            plotting_type=PlottingEnum.AverageTotalReward,
+                            filename='simulated_total_rewards_rollout.eps',
+                            plot_bars=True,
+                            methods=methods,
+                            method_names=method_names)
+
+
+def GetSimulatedTotalRegretsRollout():
+    methods = ['h4_b1_20', 'rollout_h4_gamma1_ei_mod']
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', 'Rollout-$4$-$10$']
+    return CalculateMetrics(metric_type=MetricsEnum.SimpleRegret,
+                            plotting_type=PlottingEnum.SimpleRegret,
+                            filename='simulated_simple_regrets_rollout.eps',
+                            plot_bars=True,
+                            methods=methods,
+                            method_names=method_names)
+
+
 if __name__ == "__main__":
     """
     rewards = GetSimulatedTotalRewards()
     regrets = GetSimulatedTotalRegrets()
     print
     get_rewards_regrets_latex(rewards, regrets)
-    """
+    
     beta2 = AverageRewardsBeta2()
     beta3 = AverageRewardsBeta3()
     print
     print
     get_rewards_regrets_latex(beta2, beta3, process_beta=True)
+   
+    GetSimulatedTotalRewardsRollout()
+    GetSimulatedTotalRegretsRollout()
+    """
+    AverageRewardsBeta2()
+    AverageRewardsBeta3()
+    """
+    rewards = GetSimulatedTotalRewards()
+    regrets = GetSimulatedTotalRegrets()
+    """
