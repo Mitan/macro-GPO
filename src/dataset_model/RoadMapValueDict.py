@@ -75,22 +75,15 @@ class RoadMapValueDict(MapValueDictBase):
             if adjusted_raw_value != self.NO_DATA_CONST:
                 self.informative_locations_indexes.append(i)
 
-            # take only demand
-            # vals[i] = self.NO_DATA_CONST if current_point[2] == self.NO_DATA_CONST else math.log(current_point[2] + 1.0)
-
             # copy location
             np.copyto(locs[i, :], current_loc)
 
         MapValueDictBase.__init__(self, locations=locs, values=vals)
 
-        # TODO change mean so that it doesn't include self.NO_DATA locations
-        # self.mean = np.mean(vals[self.informative_locations_indexes])
         self.empirical_mean = self.hyper_storer.empirical_mean
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
-        # int_neighbours = self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
-        # return map(lambda x: (x % self.dim_1, x / self.dim_1), int_neighbours)
         return self.neighbours[tuple_loc] if tuple_loc in self.neighbours.keys() else []
 
     # list of 2D arrays
@@ -145,34 +138,6 @@ class RoadMapValueDict(MapValueDictBase):
     def GenerateAllRoadMacroActions(self, current_state):
         current_state = tuple(current_state)
         return list(self.___ExpandActions([current_state]))
-
-    # the content is moved to class constructor
-    # unused
-    def LogTransformValues(self):
-        pass
-        """
-        for i in range(self.__number_of_points):
-            current_value = self.values[i]
-            if current_value != -1.0:
-
-                self.values[i] = math.log(current_value + 1.0)
-                # print current_value, self.values[i]
-        """
-
-    """
-    def AddTwoSidedRoads(self):
-        for loc in self.locations:
-            tuple_loc = tuple(loc)
-            for n in self.GetNeighbours(loc):
-                # list of n's neighbours is empty
-                n_neighbours = self.GetNeighbours(n)
-                if not n_neighbours:
-                    self.neighbours[tuple(n)] = [tuple_loc]
-                else:
-                    # list of n's neighbours is not empty, check if contains loc
-                    if not tuple_loc in n_neighbours:
-                        self.neighbours[tuple(n)].append(tuple_loc)
-    """
 
     def LoadSelectedMacroactions(self, actions_filename):
 

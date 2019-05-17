@@ -1,28 +1,20 @@
-import numpy as np
-
 from src.enum.CovarianceEnum import CovarianceEnum
 from src.enum.DatasetEnum import DatasetEnum
 
 
 def get_hyper_storer(dataset_type, time_slot):
     if dataset_type == DatasetEnum.Robot:
-        if time_slot == 2:
-            return RobotHypersStorer_2()
-        elif time_slot == 16:
+        if time_slot == 16:
             return RobotHypersStorer_16()
         else:
             raise Exception("wrong robot time slot")
     elif dataset_type == DatasetEnum.Road:
-        if time_slot == 44:
-            return RoadHypersStorer_Log44()
-        elif time_slot == 18:
+        if time_slot == 18:
             return RoadHypersStorer_Log18()
         else:
             raise Exception("wrong taxi time slot")
     elif dataset_type == DatasetEnum.Simulated:
         return SimulatedHyperStorer()
-    if dataset_type == DatasetEnum.Branin:
-        return BraininHyperStorer()
     else:
         raise ValueError("Unknown dataset")
 
@@ -56,11 +48,6 @@ class SimulatedHyperStorer(AbstarctHypersStorer):
         self.max_value = None
         self.empirical_mean = None
 
-        # self.PrintParams()
-    """
-    def GetInitialPhysicalState(self, start_location):
-        return np.array([[1.0, 1.0]])
-    """
 
 class RoadHypersStorer_Log18(AbstarctHypersStorer):
     def __init__(self):
@@ -79,42 +66,7 @@ class RoadHypersStorer_Log18(AbstarctHypersStorer):
         self.empirical_mean = 0.7401931727853153
 
         self.PrintParams()
-    """
-    def GetInitialPhysicalState(self, start_location):
-        return np.array([start_location])
-    """
 
-class RoadHypersStorer_Log44(AbstarctHypersStorer):
-    def __init__(self):
-        AbstarctHypersStorer.__init__(self)
-        self.length_scale = (0.6276, 0.6490)
-        signal_cov = 0.7969
-        self.signal_variance = signal_cov ** 2
-        noise_cov = 0.0117
-        self.noise_variance = noise_cov ** 2
-        self.mean_function = 1.4646
-
-        self.PrintParams()
-    """
-    def GetInitialPhysicalState(self, start_location):
-        return np.array([start_location])
-    """
-
-class RobotHypersStorer_2(AbstarctHypersStorer):
-    def __init__(self):
-        AbstarctHypersStorer.__init__(self)
-        self.length_scale = (5.139014, 9.975326)
-
-        self.signal_variance = 0.464407
-
-        self.noise_variance = 0.022834
-        self.mean_function = 22.924200
-
-        self.PrintParams()
-    """
-    def GetInitialPhysicalState(self, start_location):
-        return np.array([start_location])
-    """
 
 class RobotHypersStorer_16(AbstarctHypersStorer):
     def __init__(self):
@@ -133,91 +85,3 @@ class RobotHypersStorer_16(AbstarctHypersStorer):
         self.empirical_mean = 17.975224827586207
 
         self.PrintParams()
-    """
-    def GetInitialPhysicalState(self, start_location):
-        return np.array([start_location])
-    """
-
-# unused
-class RoadHypersStorer_44(AbstarctHypersStorer):
-    def __init__(self):
-        AbstarctHypersStorer.__init__(self)
-        self.length_scale = (0.5767, 0.5941)
-        self.signal_variance = 8.1167
-        self.noise_variance = 0.0100
-        self.mean_function = 4.6038
-        """
-        self.grid_gap = 1.0
-
-        # upper values are not included
-        self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
-        """
-        self.PrintParams()
-
-    def GetInitialPhysicalState(self, start_location):
-        return np.array([start_location])
-
-
-# unused
-class RoadHypersStorer_18(AbstarctHypersStorer):
-    def __init__(self):
-        AbstarctHypersStorer.__init__(self)
-        self.length_scale = (0.5205, 0.5495)
-        self.signal_variance = 6.0016
-        self.noise_variance = 0.0100
-        self.mean_function = 4.9934
-        """
-        self.grid_gap = 1.0
-
-        # upper values are not included
-        self.grid_domain = ((0.0, 50.0), (0.0, 100.0))
-        """
-        self.PrintParams()
-
-    def GetInitialPhysicalState(self, start_location):
-        return np.array([start_location])
-
-
-class BraininHyperStorer(AbstarctHypersStorer):
-    def __init__(self):
-        AbstarctHypersStorer.__init__(self)
-        self.type = CovarianceEnum.SquareExponential
-        """
-        self.length_scale = (4.2551 * 4.32877364, 18.898 * 4.32877364)
-        self.signal_variance = 93024.441
-        self.noise_variance = 1.0
-        self.length_scale = (5.0, 5.0)
-        self.signal_variance = 3.0
-        self.noise_variance = 1.0
-        self.mean_function =0.0
-
-        self.empirical_mean = 0.001
-        self.max_value = 1.04001929678
-        
-        # 400 with noise
-        self.length_scale = (4.55891903e+00, 2.41301070e+01)
-        self.signal_variance = 54.1469461108397
-        self.noise_variance = 0.01
-        self.mean_function = 0.0
-
-        self.empirical_mean = 0.000187585472341
-        self.max_value = 1.03275606571
-        """
-        # 1600 ok
-
-        self.length_scale = (4.85609470e+00, 4.46323187e+01)
-        self.signal_variance = 428.88925324174573
-        self.noise_variance = 0.001
-        self.mean_function = 0.0
-
-        self.empirical_mean = 1.61137748492e-05
-        self.max_value = 1.0417132636
-        """
-        self.length_scale = (4.63154827e+00, 2.89546722e+01)
-        self.signal_variance = 9.77273955e+01
-        self.noise_variance = 0.01
-        self.mean_function = 0.0
-
-        self.empirical_mean = -0.00013565954387
-        self.max_value = 1.05862584444
-        """

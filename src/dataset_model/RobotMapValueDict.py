@@ -9,7 +9,8 @@ batch_road_macroactions = []
 
 class RobotValueDict(MapValueDictBase):
 
-    def __init__(self, data_filename, coords_filename, neighbours_filename, hyper_storer, domain_descriptor, batch_size):
+    def __init__(self, data_filename, coords_filename, neighbours_filename, hyper_storer, domain_descriptor,
+                 batch_size):
 
         self.dataset_type = DatasetEnum.Robot
         self.hyper_storer = hyper_storer
@@ -55,10 +56,9 @@ class RobotValueDict(MapValueDictBase):
             current_loc_coord = self.__IdToCoord(all_coords_data, current_loc_id)
 
             id_neighbours = line[1:]
-            tuple_neighbours = map(lambda x : self.__IdToCoord(all_coords_data, x), id_neighbours)
+            tuple_neighbours = map(lambda x: self.__IdToCoord(all_coords_data, x), id_neighbours)
             self.neighbours[current_loc_coord] = tuple_neighbours
             # self.neighbours[current_loc_coord] = id_neighbours
-
 
     def GetNeighbours(self, location):
         tuple_loc = tuple(location)
@@ -85,7 +85,7 @@ class RobotValueDict(MapValueDictBase):
     def SelectMacroActions(self, actions_filename, ma_treshold):
         self.selected_actions_dict = {}
 
-        actions_file  = open(actions_filename, 'w') if ma_treshold else None
+        actions_file = open(actions_filename, 'w') if ma_treshold else None
 
         for loc in self.locations:
             all_macro_actions = self.GenerateAllMacroActions(loc)
@@ -127,9 +127,9 @@ class RobotValueDict(MapValueDictBase):
         lines = open(actions_filename).readlines()
 
         for line in lines:
-            string_numbers = line.replace(',',' ').replace('[',' ').replace(']',' ').split()
+            string_numbers = line.replace(',', ' ').replace('[', ' ').replace(']', ' ').split()
             numbers = map(float, string_numbers)
-            loc = ( numbers[0], numbers[1])
+            loc = (numbers[0], numbers[1])
             indexes = map(int, numbers[2:])
             # print loc, indexes
             all_macro_actions = self.GenerateAllMacroActions(loc)
@@ -148,20 +148,3 @@ class RobotValueDict(MapValueDictBase):
         location = map(float, string_locations)
         assert len(location) == 2
         self.start_location = np.array([location])
-
-
-if __name__ == "__main__":
-    """
-    filename = './taxi18.dom'
-    # cannot use - cylcic linking
-     m = GenerateRoadModelFromFile(filename)
-    for i in m.locations:
-        print i, m.GetNeighbours(i)
-    
-    data_file = '../datasets/robot/selected_slots/slot_2/final_slot_2.txt'
-    neighbours_file = '../datasets/robot/all_neighbours.txt'
-    coords_file = '../datasets/robot/all_coords.txt'
-
-    RobotValueDict(data_filename=data_file, coords_filename=coords_file, neighbours_filename=neighbours_file)
-    """
-    pass

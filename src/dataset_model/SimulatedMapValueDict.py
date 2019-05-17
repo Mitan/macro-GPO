@@ -23,18 +23,15 @@ class SimulatedMapValueDict(MapValueDictBase):
         else:
             covariance_generator = CovarianceGenerator(hyper_storer)
             covariance_function = covariance_generator.get_covariance()
-            """
-            covariance_function = SquareExponential(length_scale=hyper_storer.length_scale,
-                                                    signal_variance=hyper_storer.signal_variance)
-            """
+
             gp = GaussianProcess(covariance_function=covariance_function,
                                  mean_function=hyper_storer.mean_function,
                                  noise_variance=hyper_storer.noise_variance)
-            locs, vals = self.__generate_values(gp=gp,
-                                                grid_domain=domain_descriptor.grid_domain,
-                                                num_samples=domain_descriptor.num_samples_grid,
-                                                seed=seed,
-                                                noise_variance=hyper_storer.noise_variance)
+            locs, vals = self._generate_values(gp=gp,
+                                               grid_domain=domain_descriptor.grid_domain,
+                                               num_samples=domain_descriptor.num_samples_grid,
+                                               seed=seed,
+                                               noise_variance=hyper_storer.noise_variance)
 
         MapValueDictBase.__init__(self, locations=locs, values=vals)
 
@@ -45,13 +42,13 @@ class SimulatedMapValueDict(MapValueDictBase):
 
     # for given state
     def GetSelectedMacroActions(self, current_state):
-        all_available_macroactions = [self.PhysicalTransition(current_state, a)
+        all_available_macroactions = [self._physical_transition(current_state, a)
                                       for a in self.macroaction_set]
         return [physical_state for physical_state in all_available_macroactions
                 if self.__isValidMacroAction(physical_state)]
 
     # generates values with zero mean
-    def __generate_values(self, gp, grid_domain, num_samples, seed, noise_variance):
+    def _generate_values(self, gp, grid_domain, num_samples, seed, noise_variance):
 
         assert (len(grid_domain) == len(num_samples))
 
@@ -88,21 +85,7 @@ class SimulatedMapValueDict(MapValueDictBase):
 
         return points, drawn_vector_with_noise
 
-    """
-    def GenerateSimulatedModel(length_scale, signal_variance, noise_variance, save_folder, seed, predict_range,
-                               num_samples):
-        covariance_function = SquareExponential(length_scale, signal_variance=signal_variance,
-                                                noise_variance=noise_variance)
-        # Generate a drawn vector from GP with noise
-        gpgen = GaussianProcess(covariance_function)
-        m = gpgen.GPGenerate(predict_range=predict_range, num_samples=num_samples, seed=seed,
-                             noiseVariance=noise_variance)
-        # write the dataset to file
-        m.WriteToFile(save_folder + "dataset.txt")
-        return m
-    """
-
-    def PhysicalTransition(self, current_location, macroaction):
+    def _physical_transition(self, current_location, macroaction):
 
         # current_location = physical_state[-1, :]
 

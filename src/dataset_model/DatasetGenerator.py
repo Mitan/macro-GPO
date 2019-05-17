@@ -1,12 +1,10 @@
-from src.dataset_model.BraninMapValueDict import BraninMapValueDict
-from src.enum.DatasetEnum import DatasetEnum
-from src.enum.DatasetModeEnum import DatasetModeEnum
 from src.dataset_model.DomainDescriptorFactory import get_domain_descriptor
-from src.dataset_model.HypersStorerFactory import RobotHypersStorer_2, RobotHypersStorer_16, RoadHypersStorer_Log18, \
-    RoadHypersStorer_Log44, get_hyper_storer
+from src.dataset_model.HypersStorerFactory import get_hyper_storer
 from src.dataset_model.RoadMapValueDict import RoadMapValueDict
 from src.dataset_model.RobotMapValueDict import RobotValueDict
 from src.dataset_model.SimulatedMapValueDict import SimulatedMapValueDict
+from src.enum.DatasetEnum import DatasetEnum
+from src.enum.DatasetModeEnum import DatasetModeEnum
 
 
 class DatasetGenerator:
@@ -26,8 +24,6 @@ class DatasetGenerator:
             return self.__get_road_dataset_model(root_folder, ma_treshold)
         elif self.type == DatasetEnum.Simulated:
             return self.__get_simulated_dataset_model(root_folder, seed)
-        elif self.type == DatasetEnum.Branin:
-            return self.__get_branin_dataset_model(root_folder)
         else:
             raise ValueError("Unknown dataset")
             # private methods
@@ -91,32 +87,7 @@ class DatasetGenerator:
             print "Loading start location and macro-actions"
         return m
 
-    def __get_branin_dataset_model(self, root_folder):
-        # hyper_storer = get_hyper_storer(DatasetEnum.Simulated, self.time_slot)
-
-        domain_descriptor = get_domain_descriptor(DatasetEnum.Branin)
-
-        location_filename = root_folder + 'start_location.txt'
-
-        print "Loading model"
-        dataset_filename = './datasets/branin/branin_1600points_inverse_sign_normalised_ok.txt'
-        m = BraninMapValueDict(hyper_storer=self.hyper_storer,
-                                  domain_descriptor=domain_descriptor,
-                                  filename=dataset_filename,
-                                  batch_size=self.batch_size)
-
-        if self.mode == DatasetModeEnum.Generate:
-            m.GenerateStartLocation()
-            with open(location_filename, 'w') as f:
-                f.write(str(m.start_location[0, 0]) + " " + str(m.start_location[0, 1]))
-        else:
-            m.LoadStartLocation(location_filename)
-
-        return m
-
     def __get_simulated_dataset_model(self, root_folder, seed):
-        # hyper_storer = get_hyper_storer(DatasetEnum.Simulated, self.time_slot)
-
         domain_descriptor = get_domain_descriptor(DatasetEnum.Simulated)
 
         location_filename = root_folder + 'start_location.txt'
@@ -134,7 +105,6 @@ class DatasetGenerator:
         else:
             print "Loading model"
             dataset_filename = root_folder + 'dataset.txt'
-            # dataset_filename = '../../datasets/branin/branin_1600points_inverse_sign_normalised.txt'
             m = SimulatedMapValueDict(hyper_storer=self.hyper_storer,
                                       domain_descriptor=domain_descriptor,
                                       filename=dataset_filename,

@@ -8,8 +8,6 @@ def get_domain_descriptor(dataset_type):
         return RoadDomainDescriptor()
     elif dataset_type == DatasetEnum.Simulated:
         return SimulatedDomainDescriptor()
-    elif dataset_type == DatasetEnum.Branin:
-        return BraninDomainDescriptor()
     else:
         raise ValueError("Unknown dataset")
 
@@ -48,29 +46,3 @@ class SimulatedDomainDescriptor:
         # upper values are not included
         self.grid_domain = ((-0.25, 2.25), (-0.25, 2.25))
         self.domain_size = 50 * 50
-
-
-class BraninDomainDescriptor:
-
-    def __init__(self):
-
-        self.grid_gap = 0.375
-
-        # unused
-        # number of samples in each dimension
-        self.num_samples_grid = (40, 40)
-
-        # upper values are not included
-        self.grid_domain = ((-5.0, 10.0), (0, 15.0))
-        self.domain_size = 40 * 40
-        """
-        self.grid_gap = 0.75
-
-        # unused
-        # number of samples in each dimension
-        self.num_samples_grid = (20, 20)
-
-        # upper values are not included
-        self.grid_domain = ((-5.0, 10.0), (0, 15.0))
-        self.domain_size = 20 * 20
-        """
