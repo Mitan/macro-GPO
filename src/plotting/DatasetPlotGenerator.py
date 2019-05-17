@@ -19,7 +19,7 @@ class DatasetPlotGenerator:
         elif self.type == DatasetEnum.Road:
             aspect = 2
             self.__generate_plot(model=model, path_points=path_points, save_path=save_path, aspect=aspect)
-        elif self.type == DatasetEnum.Simulated or self.type== DatasetEnum.Branin:
+        elif self.type == DatasetEnum.Simulated:
             self.__generate_plot(model, path_points, save_path)
 
         else:
@@ -74,26 +74,17 @@ class DatasetPlotGenerator:
     @staticmethod
     def __generate_plot(model, path_points, save_path, aspect=1):
 
-
         grid_00, grid_01 = model.domain_descriptor.grid_domain[0]
         grid_10, grid_11 = model.domain_descriptor.grid_domain[1]
 
         XGrid = np.arange(grid_00, grid_01 - 1e-10, model.domain_descriptor.grid_gap)
         YGrid = np.arange(grid_10, grid_11 - 1e-10, model.domain_descriptor.grid_gap)
         ground_truth_function = np.vectorize(lambda x, y: model([x, y]))
-        """
-        XGrid = np.arange(grid_10, grid_11 - 1e-10, model.domain_descriptor.grid_gap)
-        YGrid = np.arange(grid_00, grid_01 - 1e-10, model.domain_descriptor.grid_gap)
-        ground_truth_function = np.vectorize(lambda x, y: model([y, x]))
-        """
+
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
         grid_extent = [grid_00, grid_01, grid_10, grid_11]
 
-        """
-        grid_extent2 = [grid_extent[0], grid_extent[1], grid_extent[3],
-                        grid_extent[2]]  # Swap direction of grids in the display so that 0,0 is the top left
-        """
         ground_truth = ground_truth_function(XGrid, YGrid)
 
         axes = plt.axes()

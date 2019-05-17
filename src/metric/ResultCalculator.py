@@ -69,7 +69,7 @@ class ResultCalculator:
         results = []
 
         for index, method in enumerate(methods):
-          
+
             means, error_bars = self._get_results_for_one_method(method=method,
                                                                  batch_size=batch_size,
                                                                  model_scale=model_scale,
