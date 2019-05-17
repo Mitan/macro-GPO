@@ -28,9 +28,8 @@ class TreePlanTester:
                                   noise_variance=hyper_storer.noise_variance)
         self.noise_variance = hyper_storer.noise_variance
 
-    def InitEnvironment(self, environment_noise, model, hyper_storer):
+    def InitEnvironment(self, model, hyper_storer):
 
-        self.environment_noise = environment_noise
         self.model = model
         # the empirical mean of the dataset
         # required for subtracting from measurements - gives better plotting
@@ -95,10 +94,7 @@ class TreePlanTester:
                                                                               anytime_num_iterations=anytime_num_iterations,
                                                                               H=allowed_horizon,
                                                                               max_nodes=MCTSMaxNodes)
-                # TODO fix this ugly hack
-                # a = np.zeros(x_temp_physical.shape)
                 x_temp = TransitionP(x_0, x_temp_physical)
-                # x_temp.physical_state = x_temp_physical
 
             elif method == Methods.Exact:
                 vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
@@ -108,15 +104,10 @@ class TreePlanTester:
 
             # x_temp is already augmented state
 
-            # Take action a
-            # x_temp = tp.TransitionP(x_0, a)
-            # Draw an actual observation from the underlying environment field and add it to the our measurements
-
             baseline_measurements = np.asarray(
                 [self.model(single_agent_state) for single_agent_state in x_temp.physical_state])
 
             # NB shift measurements by mean
-            # percieved_measurements = np.add(baseline_measurements, noise_components)
             percieved_measurements = baseline_measurements
 
             x_next = TransitionH(x_temp, percieved_measurements)
@@ -145,9 +136,9 @@ class TreePlanTester:
             state_history.append(x_0)
 
             if save_per_step:
-                # self.Visualize(state_history=state_history,
-                #                save_path=save_folder + "step" + str(time))
-                # Save to file
+                self.Visualize(state_history=state_history,
+                               save_path=save_folder + "step" + str(time))
+
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
                 f.write(x_0.to_str() + "\n")
                 f.write("Total accumulated reward = " + str(total_reward) + '\n')
@@ -176,7 +167,6 @@ class TreePlanTester:
 
         self.hyper_storer.PrintParamsToFile(save_folder + "hypers_used.txt")
 
-        # return state_history, reward_history, nodes_expanded_history, base_measurement_history, total_reward_history
         return normalized_total_reward_history
 
     def Visualize(self, state_history, save_path):
@@ -192,29 +182,10 @@ def testWithFixedParameters(model, horizon, total_budget, method, num_samples,
                             epsilon_=5.0,
                             save_folder=None, save_per_step=True,
                             action_set=None, MCTSMaxNodes=10 ** 15, beta=0.0, anytime_num_iterations=None):
-    """
-    if time_slot == 44:
-        hyper_storer = RoadHypersStorer_Log44()
-    elif time_slot == 18:
-        hyper_storer = RoadHypersStorer_Log18()
-    else:
-        raise Exception("wrong tzxi time slot")
-    """
 
-    # hyper_storer = RoadHypersStorer_18()
     hyper_storer = model.hyper_storer
     initial_physical_state = model.start_location
 
-
-    # print model.GenerateRoadMacroActions(initial_physical_state[-1], batch_size)
-
-    # includes current state
-    past_locations = np.array(
-        [[1.0, 0.85], [1.0, 1.15], [1.15, 1.0], [0.85, 1.0], [1.0, 0.65], [1.0, 1.35], [1.35, 1.0], [0.65, 1.0],
-         [1.0, 1.0]])
-    past_locations = np.array(
-        [[1.0, 0.5], [1.0, 1.5], [1.5, 1.0], [0.5, 1.0], [1.0, 1.0]])
-    past_locations = np.array([[1.0, 1.0]])
     past_locations = np.copy(initial_physical_state)
 
     print "Start location " + str(past_locations) + "\n"
@@ -222,8 +193,8 @@ def testWithFixedParameters(model, horizon, total_budget, method, num_samples,
     TPT = TreePlanTester(beta=beta)
     # this GP is for prediction
     TPT.InitGP(hyper_storer=hyper_storer)
-    # adds noise to observations
-    TPT.InitEnvironment(environment_noise=hyper_storer.noise_variance, model=model, hyper_storer=hyper_storer)
+
+    TPT.InitEnvironment(model=model, hyper_storer=hyper_storer)
     TPT.InitPlanner(domain_descriptor=model.domain_descriptor, gamma=1, epsilon=epsilon_,
                     horizon=horizon,
                     batch_size=model.batch_size)

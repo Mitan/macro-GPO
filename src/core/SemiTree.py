@@ -13,11 +13,7 @@ class SemiTree:
         key = ToTuple(action)
         self.children[key] = semi_tree
 
-        # todo refact
-
     def ComputeWeightsAndVariance(self, gp):
         """ Compute the weights for this semi_state ONLY"""
         self.weights, self.variance = gp.GetBatchWeightsAndVariance(self.ss.locations, self.ss.physical_state,
                                                                     self.cholesky)
-        # self.variance = gp.GPVariance(self.ss.locations, self.ss.physical_state, self.cholesky)
-

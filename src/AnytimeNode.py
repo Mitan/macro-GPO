@@ -46,17 +46,9 @@ class MCTSActionNode:
         if len(self.BoundsChildren) == 0:
             return -MCTSActionNode.mini_epsilon, MCTSActionNode.mini_epsilon
 
-        # max_upper = -float('inf')
-        # max_lower = -float('inf')
-        # get max upper and lower bound
-        # V_lower and V_upper
         for _, b in self.BoundsChildren.iteritems():
             self.max_upper = max(b[1], self.max_upper)
             self.max_lower = max(b[0], self.max_lower)
-
-        # todo refact
-        # self.max_upper = max_upper
-        # self.max_lower = max_lower
 
         return self.max_lower, self.max_upper
 
@@ -80,29 +72,8 @@ class MCTSActionNode:
             self.ChanceChildren[a] = c
             self.BoundsChildren[a] = c.Eval()
 
-        # self.DetermineDominance()
         self.DetermineSaturation()
         return num_nodes_expanded
-
-    # not used
-    def DetermineDominance(self):
-
-        dominated = True
-
-        # Get action with the highest lower bound (may not be the best action per se)
-        highest_lower = -float('inf')
-        for a, cc in self.ChanceChildren.iteritems():
-            if self.BoundsChildren[a][0] >= highest_lower:
-                highest_lower = self.BoundsChildren[a][0]
-                best_a = a
-
-        # Check dominance
-        for a, cc in self.ChanceChildren.iteritems():
-            if a == best_a: continue
-            if self.BoundsChildren[a][1] < highest_lower:
-                # pass
-                # if not cc.saturated: print "Action %s cutoff in favour of %s" % (a, best_a)
-                cc.saturated = True  # saturate all nodes which are dominated
 
     def DetermineSaturation(self):
         """ Action node is saturated when
@@ -112,8 +83,6 @@ class MCTSActionNode:
         for a, cc in self.ChanceChildren.iteritems():
             if not cc.saturated: allSat = False
 
-        # todo check if works initially was like this
-        # self.saturated = allSat
         self.saturated = allSat
 
 
@@ -133,7 +102,7 @@ class MCTSObservationNode:
 
         if self.level != 1:
             self.numchild_unsaturated = self.num_samples
-            # Pointer too children action selection nodes. "None" = this observation has not been expanded.
+            # Pointer to children action selection nodes. "None" = this observation has not been expanded.
             self.ActionChildren = [None] * self.num_samples
             # Array of (lower, upper) tuple. Includes bounds which are due to Lipschitz constraints.
             self.BoundsChildren = [(-float('inf'), float('inf'))] * self.num_samples
@@ -160,9 +129,7 @@ class MCTSObservationNode:
        they are Q_lower and Q_upper
         """
         r = self.treeplan.reward_analytical(self.mu, self.semi_tree.variance)
-        # lower = 0.0
-        # upper = 0.0
-        # the same as num_samples
+
         number_of_children = len(self.BoundsChildren)
         if self.level > 1:
             lower = sum([childBound[0] for childBound in self.BoundsChildren]) / number_of_children
@@ -234,7 +201,8 @@ class MCTSObservationNode:
         """ Expand given node at a particular index
         """
         num_nodes_expanded = 0
-        assert self.ActionChildren[index_to_expand] == None, "Node already expanded"
+        assert self.ActionChildren[index_to_expand] is None, "Node already expanded"
+
         # uses obervation value
         self.ActionChildren[index_to_expand] = MCTSActionNode(
             augmented_state=TransitionH(self.augmented_state, self.ObservationValue[index_to_expand]),
