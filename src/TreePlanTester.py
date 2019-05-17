@@ -103,41 +103,6 @@ class TreePlanTester:
             elif method == Methods.Exact:
                 vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
 
-            elif method == Methods.BucbPE:
-                _, x_temp, nodes_expanded = tp.BUCB_PE(x_0, time)
-
-            elif method == Methods.BUCB:
-                _, x_temp, nodes_expanded = tp.BUCB(x_0, time)
-
-            elif method == Methods.LP:
-                _, x_temp, nodes_expanded = tp.LP(x_0, time)
-
-            elif method == Methods.MyopicUCB:
-                vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, 1)
-
-            elif method == Methods.MLE:
-                vBest, x_temp, nodes_expanded = tp.MLE(x_0, allowed_horizon)
-
-            elif method == Methods.qEI:
-                vBest, x_temp, nodes_expanded = tp.qEI(x_0)
-
-            elif method == Methods.new_qEI:
-                # R package gives error if the number of locations is less than dimension
-                if time > 0:
-                    vBest, x_temp, nodes_expanded = tp.new_qEI(x_0)
-                else:
-                    vBest, x_temp, nodes_expanded = tp.qEI(x_0)
-
-            elif method == Methods.EI:
-                vBest, x_temp, nodes_expanded = tp.EI(x_0)
-
-            elif method == Methods.PI:
-                vBest, x_temp, nodes_expanded = tp.PI(x_0)
-
-            elif method == Methods.Rollout:
-                gamma = 1.0
-                vBest, x_temp, nodes_expanded = tp.RolloutFiniteBudget(x_0=x_0, H=allowed_horizon, gamma=gamma)
-
             else:
                 raise Exception("Unknown method type")
 
