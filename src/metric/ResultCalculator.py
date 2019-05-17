@@ -1,7 +1,6 @@
 import numpy as np
 
 from src.enum.MetricsEnum import MetricsEnum
-from src.enum.SinglePointMethodsDict import single_point_methods
 from src.metric.DatasetScaleExtractor import DatasetScaleExtractor
 from src.metric.MethodResultsExtractor import MethodResultsExtractor
 
@@ -70,11 +69,9 @@ class ResultCalculator:
         results = []
 
         for index, method in enumerate(methods):
-            # todo hack
-            adjusted_batch_size = 1 if method in single_point_methods else batch_size
-
+          
             means, error_bars = self._get_results_for_one_method(method=method,
-                                                                 batch_size=adjusted_batch_size,
+                                                                 batch_size=batch_size,
                                                                  model_scale=model_scale,
                                                                  metric_type=metric_type)
             results.append([method_names[index], means, error_bars])

@@ -19,9 +19,8 @@ class DatasetScaleExtractor:
             return self.__extract_non_constant_mean(root_folder, seeds)
 
         if self.type == DatasetEnum.Branin:
-
-            empirical_mean =  branin_transform(empirical_mean)
-        print  empirical_mean
+            empirical_mean = branin_transform(empirical_mean)
+        print empirical_mean
         return empirical_mean
 
     def extract_mean_or_max(self, root_folder, seeds, metric_type):

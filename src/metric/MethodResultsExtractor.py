@@ -49,7 +49,6 @@ class MethodResultsExtractor:
             return map(lambda x: branin_transform(x), measurements.tolist())
         return measurements.tolist()
 
-
     def get_results(self, root_folder):
         measurements = self._get_all_measurements(root_folder)
         assert len(measurements) == self.total_budget + 1
