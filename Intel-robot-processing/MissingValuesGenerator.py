@@ -78,7 +78,7 @@ def GenerateExactValues(slot_number):
 # dummy for internal use
 def __predictGP(gp, train_X, train_Y, test_location):
     cholesky = gp.Cholesky(train_X)
-    weights = gp.GPWeights(locations=train_X, current_location=test_location, cholesky=cholesky)
+    weights = gp._gp_weights(locations=train_X, current_location=test_location, cholesky=cholesky)
     return gp.GPMean(measurements=train_Y, weights=weights)[0, 0]
 
 

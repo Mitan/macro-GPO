@@ -35,7 +35,7 @@ class GaussianProcess:
 
     # assert locations, current_location a 2-D arrays
 
-    def GPWeights(self, locations, current_location, cholesky):
+    def _gp_weights(self, locations, current_location, cholesky):
 
         cov_query = self.CovarianceMesh(locations, np.atleast_2d(current_location))
         # Weights by matrix division using cholesky decomposition
@@ -43,7 +43,7 @@ class GaussianProcess:
 
         return weights
 
-    def GPVariance(self, locations, current_location, cholesky):
+    def _gp_variance(self, locations, current_location, cholesky):
         """
         if cholesky is None:
             cholesky = self.Cholesky(locations)
@@ -59,8 +59,8 @@ class GaussianProcess:
 
     def GetBatchWeightsAndVariance(self, locations, current_location, cholesky):
 
-        variance = self.GPVariance(locations, current_location, cholesky)
-        weights = self.GPWeights(locations, current_location, cholesky)
+        variance = self._gp_variance(locations, current_location, cholesky)
+        weights = self._gp_weights(locations, current_location, cholesky)
 
         return weights, variance
 

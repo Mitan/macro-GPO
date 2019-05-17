@@ -51,7 +51,7 @@ def TestPrediction(locs, vals):
     for test_p in test:
         point = locs[test_p: test_p + 1, :]
         assert len(point.shape) == 2
-        weights = gp.GPWeights(locations=locs_train, current_location=point, cholesky=cholesky)
+        weights = gp._gp_weights(locations=locs_train, current_location=point, cholesky=cholesky)
         mu_predict = gp.GPMean(measurements=vals_train, weights=weights)
 
         truth = vals[test_p]

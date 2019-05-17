@@ -31,7 +31,7 @@ def LeaveOneOut(slot_number):
 
         # predict
         cholesky = gp.Cholesky(train_X)
-        weights = gp.GPWeights(locations=train_X, current_location=test_location, cholesky=cholesky)
+        weights = gp._gp_weights(locations=train_X, current_location=test_location, cholesky=cholesky)
         mu = gp.GPMean(measurements=train_Y, weights=weights)[0, 0]
         error += (mu - Y[index, 0]) ** 2
     # return math.sqrt(error / num_points), scipy.stats.skew(Y)[0], np.std(Y)

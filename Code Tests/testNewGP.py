@@ -10,8 +10,8 @@ def MyPredict(new_loc):
     covariance_function = SquareExponential(length_scale, signal_variance, noise_variance)
     gp = GaussianProcess(covariance_function=covariance_function, mean_function=0.0)
     cholesky = gp.Cholesky(locations)
-    weights = gp.GPWeights(locations=locations, current_location=new_loc, cholesky=cholesky)
-    var = gp.GPVariance(locations=locations, current_location=new_loc, cholesky=cholesky)
+    weights = gp._gp_weights(locations=locations, current_location=new_loc, cholesky=cholesky)
+    var = gp._gp_variance(locations=locations, current_location=new_loc, cholesky=cholesky)
     mu = gp.GPMean(measurements=Y, weights=weights)
     return mu, var
 

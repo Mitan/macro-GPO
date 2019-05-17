@@ -10,8 +10,6 @@ class SquareExponential:
 
         self.length_scale = np.atleast_2d(length_scale)
         self.signal_variance = signal_variance
-        # const
-        self.eps_tolerance = 10 ** -10
 
     def Cov(self, physical_state_1, physical_state_2):
         diff = np.atleast_2d(physical_state_1) - np.atleast_2d(physical_state_2)
