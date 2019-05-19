@@ -36,7 +36,7 @@ class TreePlan:
     def AcquizitionFunction(self, mu, sigma):
         if self.beta == 0:
             return np.sum(mu)
-        exploration_matrix = np.identity(sigma.shape[0]) + (1 / self.gp.covariance_function.noise_variance) * sigma
+        exploration_matrix = np.identity(sigma.shape[0]) + (1 / self.gp.noise_variance) * sigma
         return np.sum(mu) + self.beta * math.log(np.linalg.det(exploration_matrix))
 
     def GetNextAugmentedStates(self, current_augmented_state):
