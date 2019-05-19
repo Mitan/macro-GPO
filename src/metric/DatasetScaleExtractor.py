@@ -10,7 +10,7 @@ class DatasetScaleExtractor:
     def __init__(self, dataset_type, time_slot, batch_size):
         self.dataset_generator = DatasetGenerator(dataset_type,
                                                   dataset_mode=DatasetModeEnum.Load,
-                                                  time_slot=time_slot, batch_size=batch_size)
+                                                  batch_size=batch_size)
         self.type = dataset_type
 
     def _extract_mean(self, root_folder, seeds):

@@ -9,12 +9,11 @@ from src.enum.DatasetModeEnum import DatasetModeEnum
 
 class DatasetGenerator:
 
-    def __init__(self, dataset_type, dataset_mode, time_slot, batch_size):
+    def __init__(self, dataset_type, dataset_mode, batch_size):
         self.type = dataset_type
         self.mode = dataset_mode
-        self.time_slot = time_slot
         self.batch_size = batch_size
-        self.hyper_storer = get_hyper_storer(self.type, self.time_slot)
+        self.hyper_storer = get_hyper_storer(self.type)
 
     def get_dataset_model(self, root_folder, seed, ma_treshold):
         # select_all select all macro-actions
@@ -30,8 +29,7 @@ class DatasetGenerator:
 
     def __get_robot_dataset_model(self, root_folder, ma_treshold):
 
-        data_filename = '../../datasets/robot/selected_slots/slot_' + str(self.time_slot) + '/noise_final_slot_' + \
-                        str(self.time_slot) + '.txt'
+        data_filename = '../../datasets/robot/selected_slots/slot_16/noise_final_slot_16.txt'
         neighbours_filename = '../../datasets/robot/all_neighbours.txt'
         coords_filename = '../../datasets/robot/all_coords.txt'
 
@@ -61,7 +59,7 @@ class DatasetGenerator:
 
     def __get_road_dataset_model(self, root_folder, ma_treshold):
 
-        filename = '../../datasets/slot' + str(self.time_slot) + '/tlog' + str(self.time_slot) + '.dom'
+        filename = '../../datasets/slot18/tlog18.dom'
 
         # hyper_storer = get_hyper_storer(DatasetEnum.Road, self.time_slot)
 

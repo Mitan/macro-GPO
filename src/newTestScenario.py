@@ -17,7 +17,7 @@ def TestScenario_all_tests_road(my_save_folder_root, seed, total_budget, anytime
             raise
 
     dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=dataset_mode,
-                                         time_slot=time_slot, batch_size=batch_size)
+                                         batch_size=batch_size)
     m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed, ma_treshold=ma_treshold)
 
     filename_rewards = save_folder + "reward_histories.txt"
@@ -104,7 +104,7 @@ def TestScenario_branin(my_save_folder_root, seed, total_budget,
             raise
 
     dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=dataset_mode,
-                                         time_slot=time_slot, batch_size=batch_size)
+                                         batch_size=batch_size)
     m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed, ma_treshold=ma_treshold)
 
     filename_rewards = save_folder + "reward_histories.txt"
@@ -164,7 +164,7 @@ def TestScenario_all_tests(my_save_folder_root, seed, total_budget, anytime_num_
             raise
 
     dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=dataset_mode,
-                                         time_slot=time_slot, batch_size=batch_size)
+                                         batch_size=batch_size)
     m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed, ma_treshold=ma_treshold)
 
     filename_rewards = save_folder + "reward_histories.txt"
@@ -286,7 +286,7 @@ def TestScenario_beta(my_save_folder_root, seed, total_budget, h, beta_list,
             raise
 
     dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=dataset_mode,
-                                         time_slot=time_slot, batch_size=batch_size)
+                                         batch_size=batch_size)
     m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed, ma_treshold=ma_treshold)
 
     filename_rewards = save_folder + "reward_histories.txt"

@@ -2,17 +2,11 @@ from src.enum.CovarianceEnum import CovarianceEnum
 from src.enum.DatasetEnum import DatasetEnum
 
 
-def get_hyper_storer(dataset_type, time_slot):
+def get_hyper_storer(dataset_type):
     if dataset_type == DatasetEnum.Robot:
-        if time_slot == 16:
-            return RobotHypersStorer_16()
-        else:
-            raise Exception("wrong robot time slot")
+        return RobotHypersStorer_16()
     elif dataset_type == DatasetEnum.Road:
-        if time_slot == 18:
-            return RoadHypersStorer_Log18()
-        else:
-            raise Exception("wrong taxi time slot")
+        return RoadHypersStorer_Log18()
     elif dataset_type == DatasetEnum.Simulated:
         return SimulatedHyperStorer()
     else:
