@@ -47,7 +47,7 @@ class DatasetScaleExtractor:
         # reachable_locations = generate_set_of_reachable_locations(b_size=batch_size, start=(1.0, 1.0), gap=0.05)
         for seed in seeds:
             seed_dataset_path = root_folder + 'seed' + str(seed) + '/'
-            m = self.dataset_generator.get_dataset_model(root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
+            m = self.dataset_generator.get_dataset_model(dataset_root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
             # reachable_max = max(map(lambda x: m(x), reachable_locations))
             global_max = m.get_max()
 
@@ -60,7 +60,7 @@ class DatasetScaleExtractor:
 
         for seed in seeds:
             seed_dataset_path = root_folder + 'seed' + str(seed) + '/'
-            m = self.dataset_generator.get_dataset_model(root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
+            m = self.dataset_generator.get_dataset_model(dataset_root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
 
             model_mean_values[seed] = m.get_empirical_mean()
         return model_mean_values

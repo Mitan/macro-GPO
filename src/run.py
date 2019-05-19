@@ -5,7 +5,7 @@ from src.dataset_model.DatasetGenerator import DatasetGenerator
 from src.enum.MethodEnum import Methods
 
 
-def run(h_list,
+def run(h,
         batch_size,
         total_budget,
         num_samples,
@@ -26,19 +26,19 @@ def run(h_list,
                                          dataset_mode=dataset_mode,
                                          batch_size=batch_size,
                                          dataset_root_folder=dataset_root_folder)
-    for h in h_list:
-        for seed in seeds:
-            seed_save_folder = results_save_root_folder + "seed" + str(seed) + "/"
 
-            run_single_test(dataset_generator=dataset_generator,
-                            seed_save_folder=seed_save_folder,
-                            seed=seed,
-                            total_budget=total_budget,
-                            h=h,
-                            beta=beta,
-                            num_samples=num_samples,
-                            ma_treshold=ma_threshold,
-                            method=method)
+    for seed in seeds:
+        seed_save_folder = results_save_root_folder + "seed" + str(seed) + "/"
+
+        run_single_test(dataset_generator=dataset_generator,
+                        seed_save_folder=seed_save_folder,
+                        seed=seed,
+                        total_budget=total_budget,
+                        h=h,
+                        beta=beta,
+                        num_samples=num_samples,
+                        ma_treshold=ma_threshold,
+                        method=method)
 
 
 def run_single_test(dataset_generator,
@@ -56,7 +56,9 @@ def run_single_test(dataset_generator,
         if not os.path.isdir(seed_save_folder):
             raise
 
-    m = dataset_generator.get_dataset_model(root_folder=seed_save_folder, seed=seed, ma_treshold=ma_treshold)
+    m = dataset_generator.get_dataset_model(seed_folder=seed_save_folder,
+                                            seed=seed,
+                                            ma_treshold=ma_treshold)
 
     filename_rewards = seed_save_folder + "reward_histories.txt"
 
@@ -78,10 +80,11 @@ def run_single_test(dataset_generator,
                                           method=method,
                                           horizon=h,
                                           total_budget=total_budget,
-                                          save_folder="{}{}_beta{}/".format(seed_save_folder, method_string, beta),
+                                          save_folder="{}{}_h{}_beta{}/".format(seed_save_folder, method_string, h,
+                                                                                beta),
                                           num_samples=num_samples,
                                           beta=beta)
-    method_name = '{} beta={}'.format(method_string, beta)
+    method_name = '{} h={} beta={}'.format(method_string, h, beta)
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(current_res) + '\n')
     output_rewards.close()

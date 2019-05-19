@@ -16,25 +16,28 @@ class DatasetGenerator:
         self.batch_size = batch_size
         self.hyper_storer = get_hyper_storer(self.type)
 
-    def get_dataset_model(self, root_folder, seed, ma_treshold):
+    # dataset_root is the folder where datasets are stored (e.g. for Road or robot datasets)
+    # seed_folder is a folder for saving (e.g. start location or selected actions)
+    def get_dataset_model(self, seed_folder, seed, ma_treshold):
         # select_all select all macro-actions
         if self.type == DatasetEnum.Robot:
-            return self.__get_robot_dataset_model(root_folder, ma_treshold)
+            return self.__get_robot_dataset_model(seed_folder=seed_folder,
+                                                  ma_treshold=ma_treshold)
         elif self.type == DatasetEnum.Road:
-            return self.__get_road_dataset_model(root_folder, ma_treshold)
+            return self.__get_road_dataset_model(seed_folder=seed_folder,
+                                                 ma_treshold=ma_treshold)
         elif self.type == DatasetEnum.Simulated:
-            return self.__get_simulated_dataset_model(root_folder, seed)
+            return self.__get_simulated_dataset_model(seed_folder=seed_folder,
+                                                      seed=seed)
         else:
             raise ValueError("Unknown dataset")
             # private methods
 
-    def __get_robot_dataset_model(self, root_folder, ma_treshold):
+    def __get_robot_dataset_model(self, seed_folder, ma_treshold):
 
-        data_filename = self.dataset_root_folder + 'selected_slots/slot_16/noise_final_slot_16.txt'
+        data_filename = self.dataset_root_folder + 'noise_final_slot_16.txt'
         neighbours_filename = self.dataset_root_folder + 'all_neighbours.txt'
         coords_filename = self.dataset_root_folder + 'all_coords.txt'
-
-        # hyper_storer = get_hyper_storer(DatasetEnum.Robot, self.time_slot)
 
         domain_descriptor = get_domain_descriptor(DatasetEnum.Robot)
 
@@ -42,9 +45,9 @@ class DatasetGenerator:
                            neighbours_filename=neighbours_filename, hyper_storer=self.hyper_storer,
                            domain_descriptor=domain_descriptor, batch_size=self.batch_size)
 
-        location_filename = root_folder + 'start_location.txt'
+        location_filename = seed_folder + 'start_location.txt'
 
-        actions_filename = root_folder + 'actions_selected.txt'
+        actions_filename = seed_folder + 'actions_selected.txt'
 
         if self.mode == DatasetModeEnum.Generate:
             m.GenerateStartLocation()
@@ -58,7 +61,7 @@ class DatasetGenerator:
             print "Loading start location and macro-actions"
         return m
 
-    def __get_road_dataset_model(self, root_folder, ma_treshold):
+    def __get_road_dataset_model(self, seed_folder, ma_treshold):
 
         filename = self.dataset_root_folder + 'tlog18.dom'
 
@@ -70,9 +73,9 @@ class DatasetGenerator:
                              domain_descriptor=domain_descriptor,
                              batch_size=self.batch_size)
 
-        location_filename = root_folder + 'start_location.txt'
+        location_filename = seed_folder + 'start_location.txt'
 
-        actions_filename = root_folder + 'actions_selected.txt'
+        actions_filename = seed_folder + 'actions_selected.txt'
 
         if self.mode == DatasetModeEnum.Generate:
             m.GenerateStartLocation()
@@ -86,24 +89,25 @@ class DatasetGenerator:
             print "Loading start location and macro-actions"
         return m
 
-    def __get_simulated_dataset_model(self, root_folder, seed):
+    # simulated datasets are stored in seed folders, so dataset_root_folder is None, while save folder is seed_folder
+    def __get_simulated_dataset_model(self, seed_folder, seed):
         domain_descriptor = get_domain_descriptor(DatasetEnum.Simulated)
 
-        location_filename = root_folder + 'start_location.txt'
+        location_filename = seed_folder + 'start_location.txt'
 
         if self.mode == DatasetModeEnum.Generate:
             m = SimulatedMapValueDict(hyper_storer=self.hyper_storer,
                                       domain_descriptor=domain_descriptor,
                                       seed=seed,
                                       batch_size=self.batch_size)
-            m.WriteToFile(root_folder + "dataset.txt")
+            m.WriteToFile(seed_folder + "dataset.txt")
             m.GenerateStartLocation()
 
             with open(location_filename, 'w') as f:
                 f.write(str(m.start_location[0, 0]) + " " + str(m.start_location[0, 1]))
         else:
             print "Loading model"
-            dataset_filename = root_folder + 'dataset.txt'
+            dataset_filename = seed_folder + 'dataset.txt'
             m = SimulatedMapValueDict(hyper_storer=self.hyper_storer,
                                       domain_descriptor=domain_descriptor,
                                       filename=dataset_filename,
