@@ -9,7 +9,8 @@ from src.enum.DatasetModeEnum import DatasetModeEnum
 
 class DatasetGenerator:
 
-    def __init__(self, dataset_type, dataset_mode, batch_size):
+    def __init__(self, dataset_type, dataset_mode, batch_size, dataset_root_folder):
+        self.dataset_root_folder = dataset_root_folder
         self.type = dataset_type
         self.mode = dataset_mode
         self.batch_size = batch_size
@@ -29,9 +30,9 @@ class DatasetGenerator:
 
     def __get_robot_dataset_model(self, root_folder, ma_treshold):
 
-        data_filename = '../../datasets/robot/selected_slots/slot_16/noise_final_slot_16.txt'
-        neighbours_filename = '../../datasets/robot/all_neighbours.txt'
-        coords_filename = '../../datasets/robot/all_coords.txt'
+        data_filename = self.dataset_root_folder + 'selected_slots/slot_16/noise_final_slot_16.txt'
+        neighbours_filename = self.dataset_root_folder + 'all_neighbours.txt'
+        coords_filename = self.dataset_root_folder + 'all_coords.txt'
 
         # hyper_storer = get_hyper_storer(DatasetEnum.Robot, self.time_slot)
 
@@ -59,7 +60,7 @@ class DatasetGenerator:
 
     def __get_road_dataset_model(self, root_folder, ma_treshold):
 
-        filename = '../../datasets/slot18/tlog18.dom'
+        filename = self.dataset_root_folder + 'tlog18.dom'
 
         # hyper_storer = get_hyper_storer(DatasetEnum.Road, self.time_slot)
 
