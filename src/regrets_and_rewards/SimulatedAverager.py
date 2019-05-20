@@ -24,9 +24,9 @@ def CalculateMetrics(metric_type,
         methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp_1']
 
     if not method_names:
-        method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-                        r'$\epsilon$-Macro-GPO  $H = 3$',
-                        r'$\epsilon$-Macro-GPO  $H = 2$',
+        method_names = [r'$\epsilon$-M.-GPO  $H = 4$',
+                        r'$\epsilon$-M.-GPO  $H = 3$',
+                        r'$\epsilon$-M.-GPO  $H = 2$',
                         'DB-GP-UCB',
                         r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                         r'$q$-EI', 'BBO-LP']
@@ -114,7 +114,7 @@ def GetSimulatedTotalRegrets():
 def AverageRewardsBeta2():
     return CalculateMetricsBeta(h=2,
                                 metric_type=MetricsEnum.AverageTotalReward,
-                                plotting_type=PlottingEnum.AverageTotalReward,
+                                plotting_type=PlottingEnum.AverageRewardBeta,
                                 filename='simulated_beta2_rewards.eps',
                                 plot_bars=False)
 
@@ -130,7 +130,7 @@ def SimpleRegretBeta2():
 def AverageRewardsBeta3():
     return CalculateMetricsBeta(h=3,
                                 metric_type=MetricsEnum.AverageTotalReward,
-                                plotting_type=PlottingEnum.AverageTotalReward,
+                                plotting_type=PlottingEnum.AverageRewardBeta,
                                 filename='simulated_beta3_rewards.eps',
                                 plot_bars=False)
 
@@ -179,10 +179,11 @@ if __name__ == "__main__":
    
     GetSimulatedTotalRewardsRollout()
     GetSimulatedTotalRegretsRollout()
-    """
+    
     AverageRewardsBeta2()
     AverageRewardsBeta3()
     """
     rewards = GetSimulatedTotalRewards()
     regrets = GetSimulatedTotalRegrets()
-    """
+    AverageRewardsBeta2()
+    AverageRewardsBeta3()

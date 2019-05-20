@@ -25,9 +25,6 @@ class ResultGraphPlotter:
         self.dataset_type = dataset_type
         self.param_storer = self._get_param_storer()
 
-        # size of font at x and y label
-        self.labels_font_size = 23
-
         # + 1 because of initial point
         plotting_num_steps = self.total_budget / batch_size + 1
 
@@ -52,7 +49,7 @@ class ResultGraphPlotter:
             handle = self.__plot_one_method(i, result, plot_bars)
             handles.append(handle)
 
-        plt.legend(handles=handles, loc=self.param_storer.legend_loc, prop={'size': 14})
+        plt.legend(handles=handles, loc=self.param_storer.legend_loc, prop={'size': self.param_storer.legend_size})
 
         self.__ticks_and_margins()
 
@@ -62,15 +59,16 @@ class ResultGraphPlotter:
 
     def __ticks_and_margins(self):
         plt.xticks(self.samples_collected)
-        plt.xlabel("No. of observations", fontsize=self.labels_font_size)
-        axes = plt.axes()
-        axes.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
-        plt.ylabel(self.param_storer.y_label_caption, fontsize=self.labels_font_size)
+        plt.xlabel("No. of observations", fontsize=30)
+        axes = plt.axes()
+        axes.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+
+        plt.ylabel(self.param_storer.y_label_caption, fontsize=21)
         plt.yticks(self.param_storer.y_ticks_range)
         axes.set_ylim(self.param_storer.y_lim_range)
 
-        tick_size = 15
+        tick_size = 25
         for tick in axes.xaxis.get_major_ticks():
             tick.label.set_fontsize(tick_size)
         for tick in axes.yaxis.get_major_ticks():
@@ -90,8 +88,7 @@ class ResultGraphPlotter:
         # hack for EI
         single_point_methods = len(rewards) == self.total_budget + 1
         adjusted_time_steps = range(self.total_budget + 1) if single_point_methods else self.samples_collected
-        # marker_size = 10 if single_point_methods else 20
-        marker_size = 20
+        marker_size = 9 if single_point_methods else 18
 
         if plot_bars:
             marker_size = 5
@@ -103,7 +100,7 @@ class ResultGraphPlotter:
         plt.plot(adjusted_time_steps, rewards, lw=1.0, linestyle=line_style, marker=self.markers[marker_index],
                  markersize=marker_size,
                  markerfacecolor="None",
-                 markeredgewidth=1, markeredgecolor=self.color_sequence[i], color=self.color_sequence[i])
+                 markeredgewidth=6, markeredgecolor=self.color_sequence[i], color=self.color_sequence[i])
 
         if plot_bars:
         # if plot_bars and error_bars:
@@ -113,7 +110,7 @@ class ResultGraphPlotter:
         patch = mlines.Line2D([], [], linestyle=line_style, color=self.color_sequence[i],
                               marker=self.markers[marker_index],
                               markerfacecolor="None",
-                              markeredgewidth=1, markeredgecolor=self.color_sequence[i],
+                              markeredgewidth=3, markeredgecolor=self.color_sequence[i],
                               markersize=10, label=name)
 
         return patch

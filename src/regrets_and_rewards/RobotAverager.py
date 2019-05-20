@@ -28,9 +28,9 @@ def CalculateMetrics(metric_type,
                'mle_h4',
                'pe', 'bucb', 'my_qEI', 'lp']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
+    method_names = [r'Anytime $\epsilon$-M.-GPO  $H = 4$',
+                    r'Anytime $\epsilon$-M.-GPO  $H = 3$',
+                    r'Anytime $\epsilon$-M.-GPO  $H = 2$',
                     'DB-GP-UCB',
                     r'Nonmyopic GP-UCB $H = 4$',
                     'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
@@ -163,9 +163,9 @@ def CalculateMetricsFull(metric_type,
 
     methods = ['new_anytime_h4_300', 'anytime_h2_full', 'anytime_h2', 'ei']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$  ($20$)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$  ($20$)',
+    method_names = [r'Anytime $\epsilon$-M.-GPO  $H = 4$  ($20$)',
+                    r'Anytime $\epsilon$-M.-GPO  $H = 2$ (all)',
+                    r'Anytime $\epsilon$-M.-GPO  $H = 2$  ($20$)',
                     'EI (all)']
 
     # root_path = '../../noise_robot_tests/release/all_tests_release/'
@@ -203,7 +203,7 @@ def CalculateMetricsFull(metric_type,
 
 def GetRobotTotalRegrets_H2Full():
     return CalculateMetricsFull(metric_type=MetricsEnum.SimpleRegret,
-                                plotting_type=PlottingEnum.SimpleRegret,
+                                plotting_type=PlottingEnum.SimpleRegretFull,
                                 filename='robot_h2_full_simple_regrets.eps',
                                 plot_bars=False)
 
@@ -276,17 +276,11 @@ def GetRobotTotalRegrets_beta3():
 
 
 if __name__ == "__main__":
-    """
-    regrets = GetRobotTotalRegrets()
-    rewards = GetRobotTotalRewards()
-    get_rewards_regrets_latex(rewards, regrets)
-    
-    print(" pi = {0:.2f} or {1:.4f}".format(7.11111, 1555.22222))
-    beta2 = GetRobotBeta2Rewards()
-    beta3 = GetRobotBeta3Rewards()
-    print
-    get_rewards_regrets_latex(beta2, beta3, process_beta=True)
-    """
+
     regrets_h2 = GetRobotTotalRegrets_H2Full()
     rewards_h2 = GetRobot_H2Full_TotalRewards()
-    get_rewards_regrets_latex(rewards_h2, regrets_h2)
+    
+    regrets = GetRobotTotalRegrets()
+    rewards = GetRobotTotalRewards()
+    beta2 = GetRobotBeta2Rewards()
+    beta3 = GetRobotBeta3Rewards()

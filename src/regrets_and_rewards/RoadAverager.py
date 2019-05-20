@@ -25,9 +25,9 @@ def CalculateMetrics(metric_type,
                'h1',
                'mle_h4', 'new_ixed_pe', 'bucb', 'my_qEI', 'my_lp']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 3$',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$',
+    method_names = [r'Anytime $\epsilon$-M.-GPO  $H = 4$',
+                    r'Anytime $\epsilon$-M.-GPO  $H = 3$',
+                    r'Anytime $\epsilon$-M.-GPO  $H = 2$',
                     'DB-GP-UCB',
                     r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
@@ -146,10 +146,10 @@ def CalculateMetricsFull(metric_type,
 
     methods = ['anytime_h4', 'anytime_h2_full', 'anytime_h2', 'ei']
 
-    method_names = [r'Anytime $\epsilon$-Macro-GPO  $H = 4$  ($20$)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$ (all)',
-                    r'Anytime $\epsilon$-Macro-GPO  $H = 2$  ($20$)',
-                    'EI (all)']
+    method_names = [r'Anytime $\epsilon$-M.-GPO  $H = 4$  ($20$)',
+                             r'Anytime $\epsilon$-M.-GPO  $H = 2$ (all)',
+                             r'Anytime $\epsilon$-M.-GPO  $H = 2$  ($20$)',
+                             'EI (all)']
 
     output_file = '../../result_graphs/eps/road/' + filename
 
@@ -183,14 +183,14 @@ def CalculateMetricsFull(metric_type,
 
 def GetRoad_H2Full_TotalRewards():
     return CalculateMetricsFull(metric_type=MetricsEnum.AverageTotalReward,
-                                plotting_type=PlottingEnum.AverageTotalReward,
+                                plotting_type=PlottingEnum.AverageRewardFull,
                                 filename='road_h2_full_total_rewards.eps',
                                 plot_bars=False)
 
 
 def GetRoadTotalRegrets_H2Full():
     return CalculateMetricsFull(metric_type=MetricsEnum.SimpleRegret,
-                                plotting_type=PlottingEnum.SimpleRegret,
+                                plotting_type=PlottingEnum.SimpleRegretFull,
                                 filename='road_h2_full_simple_regrets.eps',
                                 plot_bars=False)
 
@@ -306,24 +306,10 @@ def GetRoadBeta3Regrets():
 
 
 if __name__ == "__main__":
-    # print(wrap_with_bucks(1.10002, 3.45555))
-    """
-    rewards = GetRoadTotalRewards()
-    regrets = GetRoadTotalRegrets()
-    print
-    get_rewards_regrets_latex(rewards,regrets)
-    
-    print(" pi = {0:.2f} or {1:.4f}".format(7.11111, 1555.22222))
-    beta2 = GetRoadBeta2Rewards()
-    beta3 = GetRoadBeta3Rewards()
-    print
-    get_rewards_regrets_latex(beta2, beta3, process_beta=True)
-
-
-    
-    regrets_h2 = GetRoadTotalRegrets_H2Full()
-    rewards_h2 = GetRoad_H2Full_TotalRewards()
-    get_rewards_regrets_latex(rewards_h2, regrets_h2)
-    """
     GetRoadTotalRewards()
     GetRoadTotalRegrets()
+    beta2 = GetRoadBeta2Rewards()
+    beta3 = GetRoadBeta3Rewards()
+
+    regrets_h2 = GetRoadTotalRegrets_H2Full()
+    rewards_h2 = GetRoad_H2Full_TotalRewards()
