@@ -7,6 +7,9 @@ from src.run.MethodDescriptor import MethodDescriptor
 
 class Config:
 
+    def __init__(self):
+        pass
+
     # batch size
     BATCH_SIZE = 4
 
@@ -14,11 +17,11 @@ class Config:
     DATASET_TYPE = DatasetEnum.Simulated
 
     # load or generate dataset. If "Load" is selected, the root dataset folder should be specified
-    DATASET_MODE = DatasetModeEnum.Load
+    DATASET_MODE = DatasetModeEnum.Generate
 
     # the folder containing the dataset
     # if None, the current seed folder will be used (e.g. for loading the simulated dataset)
-    DATASET_ROOT_FOLDER = './new_datasets/robot/'
+    DATASET_ROOT_FOLDER = None
 
     RESULTS_SAVE_ROOT_FOLDER = './new_tests/simulated/'
 
@@ -32,7 +35,7 @@ class Config:
     MA_THRESHOLD = 20
 
     # list of methods to run
-    METHODS = [MethodDescriptor(method_type=Methods.Exact,
+    METHODS = [MethodDescriptor(method_type=Methods.Anytime,
                                 h=2,
                                 beta=120.0,
                                 num_samples=2),
