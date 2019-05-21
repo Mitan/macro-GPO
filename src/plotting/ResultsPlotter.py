@@ -1,9 +1,7 @@
 import matplotlib
+import numpy as np
 
-from src.enum.DatasetEnum import DatasetEnum
-from src.plotting.RoadDatasetPlotParamStorer import RoadDatasetPlotParamStorer
-from src.plotting.RobotDatasetPlotParamStorer import RobotDatasetPlotParamStorer
-from src.plotting.SimulatedDatasetPlotParamStorer import SimulatedDatasetPlotParamStorer
+from src.enum.PlottingEnum import PlottingEnum
 
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
@@ -38,7 +36,7 @@ class ResultGraphPlotter:
         self.markers = ["o", "v", "^", "s", "*", "1", "2", "x", "|"]
 
     def plot_results(self, results, plot_bars, output_file_name, plotting_type):
-        param_storer = self._get_param_storer(plotting_type)
+        # param_storer = self._get_param_storer(plotting_type)
 
         if not results:
             return
@@ -53,23 +51,41 @@ class ResultGraphPlotter:
             handle = self.__plot_one_method(i, result, plot_bars)
             handles.append(handle)
 
-        plt.legend(handles=handles, loc=param_storer.legend_loc, prop={'size': 14})
+        plt.legend(handles=handles, loc=0, prop={'size': 14})
+        max_y_value = max([max(result[1]) for result in results])
+        min_y_value = min([min(result[1]) for result in results])
 
-        self.__ticks_and_margins(param_storer)
+        self.__ticks_and_margins(min_y_value=min_y_value,
+                                 max_y_value=max_y_value,
+                                 plotting_type=plotting_type)
 
         plt.savefig(output_file_name, format='eps', dpi=1000, bbox_inches='tight')
         plt.clf()
         plt.close()
 
-    def __ticks_and_margins(self, param_storer):
+    def __ticks_and_margins(self, min_y_value, max_y_value, plotting_type):
         plt.xticks(self.samples_collected)
         plt.xlabel("No. of observations", fontsize=self.labels_font_size)
         axes = plt.axes()
         axes.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
-        plt.ylabel(param_storer.y_label_caption, fontsize=self.labels_font_size)
-        plt.yticks(param_storer.y_ticks_range)
-        axes.set_ylim(param_storer.y_lim_range)
+        # plt.ylabel(param_storer.y_label_caption, fontsize=self.labels_font_size)
+        if plotting_type == PlottingEnum.AverageTotalReward:
+            y_label_caption = "Average normalized output measurements"
+        elif plotting_type == PlottingEnum.SimpleRegret:
+            y_label_caption = "Simple Regret"
+        else:
+            raise ValueError("Unknown plotting type")
+
+        plt.ylabel(y_label_caption, fontsize=self.labels_font_size)
+
+        ticks_interval = 0.1
+
+        y_ticks_min = round(min_y_value / ticks_interval)
+        y_ticks_max = round(max_y_value / ticks_interval + 1)
+
+        y_ticks = ticks_interval * np.arange(y_ticks_min, y_ticks_max)
+        plt.yticks(y_ticks)
 
         tick_size = 15
         for tick in axes.xaxis.get_major_ticks():
@@ -119,14 +135,3 @@ class ResultGraphPlotter:
                               markersize=10, label=name)
 
         return patch
-
-    def _get_param_storer(self, plotting_type):
-        if self.dataset_type == DatasetEnum.Simulated:
-            return SimulatedDatasetPlotParamStorer(plotting_type)
-        elif self.dataset_type == DatasetEnum.Road:
-            return RoadDatasetPlotParamStorer(plotting_type)
-        elif self.dataset_type == DatasetEnum.Robot:
-            return RobotDatasetPlotParamStorer(plotting_type)
-        else:
-            raise Exception("Unknown dataset type")
-
