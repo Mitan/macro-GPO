@@ -98,7 +98,6 @@ class MethodRunner:
                                                                  metric_type=metric,
                                                                  dataset_root_folder=self.dataset_root_folder)
             results.append([metric, metric_results])
-
         self._write_results_to_file(filename="{}results.txt".format(results_save_root_folder),
                                     results=results)
 
@@ -110,12 +109,15 @@ class MethodRunner:
             append_write = 'w'
 
         with open(filename, append_write) as f:
-            for result in results:
-                metric_string = "simple regret: " if result[0] == 2 else "average reward: "
-                method_name = result[1][0][0]
-                means = result[1][0][1]
-                error_bars = result[1][0][2]
-                f.write("{}\n".format(method_name))
-                f.write("\t{} means and error bars\n".format(metric_string))
-                f.write("\t\t{}\n".format(" ".join(map(str, list(means)))))
-                f.write("\t\t{}\n".format(" ".join(map(str, list(error_bars)))))
+            for metric_result in results:
+                metric_string = "simple regret: " if metric_result[0] == 2 else "average reward: "
+                results_one_metric = metric_result[1]
+
+                for res in results_one_metric:
+                    method_name = res[0]
+                    means = res[1]
+                    error_bars = res[2]
+                    f.write("{}\n".format(method_name))
+                    f.write("\t{} means and error bars\n".format(metric_string))
+                    f.write("\t\t{}\n".format(" ".join(map(lambda x: str(round(x, 4)), list(means)))))
+                    f.write("\t\t{}\n".format(" ".join(map(lambda x: str(round(x, 4)), list(error_bars)))))
