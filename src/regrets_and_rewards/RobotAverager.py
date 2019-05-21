@@ -28,9 +28,9 @@ def CalculateMetrics(metric_type,
                'mle_h4',
                'pe', 'bucb', 'my_qEI', 'lp']
 
-    method_names = [r'Anytime $\epsilon$-M.-GPO  $H = 4$',
-                    r'Anytime $\epsilon$-M.-GPO  $H = 3$',
-                    r'Anytime $\epsilon$-M.-GPO  $H = 2$',
+    method_names = [r'Anytime $\epsilon$-M-GPO  $H = 4$',
+                    r'Anytime $\epsilon$-M-GPO  $H = 3$',
+                    r'Anytime $\epsilon$-M-GPO  $H = 2$',
                     'DB-GP-UCB',
                     r'Nonmyopic GP-UCB $H = 4$',
                     'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
@@ -163,9 +163,9 @@ def CalculateMetricsFull(metric_type,
 
     methods = ['new_anytime_h4_300', 'anytime_h2_full', 'anytime_h2', 'ei']
 
-    method_names = [r'Anytime $\epsilon$-M.-GPO  $H = 4$  ($20$)',
-                    r'Anytime $\epsilon$-M.-GPO  $H = 2$ (all)',
-                    r'Anytime $\epsilon$-M.-GPO  $H = 2$  ($20$)',
+    method_names = [r'Anytime $\epsilon$-M-GPO  $H = 4$  ($20$)',
+                    r'Anytime $\epsilon$-M-GPO  $H = 2$ (all)',
+                    r'Anytime $\epsilon$-M-GPO  $H = 2$  ($20$)',
                     'EI (all)']
 
     # root_path = '../../noise_robot_tests/release/all_tests_release/'

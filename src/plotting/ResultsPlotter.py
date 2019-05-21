@@ -100,7 +100,7 @@ class ResultGraphPlotter:
         plt.plot(adjusted_time_steps, rewards, lw=1.0, linestyle=line_style, marker=self.markers[marker_index],
                  markersize=marker_size,
                  markerfacecolor="None",
-                 markeredgewidth=6, markeredgecolor=self.color_sequence[i], color=self.color_sequence[i])
+                 markeredgewidth=2, markeredgecolor=self.color_sequence[i], color=self.color_sequence[i])
 
         if plot_bars:
         # if plot_bars and error_bars:

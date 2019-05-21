@@ -24,9 +24,9 @@ def CalculateMetrics(metric_type,
         methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp_1']
 
     if not method_names:
-        method_names = [r'$\epsilon$-M.-GPO  $H = 4$',
-                        r'$\epsilon$-M.-GPO  $H = 3$',
-                        r'$\epsilon$-M.-GPO  $H = 2$',
+        method_names = [r'$\epsilon$-M-GPO  $H = 4$',
+                        r'$\epsilon$-M-GPO  $H = 3$',
+                        r'$\epsilon$-M-GPO  $H = 2$',
                         'DB-GP-UCB',
                         r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
                         r'$q$-EI', 'BBO-LP']
