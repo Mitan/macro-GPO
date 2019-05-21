@@ -94,16 +94,22 @@ class MethodRunner:
 
         for metric in metrics:
             metric_results = result_calculator.calculate_results(batch_size=self.batch_size,
-                                                          methods=methods,
-                                                          metric_type=metric,
-                                                          dataset_root_folder=self.dataset_root_folder)
+                                                                 methods=methods,
+                                                                 metric_type=metric,
+                                                                 dataset_root_folder=self.dataset_root_folder)
             results.append([metric, metric_results])
 
         self._write_results_to_file(filename="{}results.txt".format(results_save_root_folder),
                                     results=results)
 
-    def _write_results_to_file(self, filename, results):
-        with open(filename, 'w') as f:
+    @staticmethod
+    def _write_results_to_file(filename, results):
+        if os.path.exists(filename):
+            append_write = 'a'
+        else:
+            append_write = 'w'
+
+        with open(filename, append_write) as f:
             for result in results:
                 metric_string = "simple regret: " if result[0] == 2 else "average reward: "
                 method_name = result[1][0][0]
@@ -112,5 +118,4 @@ class MethodRunner:
                 f.write("{}\n".format(method_name))
                 f.write("\t{} means and error bars\n".format(metric_string))
                 f.write("\t\t{}\n".format(" ".join(map(str, list(means)))))
-                f.write("\t\t{}\n".format(" ".join(map(str,list(error_bars)))))
-
+                f.write("\t\t{}\n".format(" ".join(map(str, list(error_bars)))))
