@@ -19,7 +19,9 @@ class MethodDescriptor:
             method_string = 'anytime'
         else:
             raise Exception("Method not supported")
+
         # currently supported exact or anytime algorithm
         self.method_type = method_type
+
         # handle to name the folder for the execute method
         self.method_folder_name = "{}_h{}_beta{}/".format(method_string, self.h, self.beta)

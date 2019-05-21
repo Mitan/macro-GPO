@@ -7,7 +7,7 @@ from src.dataset_model.DatasetGenerator import DatasetGenerator
 
 class DatasetScaleExtractor:
 
-    def __init__(self, dataset_type, time_slot, batch_size):
+    def __init__(self, dataset_type, batch_size):
         self.dataset_generator = DatasetGenerator(dataset_type,
                                                   dataset_mode=DatasetModeEnum.Load,
                                                   batch_size=batch_size)

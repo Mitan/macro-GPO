@@ -38,7 +38,7 @@ def CalculateMetrics(metric_type,
     output_file = '../../result_graphs/eps/robot/' + filename
 
     result_calculator = ResultCalculator(dataset_type=dataset_type,
-                                         root_path=root_path,
+                                         results_save_root_folder=root_path,
                                          time_slot=time_slot,
                                          seeds=seeds,
                                          total_budget=total_budget)
@@ -100,7 +100,7 @@ def CalculateMetricsBeta(h, metric_type, filename, input_folder, plot_bars, plot
     output_file = '../../result_graphs/eps/robot/' + filename
 
     result_calculator = ResultCalculator(dataset_type=dataset_type,
-                                         root_path=input_folder,
+                                         results_save_root_folder=input_folder,
                                          time_slot=time_slot,
                                          seeds=seeds,
                                          total_budget=total_budget)
@@ -174,7 +174,7 @@ def CalculateMetricsFull(metric_type,
     output_file = '../../result_graphs/eps/robot/' + filename
 
     result_calculator = ResultCalculator(dataset_type=dataset_type,
-                                         root_path=root_path,
+                                         results_save_root_folder=root_path,
                                          time_slot=time_slot,
                                          seeds=seeds,
                                          total_budget=total_budget)

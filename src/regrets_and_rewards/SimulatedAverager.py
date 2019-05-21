@@ -33,8 +33,7 @@ def CalculateMetrics(metric_type,
     output_file = '../../result_graphs/eps/simulated/' + filename
 
     result_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
-                                         root_path=root_path,
-                                         time_slot=None,
+                                         results_save_root_folder=root_path,
                                          seeds=seeds,
                                          total_budget=total_budget)
     results = result_calculator.calculate_results(batch_size=batch_size,
@@ -75,7 +74,7 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars, plotting_type):
     output_file = '../../result_graphs/eps/simulated/' + filename
 
     result_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
-                                         root_path=root_path,
+                                         results_save_root_folder=root_path,
                                          time_slot=None,
                                          seeds=seeds,
                                          total_budget=total_budget)

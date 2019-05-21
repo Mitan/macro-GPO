@@ -7,11 +7,10 @@ from src.metric.MethodResultsExtractor import MethodResultsExtractor
 
 class ResultCalculator:
 
-    def __init__(self, dataset_type, seeds, root_path, time_slot, total_budget):
+    def __init__(self, dataset_type, seeds, results_save_root_folder, total_budget):
         self.total_budget = total_budget
         self.dataset_type = dataset_type
-        self.time_slot = time_slot
-        self.root_path = root_path
+        self.root_path = results_save_root_folder
         self.seeds = seeds
 
     @staticmethod
@@ -56,10 +55,9 @@ class ResultCalculator:
 
         return means, error_bars
 
-    def calculate_results(self, batch_size, methods, method_names, metric_type):
+    def calculate_results(self, batch_size, methods, metric_type):
 
         scale_extractor = DatasetScaleExtractor(dataset_type=self.dataset_type,
-                                                time_slot=self.time_slot,
                                                 batch_size=batch_size)
         # can be dict or float
         model_scale = scale_extractor.extract_mean_or_max(root_folder=self.root_path,
@@ -68,12 +66,12 @@ class ResultCalculator:
 
         results = []
 
-        for index, method in enumerate(methods):
+        for method in methods:
 
-            means, error_bars = self._get_results_for_one_method(method=method,
+            means, error_bars = self._get_results_for_one_method(method=method.method_folder_name,
                                                                  batch_size=batch_size,
                                                                  model_scale=model_scale,
                                                                  metric_type=metric_type)
-            results.append([method_names[index], means, error_bars])
+            results.append([method.method_folder_name, means, error_bars])
 
         return results

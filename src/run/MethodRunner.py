@@ -2,6 +2,8 @@ import os
 
 from src.TreePlanTester import testWithFixedParameters
 from src.dataset_model.DatasetGenerator import DatasetGenerator
+from src.enum.MetricsEnum import MetricsEnum
+from src.metric.ResultCalculator import ResultCalculator
 
 
 class MethodRunner:
@@ -9,10 +11,12 @@ class MethodRunner:
     def __init__(self, dataset_type, dataset_root_folder, dataset_mode, batch_size):
         self.dataset_root_folder = dataset_root_folder
         self.dataset_type = dataset_type
+        self.batch_size = batch_size
+        self.dataset_mode = dataset_mode
 
         self.dataset_generator = DatasetGenerator(dataset_type=self.dataset_type,
-                                                  dataset_mode=dataset_mode,
-                                                  batch_size=batch_size,
+                                                  dataset_mode=self.dataset_mode,
+                                                  batch_size=self.batch_size,
                                                   dataset_root_folder=self.dataset_root_folder)
 
     def run(self,
@@ -74,3 +78,18 @@ class MethodRunner:
             output_rewards.write(method.method_folder_name + '\n')
             output_rewards.write(str(current_res) + '\n')
         output_rewards.close()
+
+    def calculate_results(self,
+                          methods,
+                          seeds,
+                          total_budget,
+                          results_save_root_folder,
+                          metrics=(MetricsEnum.AverageTotalReward, MetricsEnum.SimpleRegret)):
+        result_calculator = ResultCalculator(dataset_type=self.dataset_type,
+                                             results_save_root_folder=results_save_root_folder,
+                                             seeds=seeds,
+                                             total_budget=total_budget)
+        for metric in metrics:
+            results = result_calculator.calculate_results(batch_size=self.batch_size,
+                                                          methods=methods,
+                                                          metric_type=metric)
