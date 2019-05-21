@@ -1,5 +1,3 @@
-from src.Utils import branin_transform
-from src.enum.DatasetEnum import DatasetEnum
 from src.enum.MetricsEnum import MetricsEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
 from src.dataset_model.DatasetGenerator import DatasetGenerator
@@ -19,9 +17,6 @@ class DatasetScaleExtractor:
         if not empirical_mean:
             return self.__extract_non_constant_mean(root_folder, seeds)
 
-        if self.type == DatasetEnum.Branin:
-            empirical_mean = branin_transform(empirical_mean)
-        print empirical_mean
         return empirical_mean
 
     def extract_mean_or_max(self, root_folder, seeds, metric_type):

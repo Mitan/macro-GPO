@@ -2,8 +2,6 @@ from StringIO import StringIO
 
 import numpy as np
 
-from src.Utils import branin_transform
-from src.enum.DatasetEnum import DatasetEnum
 from src.enum.MetricsEnum import MetricsEnum
 
 
