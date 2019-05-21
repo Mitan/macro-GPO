@@ -45,11 +45,14 @@ if __name__ == '__main__':
                                 beta=1.0,
                                 num_samples=2)
                ]
+    #
+    # method_runner.run(total_budget=total_budget,
+    #                   seeds=seeds,
+    #                   results_save_root_folder=results_save_root_folder,
+    #                   ma_threshold=ma_threshold,
+    #                   methods=methods)
 
-    method_runner.run(total_budget=total_budget,
-                      seeds=seeds,
-                      results_save_root_folder=results_save_root_folder,
-                      ma_threshold=ma_threshold,
-                      methods=methods)
-
-
+    method_runner.calculate_results(methods=methods,
+                                    seeds=seeds,
+                                    total_budget=total_budget,
+                                    results_save_root_folder=results_save_root_folder)

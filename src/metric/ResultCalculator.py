@@ -55,10 +55,11 @@ class ResultCalculator:
 
         return means, error_bars
 
-    def calculate_results(self, batch_size, methods, metric_type):
+    def calculate_results(self, batch_size, methods, metric_type, dataset_root_folder):
 
         scale_extractor = DatasetScaleExtractor(dataset_type=self.dataset_type,
-                                                batch_size=batch_size)
+                                                batch_size=batch_size,
+                                                dataset_root_folder=dataset_root_folder)
         # can be dict or float
         model_scale = scale_extractor.extract_mean_or_max(root_folder=self.root_path,
                                                           seeds=self.seeds,
@@ -67,7 +68,6 @@ class ResultCalculator:
         results = []
 
         for method in methods:
-
             means, error_bars = self._get_results_for_one_method(method=method.method_folder_name,
                                                                  batch_size=batch_size,
                                                                  model_scale=model_scale,

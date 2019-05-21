@@ -45,8 +45,7 @@ class MethodResultsExtractor:
 
         # assert we parsed them all as numbers
         assert not np.isnan(measurements).any()
-        if self.dataset_type == DatasetEnum.Branin:
-            return map(lambda x: branin_transform(x), measurements.tolist())
+
         return measurements.tolist()
 
     def get_results(self, root_folder):

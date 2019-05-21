@@ -7,10 +7,11 @@ from src.dataset_model.DatasetGenerator import DatasetGenerator
 
 class DatasetScaleExtractor:
 
-    def __init__(self, dataset_type, batch_size):
-        self.dataset_generator = DatasetGenerator(dataset_type,
+    def __init__(self, dataset_type, batch_size, dataset_root_folder):
+        self.dataset_generator = DatasetGenerator(dataset_type=dataset_type,
                                                   dataset_mode=DatasetModeEnum.Load,
-                                                  batch_size=batch_size)
+                                                  batch_size=batch_size,
+                                                  dataset_root_folder=dataset_root_folder)
         self.type = dataset_type
 
     def _extract_mean(self, root_folder, seeds):
@@ -36,9 +37,6 @@ class DatasetScaleExtractor:
         if not max_value:
             return self.__extract_non_constant_max(root_folder, seeds)
 
-        if self.type == DatasetEnum.Branin:
-            max_value = branin_transform(max_value)
-
         return max_value
 
     # a case when there are multiple datasets (e.g. simulated) so each realisation has a different max
@@ -47,7 +45,7 @@ class DatasetScaleExtractor:
         # reachable_locations = generate_set_of_reachable_locations(b_size=batch_size, start=(1.0, 1.0), gap=0.05)
         for seed in seeds:
             seed_dataset_path = root_folder + 'seed' + str(seed) + '/'
-            m = self.dataset_generator.get_dataset_model(dataset_root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
+            m = self.dataset_generator.get_dataset_model(seed_folder=seed_dataset_path, seed=seed, ma_treshold=None)
             # reachable_max = max(map(lambda x: m(x), reachable_locations))
             global_max = m.get_max()
 
@@ -60,7 +58,7 @@ class DatasetScaleExtractor:
 
         for seed in seeds:
             seed_dataset_path = root_folder + 'seed' + str(seed) + '/'
-            m = self.dataset_generator.get_dataset_model(dataset_root_folder=seed_dataset_path, seed=seed, ma_treshold=None)
+            m = self.dataset_generator.get_dataset_model(seed_folder=seed_dataset_path, seed=seed, ma_treshold=None)
 
             model_mean_values[seed] = m.get_empirical_mean()
         return model_mean_values

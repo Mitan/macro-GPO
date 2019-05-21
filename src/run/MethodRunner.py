@@ -88,8 +88,29 @@ class MethodRunner:
         result_calculator = ResultCalculator(dataset_type=self.dataset_type,
                                              results_save_root_folder=results_save_root_folder,
                                              seeds=seeds,
+
                                              total_budget=total_budget)
+        results = []
+
         for metric in metrics:
-            results = result_calculator.calculate_results(batch_size=self.batch_size,
+            metric_results = result_calculator.calculate_results(batch_size=self.batch_size,
                                                           methods=methods,
-                                                          metric_type=metric)
+                                                          metric_type=metric,
+                                                          dataset_root_folder=self.dataset_root_folder)
+            results.append([metric, metric_results])
+
+        self._write_results_to_file(filename="{}results.txt".format(results_save_root_folder),
+                                    results=results)
+
+    def _write_results_to_file(self, filename, results):
+        with open(filename, 'w') as f:
+            for result in results:
+                metric_string = "simple regret: " if result[0] == 2 else "average reward: "
+                method_name = result[1][0][0]
+                means = result[1][0][1]
+                error_bars = result[1][0][2]
+                f.write("{}\n".format(method_name))
+                f.write("\t{} means and error bars\n".format(metric_string))
+                f.write("\t\t{}\n".format(" ".join(map(str, list(means)))))
+                f.write("\t\t{}\n".format(" ".join(map(str,list(error_bars)))))
+
