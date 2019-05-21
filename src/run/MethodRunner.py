@@ -142,9 +142,7 @@ class MethodRunner:
 
             plotting_type = PlottingEnum.SimpleRegret if metric_type == MetricsEnum.SimpleRegret\
                 else PlottingEnum.AverageTotalReward
-            print result_per_metric[1]
-            print plotting_type
-            print results_save_root_folder + filename_handle
+
             results_plotter.plot_results(results=result_per_metric[1],
                                          plotting_type=plotting_type,
                                          output_file_name=results_save_root_folder + filename_handle,

@@ -17,7 +17,7 @@ class Config:
     DATASET_TYPE = DatasetEnum.Simulated
 
     # load or generate dataset. If "Load" is selected, the root dataset folder should be specified
-    DATASET_MODE = DatasetModeEnum.Generate
+    DATASET_MODE = DatasetModeEnum.Load
 
     # the folder containing the dataset
     # if None, the current seed folder will be used (e.g. for loading the simulated dataset)
@@ -35,14 +35,14 @@ class Config:
     MA_THRESHOLD = 20
 
     # list of methods to run
-    METHODS = [MethodDescriptor(method_type=Methods.Anytime,
+    METHODS = [MethodDescriptor(method_type=Methods.Exact,
                                 h=2,
-                                beta=120.0,
-                                num_samples=2),
+                                beta=0.0,
+                                num_samples=500),
                MethodDescriptor(method_type=Methods.Exact,
                                 h=1,
-                                beta=11.0,
-                                num_samples=2)
+                                beta=0.0,
+                                num_samples=500)
                ]
     # metrics to calculate
     METRICS_LIST = (MetricsEnum.AverageTotalReward, MetricsEnum.SimpleRegret)
