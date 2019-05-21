@@ -72,6 +72,6 @@ class ResultCalculator:
                                                                  batch_size=batch_size,
                                                                  model_scale=model_scale,
                                                                  metric_type=metric_type)
-            results.append([method.method_folder_name, means, error_bars])
+            results.append([method, means, error_bars])
 
         return results

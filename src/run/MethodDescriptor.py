@@ -25,3 +25,5 @@ class MethodDescriptor:
 
         # handle to name the folder for the execute method
         self.method_folder_name = "{}_h{}_beta{}".format(method_string, self.h, self.beta)
+        anytime_string = "Anytime " if self.method_type == Methods.Anytime else ""
+        self.latex_method_name = r'{}$\epsilon$-M-GPO  $H={}$ $\beta={}$'.format(anytime_string, self.h, self.beta)

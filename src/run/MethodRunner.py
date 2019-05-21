@@ -2,8 +2,11 @@ import os
 
 from src.TreePlanTester import testWithFixedParameters
 from src.dataset_model.DatasetGenerator import DatasetGenerator
+from src.enum.DatasetEnum import DatasetEnum
 from src.enum.MetricsEnum import MetricsEnum
+from src.enum.PlottingEnum import PlottingEnum
 from src.metric.ResultCalculator import ResultCalculator
+from src.plotting.ResultsPlotter import ResultGraphPlotter
 
 
 class MethodRunner:
@@ -84,7 +87,7 @@ class MethodRunner:
                           seeds,
                           total_budget,
                           results_save_root_folder,
-                          metrics=(MetricsEnum.AverageTotalReward, MetricsEnum.SimpleRegret)):
+                          metrics):
         result_calculator = ResultCalculator(dataset_type=self.dataset_type,
                                              results_save_root_folder=results_save_root_folder,
                                              seeds=seeds,
@@ -100,6 +103,7 @@ class MethodRunner:
             results.append([metric, metric_results])
         self._write_results_to_file(filename="{}results.txt".format(results_save_root_folder),
                                     results=results)
+        return results
 
     @staticmethod
     def _write_results_to_file(filename, results):
@@ -110,14 +114,51 @@ class MethodRunner:
 
         with open(filename, append_write) as f:
             for metric_result in results:
-                metric_string = "simple regret: " if metric_result[0] == 2 else "average reward: "
+                metric_string = "simple regret: " if metric_result[0] == MetricsEnum.SimpleRegret\
+                    else "average reward: "
                 results_one_metric = metric_result[1]
 
                 for res in results_one_metric:
-                    method_name = res[0]
+                    method_name = res[0].method_folder_name
                     means = res[1]
                     error_bars = res[2]
                     f.write("{}\n".format(method_name))
                     f.write("\t{} means and error bars\n".format(metric_string))
                     f.write("\t\t{}\n".format(" ".join(map(lambda x: str(round(x, 4)), list(means)))))
                     f.write("\t\t{}\n".format(" ".join(map(lambda x: str(round(x, 4)), list(error_bars)))))
+
+    def plot_results(self,
+                     total_budget,
+                     results,
+                     plot_bars,
+                     results_save_root_folder):
+        results_plotter = ResultGraphPlotter(dataset_type=self.dataset_type,
+                                             batch_size=self.batch_size,
+                                             total_budget=total_budget)
+        for result_per_metric in results:
+            metric_type = result_per_metric[0]
+
+            filename_handle = self._generate_file_handle(metric_type=metric_type)
+
+            plotting_type = PlottingEnum.SimpleRegret if metric_type == MetricsEnum.SimpleRegret\
+                else PlottingEnum.AverageTotalReward
+            print result_per_metric[1]
+            print plotting_type
+            print results_save_root_folder + filename_handle
+            results_plotter.plot_results(results=result_per_metric[1],
+                                         plotting_type=plotting_type,
+                                         output_file_name=results_save_root_folder + filename_handle,
+                                         plot_bars=plot_bars)
+
+    def _generate_file_handle(self, metric_type):
+        metric_string = "simple_regrets" if metric_type == MetricsEnum.SimpleRegret \
+            else "average_rewards"
+        if self.dataset_type == DatasetEnum.Road:
+            dataset_string = "road"
+        elif self.dataset_type == DatasetEnum.Simulated:
+            dataset_string = "simulated"
+        elif self.dataset_type == DatasetEnum.Robot:
+            dataset_string = "robot"
+        else:
+            raise ValueError("Unknown dataset")
+        return "{}_{}.eps".format(dataset_string, metric_string)

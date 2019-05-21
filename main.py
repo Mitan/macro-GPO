@@ -2,7 +2,6 @@ from config import Config
 from src.run.MethodRunner import MethodRunner
 
 if __name__ == '__main__':
-
     method_runner = MethodRunner(dataset_type=Config.DATASET_TYPE,
                                  dataset_mode=Config.DATASET_MODE,
                                  batch_size=Config.BATCH_SIZE,
@@ -14,7 +13,15 @@ if __name__ == '__main__':
                       ma_threshold=Config.MA_THRESHOLD,
                       methods=Config.METHODS)
     """
-    method_runner.calculate_results(methods=Config.METHODS,
-                                    seeds=Config.SEEDS,
-                                    total_budget=Config.TOTAL_BUDGET,
-                                    results_save_root_folder=Config.RESULTS_SAVE_ROOT_FOLDER)
+    # returns result as a list. Each element is a list:
+    # metric_type, [[MethodDescriptor, means, error_bars],...]
+    results = method_runner.calculate_results(methods=Config.METHODS,
+                                              seeds=Config.SEEDS,
+                                              total_budget=Config.TOTAL_BUDGET,
+                                              results_save_root_folder=Config.RESULTS_SAVE_ROOT_FOLDER,
+                                              metrics=Config.METRICS_LIST)
+
+    method_runner.plot_results(total_budget=Config.TOTAL_BUDGET,
+                               results=results,
+                               plot_bars=Config.PLOT_BARS,
+                               results_save_root_folder=Config.RESULTS_SAVE_ROOT_FOLDER )

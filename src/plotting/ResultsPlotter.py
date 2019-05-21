@@ -19,11 +19,10 @@ rc('text', usetex=True)
 
 class ResultGraphPlotter:
 
-    def __init__(self, dataset_type, plotting_type, batch_size, total_budget):
+    def __init__(self, dataset_type, batch_size, total_budget):
         self.total_budget = total_budget
-        self.plotting_type = plotting_type
+
         self.dataset_type = dataset_type
-        self.param_storer = self._get_param_storer()
 
         # size of font at x and y label
         self.labels_font_size = 23
@@ -38,7 +37,9 @@ class ResultGraphPlotter:
 
         self.markers = ["o", "v", "^", "s", "*", "1", "2", "x", "|"]
 
-    def plot_results(self, results, plot_bars, output_file_name):
+    def plot_results(self, results, plot_bars, output_file_name, plotting_type):
+        param_storer = self._get_param_storer(plotting_type)
+
         if not results:
             return
 
@@ -52,37 +53,38 @@ class ResultGraphPlotter:
             handle = self.__plot_one_method(i, result, plot_bars)
             handles.append(handle)
 
-        plt.legend(handles=handles, loc=self.param_storer.legend_loc, prop={'size': 14})
+        plt.legend(handles=handles, loc=param_storer.legend_loc, prop={'size': 14})
 
-        self.__ticks_and_margins()
+        self.__ticks_and_margins(param_storer)
 
         plt.savefig(output_file_name, format='eps', dpi=1000, bbox_inches='tight')
         plt.clf()
         plt.close()
 
-    def __ticks_and_margins(self):
+    def __ticks_and_margins(self, param_storer):
         plt.xticks(self.samples_collected)
         plt.xlabel("No. of observations", fontsize=self.labels_font_size)
         axes = plt.axes()
         axes.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
-        plt.ylabel(self.param_storer.y_label_caption, fontsize=self.labels_font_size)
-        plt.yticks(self.param_storer.y_ticks_range)
-        axes.set_ylim(self.param_storer.y_lim_range)
+        plt.ylabel(param_storer.y_label_caption, fontsize=self.labels_font_size)
+        plt.yticks(param_storer.y_ticks_range)
+        axes.set_ylim(param_storer.y_lim_range)
 
         tick_size = 15
         for tick in axes.xaxis.get_major_ticks():
             tick.label.set_fontsize(tick_size)
         for tick in axes.yaxis.get_major_ticks():
-                tick.label.set_fontsize(tick_size)
+            tick.label.set_fontsize(tick_size)
 
-            # margins on x and y side
+        # margins on x and y side
         axes.margins(x=0.035)
         axes.margins(y=0.035)
 
     # plot a method and return a legend handle
     def __plot_one_method(self, i, result, plot_bars):
-        name = ParseName(result[0])
+        # result[0] is a MethodDescriptor
+        name = result[0].latex_method_name
 
         rewards = result[1]
         error_bars = result[2]
@@ -106,7 +108,7 @@ class ResultGraphPlotter:
                  markeredgewidth=1, markeredgecolor=self.color_sequence[i], color=self.color_sequence[i])
 
         if plot_bars:
-        # if plot_bars and error_bars:
+            # if plot_bars and error_bars:
 
             plt.errorbar(adjusted_time_steps, rewards, yerr=error_bars, color=self.color_sequence[i], lw=0.1)
 
@@ -118,20 +120,13 @@ class ResultGraphPlotter:
 
         return patch
 
-    def _get_param_storer(self):
+    def _get_param_storer(self, plotting_type):
         if self.dataset_type == DatasetEnum.Simulated:
-            return SimulatedDatasetPlotParamStorer(self.plotting_type)
+            return SimulatedDatasetPlotParamStorer(plotting_type)
         elif self.dataset_type == DatasetEnum.Road:
-            return RoadDatasetPlotParamStorer(self.plotting_type)
+            return RoadDatasetPlotParamStorer(plotting_type)
         elif self.dataset_type == DatasetEnum.Robot:
-            return RobotDatasetPlotParamStorer(self.plotting_type)
+            return RobotDatasetPlotParamStorer(plotting_type)
         else:
             raise Exception("Unknown dataset type")
 
-
-def ParseName(method_name):
-    method_items = method_name.split()
-    if method_items[0] == 'beta':
-        number = float(method_items[2])
-        method_name = r'$\beta = {}$'.format(number)
-    return method_name

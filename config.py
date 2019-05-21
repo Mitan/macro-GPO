@@ -1,11 +1,11 @@
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.DatasetModeEnum import DatasetModeEnum
 from src.enum.MethodEnum import Methods
+from src.enum.MetricsEnum import MetricsEnum
 from src.run.MethodDescriptor import MethodDescriptor
 
 
 class Config:
-
 
     # batch size
     BATCH_SIZE = 4
@@ -41,3 +41,8 @@ class Config:
                                 beta=11.0,
                                 num_samples=2)
                ]
+    # metrics to calculate
+    METRICS_LIST = (MetricsEnum.AverageTotalReward, MetricsEnum.SimpleRegret)
+
+    #  plot error bars in graphs or not
+    PLOT_BARS = False
