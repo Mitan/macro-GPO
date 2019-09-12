@@ -13,14 +13,17 @@ class DatasetPlotGenerator:
     def __init__(self, dataset_type):
         self.type = dataset_type
 
-    def GeneratePlot(self, model, path_points, save_path):
+    def GeneratePlot(self, model, path_points, save_folder, step):
         if self.type == DatasetEnum.Robot:
-            self.__generate_scatter_plot(model, path_points, save_path)
+            self.__generate_scatter_plot(model, path_points, save_folder)
         elif self.type == DatasetEnum.Road:
             aspect = 2
-            self.__generate_plot(model=model, path_points=path_points, save_path=save_path, aspect=aspect)
+            self._generate_plot(model=model, path_points=path_points, save_path=save_folder, aspect=aspect)
         elif self.type == DatasetEnum.Simulated:
-            self.__generate_plot(model, path_points, save_path)
+            self._generate_plot(model=model,
+                                path_points=path_points,
+                                save_path=save_folder,
+                                step=step)
 
         else:
             raise ValueError("Unknown dataset")
@@ -71,8 +74,11 @@ class DatasetPlotGenerator:
         plt.clf()
         plt.close()
 
+
+    def generate_simulated_plots(self):
+
     @staticmethod
-    def __generate_plot(model, path_points, save_path, aspect=1):
+    def _generate_plot(model, path_points, save_path, step, aspect=1):
 
         grid_00, grid_01 = model.domain_descriptor.grid_domain[0]
         grid_10, grid_11 = model.domain_descriptor.grid_domain[1]
@@ -93,7 +99,8 @@ class DatasetPlotGenerator:
         # path points is a list
         number_of_points = len(path_points)
 
-        for i in xrange(1, number_of_points):
+        # plot only the last one
+        for i in xrange(number_of_points - 1, number_of_points):
             # both are batches of points
             prev = path_points[i - 1]
             current = path_points[i]
@@ -116,7 +123,7 @@ class DatasetPlotGenerator:
                 next_point = current[j + 1, :]
                 axes.arrow(current_point[0], current_point[1],
                            next_point[0] - current_point[0],
-                           next_point[1] - current_point[1], edgecolor='red')
+                           next_point[1] - current_point[1], edgecolor='green')
 
         axes.imshow(ground_truth,
                     interpolation='nearest',
@@ -124,7 +131,7 @@ class DatasetPlotGenerator:
                     cmap='Greys',
                     extent=grid_extent)
 
-        plt.savefig(save_path + ".png")
+        plt.savefig(save_path + "step{}_result.png".format(step))
         plt.clf()
         plt.close()
 

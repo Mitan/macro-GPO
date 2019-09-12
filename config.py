@@ -11,7 +11,7 @@ class Config:
         pass
 
     # batch size
-    BATCH_SIZE = 4
+    BATCH_SIZE = 2
 
     # type of dataset - currently Simulated, Road and Robot are supported
     DATASET_TYPE = DatasetEnum.Simulated
@@ -24,12 +24,13 @@ class Config:
     DATASET_ROOT_FOLDER = None
 
     RESULTS_SAVE_ROOT_FOLDER = './new_tests/simulated/'
+    RESULTS_SAVE_ROOT_FOLDER = './seed72/'
 
     # total budget of function evaluations
-    TOTAL_BUDGET = 20
+    TOTAL_BUDGET = 6
 
     # seeds for evaluation
-    SEEDS = range(3)
+    SEEDS = range(1)
 
     # threshold for selecting the number of random macro-actions. Selected when
     MA_THRESHOLD = 20
@@ -38,11 +39,7 @@ class Config:
     METHODS = [MethodDescriptor(method_type=Methods.Exact,
                                 h=2,
                                 beta=0.0,
-                                num_samples=500),
-               MethodDescriptor(method_type=Methods.Exact,
-                                h=1,
-                                beta=0.0,
-                                num_samples=500)
+                                num_samples=2)
                ]
     # metrics to calculate
     METRICS_LIST = (MetricsEnum.AverageTotalReward, MetricsEnum.SimpleRegret)

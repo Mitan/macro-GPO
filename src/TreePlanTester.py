@@ -137,7 +137,8 @@ class TreePlanTester:
 
             if save_per_step:
                 self.Visualize(state_history=state_history,
-                               save_path=save_folder + "step" + str(time))
+                               save_path=save_folder,
+                               step=time)
 
                 f = open(save_folder + "step" + str(time) + ".txt", "w")
                 f.write(x_0.to_str() + "\n")
@@ -146,7 +147,7 @@ class TreePlanTester:
                 f.close()
 
         # Save for the whole trial
-        self.Visualize(state_history=state_history, save_path=save_folder + "summary")
+        # self.Visualize(state_history=state_history, save_path=save_folder + "summary")
         # Save to file
         f = open(save_folder + "summary" + ".txt", "w")
 
@@ -169,13 +170,14 @@ class TreePlanTester:
 
         return normalized_total_reward_history
 
-    def Visualize(self, state_history, save_path):
+    def Visualize(self, state_history, save_path, step):
 
         plot_generator = DatasetPlotGenerator(self.model.dataset_type)
 
         plot_generator.GeneratePlot(model=self.model,
                                     path_points=[x.physical_state for x in state_history],
-                                    save_path=save_path)
+                                    save_folder=save_path,
+                                    step=step)
 
 
 def testWithFixedParameters(model, horizon, total_budget, method, num_samples,
