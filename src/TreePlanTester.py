@@ -137,6 +137,7 @@ class TreePlanTester:
 
             if save_per_step:
                 self.Visualize(state_history=state_history,
+                               future_steps=future_steps,
                                save_path=save_folder,
                                step=time)
 
@@ -170,14 +171,15 @@ class TreePlanTester:
 
         return normalized_total_reward_history
 
-    def Visualize(self, state_history, save_path, step):
+    def Visualize(self, state_history, future_steps, save_path, step):
 
         plot_generator = DatasetPlotGenerator(self.model.dataset_type)
 
         plot_generator.GeneratePlot(model=self.model,
                                     path_points=[x.physical_state for x in state_history],
                                     save_folder=save_path,
-                                    step=step)
+                                    step=step,
+                                    future_steps=future_steps)
 
 
 def testWithFixedParameters(model, horizon, total_budget, method, num_samples,

@@ -13,12 +13,13 @@ class DatasetPlotGenerator:
     def __init__(self, dataset_type):
         self.type = dataset_type
 
-    def GeneratePlot(self, model, path_points, save_folder, step):
+    def GeneratePlot(self, model, path_points, save_folder, step, future_steps):
         if self.type == DatasetEnum.Simulated:
             self._generate_plot(model=model,
                                 path_points=path_points,
                                 save_path=save_folder,
-                                step=step)
+                                step=step,
+                                future_steps=future_steps)
         else:
             raise ValueError("Unknown dataset")
 
@@ -26,8 +27,7 @@ class DatasetPlotGenerator:
     def generate_simulated_plots(self):
         pass
 
-    @staticmethod
-    def _generate_plot(model, path_points, save_path, step, aspect=1):
+    def _generate_plot(self, model, path_points, save_path, step, future_steps, aspect=1):
 
         grid_00, grid_01 = model.domain_descriptor.grid_domain[0]
         grid_10, grid_11 = model.domain_descriptor.grid_domain[1]
@@ -44,35 +44,22 @@ class DatasetPlotGenerator:
 
         axes = plt.axes()
 
-        # batch size
-        # path points is a list
         number_of_points = len(path_points)
+        prev = path_points[-2]
+        current = path_points[-1]
 
-        # plot only the last one
-        for i in xrange(number_of_points - 1, number_of_points):
-            # both are batches of points
-            prev = path_points[i - 1]
-            current = path_points[i]
+        self.draw_arrow(prev=prev, current=current, axes=axes)
 
-            prev_end = prev[-1, :]
-            current_start = current[0, :]
-            axes.arrow(prev_end[0], prev_end[1],
-                       current_start[0] - prev_end[0],
-                       current_start[1] - prev_end[1], edgecolor='green')
+        for i in range(number_of_points-2):
+            prev = path_points[i]
+            current = path_points[i + 1]
+            self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8)
 
-            # here we need to draw k - 1 arrows
-            # coz in total there will be k and the first on is already drawn
-
-            # k should always be equal to batch_size though
-            k = current.shape[0]
-
-            for j in xrange(0, k - 1):
-                # both a locations [x,y]
-                current_point = current[j, :]
-                next_point = current[j + 1, :]
-                axes.arrow(current_point[0], current_point[1],
-                           next_point[0] - current_point[0],
-                           next_point[1] - current_point[1], edgecolor='green')
+        future_steps_len = len(future_steps)
+        for i in range(future_steps_len - 1):
+            prev = future_steps[i]
+            current = future_steps[i + 1]
+            self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8, edgecolor='red')
 
         axes.imshow(ground_truth,
                     interpolation='nearest',
@@ -84,3 +71,26 @@ class DatasetPlotGenerator:
         plt.clf()
         plt.close()
 
+    # draw arrows from prev to current
+    @staticmethod
+    def draw_arrow(prev, current, axes, lw=2.0, edgecolor='green'):
+
+        prev_end = prev[-1, :]
+        current_start = current[0, :]
+        axes.arrow(prev_end[0], prev_end[1],
+                   current_start[0] - prev_end[0],
+                   current_start[1] - prev_end[1], edgecolor=edgecolor, lw=lw)
+
+        # here we need to draw k - 1 arrows
+        # coz in total there will be k and the first on is already drawn
+
+        # k should always be equal to batch_size though
+        k = current.shape[0]
+
+        for j in xrange(0, k - 1):
+            # both a locations [x,y]
+            current_point = current[j, :]
+            next_point = current[j + 1, :]
+            axes.arrow(current_point[0], current_point[1],
+                       next_point[0] - current_point[0],
+                       next_point[1] - current_point[1], edgecolor=edgecolor, lw=lw)
