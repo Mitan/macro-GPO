@@ -136,6 +136,83 @@ class TreePlan:
 
         return avg
 
+    def MLE(self, x_0, H):
+
+        physical_state = x_0.physical_state
+        physical_state_size = physical_state.shape[0]
+        past_locations = x_0.history.locations[: -physical_state_size, :]
+
+        # root_ss = SemiState(x_0.physical_state, x_0.history.locations[: -self.batch_size, :])
+        root_ss = SemiState(physical_state, past_locations)
+
+        root_node = SemiTree(root_ss)
+        self.BuildTree(root_node, H, isRoot=True)
+
+        Vapprox, Xapprox, future_steps = self.ComputeVMLE(H, x_0, root_node)
+        if math.isinf(Vapprox):
+            raise Exception("MLE could not move from  location " + str(x_0.physical_state))
+        # print H, Xapprox.physical_state, future_steps[0]
+
+        return Vapprox, Xapprox, future_steps, -1
+
+    def ComputeVMLE(self, T, x, st):
+
+        """
+                @return vBest - approximate value function computed
+                @return aBest - action at the root for the policy defined by alg1
+                @param st - root of the semi-tree to be used
+                """
+        # not needed
+        if T == 0: return 0, np.zeros((self.batch_size, 2)), []
+
+        # for simulated
+        # valid_actions = self.GetValidActionSet(x.physical_state)
+        # these are augmented states
+        # next_states = [self.TransitionP(x, a) for a in valid_actions]
+
+        next_states = self.GetNextAugmentedStates(x)
+        if not next_states:
+            return -float("inf"), np.zeros((self.batch_size, 2))
+
+        vBest = - float("inf")
+        xBest = None,
+        future_best = []
+        for x_next in next_states:
+
+            # x_next = self.TransitionP(x, a)
+            next_physical_state = x_next.physical_state
+
+            # cannot tuple augmented state, need to use physical state here
+            new_st = st.children[ToTuple(next_physical_state)]
+
+            mean = self.gp.GPMean(measurements=x_next.history.measurements, weights=new_st.weights)
+
+            var = new_st.variance
+            r = self.reward_analytical(mean, var)
+
+            # Future reward
+            # f = self.ComputeQMLE(T, x_next, new_st) + r
+            vNext, _ , future_steps_next = self.ComputeVMLE(T - 1, TransitionH(x_next, mean), new_st)
+            f = vNext + r
+
+            if f > vBest:
+                xBest = x_next
+                vBest = f
+                future_best = [x_next.physical_state] + future_steps_next
+        # xBest is augmented state
+        return vBest, xBest, future_best
+
+    # def ComputeQMLE(self, T, x, new_st):
+    #     # no need to average over zeroes
+    #     if T == 1:
+    #         return 0
+    #
+    #     mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
+    #     # mu = self.gp.GPMean(locations=x.history.locations, measurements=x.history.measurements,
+    #     # current_location=x.physical_state, cholesky=new_st.cholesky)
+    #     return self.ComputeVMLE(T - 1, TransitionH(x, mu), new_st)[0]
+
+
     def AnytimeAlgorithm(self, epsilon, x_0, H, anytime_num_iterations, max_nodes=10 ** 15):
         print "ANYTIME " + str(H)
         print "Preprocessing weight spaces..."
