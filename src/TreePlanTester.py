@@ -97,7 +97,7 @@ class TreePlanTester:
                 x_temp = TransitionP(x_0, x_temp_physical)
 
             elif method == Methods.Exact:
-                vBest, x_temp, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
+                vBest, x_temp, future_steps, nodes_expanded = tp.StochasticFull(x_0, allowed_horizon)
 
             else:
                 raise Exception("Unknown method type")

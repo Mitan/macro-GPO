@@ -19,7 +19,11 @@ def GenerateGridPairs(first_range, second_range):
 
 # converts ndarray to tuple
 # can't pass ndarray as a key for dict
-def ToTuple(arr):
+def ToTuple(arr, rounding_const=4):
+    if rounding_const > 0:
+        arr = list(arr)
+        arr = map(list, arr)
+        arr = map(lambda x : map(lambda y :round(y, rounding_const), x), arr)
     return tuple(map(tuple, arr))
 
 

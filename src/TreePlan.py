@@ -66,13 +66,22 @@ class TreePlan:
         root_node = SemiTree(root_ss)
         self.BuildTree(root_node, H, isRoot=True)
 
-        Vapprox, Xapprox = self.ComputeVRandom(H, x_0, root_node)
+        future_dict = {}
+
+        Vapprox, Xapprox = self.ComputeVRandom(H, x_0, root_node, future_dict)
         if math.isinf(Vapprox):
             raise Exception("Exact full H = " + str(H) + " could not move from  location " + str(x_0.physical_state))
 
-        return Vapprox, Xapprox, -1
+        future_steps = []
+        current_point  = ToTuple(Xapprox.physical_state)
 
-    def ComputeVRandom(self, T, x, st):
+        while current_point is not None:
+            future_steps.append(current_point)
+            current_point = future_dict[ToTuple(current_point)]
+        print H, len(future_steps)
+        return Vapprox, Xapprox, future_steps, -1
+
+    def ComputeVRandom(self, T, x, st, future_steps):
 
         if T == 0:
             return 0, np.zeros((self.batch_size, 2))
@@ -95,17 +104,21 @@ class TreePlan:
             r = self.reward_analytical(mean, var)
 
             # Future reward
-            f = self.ComputeQRandom(T, x_next, new_st) + r
+            f = self.ComputeQRandom(T, x_next, new_st, future_steps) + r
 
             if f > vBest:
                 xBest = x_next
                 vBest = f
 
+        future_steps[ToTuple(x.physical_state)] = xBest.physical_state
+
         return vBest, xBest
 
-    def ComputeQRandom(self, T, x, new_st):
+    def ComputeQRandom(self, T, x, new_st, future_steps):
 
         if T == 1:
+
+            future_steps[ToTuple(x.physical_state)] = None
             return 0
 
         mu = self.gp.GPMean(measurements=x.history.measurements, weights=new_st.weights)
@@ -115,7 +128,10 @@ class TreePlan:
         number_of_samples = self.samples_per_stage
         sams = np.random.multivariate_normal(mu, sd, number_of_samples)
 
-        rrr = [self.ComputeVRandom(T - 1, TransitionH(x, sam), new_st)[0] for sam in sams]
+        rrr = [self.ComputeVRandom(T - 1,
+                                   TransitionH(x, sam),
+                                   new_st,
+                                   future_steps)[0] for sam in sams]
         avg = np.mean(rrr)
 
         return avg

@@ -27,7 +27,7 @@ class Config:
     RESULTS_SAVE_ROOT_FOLDER = './seed72/'
 
     # total budget of function evaluations
-    TOTAL_BUDGET = 6
+    TOTAL_BUDGET = 20
 
     # seeds for evaluation
     SEEDS = range(1)
@@ -37,9 +37,9 @@ class Config:
 
     # list of methods to run
     METHODS = [MethodDescriptor(method_type=Methods.Exact,
-                                h=2,
+                                h=3,
                                 beta=0.0,
-                                num_samples=2)
+                                num_samples=20)
                ]
     # metrics to calculate
     METRICS_LIST = (MetricsEnum.AverageTotalReward, MetricsEnum.SimpleRegret)

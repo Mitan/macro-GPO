@@ -39,7 +39,7 @@ class MethodResultsExtractor:
         # all measurements obtained by the robot till that step
         measurements = np.genfromtxt(a)
 
-        assert measurements.shape[0] == self.total_budget + 1
+        assert measurements.shape[0] == self.total_budget + 1, "measurememnts number is {}".format(measurements.shape[0])
 
         # assert we parsed them all as numbers
         assert not np.isnan(measurements).any()
