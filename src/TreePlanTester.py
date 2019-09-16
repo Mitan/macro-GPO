@@ -31,6 +31,7 @@ class TreePlanTester:
     def InitEnvironment(self, model, hyper_storer):
 
         self.model = model
+        self.model.gp = self.gp
         # the empirical mean of the dataset
         # required for subtracting from measurements - gives better plotting
         self.empirical_mean = model.empirical_mean

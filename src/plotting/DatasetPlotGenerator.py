@@ -1,3 +1,5 @@
+import os
+
 import matplotlib as mpl
 
 # Force matplotlib to not use any Xwindows backend.
@@ -23,11 +25,38 @@ class DatasetPlotGenerator:
         else:
             raise ValueError("Unknown dataset")
 
+    def generate_posteriors(self, model, path_points, step_save_path, future_steps, future_step_iteration):
+        base_history = np.vstack(path_points)
+        # print base_history.shape
+        base_measurements = np.apply_along_axis(lambda x: model(x), 1, base_history)
+        # print base_measurements.shape
+        for i in range(future_step_iteration):
+            # Mle measurements for this iteration
+            iteration_measurements = np.apply_along_axis(
+                lambda x: model.gp.GPMean_without_weights(locations=base_history,
+                                                          measurements=base_measurements,
+                                                          current_location=x),
+                1, future_steps[i]).flatten()
 
-    def generate_simulated_plots(self):
-        pass
+            base_history =  np.append(base_history, future_steps[i], axis=0)
+            base_measurements = np.append(base_measurements, iteration_measurements)
+            print base_measurements.shape, base_history.shape
+        print a
+        # posterior_mean_after = np.vectorize(
+        #     lambda x, y: self.gp.GPMean(state_history[-1].history.locations, state_history[-1].history.measurements,
+        #                                 [x, y]))
 
     def _generate_plot(self, model, path_points, save_path, step, future_steps, aspect=1):
+        step_save_path = save_path + 'step{}/'.format(step)
+        self.create_dir(step_save_path)
+
+        future_steps_it = 0
+        if step == 3:
+            self.generate_posteriors(model=model,
+                                     path_points=path_points,
+                                     step_save_path=step_save_path,
+                                     future_steps=future_steps,
+                                     future_step_iteration=future_steps_it)
 
         grid_00, grid_01 = model.domain_descriptor.grid_domain[0]
         grid_10, grid_11 = model.domain_descriptor.grid_domain[1]
@@ -50,7 +79,7 @@ class DatasetPlotGenerator:
 
         self.draw_arrow(prev=prev, current=current, axes=axes)
 
-        for i in range(number_of_points-2):
+        for i in range(number_of_points - 2):
             prev = path_points[i]
             current = path_points[i + 1]
             self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8)
@@ -67,7 +96,7 @@ class DatasetPlotGenerator:
                     cmap='Greys',
                     extent=grid_extent)
 
-        plt.savefig(save_path + "step{}_result.png".format(step))
+        plt.savefig(step_save_path + "step{}_result.png".format(step))
         plt.clf()
         plt.close()
 
@@ -79,7 +108,7 @@ class DatasetPlotGenerator:
         current_start = current[0, :]
         axes.arrow(prev_end[0], prev_end[1],
                    current_start[0] - prev_end[0],
-                   current_start[1] - prev_end[1], edgecolor=edgecolor, lw=lw)
+                   current_start[1] - prev_end[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
 
         # here we need to draw k - 1 arrows
         # coz in total there will be k and the first on is already drawn
@@ -93,4 +122,12 @@ class DatasetPlotGenerator:
             next_point = current[j + 1, :]
             axes.arrow(current_point[0], current_point[1],
                        next_point[0] - current_point[0],
-                       next_point[1] - current_point[1], edgecolor=edgecolor, lw=lw)
+                       next_point[1] - current_point[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
+
+    @staticmethod
+    def create_dir(dir_name):
+        try:
+            os.makedirs(dir_name)
+        except OSError:
+            if not os.path.isdir(dir_name):
+                raise

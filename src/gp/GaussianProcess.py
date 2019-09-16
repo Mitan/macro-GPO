@@ -22,6 +22,13 @@ class GaussianProcess:
                 covMat[y, x] = self.covariance_function(row[x, :], col[y, :])
         return covMat
 
+    def GPMean_without_weights(self, locations, measurements, current_location):
+        cholesky = self.Cholesky(locations)
+        weights = self._gp_weights(locations=locations,
+                                   current_location=current_location,
+                                   cholesky=cholesky)
+        return self.GPMean(measurements=measurements, weights=weights)
+
     def GPMean(self, measurements, weights):
 
         mean = np.dot(weights, measurements - np.ones(measurements.shape) * self.mean_function) + self.mean_function
