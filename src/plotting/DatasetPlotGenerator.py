@@ -60,7 +60,7 @@ class DatasetPlotGenerator:
 
             base_history = np.append(base_history, future_steps[i], axis=0)
             base_measurements = np.append(base_measurements, iteration_measurements)
-
+        # print base_history.shape, base_measurements.shape
         return base_history, base_measurements
 
     def _generate_posterior_mean(self, model, path_points, step_save_path,
@@ -102,7 +102,7 @@ class DatasetPlotGenerator:
                     extent=grid_extent)
 
         np.savetxt(fname=step_save_path + "step{}_mean_dataset.txt".format(future_steps_it), X=total,
-                   fmt='%10.6f')
+                   fmt='%10.8f')
         plt.savefig(step_save_path + "step{}_mean.png".format(future_steps_it))
         plt.clf()
         plt.close()
