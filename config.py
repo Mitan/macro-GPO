@@ -27,7 +27,7 @@ class Config:
     RESULTS_SAVE_ROOT_FOLDER = './seed72/'
 
     # total budget of function evaluations
-    TOTAL_BUDGET = 10
+    TOTAL_BUDGET = 20
 
     # seeds for evaluation
     SEEDS = range(1)

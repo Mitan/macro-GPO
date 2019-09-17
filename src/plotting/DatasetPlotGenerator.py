@@ -27,7 +27,7 @@ class DatasetPlotGenerator:
 
         XGrid = np.arange(grid_00, grid_01 - 1e-10, model.domain_descriptor.grid_gap)
         YGrid = np.arange(grid_10, grid_11 - 1e-10, model.domain_descriptor.grid_gap)
-        grid_extent = [grid_00, grid_01, grid_10, grid_11]
+        grid_extent = [grid_00, grid_01, grid_11, grid_10 ]
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
         self._generate_plot(model=model,
