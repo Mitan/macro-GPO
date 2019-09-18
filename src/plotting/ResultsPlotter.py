@@ -8,11 +8,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 from matplotlib.ticker import FormatStrFormatter
-from matplotlib import rc
+# from matplotlib import rc
 
 # for Palatino and other serif fonts use:
-rc('font', **{'family': 'serif', 'serif': ['Times']})
-rc('text', usetex=True)
+# rc('font', **{'family': 'serif', 'serif': ['Times']})
+# rc('text', usetex=True)
 
 
 class ResultGraphPlotter:
