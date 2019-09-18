@@ -136,13 +136,13 @@ class DatasetPlotGenerator:
         for i in range(number_of_points - 2):
             prev = path_points[i]
             current = path_points[i + 1]
-            self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8)
+            self.draw_arrow(prev=prev, current=current, axes=axes, lw=1.0, edgecolor='blue')
 
         future_steps_len = len(future_steps)
         for i in range(future_steps_len - 1):
             prev = future_steps[i]
             current = future_steps[i + 1]
-            self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8, edgecolor='red')
+            self.draw_arrow(prev=prev, current=current, axes=axes, lw=1.0, edgecolor='red')
 
         axes.imshow(ground_truth,
                     interpolation='nearest',
@@ -159,10 +159,11 @@ class DatasetPlotGenerator:
     def draw_arrow(prev, current, axes, lw=2.0, edgecolor='green'):
 
         prev_end = prev[-1, :]
-        current_start = current[0, :]
+        # current_start = current[0, :]
+        current_end = current[-1, :]
         axes.arrow(prev_end[0], prev_end[1],
-                   current_start[0] - prev_end[0],
-                   current_start[1] - prev_end[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
+                   current_end[0] - prev_end[0],
+                   current_end[1] - prev_end[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
 
         # here we need to draw k - 1 arrows
         # coz in total there will be k and the first on is already drawn
@@ -170,13 +171,19 @@ class DatasetPlotGenerator:
         # k should always be equal to batch_size though
         k = current.shape[0]
 
+        # for j in xrange(0, k - 1):
+        #     # both a locations [x,y]
+        #     current_point = current[j, :]
+        #     next_point = current[j + 1, :]
+        #     axes.arrow(current_point[0], current_point[1],
+        #                next_point[0] - current_point[0],
+        #                next_point[1] - current_point[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
+
         for j in xrange(0, k - 1):
             # both a locations [x,y]
             current_point = current[j, :]
             next_point = current[j + 1, :]
-            axes.arrow(current_point[0], current_point[1],
-                       next_point[0] - current_point[0],
-                       next_point[1] - current_point[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
+            axes.plot(current_point[0], current_point[1], 'o',  ms=1.0, color='black')
 
     @staticmethod
     def create_dir(dir_name):
