@@ -17,7 +17,7 @@ class Config:
     DATASET_TYPE = DatasetEnum.Simulated
 
     # load or generate dataset. If "Load" is selected, the root dataset folder should be specified
-    DATASET_MODE = DatasetModeEnum.Load
+    DATASET_MODE = DatasetModeEnum.Generate
 
     # the folder containing the dataset
     # if None, the current seed folder will be used (e.g. for loading the simulated dataset)
@@ -25,6 +25,7 @@ class Config:
 
     RESULTS_SAVE_ROOT_FOLDER = './new_tests/simulated/'
     RESULTS_SAVE_ROOT_FOLDER = './seed72/'
+    RESULTS_SAVE_ROOT_FOLDER = './tests/'
 
     # total budget of function evaluations
     TOTAL_BUDGET = 20
