@@ -25,24 +25,31 @@ class DatasetPlotGenerator:
         grid_00, grid_01 = model.domain_descriptor.grid_domain[0]
         grid_10, grid_11 = model.domain_descriptor.grid_domain[1]
 
+        grid_10, grid_11 =0.85, 1.7
+        grid_00, grid_01 = 0.85, 1.7
+
         XGrid = np.arange(grid_00, grid_01 - 1e-10, model.domain_descriptor.grid_gap)
         YGrid = np.arange(grid_10, grid_11 - 1e-10, model.domain_descriptor.grid_gap)
         grid_extent = [grid_00, grid_01, grid_11, grid_10 ]
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
+
+        is_eps = True
 
         self._generate_plot(model=model,
                             path_points=path_points,
                             step_save_path =step_save_path,
                             step=step,
                             future_steps=future_steps,
-                            XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent)
+                            XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent,
+                            is_eps=is_eps)
         for i in range(len(future_steps)):
             self._generate_posterior_mean(model=model,
                                           path_points=path_points,
                                           step_save_path=step_save_path,
                                           future_steps=future_steps,
                                           future_steps_it=i,
-                                          XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent)
+                                          XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent,
+                                          is_eps=is_eps)
 
     @staticmethod
     def generate_posterior_history(model, path_points, future_steps, future_step_iteration):
@@ -64,7 +71,9 @@ class DatasetPlotGenerator:
         return base_history, base_measurements
 
     def _generate_posterior_mean(self, model, path_points, step_save_path,
-                                 future_steps, future_steps_it, XGrid, YGrid, grid_extent):
+                                 future_steps, future_steps_it,
+                                 XGrid, YGrid, grid_extent,
+                                 is_eps):
 
         base_history, base_measurements = self.generate_posterior_history(model=model,
                                                                           path_points=path_points,
@@ -93,7 +102,7 @@ class DatasetPlotGenerator:
         for i in range(future_steps_it):
             prev = future_steps[i]
             current = future_steps[i + 1]
-            self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8, edgecolor='green')
+            self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8, edgecolor='red')
 
         axes.imshow(ground_truth,
                     interpolation='nearest',
@@ -103,11 +112,21 @@ class DatasetPlotGenerator:
 
         np.savetxt(fname=step_save_path + "step{}_mean_dataset.txt".format(future_steps_it), X=total,
                    fmt='%10.8f')
-        plt.savefig(step_save_path + "step{}_mean.png".format(future_steps_it))
+
+        output_file_name = step_save_path + "step{}_mean".format(future_steps_it)
+
+        if is_eps:
+            plt.savefig(output_file_name + ".eps", format='eps', dpi=1000, bbox_inches='tight')
+        else:
+            plt.savefig(output_file_name + ".png")
         plt.clf()
         plt.close()
 
-    def _generate_plot(self, model, path_points, step_save_path, step, future_steps, grid_extent, XGrid, YGrid):
+    def _generate_plot(self, model, path_points,
+                       step_save_path, step,
+                       future_steps,
+                       grid_extent, XGrid, YGrid,
+                       is_eps):
         # step_save_path = save_path + 'step{}/'.format(step)
         # self.create_dir(step_save_path)
 
@@ -133,10 +152,19 @@ class DatasetPlotGenerator:
 
         self.draw_arrow(prev=prev, current=current, axes=axes)
 
+        if step == 9:
+            color = 'green'
+        else:
+            color = 'blue'
+
+        # initial agent location
+        first = path_points[0][-1]
+        axes.plot(first[0], first[1], 'o', ms=5.0, color='green')
+
         for i in range(number_of_points - 2):
             prev = path_points[i]
             current = path_points[i + 1]
-            self.draw_arrow(prev=prev, current=current, axes=axes, lw=1.0, edgecolor='blue')
+            self.draw_arrow(prev=prev, current=current, axes=axes, lw=1.0, edgecolor=color)
 
         future_steps_len = len(future_steps)
         for i in range(future_steps_len - 1):
@@ -150,7 +178,11 @@ class DatasetPlotGenerator:
                     cmap='Greys',
                     extent=grid_extent)
 
-        plt.savefig(step_save_path + "step{}_result.png".format(step))
+        output_file_name = step_save_path + "step{}_result".format(step)
+        if is_eps:
+            plt.savefig(output_file_name + ".eps", format='eps', dpi=1000, bbox_inches='tight')
+        else:
+            plt.savefig(output_file_name + ".png")
         plt.clf()
         plt.close()
 
@@ -162,8 +194,13 @@ class DatasetPlotGenerator:
         # current_start = current[0, :]
         current_end = current[-1, :]
         axes.arrow(prev_end[0], prev_end[1],
-                   current_end[0] - prev_end[0],
-                   current_end[1] - prev_end[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
+                   current_end[0] - prev_end[0], current_end[1] - prev_end[1],
+                   edgecolor=edgecolor, facecolor=edgecolor, lw=lw,
+                   head_length=0.015, head_width=0.025, length_includes_head=True)
+
+        # plt.annotate(s='', xy=(prev_end[0], prev_end[1]),
+        #              xytext=(current_end[0] - prev_end[0], current_end[1] - prev_end[1]),
+        #              arrowprops=dict(arrow style='->', edgecolor=edgecolor, facecolor=edgecolor, lw=lw))
 
         # here we need to draw k - 1 arrows
         # coz in total there will be k and the first on is already drawn
@@ -179,11 +216,11 @@ class DatasetPlotGenerator:
         #                next_point[0] - current_point[0],
         #                next_point[1] - current_point[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
 
-        for j in xrange(0, k - 1):
+
+        for j in xrange(0, k):
             # both a locations [x,y]
             current_point = current[j, :]
-            next_point = current[j + 1, :]
-            axes.plot(current_point[0], current_point[1], 'o',  ms=1.0, color='black')
+            axes.plot(current_point[0], current_point[1], 'o',  ms=5.0, color=edgecolor)
 
     @staticmethod
     def create_dir(dir_name):

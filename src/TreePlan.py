@@ -175,7 +175,7 @@ class TreePlan:
             return -float("inf"), np.zeros((self.batch_size, 2))
 
         vBest = - float("inf")
-        xBest = None,
+        xBest = None
         future_best = []
         for x_next in next_states:
 
