@@ -132,7 +132,7 @@ class DatasetGenerator:
             with open(location_filename, 'w') as f:
                 f.write(str(m.start_location[0, 0]) + " " + str(m.start_location[0, 1]))
         else:
-            print "Loading model"
+            # print "Loading model"
             dataset_filename = root_folder + 'dataset.txt'
             # dataset_filename = '../../datasets/branin/branin_1600points_inverse_sign_normalised.txt'
             m = SimulatedMapValueDict(hyper_storer=self.hyper_storer,

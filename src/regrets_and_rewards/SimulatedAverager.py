@@ -17,6 +17,7 @@ def CalculateMetrics(metric_type,
 
     # seeds = range(66, 66 + 107)
     seeds = list(set(range(66, 66 + 109)) - set([116, 152, 154]))
+    seeds = range(66,316)
 
     print(len(seeds))
     root_path = '../../tests/sim-fixed-temp/'
@@ -28,7 +29,8 @@ def CalculateMetrics(metric_type,
                         r'$\epsilon$-M-GPO  $H = 3$',
                         r'$\epsilon$-M-GPO  $H = 2$',
                         'DB-GP-UCB',
-                        r'MLE $H = 4$', 'GP-UCB-PE', 'GP-BUCB',
+                        r'Nonmyopic GP-UCB $H = 4$', # r'MLE $H = 4$',
+                        'GP-UCB-PE', 'GP-BUCB',
                         r'$q$-EI', 'BBO-LP']
     output_file = '../../result_graphs/eps/simulated/' + filename
 
@@ -185,5 +187,5 @@ if __name__ == "__main__":
     """
     rewards = GetSimulatedTotalRewards()
     regrets = GetSimulatedTotalRegrets()
-    AverageRewardsBeta2()
-    AverageRewardsBeta3()
+    # AverageRewardsBeta2()
+    # AverageRewardsBeta3()

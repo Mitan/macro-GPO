@@ -11,14 +11,14 @@ class SimulatedDatasetPlotParamStorer:
             self.y_ticks_range = np.arange(0, 0.75, 0.1)
             self.y_lim_range = [-0.1, 0.67]
             self.legend_loc = 2
-            self.legend_size = 17
+            self.legend_size = 15
 
         elif plotting_type == PlottingEnum.SimpleRegret:
             self.y_label_caption = "Simple regret"
             self.y_ticks_range = np.arange(1.2, 2.8, 0.2)
             self.y_lim_range = [1.15, 2.65]
             self.legend_loc = 1
-            self.legend_size = 17
+            self.legend_size = 13
 
         elif plotting_type == PlottingEnum.AverageRewardBeta:
             self.y_label_caption = "Avg. normalized output measurements observed by AUV"
