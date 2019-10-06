@@ -123,13 +123,13 @@ class DatasetPlotGenerator:
         current = path_points[-1]
 
         # current
-        self.draw_arrow(prev=prev, current=current, axes=axes)
+        self.draw_arrow(prev=prev, current=current, axes=axes, shift=False)
 
         # future steps
         for i in range(len(future_steps) - 1):
             prev = future_steps[i]
             current = future_steps[i + 1]
-            self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8, edgecolor='red')
+            self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8, edgecolor='red', shift=False)
 
         # # past
         # number_of_points = len(path_points)
@@ -227,19 +227,19 @@ class DatasetPlotGenerator:
 
     # draw arrows from prev to current
 
-    def draw_arrow(self, prev, current, axes, lw=2.0, edgecolor='green', linestyle='solid'):
+    def draw_arrow(self, prev, current, axes, lw=2.0, edgecolor='green', shift=True):
         prev_end = prev[-1, :]
         # current_start = current[0, :]
         current_end = current[-1, :]
 
         x1, x2 = prev_end
         y1, y2 = current_end
-        if self.arrows_array[(x1, x2, y1, y2)]:
+        if self.arrows_array[(x1, x2, y1, y2)] and shift:
             x1, x2, y1, y2 = shift_array(x1, x2, y1, y2)
 
         axes.arrow(x1, x2,
                    y1 - x1, y2 - x2,
-                   edgecolor=edgecolor, facecolor=edgecolor, lw=lw, ls=linestyle,
+                   edgecolor=edgecolor, facecolor=edgecolor, lw=lw,
                    head_length=0.015, head_width=0.025, length_includes_head=True)
 
         # plt.annotate(s='', xy=(prev_end[0], prev_end[1]),
