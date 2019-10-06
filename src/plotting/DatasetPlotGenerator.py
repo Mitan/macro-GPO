@@ -28,12 +28,12 @@ class DatasetPlotGenerator:
 
         # grid_10, grid_11 =0.85, 1.7
         # grid_00, grid_01 = 0.85, 1.7
-        grid_10, grid_11 =0.5, 1.5
+        grid_10, grid_11 = 0.5, 1.5
         grid_00, grid_01 = 0.5, 1.5
 
         XGrid = np.arange(grid_00, grid_01 - 1e-10, model.domain_descriptor.grid_gap)
         YGrid = np.arange(grid_10, grid_11 - 1e-10, model.domain_descriptor.grid_gap)
-        grid_extent = [grid_00, grid_01, grid_11, grid_10 ]
+        grid_extent = [grid_00, grid_01, grid_11, grid_10]
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
         # for max and min
@@ -44,9 +44,14 @@ class DatasetPlotGenerator:
 
         is_eps = False
 
+        self.arrows_array = process_arrows(path_points=path_points,
+                                           future_steps=future_steps)
+
+        # print self.arrows_array
+
         self._generate_plot(model=model,
                             path_points=path_points,
-                            step_save_path =step_save_path,
+                            step_save_path=step_save_path,
                             step=step,
                             future_steps=future_steps,
                             XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent,
@@ -74,8 +79,7 @@ class DatasetPlotGenerator:
         # print base_history
         base_measurements = np.apply_along_axis(lambda x: model(x), 1, base_history)
         # print base_measurements.shape
-        for i in range(future_step_iteration-1):
-
+        for i in range(future_step_iteration - 1):
             # Mle measurements for this iteration
             iteration_measurements = np.apply_along_axis(
                 lambda x: model.gp.GPMean_without_weights(locations=base_history,
@@ -112,14 +116,11 @@ class DatasetPlotGenerator:
         a = np.append(XGrid.reshape(-1, 1), YGrid.reshape(-1, 1), axis=1)
         total = np.append(a, gr, axis=1)
 
-
         axes = plt.axes()
 
         # current action
         prev = path_points[-2]
         current = path_points[-1]
-
-        arrows = [tuple(map(tuple, prev))]
 
         # current
         self.draw_arrow(prev=prev, current=current, axes=axes)
@@ -212,7 +213,7 @@ class DatasetPlotGenerator:
                     interpolation='bilinear',
                     aspect='auto',
                     # cmap='Greys',
-                    cmap= cm.jet,
+                    cmap=cm.jet,
                     extent=grid_extent,
                     vmin=vmin, vmax=vmax)
 
@@ -225,14 +226,20 @@ class DatasetPlotGenerator:
         plt.close()
 
     # draw arrows from prev to current
-    @staticmethod
-    def draw_arrow(prev, current, axes, lw=2.0, edgecolor='green', linestyle='solid'):
+
+    def draw_arrow(self, prev, current, axes, lw=2.0, edgecolor='green', linestyle='solid'):
         prev_end = prev[-1, :]
         # current_start = current[0, :]
         current_end = current[-1, :]
-        axes.arrow(prev_end[0], prev_end[1],
-                   current_end[0] - prev_end[0], current_end[1] - prev_end[1],
-                   edgecolor=edgecolor, facecolor=edgecolor, lw=lw, ls =linestyle,
+
+        x1, x2 = prev_end
+        y1, y2 = current_end
+        if self.arrows_array[(x1, x2, y1, y2)]:
+            x1, x2, y1, y2 = shift_array(x1, x2, y1, y2)
+
+        axes.arrow(x1, x2,
+                   y1 - x1, y2 - x2,
+                   edgecolor=edgecolor, facecolor=edgecolor, lw=lw, ls=linestyle,
                    head_length=0.015, head_width=0.025, length_includes_head=True)
 
         # plt.annotate(s='', xy=(prev_end[0], prev_end[1]),
@@ -253,11 +260,10 @@ class DatasetPlotGenerator:
         #                next_point[0] - current_point[0],
         #                next_point[1] - current_point[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
 
-
         for j in xrange(0, k):
             # both a locations [x,y]
             current_point = current[j, :]
-            axes.plot(current_point[0], current_point[1], 'o',  ms=5.0, color=edgecolor)
+            axes.plot(current_point[0], current_point[1], 'o', ms=5.0, color=edgecolor)
 
     @staticmethod
     def create_dir(dir_name):
@@ -266,3 +272,51 @@ class DatasetPlotGenerator:
         except OSError:
             if not os.path.isdir(dir_name):
                 raise
+
+
+def process_arrows(path_points, future_steps):
+    arrows = {}
+
+    len_path = len(path_points)
+    len_future = len(future_steps)
+    for i in range(len_path - 1):
+        prev_end = path_points[i][-1, :]
+        current_end = path_points[i + 1][-1, :]
+        add_to_array(prev_end=prev_end,
+                     current_end=current_end,
+                     arrows=arrows)
+
+    for i in range(len_future - 1):
+        prev_end = future_steps[i][-1, :]
+        current_end = future_steps[i + 1][-1, :]
+        add_to_array(prev_end=prev_end,
+                     current_end=current_end,
+                     arrows=arrows)
+    return arrows
+
+
+def add_to_array(prev_end, current_end, arrows):
+    arrow_tuple = (prev_end[0], prev_end[1],
+                   current_end[0], current_end[1])
+    reverse_arrow_tuple = (current_end[0], current_end[1],
+                           prev_end[0], prev_end[1])
+
+    if reverse_arrow_tuple in arrows.keys():
+        arrows[reverse_arrow_tuple] = True
+        arrows[arrow_tuple] = True
+    else:
+        arrows[arrow_tuple] = False
+
+
+def shift_array(x1, x2, y1, y2):
+    eps = 0.01
+    if x1 == y1:
+        x1 += np.sign(y2 - x2) * eps
+        y1 += np.sign(y2 - x2) * eps
+    elif x2 == y2:
+        x2 += np.sign(y1 - x1) * eps
+        y2 += np.sign(y1 - x1) * eps
+    else:
+        raise ValueError
+
+    return x1, x2, y1, y2
