@@ -33,7 +33,14 @@ class DatasetPlotGenerator:
         grid_extent = [grid_00, grid_01, grid_11, grid_10 ]
         XGrid, YGrid = np.meshgrid(XGrid, YGrid)
 
-        is_eps = True
+        # for max and min
+        ground_truth_function = np.vectorize(lambda x, y: model([x, y]))
+        ground_truth = ground_truth_function(XGrid, YGrid)
+        vmax = np.amax(ground_truth)
+        vmin = np.amin(ground_truth)
+
+
+        is_eps = False
 
         self._generate_plot(model=model,
                             path_points=path_points,
@@ -41,7 +48,9 @@ class DatasetPlotGenerator:
                             step=step,
                             future_steps=future_steps,
                             XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent,
-                            is_eps=is_eps)
+                            is_eps=is_eps,
+                            vmax=vmax,
+                            vmin=vmin)
         for i in range(len(future_steps)):
             self._generate_posterior_mean(model=model,
                                           path_points=path_points,
@@ -49,7 +58,10 @@ class DatasetPlotGenerator:
                                           future_steps=future_steps,
                                           future_steps_it=i,
                                           XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent,
-                                          is_eps=is_eps)
+                                          is_eps=is_eps,
+                                          vmax=vmax,
+                                          vmin=vmin
+                                          )
 
     @staticmethod
     def generate_posterior_history(model, path_points, future_steps, future_step_iteration):
@@ -73,7 +85,8 @@ class DatasetPlotGenerator:
     def _generate_posterior_mean(self, model, path_points, step_save_path,
                                  future_steps, future_steps_it,
                                  XGrid, YGrid, grid_extent,
-                                 is_eps):
+                                 is_eps,
+                                 vmax, vmin):
 
         base_history, base_measurements = self.generate_posterior_history(model=model,
                                                                           path_points=path_points,
@@ -107,8 +120,10 @@ class DatasetPlotGenerator:
         axes.imshow(ground_truth,
                     interpolation='nearest',
                     aspect='auto',
-                    cmap='Greys',
-                    extent=grid_extent)
+                    # cmap='Greys',
+                    cmap=cm.jet,
+                    extent=grid_extent,
+                    vmin=vmin, vmax=vmax)
 
         np.savetxt(fname=step_save_path + "step{}_mean_dataset.txt".format(future_steps_it), X=total,
                    fmt='%10.8f')
@@ -126,7 +141,8 @@ class DatasetPlotGenerator:
                        step_save_path, step,
                        future_steps,
                        grid_extent, XGrid, YGrid,
-                       is_eps):
+                       is_eps,
+                       vmax, vmin):
         # step_save_path = save_path + 'step{}/'.format(step)
         # self.create_dir(step_save_path)
 
@@ -175,8 +191,10 @@ class DatasetPlotGenerator:
         axes.imshow(ground_truth,
                     interpolation='nearest',
                     aspect='auto',
-                    cmap='Greys',
-                    extent=grid_extent)
+                    # cmap='Greys',
+                    cmap= cm.jet,
+                    extent=grid_extent,
+                    vmin=vmin, vmax=vmax)
 
         output_file_name = step_save_path + "step{}_result".format(step)
         if is_eps:

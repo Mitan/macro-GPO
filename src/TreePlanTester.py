@@ -191,6 +191,7 @@ def testWithFixedParameters(model, horizon, total_budget, method, num_samples,
     hyper_storer = model.hyper_storer
     initial_physical_state = model.start_location
     added_past_location = np.array([[0.0, 2.0], [2.1, 2.0], [1.9, 0.0], [0.0, 0.2] ])
+    # added_past_location = np.array([[0.0, 0.0]])
     # past_locations = np.copy(initial_physical_state)
     past_locations = np.vstack((added_past_location, initial_physical_state))
 
