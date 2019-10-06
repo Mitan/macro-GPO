@@ -42,7 +42,6 @@ class DatasetPlotGenerator:
         vmax = np.amax(ground_truth)
         vmin = np.amin(ground_truth)
 
-
         is_eps = False
 
         self._generate_plot(model=model,
@@ -55,7 +54,8 @@ class DatasetPlotGenerator:
                             vmax=vmax,
                             vmin=vmin)
 
-        for i in range(len(future_steps)):
+        # for i in range(len(future_steps)):
+        for i in range(1):
             self._generate_posterior_mean(model=model,
                                           path_points=path_points,
                                           step_save_path=step_save_path,
@@ -121,12 +121,21 @@ class DatasetPlotGenerator:
 
         arrows = [tuple(map(tuple, prev))]
 
+        # current
         self.draw_arrow(prev=prev, current=current, axes=axes)
 
-        for i in range(future_steps_it):
+        # future steps
+        for i in range(len(future_steps) - 1):
             prev = future_steps[i]
             current = future_steps[i + 1]
             self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8, edgecolor='red')
+
+        # # past
+        # number_of_points = len(path_points)
+        # for i in range(number_of_points - 2):
+        #     prev = path_points[i]
+        #     current = path_points[i + 1]
+        #     self.draw_arrow(prev=prev, current=current, axes=axes,lw=1.0)
 
         axes.imshow(ground_truth,
                     interpolation='bilinear',
@@ -217,13 +226,13 @@ class DatasetPlotGenerator:
 
     # draw arrows from prev to current
     @staticmethod
-    def draw_arrow(prev, current, axes, lw=2.0, edgecolor='green'):
+    def draw_arrow(prev, current, axes, lw=2.0, edgecolor='green', linestyle='solid'):
         prev_end = prev[-1, :]
         # current_start = current[0, :]
         current_end = current[-1, :]
         axes.arrow(prev_end[0], prev_end[1],
                    current_end[0] - prev_end[0], current_end[1] - prev_end[1],
-                   edgecolor=edgecolor, facecolor=edgecolor, lw=lw,
+                   edgecolor=edgecolor, facecolor=edgecolor, lw=lw, ls =linestyle,
                    head_length=0.015, head_width=0.025, length_includes_head=True)
 
         # plt.annotate(s='', xy=(prev_end[0], prev_end[1]),
