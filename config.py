@@ -25,6 +25,7 @@ class Config:
 
     RESULTS_SAVE_ROOT_FOLDER = './new_tests/simulated/'
     RESULTS_SAVE_ROOT_FOLDER = './seed72/'
+    RESULTS_SAVE_ROOT_FOLDER = './tests1/'
     RESULTS_SAVE_ROOT_FOLDER = './'
 
     # total budget of function evaluations
@@ -37,11 +38,25 @@ class Config:
     MA_THRESHOLD = 20
 
     # list of methods to run
+    # METHODS = [MethodDescriptor(method_type=Methods.Exact,
+    #                             h=1,
+    #                             beta=0.0,
+    #                             num_samples=20),
+    #            MethodDescriptor(method_type=Methods.Exact,
+    #                             h=3,
+    #                             beta=0.0,
+    #                             num_samples=20),
+    #            MethodDescriptor(method_type=Methods.Exact,
+    #                             h=4,
+    #                             beta=0.0,
+    #                             num_samples=20)
+    #           ]
+
     METHODS = [MethodDescriptor(method_type=Methods.Exact,
                                 h=3,
                                 beta=0.0,
-                                num_samples=20)
-               ]
+                                num_samples=20)]
+
     # metrics to calculate
     METRICS_LIST = (MetricsEnum.AverageTotalReward, MetricsEnum.SimpleRegret)
 
