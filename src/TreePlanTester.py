@@ -61,7 +61,11 @@ class TreePlanTester:
         # history includes currrent state
         x_0 = AugmentedState(self.initial_physical_state,
                              initial_history=History(self.past_locations, self.past_measurements))
-        state_history = [x_0]
+        num_past_points = self.past_locations.shape[0]
+        state_history = [self.past_locations[i, :] for i in range(num_past_points)]
+
+        # todo there's a hack here
+        state_history = [self.past_locations]
 
         if not os.path.exists(save_folder):
             os.makedirs(save_folder)
@@ -134,7 +138,7 @@ class TreePlanTester:
             nodes_expanded_history.append(nodes_expanded)
 
             # Add to plot history
-            state_history.append(x_0)
+            state_history.append(x_0.physical_state)
 
             if save_per_step:
                 self.Visualize(state_history=state_history,
@@ -174,10 +178,12 @@ class TreePlanTester:
 
     def Visualize(self, state_history, future_steps, save_path, step):
 
-        plot_generator = DatasetPlotGenerator(self.model.dataset_type)
+        plot_generator = DatasetPlotGenerator(dataset_type=self.model.dataset_type,
+                                              batch_size=self.batch_size)
 
         plot_generator.GeneratePlot(model=self.model,
-                                    path_points=[x.physical_state for x in state_history],
+                                    # path_points=[x.physical_state for x in state_history],
+                                    path_points=state_history,
                                     save_folder=save_path,
                                     step=step,
                                     future_steps=future_steps)
@@ -191,7 +197,7 @@ def testWithFixedParameters(model, horizon, total_budget, method, num_samples,
     hyper_storer = model.hyper_storer
     initial_physical_state = model.start_location
     added_past_location = np.array([[0.0, 2.0], [2.1, 2.0], [1.9, 0.0], [0.0, 0.2] ])
-    # added_past_location = np.array([[0.0, 0.0]])
+    added_past_location = np.array([[0.0, 0.0]])
     # past_locations = np.copy(initial_physical_state)
     past_locations = np.vstack((added_past_location, initial_physical_state))
 

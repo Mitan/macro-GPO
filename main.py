@@ -5,15 +5,20 @@ from src.run.MethodRunner import MethodRunner
 
 if __name__ == '__main__':
 
-    # start = int(sys.argv[1])
-    interval = 5
+    if len(sys.argv) > 1:
+        start = int(sys.argv[1])
+        interval = 10
+        seeds = range(start, start + interval)
+    else:
+        seeds = Config.SEEDS
+
     method_runner = MethodRunner(dataset_type=Config.DATASET_TYPE,
                                  dataset_mode=Config.DATASET_MODE,
                                  batch_size=Config.BATCH_SIZE,
                                  dataset_root_folder=Config.DATASET_ROOT_FOLDER)
     method_runner.run(total_budget=Config.TOTAL_BUDGET,
-                      #seeds=range(start, start + interval),
-                      seeds=Config.SEEDS,
+                      seeds=seeds,
+                      # seeds=Config.SEEDS,
                       results_save_root_folder=Config.RESULTS_SAVE_ROOT_FOLDER,
                       ma_threshold=Config.MA_THRESHOLD,
                       methods=Config.METHODS)

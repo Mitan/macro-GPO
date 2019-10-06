@@ -12,7 +12,8 @@ from matplotlib import cm
 
 
 class DatasetPlotGenerator:
-    def __init__(self, dataset_type):
+    def __init__(self, dataset_type, batch_size):
+        self.batch_size = batch_size
         self.type = dataset_type
 
     def GeneratePlot(self, model, path_points, save_folder, step, future_steps):
@@ -25,8 +26,10 @@ class DatasetPlotGenerator:
         grid_00, grid_01 = model.domain_descriptor.grid_domain[0]
         grid_10, grid_11 = model.domain_descriptor.grid_domain[1]
 
-        grid_10, grid_11 =0.85, 1.7
-        grid_00, grid_01 = 0.85, 1.7
+        # grid_10, grid_11 =0.85, 1.7
+        # grid_00, grid_01 = 0.85, 1.7
+        grid_10, grid_11 =0.5, 1.5
+        grid_00, grid_01 = 0.5, 1.5
 
         XGrid = np.arange(grid_00, grid_01 - 1e-10, model.domain_descriptor.grid_gap)
         YGrid = np.arange(grid_10, grid_11 - 1e-10, model.domain_descriptor.grid_gap)
@@ -51,6 +54,7 @@ class DatasetPlotGenerator:
                             is_eps=is_eps,
                             vmax=vmax,
                             vmin=vmin)
+
         for i in range(len(future_steps)):
             self._generate_posterior_mean(model=model,
                                           path_points=path_points,
@@ -65,11 +69,13 @@ class DatasetPlotGenerator:
 
     @staticmethod
     def generate_posterior_history(model, path_points, future_steps, future_step_iteration):
+
         base_history = np.vstack(path_points)
-
+        # print base_history
         base_measurements = np.apply_along_axis(lambda x: model(x), 1, base_history)
+        # print base_measurements.shape
+        for i in range(future_step_iteration-1):
 
-        for i in range(future_step_iteration):
             # Mle measurements for this iteration
             iteration_measurements = np.apply_along_axis(
                 lambda x: model.gp.GPMean_without_weights(locations=base_history,
@@ -93,6 +99,9 @@ class DatasetPlotGenerator:
                                                                           future_steps=future_steps,
                                                                           future_step_iteration=future_steps_it)
 
+        base_history = base_history[: -self.batch_size, :]
+        base_measurements = base_measurements[:-self.batch_size]
+
         ground_truth_function = np.vectorize(lambda x, y:
                                              model.gp.GPMean_without_weights(locations=base_history,
                                                                              measurements=base_measurements,
@@ -110,6 +119,8 @@ class DatasetPlotGenerator:
         prev = path_points[-2]
         current = path_points[-1]
 
+        arrows = [tuple(map(tuple, prev))]
+
         self.draw_arrow(prev=prev, current=current, axes=axes)
 
         for i in range(future_steps_it):
@@ -118,7 +129,7 @@ class DatasetPlotGenerator:
             self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8, edgecolor='red')
 
         axes.imshow(ground_truth,
-                    interpolation='nearest',
+                    interpolation='bilinear',
                     aspect='auto',
                     # cmap='Greys',
                     cmap=cm.jet,
@@ -186,10 +197,10 @@ class DatasetPlotGenerator:
         for i in range(future_steps_len - 1):
             prev = future_steps[i]
             current = future_steps[i + 1]
-            self.draw_arrow(prev=prev, current=current, axes=axes, lw=1.0, edgecolor='red')
+            self.draw_arrow(prev=prev, current=current, axes=axes, lw=1.0, edgecolor='black')
 
         axes.imshow(ground_truth,
-                    interpolation='nearest',
+                    interpolation='bilinear',
                     aspect='auto',
                     # cmap='Greys',
                     cmap= cm.jet,
@@ -207,7 +218,6 @@ class DatasetPlotGenerator:
     # draw arrows from prev to current
     @staticmethod
     def draw_arrow(prev, current, axes, lw=2.0, edgecolor='green'):
-
         prev_end = prev[-1, :]
         # current_start = current[0, :]
         current_end = current[-1, :]

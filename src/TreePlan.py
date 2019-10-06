@@ -137,7 +137,7 @@ class TreePlan:
         return avg
 
     def MLE(self, x_0, H):
-
+        # print "horizon is " + str(H)
         physical_state = x_0.physical_state
         physical_state_size = physical_state.shape[0]
         past_locations = x_0.history.locations[: -physical_state_size, :]
@@ -156,7 +156,7 @@ class TreePlan:
         return Vapprox, Xapprox, future_steps, -1
 
     def ComputeVMLE(self, T, x, st):
-
+        # print "VMLE H is " +str(T)
         """
                 @return vBest - approximate value function computed
                 @return aBest - action at the root for the policy defined by alg1
@@ -177,6 +177,9 @@ class TreePlan:
         vBest = - float("inf")
         xBest = None
         future_best = []
+
+        # print x.history.locations
+
         for x_next in next_states:
 
             # x_next = self.TransitionP(x, a)
@@ -194,7 +197,7 @@ class TreePlan:
             # f = self.ComputeQMLE(T, x_next, new_st) + r
             vNext, _ , future_steps_next = self.ComputeVMLE(T - 1, TransitionH(x_next, mean), new_st)
             f = vNext + r
-
+            # print next_physical_state, f
             if f > vBest:
                 xBest = x_next
                 vBest = f
