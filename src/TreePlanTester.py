@@ -179,7 +179,8 @@ class TreePlanTester:
     def Visualize(self, state_history, future_steps, save_path, step):
 
         plot_generator = DatasetPlotGenerator(dataset_type=self.model.dataset_type,
-                                              batch_size=self.batch_size)
+                                              batch_size=self.batch_size,
+                                              h=self.H)
 
         plot_generator.GeneratePlot(model=self.model,
                                     # path_points=[x.physical_state for x in state_history],

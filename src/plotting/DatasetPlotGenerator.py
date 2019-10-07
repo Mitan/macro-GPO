@@ -12,9 +12,10 @@ from matplotlib import cm
 
 
 class DatasetPlotGenerator:
-    def __init__(self, dataset_type, batch_size):
+    def __init__(self, dataset_type, batch_size,h):
         self.batch_size = batch_size
         self.type = dataset_type
+        self.h = h
 
     def GeneratePlot(self, model, path_points, save_folder, step, future_steps):
         if self.type != DatasetEnum.Simulated:
@@ -42,35 +43,37 @@ class DatasetPlotGenerator:
         vmax = np.amax(ground_truth)
         vmin = np.amin(ground_truth)
 
-        is_eps = False
+        is_eps = True
 
         self.arrows_array = process_arrows(path_points=path_points,
                                            future_steps=future_steps)
 
         # print self.arrows_array
+        if step == 9:
+            self._generate_plot(model=model,
+                                path_points=path_points,
+                                step_save_path=step_save_path,
+                                step=step,
+                                future_steps=future_steps,
+                                XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent,
+                                is_eps=is_eps,
+                                vmax=vmax,
+                                vmin=vmin)
 
-        self._generate_plot(model=model,
-                            path_points=path_points,
-                            step_save_path=step_save_path,
-                            step=step,
-                            future_steps=future_steps,
-                            XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent,
-                            is_eps=is_eps,
-                            vmax=vmax,
-                            vmin=vmin)
-
-        # for i in range(len(future_steps)):
-        for i in range(1):
-            self._generate_posterior_mean(model=model,
-                                          path_points=path_points,
-                                          step_save_path=step_save_path,
-                                          future_steps=future_steps,
-                                          future_steps_it=i,
-                                          XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent,
-                                          is_eps=is_eps,
-                                          vmax=vmax,
-                                          vmin=vmin
-                                          )
+        if step == 4:
+            # for i in range(len(future_steps)):
+            for i in range(1):
+                self._generate_posterior_mean(model=model,
+                                              path_points=path_points,
+                                              step_save_path=step_save_path,
+                                              future_steps=future_steps,
+                                              step=step,
+                                              future_steps_it=i,
+                                              XGrid=XGrid, YGrid=YGrid, grid_extent=grid_extent,
+                                              is_eps=is_eps,
+                                              vmax=vmax,
+                                              vmin=vmin
+                                              )
 
     @staticmethod
     def generate_posterior_history(model, path_points, future_steps, future_step_iteration):
@@ -92,11 +95,16 @@ class DatasetPlotGenerator:
         # print base_history.shape, base_measurements.shape
         return base_history, base_measurements
 
-    def _generate_posterior_mean(self, model, path_points, step_save_path,
+    def _generate_posterior_mean(self, model, path_points, step_save_path, step,
                                  future_steps, future_steps_it,
                                  XGrid, YGrid, grid_extent,
                                  is_eps,
                                  vmax, vmin):
+        axes = plt.axes()
+
+        # todo hack
+        if step == 4:
+                axes.plot(1.1, 0.9, 'o', ms=8.0, color='black')
 
         base_history, base_measurements = self.generate_posterior_history(model=model,
                                                                           path_points=path_points,
@@ -116,7 +124,7 @@ class DatasetPlotGenerator:
         a = np.append(XGrid.reshape(-1, 1), YGrid.reshape(-1, 1), axis=1)
         total = np.append(a, gr, axis=1)
 
-        axes = plt.axes()
+
 
         # current action
         prev = path_points[-2]
@@ -149,7 +157,7 @@ class DatasetPlotGenerator:
         np.savetxt(fname=step_save_path + "step{}_mean_dataset.txt".format(future_steps_it), X=total,
                    fmt='%10.8f')
 
-        output_file_name = step_save_path + "step{}_mean".format(future_steps_it)
+        output_file_name = step_save_path + "h{}_step{}_mean".format(self.h, step)
 
         if is_eps:
             plt.savefig(output_file_name + ".eps", format='eps', dpi=1000, bbox_inches='tight')
@@ -196,7 +204,7 @@ class DatasetPlotGenerator:
 
         # initial agent location
         first = path_points[0][-1]
-        axes.plot(first[0], first[1], 'o', ms=5.0, color='green')
+        axes.plot(first[0], first[1], 'o', ms=10.0, color='green')
 
         for i in range(number_of_points - 2):
             prev = path_points[i]
@@ -217,7 +225,7 @@ class DatasetPlotGenerator:
                     extent=grid_extent,
                     vmin=vmin, vmax=vmax)
 
-        output_file_name = step_save_path + "step{}_result".format(step)
+        output_file_name = step_save_path + "h{}_step{}_result".format(self.h, step)
         if is_eps:
             plt.savefig(output_file_name + ".eps", format='eps', dpi=1000, bbox_inches='tight')
         else:
@@ -263,7 +271,11 @@ class DatasetPlotGenerator:
         for j in xrange(0, k):
             # both a locations [x,y]
             current_point = current[j, :]
-            axes.plot(current_point[0], current_point[1], 'o', ms=5.0, color=edgecolor)
+            x1, x2 = current_point
+            if x1 == 1.1 and x2 == 0.9:
+                axes.plot(current_point[0], current_point[1], 'o', ms=8.0, color='black')
+            else:
+                axes.plot(current_point[0], current_point[1], 'o', ms=5.0, color=edgecolor)
 
     @staticmethod
     def create_dir(dir_name):
