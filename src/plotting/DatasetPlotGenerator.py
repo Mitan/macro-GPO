@@ -29,8 +29,8 @@ class DatasetPlotGenerator:
 
         # grid_10, grid_11 =0.85, 1.7
         # grid_00, grid_01 = 0.85, 1.7
-        grid_10, grid_11 = 0.5, 1.5
-        grid_00, grid_01 = 0.5, 1.5
+        grid_10, grid_11 = 0.6, 1.4
+        grid_00, grid_01 = 0.45, 1.5
 
         XGrid = np.arange(grid_00, grid_01 - 1e-10, model.domain_descriptor.grid_gap)
         YGrid = np.arange(grid_10, grid_11 - 1e-10, model.domain_descriptor.grid_gap)
@@ -104,7 +104,7 @@ class DatasetPlotGenerator:
 
         # todo hack
         if step == 4:
-                axes.plot(1.1, 0.9, 'o', ms=8.0, color='black')
+                axes.plot(1.1, 0.9, 'o', ms=10.0, color='black')
 
         base_history, base_measurements = self.generate_posterior_history(model=model,
                                                                           path_points=path_points,
@@ -137,7 +137,7 @@ class DatasetPlotGenerator:
         for i in range(len(future_steps) - 1):
             prev = future_steps[i]
             current = future_steps[i + 1]
-            self.draw_arrow(prev=prev, current=current, axes=axes, lw=0.8, edgecolor='red', shift=False)
+            self.draw_arrow(prev=prev, current=current, axes=axes, edgecolor='red', shift=False)
 
         # # past
         # number_of_points = len(path_points)
@@ -197,25 +197,25 @@ class DatasetPlotGenerator:
 
         self.draw_arrow(prev=prev, current=current, axes=axes)
 
-        if step == 9:
+        if step == 9 or step == 8:
             color = 'green'
         else:
             color = 'blue'
 
         # initial agent location
         first = path_points[0][-1]
-        axes.plot(first[0], first[1], 'o', ms=10.0, color='green')
+        axes.plot(first[0], first[1], 'o', ms=12.0, color='green')
 
         for i in range(number_of_points - 2):
             prev = path_points[i]
             current = path_points[i + 1]
-            self.draw_arrow(prev=prev, current=current, axes=axes, lw=1.0, edgecolor=color)
+            self.draw_arrow(prev=prev, current=current, axes=axes, edgecolor=color)
 
         future_steps_len = len(future_steps)
         for i in range(future_steps_len - 1):
             prev = future_steps[i]
             current = future_steps[i + 1]
-            self.draw_arrow(prev=prev, current=current, axes=axes, lw=1.0, edgecolor='black')
+            self.draw_arrow(prev=prev, current=current, axes=axes, edgecolor='black')
 
         axes.imshow(ground_truth,
                     interpolation='bilinear',
@@ -235,7 +235,7 @@ class DatasetPlotGenerator:
 
     # draw arrows from prev to current
 
-    def draw_arrow(self, prev, current, axes, lw=2.0, edgecolor='green', shift=True):
+    def draw_arrow(self, prev, current, axes, lw=5.0, edgecolor='green', shift=True):
         prev_end = prev[-1, :]
         # current_start = current[0, :]
         current_end = current[-1, :]
@@ -248,7 +248,7 @@ class DatasetPlotGenerator:
         axes.arrow(x1, x2,
                    y1 - x1, y2 - x2,
                    edgecolor=edgecolor, facecolor=edgecolor, lw=lw,
-                   head_length=0.015, head_width=0.025, length_includes_head=True)
+                   head_length=0.005, head_width=0.02, length_includes_head=True)
 
         # plt.annotate(s='', xy=(prev_end[0], prev_end[1]),
         #              xytext=(current_end[0] - prev_end[0], current_end[1] - prev_end[1]),
@@ -273,9 +273,9 @@ class DatasetPlotGenerator:
             current_point = current[j, :]
             x1, x2 = current_point
             if x1 == 1.1 and x2 == 0.9:
-                axes.plot(current_point[0], current_point[1], 'o', ms=8.0, color='black')
+                axes.plot(current_point[0], current_point[1], 'o', ms=10.0, color='black')
             else:
-                axes.plot(current_point[0], current_point[1], 'o', ms=5.0, color=edgecolor)
+                axes.plot(current_point[0], current_point[1], 'o', ms=8.0, color=edgecolor)
 
     @staticmethod
     def create_dir(dir_name):
@@ -321,7 +321,7 @@ def add_to_array(prev_end, current_end, arrows):
 
 
 def shift_array(x1, x2, y1, y2):
-    eps = 0.01
+    eps = 0.02
     if x1 == y1:
         x1 += np.sign(y2 - x2) * eps
         y1 += np.sign(y2 - x2) * eps
