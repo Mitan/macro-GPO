@@ -11,7 +11,7 @@ class Config:
         pass
 
     # batch size
-    BATCH_SIZE = 4
+    BATCH_SIZE = 2
 
     # type of dataset - currently Simulated, Road and Robot are supported
     DATASET_TYPE = DatasetEnum.Simulated
@@ -23,7 +23,8 @@ class Config:
     # if None, the current seed folder will be used (e.g. for loading the simulated dataset)
     DATASET_ROOT_FOLDER = None
 
-    RESULTS_SAVE_ROOT_FOLDER = './new_tests/simulated/'
+    RESULTS_SAVE_ROOT_FOLDER = './tests/'
+    RESULTS_SAVE_ROOT_FOLDER = './1/simulated/'
 
     # total budget of function evaluations
     TOTAL_BUDGET = 20
@@ -36,13 +37,17 @@ class Config:
 
     # list of methods to run
     METHODS = [MethodDescriptor(method_type=Methods.Exact,
+                                h=3,
+                                beta=0.0,
+                                num_samples=40),
+               MethodDescriptor(method_type=Methods.Exact,
                                 h=2,
                                 beta=0.0,
-                                num_samples=500),
+                                num_samples=40),
                MethodDescriptor(method_type=Methods.Exact,
                                 h=1,
                                 beta=0.0,
-                                num_samples=500)
+                                num_samples=40)
                ]
     # metrics to calculate
     METRICS_LIST = (MetricsEnum.AverageTotalReward, MetricsEnum.SimpleRegret)
