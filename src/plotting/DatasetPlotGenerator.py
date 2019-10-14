@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
+base_dot_ms = 12
 
 class DatasetPlotGenerator:
     def __init__(self, dataset_type, batch_size,h):
@@ -104,7 +105,7 @@ class DatasetPlotGenerator:
 
         # todo hack
         if step == 4:
-                axes.plot(1.1, 0.9, 'o', ms=10.0, color='black')
+                axes.plot(1.1, 0.9, 'o', ms= 1.2 * base_dot_ms, color='black')
 
         base_history, base_measurements = self.generate_posterior_history(model=model,
                                                                           path_points=path_points,
@@ -204,7 +205,7 @@ class DatasetPlotGenerator:
 
         # initial agent location
         first = path_points[0][-1]
-        axes.plot(first[0], first[1], 'o', ms=12.0, color='green')
+        axes.plot(first[0], first[1], 'o', ms=1.2 * base_dot_ms, color='blue')
 
         for i in range(number_of_points - 2):
             prev = path_points[i]
@@ -236,6 +237,22 @@ class DatasetPlotGenerator:
     # draw arrows from prev to current
 
     def draw_arrow(self, prev, current, axes, lw=5.0, edgecolor='green', shift=True):
+
+        k = current.shape[0]
+
+        for j in xrange(0, k):
+            # both a locations [x,y]
+            current_point = current[j, :]
+            x1, x2 = current_point
+            if x1 == 1.0 and x2 == 1.0:
+                continue
+
+            if x1 == 1.1 and x2 == 0.9:
+                axes.plot(current_point[0], current_point[1], 'o', ms=1.2 * base_dot_ms, color='black')
+            else:
+                plot_edge = '#8B0000' if edgecolor == 'red' else 'darkgreen'
+                axes.plot(current_point[0], current_point[1], 'o', ms=base_dot_ms, color=plot_edge)
+
         prev_end = prev[-1, :]
         # current_start = current[0, :]
         current_end = current[-1, :]
@@ -245,37 +262,25 @@ class DatasetPlotGenerator:
         if self.arrows_array[(x1, x2, y1, y2)] and shift:
             x1, x2, y1, y2 = shift_array(x1, x2, y1, y2)
 
+        eps_shift = 0.01
+        if x1 == y1:
+            x2 = x2 - np.sign(x2 - y2) * eps_shift
+            y2 = y2 + np.sign(x2 - y2) * eps_shift
+
+        elif x2 == y2:
+                x1 = x1 - np.sign(x1 - y1) * eps_shift
+                y1 = y1 + np.sign(x1 - y1) * eps_shift
+
         axes.arrow(x1, x2,
                    y1 - x1, y2 - x2,
                    edgecolor=edgecolor, facecolor=edgecolor, lw=lw,
-                   head_length=0.005, head_width=0.02, length_includes_head=True)
+                   head_length=0.015, head_width=0.025, length_includes_head=True, zorder=10)
 
-        # plt.annotate(s='', xy=(prev_end[0], prev_end[1]),
-        #              xytext=(current_end[0] - prev_end[0], current_end[1] - prev_end[1]),
-        #              arrowprops=dict(arrow style='->', edgecolor=edgecolor, facecolor=edgecolor, lw=lw))
 
-        # here we need to draw k - 1 arrows
-        # coz in total there will be k and the first on is already drawn
 
-        # k should always be equal to batch_size though
-        k = current.shape[0]
 
-        # for j in xrange(0, k - 1):
-        #     # both a locations [x,y]
-        #     current_point = current[j, :]
-        #     next_point = current[j + 1, :]
-        #     axes.arrow(current_point[0], current_point[1],
-        #                next_point[0] - current_point[0],
-        #                next_point[1] - current_point[1], edgecolor=edgecolor, facecolor=edgecolor, lw=lw)
 
-        for j in xrange(0, k):
-            # both a locations [x,y]
-            current_point = current[j, :]
-            x1, x2 = current_point
-            if x1 == 1.1 and x2 == 0.9:
-                axes.plot(current_point[0], current_point[1], 'o', ms=10.0, color='black')
-            else:
-                axes.plot(current_point[0], current_point[1], 'o', ms=8.0, color=edgecolor)
+
 
     @staticmethod
     def create_dir(dir_name):
