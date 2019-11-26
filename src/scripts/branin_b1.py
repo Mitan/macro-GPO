@@ -6,9 +6,9 @@ from src.enum.DatasetModeEnum import DatasetModeEnum
 
 
 def hack_script(start):
-    my_save_folder_root = "./tests/branin_40_1600/"
+    my_save_folder_root = "./tests/branin_1600/"
 
-    batch_size = 1
+    batch_size = 2
 
     num_samples = 40
 

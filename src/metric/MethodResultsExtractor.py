@@ -2,7 +2,7 @@ from StringIO import StringIO
 
 import numpy as np
 
-from src.Utils import branin_transform
+# from src.Utils import branin_transform
 from src.enum.DatasetEnum import DatasetEnum
 from src.enum.MetricsEnum import MetricsEnum
 
@@ -45,8 +45,8 @@ class MethodResultsExtractor:
 
         # assert we parsed them all as numbers
         assert not np.isnan(measurements).any()
-        if self.dataset_type == DatasetEnum.Branin:
-            return map(lambda x: branin_transform(x), measurements.tolist())
+        # if self.dataset_type == DatasetEnum.Branin:
+        #     return map(lambda x: branin_transform(x), measurements.tolist())
         return measurements.tolist()
 
 

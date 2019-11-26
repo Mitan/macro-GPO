@@ -1,6 +1,7 @@
 import matplotlib
 
 from src.enum.DatasetEnum import DatasetEnum
+from src.plotting.BraninDatasetPlotParamStorer import BraninDatasetPlotParamStorer
 from src.plotting.RoadDatasetPlotParamStorer import RoadDatasetPlotParamStorer
 from src.plotting.RobotDatasetPlotParamStorer import RobotDatasetPlotParamStorer
 from src.plotting.SimulatedDatasetPlotParamStorer import SimulatedDatasetPlotParamStorer
@@ -122,6 +123,8 @@ class ResultGraphPlotter:
             return RoadDatasetPlotParamStorer(self.plotting_type)
         elif self.dataset_type == DatasetEnum.Robot:
             return RobotDatasetPlotParamStorer(self.plotting_type)
+        elif self.dataset_type == DatasetEnum.Branin:
+            return BraninDatasetPlotParamStorer(self.plotting_type)
         else:
             raise Exception("Unknown dataset type")
 

@@ -66,7 +66,7 @@ class ResultCalculator:
         model_scale = scale_extractor.extract_mean_or_max(root_folder=self.root_path,
                                                           seeds=self.seeds,
                                                           metric_type=metric_type)
-
+        print model_scale, 'model scale'
         results = []
 
         for index, method in enumerate(methods):
