@@ -100,6 +100,8 @@ class DatasetGenerator:
 
         print "Loading model"
         dataset_filename = './datasets/branin/branin_1600points_inverse_sign_normalised_ok.txt'
+
+        dataset_filename = './datasets/branin/branin_400points_inverse_sign_normalised.txt'
         m = BraninMapValueDict(hyper_storer=self.hyper_storer,
                                   domain_descriptor=domain_descriptor,
                                   filename=dataset_filename,

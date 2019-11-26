@@ -12,8 +12,9 @@ def CalculateMetrics(metric_type,
                      plotting_type,
                      filename,
                      plot_bars):
-    batch_size = 2
+    batch_size = 4
     total_budget = 20
+    num_samples = 100
 
     # # seeds = list(set(range(0, 55)) - set([6, 11, 41, 43]))
     # seeds = list(set(range(0, 55)) - set([ 50,  48, 40, 33, 32]))
@@ -38,12 +39,14 @@ def CalculateMetrics(metric_type,
     #                 r'$\epsilon$-Macro-GPO  $H = 2$',
     #                 'EI']
 
-    root_path = '../../tests/branin_new/'
+    root_path = '../../tests/branin_new/branin_400_b4/'
 
-    seeds = range(40)
-    print(len(seeds))
+    seeds = range(100)
 
-    methods = ['h3_b2_40', 'h2_b2_40', 'h1_b2_40', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp']
+    methods = ['h3_b{}_s{}'.format(batch_size, num_samples),
+               'h2_b{}_s{}'.format(batch_size, num_samples),
+               'h1_b{}_s{}'.format(batch_size, num_samples),
+               'mle_h4', 'pe', 'bucb', 'qEI', 'lp']
 
     method_names = [r'$\epsilon$-M-GPO  $H = 3$',
                     r'$\epsilon$-M-GPO  $H = 2$',
@@ -53,6 +56,7 @@ def CalculateMetrics(metric_type,
                     r'$q$-EI', 'BBO-LP']
 
     output_file = '../../result_graphs/eps/branin/' + filename
+    output_file = root_path + filename
 
     result_calculator = ResultCalculator(dataset_type=DatasetEnum.Branin,
                                          root_path=root_path,
@@ -97,4 +101,5 @@ def GetSimulatedTotalRegrets():
 
 if __name__ == "__main__":
     rewards = GetSimulatedTotalRewards()
+    print
     regrets = GetSimulatedTotalRegrets()

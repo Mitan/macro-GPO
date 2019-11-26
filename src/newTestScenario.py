@@ -170,7 +170,7 @@ def TestScenario_branin(my_save_folder_root, seed, total_budget,
     h = 2
     h_2 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
                                   total_budget=total_budget,
-                                  save_folder=save_folder + "h" + str(h) + "_b2_" + str(num_samples) + "/",
+                                  save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
                                   num_samples=num_samples)
     method_name = 'H=2'
     output_rewards.write(method_name + '\n')
@@ -179,7 +179,7 @@ def TestScenario_branin(my_save_folder_root, seed, total_budget,
     h = 3
     h_3 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
                                   total_budget=total_budget,
-                                  save_folder=save_folder + "h" + str(h) + "_b2_" + str(num_samples) + "/",
+                                  save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
                                   num_samples=num_samples)
     method_name = 'H=3'
     output_rewards.write(method_name + '\n')
@@ -188,7 +188,7 @@ def TestScenario_branin(my_save_folder_root, seed, total_budget,
     h = 1
     h_1 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
                                   total_budget=total_budget,
-                                  save_folder=save_folder + "h" + str(h) + "_b2_" + str(num_samples) + "/",
+                                  save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
                                   num_samples=num_samples)
     method_name = 'H=1'
     output_rewards.write(method_name + '\n')
