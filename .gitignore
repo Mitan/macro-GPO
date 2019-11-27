@@ -127,3 +127,7 @@ new_datasets
 new_tests
 seed46
 plot_nonmyopic_grpahs.py
+camel_600points_inverse_sign_normalised.csv
+camel_600points_inverse_sign_normalised.txt
+branin_400points_inverse_sign_normalised_noise.csv
+branin_400points_inverse_sign_normalised_noise.txt
