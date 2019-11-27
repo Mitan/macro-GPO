@@ -19,7 +19,8 @@ def CalculateMetrics(metric_type,
     root_path = '../../tests/branin_new/branin_400_b4_s50/'
     root_path = '../../tests/branin_new/branin_400_b4_s100_new/'
     root_path = '../../tests/branin_new/camel_600_b{}_s{}/'.format(batch_size, num_samples)
-
+    root_path = '../../tests/branin_new/boha_400_b{}_s{}/'.format(batch_size, num_samples)
+    # root_path = '../../tests/branin_new/gold_400_b{}_s{}/'.format(batch_size, num_samples)
 
     seeds = range(100)
 

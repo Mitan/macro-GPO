@@ -54,38 +54,28 @@ class BraninDomainDescriptor:
 
     def __init__(self):
 
+        # branin
+
         self.grid_gap = 0.375 * 2
-
-        # unused
-        # number of samples in each dimension
-        self.num_samples_grid = (40, 40)
+        # number of samples in each dimension)
         self.num_samples_grid = (20, 20)
-
         # upper values are not included
         self.grid_domain = ((-5.0, 10.0), (0, 15.0))
-        self.domain_size = self.num_samples_grid[0] * self.num_samples_grid[1]
 
 
         # camel
-
         self.grid_gap = 0.2
-
-        # unused
-        # number of samples in each dimension
         self.num_samples_grid = (30, 20)
-
-        # upper values are not included
         self.grid_domain = ((-3.0, 3.0), (-2.0, 2.0))
-        self.domain_size = self.num_samples_grid[0] * self.num_samples_grid[1]
 
-        """
-        self.grid_gap = 0.75
-
-        # unused
-        # number of samples in each dimension
+        # goldstein
+        self.grid_gap = 0.2
         self.num_samples_grid = (20, 20)
+        self.grid_domain = ((-2.0, 2.0), (-2.0, 2.0))
 
-        # upper values are not included
-        self.grid_domain = ((-5.0, 10.0), (0, 15.0))
-        self.domain_size = 20 * 20
-        """
+        # boha
+        self.grid_gap = 10
+        self.num_samples_grid = (20, 20)
+        self.grid_domain = ((-100.0, 100.0), (-100.0, 100.0))
+
+        self.domain_size = self.num_samples_grid[0] * self.num_samples_grid[1]

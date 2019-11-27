@@ -204,7 +204,7 @@ class BraininHyperStorer(AbstarctHypersStorer):
         self.max_value = 1.03275606571
         """
         # 1600 ok
-
+        # branin 1600
         self.length_scale = (4.85609470e+00, 4.46323187e+01)
         self.signal_variance = 428.88925324174573
         self.noise_variance = 0.001
@@ -213,7 +213,7 @@ class BraininHyperStorer(AbstarctHypersStorer):
         self.empirical_mean = 1.61137748492e-05
         self.max_value = 1.0417132636
 
-
+        # camel
         self.length_scale = (0.84379577, 0.74023375)
         self.signal_variance = 1.18474464
         self.noise_variance =  0.01072684
@@ -222,12 +222,23 @@ class BraininHyperStorer(AbstarctHypersStorer):
         self.empirical_mean = -0.00549505294253
 
         self.max_value = 2.08485259411
-        """
-        self.length_scale = (4.63154827e+00, 2.89546722e+01)
-        self.signal_variance = 9.77273955e+01
-        self.noise_variance = 0.01
-        self.mean_function = 0.0
 
-        self.empirical_mean = -0.00013565954387
-        self.max_value = 1.05862584444
-        """
+        # goldstein
+        self.length_scale = (0.48103349, 0.37723533)
+        self.signal_variance = 0.62406836
+        self.noise_variance =  0.01720424
+
+        self.mean_function = -3.73034936274e-16
+        self.empirical_mean = -0.00285519952058
+
+        self.max_value = 2.55791162941
+
+        # boha
+        self.length_scale = (8.27664496e+01, 4.49769834e+01)
+        self.signal_variance = 1.54177002e+00
+        self.noise_variance = 1.04647905e-02
+
+        self.mean_function = -7.1054273576e-17
+        self.empirical_mean = -0.00285519952058
+
+        self.max_value = 2.64778379782

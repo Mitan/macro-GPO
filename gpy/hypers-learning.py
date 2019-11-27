@@ -1,10 +1,11 @@
 import GPy
 import numpy as np
 
-file = '../datasets/branin/branin_400points_inverse_sign_normalised.txt'
-file = '../datasets/branin/camel_600points_inverse_sign_normalised.csv'
+# file = '../datasets/branin/branin_400points_inverse_sign_normalised.txt'
+# file = '../datasets/branin/camel_600points_inverse_sign_normalised.csv'
 file = '../datasets/branin/camel_600points_inverse_sign_normalised.txt'
-# file = '../datasets/branin/branin_400points_inverse_sign_normalised_noise.txt'
+file = '../datasets/branin/goldstein_400points_inverse_sign_normalised.txt'
+file = '../datasets/branin/boha_400points_inverse_sign_normalised.txt'
 
 # data = np.genfromtxt(fname=file, delimiter=',')
 data = np.genfromtxt(fname=file)
@@ -30,7 +31,7 @@ ker = GPy.kern.RBF(input_dim=2,ARD=True)
 m = GPy.models.GPRegression(X,Y,ker)
 
 
-# m['.*lengthscale'].constrain_bounded(0.1,100)
+m['.*lengthscale'].constrain_bounded(10,1000)
 # m['.*noise'].constrain_bounded(0.0001,10)
 
 
@@ -38,4 +39,5 @@ print m
 # optimize and plot
 m.optimize(messages=True,max_f_eval = 1000)
 
+print m
 print m.param_array
