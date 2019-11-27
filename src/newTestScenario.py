@@ -242,12 +242,24 @@ def TestScenario_h2(my_save_folder_root, seed, total_budget,
     h2_selected = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
                                           total_budget=total_budget,
                                           save_folder=save_folder + "h{}_b{}_s{}_selected/".format(h, batch_size,
-                                                                                                   anytime_num_samples),
+                                                                                                   num_samples),
                                           num_samples=num_samples,
                                           anytime_num_iterations=anytime_num_iterations)
-    method_name = 'H=4'
+    method_name = 'H=2 selected'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(h2_selected) + '\n')
+
+    m.SelectMacroActions(actions_filename=None, ma_treshold=None)
+
+    h2_all = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                                     total_budget=total_budget,
+                                     save_folder=save_folder + "h{}_b{}_s{}_all/".format(h, batch_size,
+                                                                                         num_samples),
+                                     num_samples=num_samples,
+                                     anytime_num_iterations=anytime_num_iterations)
+    method_name = 'H=2 all'
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(h2_all) + '\n')
 
     output_rewards.close()
 
