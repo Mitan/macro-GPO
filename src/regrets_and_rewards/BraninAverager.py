@@ -19,9 +19,9 @@ def CalculateMetrics(metric_type,
     root_path = '../../tests/branin_new/branin_400_b4_s50/'
     root_path = '../../tests/branin_new/branin_400_b4_s100_new/'
     root_path = '../../tests/branin_new/camel_600_b{}_s{}/'.format(batch_size, num_samples)
-    root_path = '../../tests/branin_new/boha_400_b{}_s{}/'.format(batch_size, num_samples)
-    # root_path = '../../tests/branin_new/gold_400_b{}_s{}/'.format(batch_size, num_samples)
-
+    # root_path = '../../tests/branin_new/boha_400_b{}_s{}/'.format(batch_size, num_samples)
+    #
+    seeds = list(set(range(35)) - set([61, 83]))
     seeds = range(100)
 
     methods = ['h4_b{}_s{}'.format(batch_size, num_samples),
@@ -38,8 +38,8 @@ def CalculateMetrics(metric_type,
                     'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI', 'BBO-LP']
 
-    method_names = method_names[1:]
-    methods = methods[1:]
+    # method_names = method_names[1:]
+    # methods = methods[1:]
 
     output_file = '../../result_graphs/eps/branin/' + filename
     output_file = root_path + filename

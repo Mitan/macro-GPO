@@ -61,7 +61,7 @@ def TestScenario_all_tests_road(my_save_folder_root, seed, total_budget, anytime
     method_name = 'BUCB'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(bucb) + '\n')
-    
+
     mle_h = 4
     mle_4 = testWithFixedParameters(model=m, method=Methods.MLE, horizon=mle_h,
                                     total_budget=total_budget,
@@ -94,7 +94,7 @@ def TestScenario_all_tests_road(my_save_folder_root, seed, total_budget, anytime
 
 
 def TestScenario_branin(my_save_folder_root, seed, total_budget,
-                           num_samples, batch_size, time_slot, dataset_type, dataset_mode, ma_treshold):
+                        num_samples, batch_size, time_slot, dataset_type, dataset_mode, ma_treshold):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"
 
     try:
@@ -202,6 +202,52 @@ def TestScenario_branin(my_save_folder_root, seed, total_budget,
     method_name = 'H=4'
     output_rewards.write(method_name + '\n')
     output_rewards.write(str(h_4) + '\n')
+
+    output_rewards.close()
+
+
+def TestScenario_h2(my_save_folder_root, seed, total_budget,
+                    num_samples, batch_size, time_slot, dataset_type, dataset_mode,
+                    ma_treshold, anytime_num_iterations):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=dataset_mode,
+                                         time_slot=time_slot, batch_size=batch_size)
+    m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed, ma_treshold=ma_treshold)
+
+    filename_rewards = save_folder + "reward_histories.txt"
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+
+    ei = testWithFixedParameters(model=m, method=Methods.EI, horizon=1,
+                                 total_budget=total_budget,
+                                 save_folder=save_folder + "ei/",
+                                 num_samples=num_samples)
+
+    method_name = 'EI'
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(ei) + '\n')
+
+    h = 2
+    h2_selected = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+                                          total_budget=total_budget,
+                                          save_folder=save_folder + "h{}_b{}_s{}_selected/".format(h, batch_size,
+                                                                                                   anytime_num_samples),
+                                          num_samples=num_samples,
+                                          anytime_num_iterations=anytime_num_iterations)
+    method_name = 'H=4'
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(h2_selected) + '\n')
 
     output_rewards.close()
 
