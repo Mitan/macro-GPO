@@ -23,7 +23,7 @@ class ResultCalculator:
         elif metric_type == MetricsEnum.AverageTotalReward:
             steps = total_budget / batch_size
             scaled_model_mean = np.array([(1 + batch_size * i) * model_scale for i in range(steps + 1)])
-            results_normaliser = np.array([1 + batch_size * i for i in range(20 / batch_size + 1)])
+            results_normaliser = np.array([1 + batch_size * i for i in range(total_budget / batch_size + 1)])
             scaled_results = np.divide(results - scaled_model_mean, results_normaliser)
         else:
             raise Exception("Unknown metric type")
@@ -31,7 +31,7 @@ class ResultCalculator:
 
     def _get_results_for_one_method(self, method, batch_size, model_scale, metric_type):
 
-        steps = 20 / batch_size
+        steps = self.total_budget / batch_size
 
         len_seeds = len(self.seeds)
         all_results = np.zeros((len_seeds, steps + 1))
