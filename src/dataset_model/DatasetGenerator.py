@@ -102,10 +102,13 @@ class DatasetGenerator:
         dataset_filename = './datasets/branin/branin_1600points_inverse_sign_normalised_ok.txt'
 
         dataset_filename = './datasets/branin/branin_400points_inverse_sign_normalised.txt'
+
+        dataset_filename = './datasets/branin/camel_600points_inverse_sign_normalised.txt'
+
         m = BraninMapValueDict(hyper_storer=self.hyper_storer,
-                                  domain_descriptor=domain_descriptor,
-                                  filename=dataset_filename,
-                                  batch_size=self.batch_size)
+                               domain_descriptor=domain_descriptor,
+                               filename=dataset_filename,
+                               batch_size=self.batch_size)
 
         if self.mode == DatasetModeEnum.Generate:
             m.GenerateStartLocation()

@@ -124,84 +124,85 @@ def TestScenario_branin(my_save_folder_root, seed, total_budget,
     # output_rewards.write(method_name + '\n')
     # output_rewards.write(str(ei) + '\n')
 
-    lp = testWithFixedParameters(model=m, method=Methods.LP, horizon=1,
-                                 total_budget=total_budget,
-                                 save_folder=save_folder + "lp/",
-                                 num_samples=num_samples)
-    method_name = 'LP'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(lp) + '\n')
-
-    qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1,
-                                  total_budget=total_budget,
-                                  save_folder=save_folder + "qEI/",
-                                  num_samples=num_samples)
-    method_name = 'myqEI'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(qEI) + '\n')
-
-    PE = testWithFixedParameters(model=m, method=Methods.BucbPE, horizon=1,
-                                 total_budget=total_budget,
-                                 save_folder=save_folder + "pe/",
-                                 num_samples=num_samples)
-    method_name = 'PE'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(PE) + '\n')
-
-    bucb = testWithFixedParameters(model=m, method=Methods.BUCB, horizon=1,
-                                   total_budget=total_budget,
-                                   save_folder=save_folder + "bucb/",
-                                   num_samples=num_samples)
-
-    method_name = 'BUCB'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(bucb) + '\n')
-
-    mle_h = 4
-    mle_4 = testWithFixedParameters(model=m, method=Methods.MLE, horizon=mle_h,
-                                    total_budget=total_budget,
-                                    save_folder=save_folder + "mle_h" + str(mle_h) + "/",
-                                    num_samples=num_samples)
-    method_name = 'MLE H=4'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(mle_4) + '\n')
-
-
-    h = 2
-    h_2 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-                                  total_budget=total_budget,
-                                  save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
-                                  num_samples=num_samples)
-    method_name = 'H=2'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(h_2) + '\n')
-
-    h = 3
-    h_3 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-                                  total_budget=total_budget,
-                                  save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
-                                  num_samples=num_samples)
-    method_name = 'H=3'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(h_3) + '\n')
-
-    h = 1
-    h_1 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-                                  total_budget=total_budget,
-                                  save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
-                                  num_samples=num_samples)
-    method_name = 'H=1'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(h_1) + '\n')
-
-    # h = 4
-    # h_4 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-    #                               total_budget=total_budget,
-    #                               save_folder=save_folder + "h" + str(h) + "_b1_" + str(num_samples) + "/",
-    #                               num_samples=num_samples)
-    # method_name = 'H=4'
+    # lp = testWithFixedParameters(model=m, method=Methods.LP, horizon=1,
+    #                              total_budget=total_budget,
+    #                              save_folder=save_folder + "lp/",
+    #                              num_samples=num_samples)
+    # method_name = 'LP'
     # output_rewards.write(method_name + '\n')
-    # output_rewards.write(str(h_4) + '\n')
+    # output_rewards.write(str(lp) + '\n')
+    #
+    # qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1,
+    #                               total_budget=total_budget,
+    #                               save_folder=save_folder + "qEI/",
+    #                               num_samples=num_samples)
+    # method_name = 'myqEI'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(qEI) + '\n')
+    #
+    # PE = testWithFixedParameters(model=m, method=Methods.BucbPE, horizon=1,
+    #                              total_budget=total_budget,
+    #                              save_folder=save_folder + "pe/",
+    #                              num_samples=num_samples)
+    # method_name = 'PE'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(PE) + '\n')
+    #
+    # bucb = testWithFixedParameters(model=m, method=Methods.BUCB, horizon=1,
+    #                                total_budget=total_budget,
+    #                                save_folder=save_folder + "bucb/",
+    #                                num_samples=num_samples)
+    #
+    # method_name = 'BUCB'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(bucb) + '\n')
+    #
+    # mle_h = 4
+    # mle_4 = testWithFixedParameters(model=m, method=Methods.MLE, horizon=mle_h,
+    #                                 total_budget=total_budget,
+    #                                 save_folder=save_folder + "mle_h" + str(mle_h) + "/",
+    #                                 num_samples=num_samples)
+    # method_name = 'MLE H=4'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(mle_4) + '\n')
+    #
+    #
+    # h = 2
+    # h_2 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+    #                               total_budget=total_budget,
+    #                               save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
+    #                               num_samples=num_samples)
+    # method_name = 'H=2'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(h_2) + '\n')
+    #
+    # h = 3
+    # h_3 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+    #                               total_budget=total_budget,
+    #                               save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
+    #                               num_samples=num_samples)
+    # method_name = 'H=3'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(h_3) + '\n')
+    #
+    # h = 1
+    # h_1 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+    #                               total_budget=total_budget,
+    #                               save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
+    #                               num_samples=num_samples)
+    # method_name = 'H=1'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(h_1) + '\n')
+
+    h = 4
+    h_4 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+                                  total_budget=total_budget,
+                                  save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
+                                  num_samples=num_samples)
+    method_name = 'H=4'
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(h_4) + '\n')
+
     output_rewards.close()
 
 

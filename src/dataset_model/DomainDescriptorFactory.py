@@ -64,6 +64,20 @@ class BraninDomainDescriptor:
         # upper values are not included
         self.grid_domain = ((-5.0, 10.0), (0, 15.0))
         self.domain_size = self.num_samples_grid[0] * self.num_samples_grid[1]
+
+
+        # camel
+
+        self.grid_gap = 0.2
+
+        # unused
+        # number of samples in each dimension
+        self.num_samples_grid = (30, 20)
+
+        # upper values are not included
+        self.grid_domain = ((-3.0, 3.0), (-2.0, 2.0))
+        self.domain_size = self.num_samples_grid[0] * self.num_samples_grid[1]
+
         """
         self.grid_gap = 0.75
 

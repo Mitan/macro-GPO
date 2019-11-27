@@ -14,46 +14,31 @@ def CalculateMetrics(metric_type,
                      plot_bars):
     batch_size = 4
     total_budget = 20
-    num_samples = 100
+    num_samples = 50
 
-    # # seeds = list(set(range(0, 55)) - set([6, 11, 41, 43]))
-    # seeds = list(set(range(0, 55)) - set([ 50,  48, 40, 33, 32]))
-    # root_path = '../../tests/branin/branin400/'
-    # methods = ['h4_b1_20','h2_b1_20', 'ei']
-    #
-    # seeds = list(set(range(0, 86)) - set([63, 55, 44, 31, 7, 3]))
-    # root_path = '../../tests/branin/branin_30_400/'
-    # methods = ['h4_b1_30','h2_b1_30', 'ei']
-    # methods = ['h4_b1_30', 'ei']
-    #
-    # seeds = list(set(range(0, 80, 2)) - set([]))
-    # root_path = '../../tests/branin/branin_100_400/'
-    # methods = ['h3_b1_100','h2_b1_100', 'ei']
-    #
-    # seeds = list(set(range(0, 62)) - set([]))
-    #
-    # root_path = '../../tests/branin/branin_new_1600/'
-    # methods = ['h4_b1_20', 'ei']
-    # method_names = [r'$\epsilon$-Macro-GPO  $H = 4$',
-    #                 r'$\epsilon$-Macro-GPO  $H = 3$',
-    #                 r'$\epsilon$-Macro-GPO  $H = 2$',
-    #                 'EI']
+    root_path = '../../tests/branin_new/branin_400_b4_s50/'
+    root_path = '../../tests/branin_new/branin_400_b4_s100_new/'
+    root_path = '../../tests/branin_new/camel_600_b{}_s{}/'.format(batch_size, num_samples)
 
-    root_path = '../../tests/branin_new/branin_400_b4/'
 
     seeds = range(100)
 
-    methods = ['h3_b{}_s{}'.format(batch_size, num_samples),
+    methods = ['h4_b{}_s{}'.format(batch_size, num_samples),
+               'h3_b{}_s{}'.format(batch_size, num_samples),
                'h2_b{}_s{}'.format(batch_size, num_samples),
                'h1_b{}_s{}'.format(batch_size, num_samples),
                'mle_h4', 'pe', 'bucb', 'qEI', 'lp']
 
-    method_names = [r'$\epsilon$-M-GPO  $H = 3$',
+    method_names = [r'$\epsilon$-M-GPO  $H = 4$',
+                    r'$\epsilon$-M-GPO  $H = 3$',
                     r'$\epsilon$-M-GPO  $H = 2$',
                     'DB-GP-UCB',
                     r'Nonmyopic GP-UCB $H = 4$',  # r'MLE $H = 4$',
                     'GP-UCB-PE', 'GP-BUCB',
                     r'$q$-EI', 'BBO-LP']
+
+    method_names = method_names[1:]
+    methods = methods[1:]
 
     output_file = '../../result_graphs/eps/branin/' + filename
     output_file = root_path + filename
