@@ -466,7 +466,7 @@ class TreePlan:
         # TODO: Set a proper termination condition
         # whilre resources permit
         while not root_action_node.saturated and total_nodes_expanded < max_nodes:
-            print counter, H
+            # print counter, H
             _, _, num_nodes_expanded = self.ConstructTree(root_action_node, root_node, H, lamb)
             total_nodes_expanded += num_nodes_expanded
             counter += 1
@@ -475,7 +475,7 @@ class TreePlan:
             gc.collect()
             if counter > anytime_num_iterations:
                 break
-        print "counter is " + str(counter)
+        # print "counter is " + str(counter)
         # TODO: Set action selection scheme
         # Current: Selection based on the action with the highest average bound
         # bestavg = -float('inf')
@@ -498,7 +498,7 @@ class TreePlan:
             raise Exception("Anytime for " + str(H) + " could not move from  location " + str(x_0.physical_state))
 
         # bestval, best_a = self.MCTSTraverseBest(root_action_node)
-        print best_lower, np.asarray(best_a)
+        # print best_lower, np.asarray(best_a)
 
         # Vreal, Areal, _ = self.Algorithm1(epsilon, gamma, x_0, H)
         # print Vreal, Areal
