@@ -1,5 +1,5 @@
 import os
-import timeit
+import time
 
 
 from src.enum.MethodEnum import Methods
@@ -419,10 +419,12 @@ def TestScenario_h2_robot(my_save_folder_root, seed, total_budget,
     time_file = open(time_filename, append_write_time)
 
     h = 2
-    iteration_list = [100, 500, 1000]
+    # iteration_list = [50, 300, 1000]
+    iteration_list = [100, 200, 300, 500, 700, 1000, 1500]
+    # iteration_list = [1500]
     # iteration_list = [1, 2,10]
     for i in iteration_list:
-        start = timeit.timeit()
+        start = time.time()
 
         h_2 = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
                                       total_budget=total_budget,
@@ -430,7 +432,7 @@ def TestScenario_h2_robot(my_save_folder_root, seed, total_budget,
                                                                                                        num_samples, i),
                                       num_samples=num_samples,
                                       anytime_num_iterations=i)
-        end = timeit.timeit()
+        end = time.time()
 
         diff = end - start
         time_file.write("{} {}\n".format(i, diff))
