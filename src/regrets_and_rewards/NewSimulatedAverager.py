@@ -20,14 +20,15 @@ def CalculateMetrics(metric_type,
     batch_size = 4
     # iteration_list = [50, 300, 1000]
     samples = [5, 10, 20, 30, 50, 70, 100, 150]
+    samples = [5, 30,100 ]
 
     methods = ['h3_b{}_s{}'.format(batch_size, s) for s in samples]
 
     method_names = [r'$\epsilon$-M-GPO  $H = 3$ ${}$ samples.'.format(s) for s in samples]
 
-    cut = -1
-    methods = methods[:cut]
-    method_names = method_names[:cut]
+    # cut = -1
+    # methods = methods[:cut]
+    # method_names = method_names[:cut]
 
     output_file = root_path + filename
 
@@ -81,6 +82,7 @@ if __name__ == "__main__":
     root_path = '../../tests/simulated_h3_b4/'
     # seeds = list(set(range(66, 101, 7)) - set([19]))
     seeds =range(66, 101, 7) + range(67, 101, 7) + range(68, 101, 7)
+    seeds =range(66, 101)
     rewards = GetSimulatedTotalRewards(root_path=root_path,
                                        seeds=seeds,
                                        filename='sim_i_total_rewards.eps',

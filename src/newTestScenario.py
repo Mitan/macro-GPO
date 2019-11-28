@@ -471,7 +471,7 @@ def TestScenario_h2_robot(my_save_folder_root, seed, total_budget,
     output_rewards = open(filename_rewards, append_write)
     time_file = open(time_filename, append_write_time)
 
-    h = 2
+    h = 3
     # iteration_list = [50, 300, 1000]
     iteration_list = [100, 200, 300, 500, 700, 1000, 1500]
     # iteration_list = [1500]

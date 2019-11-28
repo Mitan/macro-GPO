@@ -1,42 +1,61 @@
-import numpy as np
 
-def New_CountExpandedNodesForMethod(method_name, seeds, tests_folder, time_steps):
-    total_results = np.zeros((time_steps,))
-    len_seeds = len(seeds)
 
+def get_all_dicts(seeds, root_folder):
+    results = {}
     for seed in seeds:
-        seed_folder = tests_folder + 'seed' + str(seed) + '/' + method_name + '/'
-        results = New_CountExpandedNodesForSingleSeed(path=seed_folder, time_steps=time_steps)
-        total_results = np.add(total_results, results)
+        seed_result = get_dict_for_one_seed(seed, root_folder)
+        results[seed] = seed_result
 
-    return list(total_results / len_seeds)
+    return  results
 
 
-def New_CountExpandedNodesForSingleSeed(path, time_steps):
-    results = []
-    for step in range(time_steps):
-        current_seed_file = path + 'step' + str(step) + '.txt'
-        all_summary_lines = open(current_seed_file).readlines()
-        nodes_line = all_summary_lines[-1]
-        # expanded_node = nodes_line.split()[-1]
-        expanded_node = nodes_line.split()[3]
-        # print expanded_node, current_seed_file
-        results.append(int(expanded_node))
-    return np.array(results)
+def get_dict_for_one_seed(seed, root_folder):
+    filename =  '{}seed{}/time.txt'.format(root_folder, seed)
+    result = {}
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+
+    for line in lines:
+        split_line = line.strip().split()
+        result[int(split_line[0])] = float(split_line[1])
+
+    return result
+
+
+def get_and_write_results(iters, seeds, results, out_file):
+    len_seeds = len(seeds)
+    for iter in iters:
+        sum = 0
+        for seed in seeds:
+            sum+= results[seed][iter]
+        av_sum = sum / len_seeds
+        out_file.write("{} iterations av. time is {} \n".format(iter, av_sum))
+
+
+def get_anytime_times():
+    root_path = '../../tests/1_road_iter_h2_b5_s300/'
+    out_file = open(root_path + 'av_times.txt', 'w')
+
+    seeds = list(set(range(0, 36)) - set([19]))
+
+    results = get_all_dicts(root_folder=root_path, seeds=seeds)
+    iters = [200,  700, 1500]
+
+    get_and_write_results(iters=iters, seeds=seeds, results=results, out_file=out_file)
+
+
+def get_simulated_times():
+    root_path = '../../tests/simulated_h3_b4/'
+    out_file = open(root_path + 'av_times.txt', 'w')
+
+    seeds = list(set(range(66, 101)) - set([]))
+
+    results = get_all_dicts(root_folder=root_path, seeds=seeds)
+
+    iters = [5, 30,100]
+    get_and_write_results(iters=iters, seeds=seeds, results=results, out_file=out_file)
 
 
 if __name__ == "__main__":
-    batch_size = 5
-    num_samples = 300
-
-    root_path = '../../tests/robot_iter_h2_b5_s300/'
-    seeds = range(0, 30)
-    rewards = GetSimulatedTotalRewards(root_path=root_path,
-                                       seeds=seeds,
-                                       filename='robot_i_total_rewards.eps',
-                                       )
-    print
-    regrets = GetSimulatedTotalRegrets(root_path=root_path,
-                                       seeds=seeds,
-                                       filename='robot_i_simple_regrets.eps',
-                                       )
+    get_anytime_times()
+    get_simulated_times()

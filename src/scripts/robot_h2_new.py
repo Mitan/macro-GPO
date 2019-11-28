@@ -13,9 +13,9 @@ def hack_script(start):
     num_samples = 300
 
     my_save_folder_root = "./tests/robot_iter_h2_b{}_s{}/".format(batch_size, num_samples)
-    my_save_folder_root = "./tests/1_road_iter_h2_b{}_s{}/".format(batch_size, num_samples)
+    my_save_folder_root = "./tests/1_road_iter_h3_b{}_s{}/".format(batch_size, num_samples)
 
-    end = start + 1
+    end = start + 2
     assert start < end
 
     for seed in range(start, end):

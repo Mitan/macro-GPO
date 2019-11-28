@@ -17,14 +17,15 @@ def CalculateMetrics(metric_type,
                      param_storer_string):
     total_budget = 20
     iters = [100, 200, 300, 500, 700, 1000, 1500]
+    iters = [200,  700, 1500]
 
     methods = ['h2_b{}_s{}_i{}'.format(batch_size, num_samples,i) for i in iters]
 
     method_names = [r'A-$\epsilon$-M-GPO  $H = 2$ ${}$ iter.'.format(i) for i in iters]
 
-    cut = 6
-    methods = methods[:cut]
-    method_names = method_names[:cut]
+    # cut = 6
+    # methods = methods[:cut]
+    # method_names = method_names[:cut]
 
     output_file = root_path + filename
 
