@@ -11,18 +11,11 @@ from src.plotting.ResultsPlotter import ResultGraphPlotter
 def CalculateMetrics(metric_type,
                      plotting_type,
                      filename,
-                     plot_bars):
-    batch_size = 4
+                     plot_bars,
+                     seeds,
+                     root_path,
+                     param_storer_string):
     total_budget = 20
-    num_samples = 50
-
-    root_path = '../../tests/branin_new/branin_400_b4_s50/'
-    root_path = '../../tests/branin_new/branin_400_b4_s100_new/'
-    root_path = '../../tests/branin_new/camel_600_b{}_s{}/'.format(batch_size, num_samples)
-    root_path = '../../tests/branin_new/boha_400_b{}_s{}/'.format(batch_size, num_samples)
-    #
-    seeds = list(set(range(35)) - set([61, 83]))
-    seeds = range(35,70)
 
     methods = ['h4_b{}_s{}'.format(batch_size, num_samples),
                'h3_b{}_s{}'.format(batch_size, num_samples),
@@ -41,7 +34,6 @@ def CalculateMetrics(metric_type,
     # method_names = method_names[1:]
     # methods = methods[1:]
 
-    output_file = '../../result_graphs/eps/branin/' + filename
     output_file = root_path + filename
 
     result_calculator = ResultCalculator(dataset_type=DatasetEnum.Branin,
@@ -57,7 +49,8 @@ def CalculateMetrics(metric_type,
     results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Branin,
                                          plotting_type=plotting_type,
                                          batch_size=batch_size,
-                                         total_budget=total_budget)
+                                         total_budget=total_budget,
+                                         param_storer_string=param_storer_string)
     results_plotter.plot_results(results=results, output_file_name=output_file, plot_bars=plot_bars)
 
     s = math.sqrt(428.88925324174573)
@@ -71,21 +64,53 @@ def CalculateMetrics(metric_type,
     return results
 
 
-def GetSimulatedTotalRewards():
+def GetSimulatedTotalRewards(seeds, root_path, filename, param_storer_string=None):
     return CalculateMetrics(metric_type=MetricsEnum.AverageTotalReward,
                             plotting_type=PlottingEnum.AverageTotalReward,
-                            filename='branin_total_rewards.eps',
-                            plot_bars=False)
+                            filename=filename,
+                            plot_bars=False,
+                            seeds=seeds,
+                            root_path=root_path,
+                            param_storer_string=param_storer_string)
 
 
-def GetSimulatedTotalRegrets():
+def GetSimulatedTotalRegrets(seeds, root_path, filename, param_storer_string=None):
     return CalculateMetrics(metric_type=MetricsEnum.SimpleRegret,
                             plotting_type=PlottingEnum.SimpleRegret,
-                            filename='branin_simple_regrets.eps',
-                            plot_bars=False)
+                            filename=filename,
+                            plot_bars=False,
+                            seeds=seeds,
+                            root_path=root_path,
+                            param_storer_string=param_storer_string)
 
 
 if __name__ == "__main__":
-    rewards = GetSimulatedTotalRewards()
+    batch_size = 4
+    num_samples = 50
+    # camel
+    # root_path = '../../tests/branin_new/camel_600_b{}_s{}/'.format(batch_size, num_samples)
+    # seeds = range(35)
+    # rewards = GetSimulatedTotalRewards(root_path=root_path,
+    #                                    seeds=seeds,
+    #                                    filename='camel_total_rewards.eps',
+    #                                    param_storer_string='camel')
+    # print
+    # regrets = GetSimulatedTotalRegrets(root_path=root_path,
+    #                                    seeds=seeds,
+    #                                    filename='camel_simple_regrets.eps',
+    #                                    param_storer_string= 'camel')
+    # print
+    # print
+
+    # boha
+    root_path = '../../tests/branin_new/boha_400_b{}_s{}/'.format(batch_size, num_samples)
+    seeds = range(35, 70)
+    rewards = GetSimulatedTotalRewards(root_path=root_path,
+                                       seeds=seeds,
+                                       filename='boha_total_rewards.eps',
+                                       param_storer_string='boha')
     print
-    regrets = GetSimulatedTotalRegrets()
+    regrets = GetSimulatedTotalRegrets(root_path=root_path,
+                                       seeds=seeds,
+                                       filename='boha_simple_regrets.eps',
+                                       param_storer_string='boha')

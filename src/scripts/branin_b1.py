@@ -14,10 +14,10 @@ def hack_script(start):
     num_samples = 50
     # my_save_folder_root = "./tests/branin_400_b4_s100_new/"
     my_save_folder_root = "./tests/camel_600_b{}_s{}/".format(batch_size, num_samples)
-    my_save_folder_root = "./tests/gold_400_b{}_s{}/".format(batch_size, num_samples)
-    my_save_folder_root = "./tests/boha_400_b{}_s{}/".format(batch_size, num_samples)
+    # my_save_folder_root = "./tests/gold_400_b{}_s{}/".format(batch_size, num_samples)
+    # my_save_folder_root = "./tests/boha_400_b{}_s{}/".format(batch_size, num_samples)
 
-    end = start + 2
+    end = start + 10
     assert start < end
 
     for seed in range(start, end):

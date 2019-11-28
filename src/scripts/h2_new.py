@@ -11,7 +11,8 @@ def hack_script(start):
     total_budget = 20
 
     num_samples = 300
-    anytime_num_iterations = 1500
+    anytime_num_iterations = 1000
+    anytime_num_iterations = 500
 
     # my_save_folder_root = "./tests/branin_400_b4_s100_new/"
     my_save_folder_root = "./tests/camel_600_b{}_s{}/".format(batch_size, num_samples)

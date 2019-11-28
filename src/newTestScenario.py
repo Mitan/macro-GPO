@@ -176,14 +176,14 @@ def TestScenario_branin(my_save_folder_root, seed, total_budget,
     # output_rewards.write(method_name + '\n')
     # output_rewards.write(str(h_2) + '\n')
     #
-    # h = 3
-    # h_3 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-    #                               total_budget=total_budget,
-    #                               save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
-    #                               num_samples=num_samples)
-    # method_name = 'H=3'
-    # output_rewards.write(method_name + '\n')
-    # output_rewards.write(str(h_3) + '\n')
+    h = 3
+    h_3 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+                                  total_budget=total_budget,
+                                  save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
+                                  num_samples=num_samples)
+    method_name = 'H=3'
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(h_3) + '\n')
     #
     # h = 1
     # h_1 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
@@ -194,16 +194,16 @@ def TestScenario_branin(my_save_folder_root, seed, total_budget,
     # output_rewards.write(method_name + '\n')
     # output_rewards.write(str(h_1) + '\n')
 
-    h = 4
-    h_4 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
-                                  total_budget=total_budget,
-                                  save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
-                                  num_samples=num_samples)
-    method_name = 'H=4'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(h_4) + '\n')
-
-    output_rewards.close()
+    # h = 4
+    # h_4 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+    #                               total_budget=total_budget,
+    #                               save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, num_samples),
+    #                               num_samples=num_samples)
+    # method_name = 'H=4'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(h_4) + '\n')
+    #
+    # output_rewards.close()
 
 
 def TestScenario_h2(my_save_folder_root, seed, total_budget,
@@ -229,14 +229,14 @@ def TestScenario_h2(my_save_folder_root, seed, total_budget,
 
     output_rewards = open(filename_rewards, append_write)
 
-    ei = testWithFixedParameters(model=m, method=Methods.EI, horizon=1,
-                                 total_budget=total_budget,
-                                 save_folder=save_folder + "ei/",
-                                 num_samples=num_samples)
-
-    method_name = 'EI'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(ei) + '\n')
+    # ei = testWithFixedParameters(model=m, method=Methods.EI, horizon=1,
+    #                              total_budget=total_budget,
+    #                              save_folder=save_folder + "ei/",
+    #                              num_samples=num_samples)
+    #
+    # method_name = 'EI'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(ei) + '\n')
 
     h = 2
     h2_selected = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
