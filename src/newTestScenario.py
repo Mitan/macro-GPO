@@ -388,6 +388,59 @@ def TestScenario_all_tests(my_save_folder_root, seed, total_budget, anytime_num_
     output_rewards.close()
 
 
+def TestScenario_h3_simulated(my_save_folder_root, seed, total_budget,
+                              batch_size, time_slot, dataset_type, dataset_mode, ma_treshold):
+    save_folder = my_save_folder_root + "seed" + str(seed) + "/"
+
+    try:
+        os.makedirs(save_folder)
+    except OSError:
+        if not os.path.isdir(save_folder):
+            raise
+
+    dataset_generator = DatasetGenerator(dataset_type=dataset_type, dataset_mode=dataset_mode,
+                                         time_slot=time_slot, batch_size=batch_size)
+    m = dataset_generator.get_dataset_model(root_folder=save_folder, seed=seed, ma_treshold=ma_treshold)
+
+    filename_rewards = save_folder + "reward_histories.txt"
+    time_filename = save_folder + "time.txt"
+
+    if os.path.exists(filename_rewards):
+        append_write = 'a'
+    else:
+        append_write = 'w'
+
+    if os.path.exists(time_filename):
+        append_write_time = 'a'
+    else:
+        append_write_time = 'w'
+
+    output_rewards = open(filename_rewards, append_write)
+    time_file = open(time_filename, append_write_time)
+
+    h = 3
+    # iteration_list = [50, 300, 1000]
+    samples = [5, 10, 20, 30, 50, 70, 100, 150]
+    # iteration_list = [1500]
+    # iteration_list = [1, 2,10]
+    for n_samples in samples:
+        start = time.time()
+
+        h_3 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+                                      total_budget=total_budget,
+                                      save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, n_samples),
+                                      num_samples=n_samples)
+        end = time.time()
+
+        diff = end - start
+        time_file.write("{} {}\n".format(n_samples, diff))
+        method_name = 'H=3 samples {}'.format(n_samples)
+        output_rewards.write(method_name + '\n')
+        output_rewards.write(str(h_3) + '\n')
+
+    output_rewards.close()
+    time_file.close()
+
 def TestScenario_h2_robot(my_save_folder_root, seed, total_budget,
                            num_samples, batch_size, time_slot, dataset_type, dataset_mode, ma_treshold):
     save_folder = my_save_folder_root + "seed" + str(seed) + "/"

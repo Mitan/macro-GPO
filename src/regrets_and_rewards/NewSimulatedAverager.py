@@ -16,21 +16,24 @@ def CalculateMetrics(metric_type,
                      root_path,
                      param_storer_string):
     total_budget = 20
-    iters = [100, 200, 300, 500, 700, 1000, 1500]
+    h = 3
+    batch_size = 4
+    # iteration_list = [50, 300, 1000]
+    samples = [5, 10, 20, 30, 50, 70, 100, 150]
 
-    methods = ['h2_b{}_s{}_i{}'.format(batch_size, num_samples,i) for i in iters]
+    methods = ['h3_b{}_s{}'.format(batch_size, s) for s in samples]
 
-    method_names = [r'A-$\epsilon$-M-GPO  $H = 2$ ${}$ iter.'.format(i) for i in iters]
+    method_names = [r'$\epsilon$-M-GPO  $H = 3$ ${}$ samples.'.format(s) for s in samples]
 
-    cut = 6
+    cut = -2
     methods = methods[:cut]
     method_names = method_names[:cut]
 
     output_file = root_path + filename
 
-    result_calculator = ResultCalculator(dataset_type=DatasetEnum.Road,
+    result_calculator = ResultCalculator(dataset_type=DatasetEnum.Simulated,
                                          root_path=root_path,
-                                         time_slot=18,
+                                         time_slot=None,
                                          seeds=seeds,
                                          total_budget=total_budget)
     results = result_calculator.calculate_results(batch_size=batch_size,
@@ -38,7 +41,7 @@ def CalculateMetrics(metric_type,
                                                   method_names=method_names,
                                                   metric_type=metric_type)
 
-    results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Road,
+    results_plotter = ResultGraphPlotter(dataset_type=DatasetEnum.Simulated,
                                          plotting_type=plotting_type,
                                          batch_size=batch_size,
                                          total_budget=total_budget,
@@ -73,17 +76,16 @@ def GetSimulatedTotalRegrets(seeds, root_path, filename, param_storer_string=Non
 
 
 if __name__ == "__main__":
-    batch_size = 5
-    num_samples = 300
+    batch_size = 4
 
-    root_path = '../../tests/1_road_iter_h2_b5_s300/'
-    seeds = list(set(range(0, 36)) - set([19]))
+    root_path = '../../tests/simulated_h3_b4/'
+    seeds = list(set(range(66, 101, 7)) - set([19]))
     rewards = GetSimulatedTotalRewards(root_path=root_path,
                                        seeds=seeds,
-                                       filename='road_i_total_rewards.eps',
+                                       filename='sim_i_total_rewards.eps',
                                        )
     print
     regrets = GetSimulatedTotalRegrets(root_path=root_path,
                                        seeds=seeds,
-                                       filename='road_i_simple_regrets.eps',
+                                       filename='sim_i_simple_regrets.eps',
                                        )
