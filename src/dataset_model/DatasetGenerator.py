@@ -34,10 +34,10 @@ class DatasetGenerator:
 
     def __get_robot_dataset_model(self, root_folder, ma_treshold):
 
-        data_filename = '../../datasets/robot/selected_slots/slot_' + str(self.time_slot) + '/noise_final_slot_' + \
+        data_filename = './datasets/robot/selected_slots/slot_' + str(self.time_slot) + '/noise_final_slot_' + \
                         str(self.time_slot) + '.txt'
-        neighbours_filename = '../../datasets/robot/all_neighbours.txt'
-        coords_filename = '../../datasets/robot/all_coords.txt'
+        neighbours_filename = './datasets/robot/all_neighbours.txt'
+        coords_filename = './datasets/robot/all_coords.txt'
 
         # hyper_storer = get_hyper_storer(DatasetEnum.Robot, self.time_slot)
 
