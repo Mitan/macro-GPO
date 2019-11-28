@@ -1,7 +1,9 @@
 import matplotlib
 
 from src.enum.DatasetEnum import DatasetEnum
+from src.plotting.BohaDatasetPlotParamStorer import BohaDatasetPlotParamStorer
 from src.plotting.BraninDatasetPlotParamStorer import BraninDatasetPlotParamStorer
+from src.plotting.CamelDatasetPlotParamStorer import CamelDatasetPlotParamStorer
 from src.plotting.RoadDatasetPlotParamStorer import RoadDatasetPlotParamStorer
 from src.plotting.RobotDatasetPlotParamStorer import RobotDatasetPlotParamStorer
 from src.plotting.SimulatedDatasetPlotParamStorer import SimulatedDatasetPlotParamStorer
@@ -20,11 +22,11 @@ rc('text', usetex=True)
 
 class ResultGraphPlotter:
 
-    def __init__(self, dataset_type, plotting_type, batch_size, total_budget):
+    def __init__(self, dataset_type, plotting_type, batch_size, total_budget, param_storer_string=None):
         self.total_budget = total_budget
         self.plotting_type = plotting_type
         self.dataset_type = dataset_type
-        self.param_storer = self._get_param_storer()
+        self.param_storer = self._get_param_storer(param_storer_string)
 
         # + 1 because of initial point
         plotting_num_steps = self.total_budget / batch_size + 1
@@ -116,7 +118,12 @@ class ResultGraphPlotter:
 
         return patch
 
-    def _get_param_storer(self):
+    def _get_param_storer(self, param_storer_string):
+        if param_storer_string == 'camel':
+            return CamelDatasetPlotParamStorer(self.plotting_type)
+        elif param_storer_string == 'boha':
+            return BohaDatasetPlotParamStorer(self.plotting_type)
+
         if self.dataset_type == DatasetEnum.Simulated:
             return SimulatedDatasetPlotParamStorer(self.plotting_type)
         elif self.dataset_type == DatasetEnum.Road:

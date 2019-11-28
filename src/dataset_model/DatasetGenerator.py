@@ -105,9 +105,9 @@ class DatasetGenerator:
 
         dataset_filename = './datasets/branin/camel_600points_inverse_sign_normalised.txt'
 
-        dataset_filename = './datasets/branin/goldstein_400points_inverse_sign_normalised.txt'
-
-        dataset_filename = './datasets/branin/boha_400points_inverse_sign_normalised.txt'
+        # dataset_filename = './datasets/branin/goldstein_400points_inverse_sign_normalised.txt'
+        #
+        # dataset_filename = './datasets/branin/boha_400points_inverse_sign_normalised.txt'
 
         m = BraninMapValueDict(hyper_storer=self.hyper_storer,
                                domain_descriptor=domain_descriptor,

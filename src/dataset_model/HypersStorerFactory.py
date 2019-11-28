@@ -223,22 +223,22 @@ class BraininHyperStorer(AbstarctHypersStorer):
 
         self.max_value = 2.08485259411
 
-        # goldstein
-        self.length_scale = (0.48103349, 0.37723533)
-        self.signal_variance = 0.62406836
-        self.noise_variance =  0.01720424
-
-        self.mean_function = -3.73034936274e-16
-        self.empirical_mean = -0.00285519952058
-
-        self.max_value = 2.55791162941
-
-        # boha
-        self.length_scale = (8.27664496e+01, 4.49769834e+01)
-        self.signal_variance = 1.54177002e+00
-        self.noise_variance = 1.04647905e-02
-
-        self.mean_function = -7.1054273576e-17
-        self.empirical_mean = -0.00285519952058
-
-        self.max_value = 2.64778379782
+        # # goldstein
+        # self.length_scale = (0.48103349, 0.37723533)
+        # self.signal_variance = 0.62406836
+        # self.noise_variance =  0.01720424
+        #
+        # self.mean_function = -3.73034936274e-16
+        # self.empirical_mean = -0.00285519952058
+        #
+        # self.max_value = 2.55791162941
+        #
+        # # boha
+        # self.length_scale = (8.27664496e+01, 4.49769834e+01)
+        # self.signal_variance = 1.54177002e+00
+        # self.noise_variance = 1.04647905e-02
+        #
+        # self.mean_function = -7.1054273576e-17
+        # self.empirical_mean = -0.00285519952058
+        #
+        # self.max_value = 2.64778379782

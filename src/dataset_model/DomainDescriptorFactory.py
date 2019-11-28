@@ -68,14 +68,14 @@ class BraninDomainDescriptor:
         self.num_samples_grid = (30, 20)
         self.grid_domain = ((-3.0, 3.0), (-2.0, 2.0))
 
-        # goldstein
-        self.grid_gap = 0.2
-        self.num_samples_grid = (20, 20)
-        self.grid_domain = ((-2.0, 2.0), (-2.0, 2.0))
-
-        # boha
-        self.grid_gap = 10
-        self.num_samples_grid = (20, 20)
-        self.grid_domain = ((-100.0, 100.0), (-100.0, 100.0))
-
-        self.domain_size = self.num_samples_grid[0] * self.num_samples_grid[1]
+        # # goldstein
+        # self.grid_gap = 0.2
+        # self.num_samples_grid = (20, 20)
+        # self.grid_domain = ((-2.0, 2.0), (-2.0, 2.0))
+        #
+        # # boha
+        # self.grid_gap = 10
+        # self.num_samples_grid = (20, 20)
+        # self.grid_domain = ((-100.0, 100.0), (-100.0, 100.0))
+        #
+        # self.domain_size = self.num_samples_grid[0] * self.num_samples_grid[1]
