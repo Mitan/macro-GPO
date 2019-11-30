@@ -10,9 +10,9 @@ def hack_script(start):
 
     total_budget = 20
 
-    my_save_folder_root = "./tests/simulated_h3_b{}/".format(batch_size)
+    my_save_folder_root = "./tests/simulated_h4/"
 
-    end = start + 7
+    end = start + 1
     assert start < end
 
     for seed in range(start, end):

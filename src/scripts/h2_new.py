@@ -6,7 +6,7 @@ from src.enum.DatasetModeEnum import DatasetModeEnum
 
 
 def hack_script(start):
-    batch_size = 5
+    batch_size = 1
 
     total_budget = 20
 
@@ -18,9 +18,9 @@ def hack_script(start):
     my_save_folder_root = "./tests/camel_600_b{}_s{}/".format(batch_size, num_samples)
     my_save_folder_root = "./tests/gold_400_b{}_s{}/".format(batch_size, num_samples)
     my_save_folder_root = "./tests/boha_400_b{}_s{}/".format(batch_size, num_samples)
-    my_save_folder_root = "./tests/road_h2_b{}_s{}/".format(batch_size, num_samples)
+    my_save_folder_root = "./tests/road_h2_b5_s{}/".format(num_samples)
 
-    end = start + 20
+    end = start + 50
     assert start < end
 
     for seed in range(start, end):
@@ -31,6 +31,6 @@ def hack_script(start):
                         batch_size=batch_size,
                         time_slot=18,
                         dataset_type=DatasetEnum.Road,
-                        dataset_mode=DatasetModeEnum.Generate,
+                        dataset_mode=DatasetModeEnum.Load,
                         anytime_num_iterations=anytime_num_iterations,
                         ma_treshold=20)

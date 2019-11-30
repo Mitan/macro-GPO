@@ -231,37 +231,37 @@ def TestScenario_h2(my_save_folder_root, seed, total_budget,
 
     output_rewards = open(filename_rewards, append_write)
 
-    # ei = testWithFixedParameters(model=m, method=Methods.EI, horizon=1,
-    #                              total_budget=total_budget,
-    #                              save_folder=save_folder + "ei/",
-    #                              num_samples=num_samples)
-    #
-    # method_name = 'EI'
+    ei = testWithFixedParameters(model=m, method=Methods.EI, horizon=1,
+                                 total_budget=total_budget,
+                                 save_folder=save_folder + "ei/",
+                                 num_samples=num_samples)
+
+    method_name = 'EI'
+    output_rewards.write(method_name + '\n')
+    output_rewards.write(str(ei) + '\n')
+
+    # h = 2
+    # h2_selected = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+    #                                       total_budget=total_budget,
+    #                                       save_folder=save_folder + "h{}_b{}_s{}_selected/".format(h, batch_size,
+    #                                                                                                num_samples),
+    #                                       num_samples=num_samples,
+    #                                       anytime_num_iterations=anytime_num_iterations)
+    # method_name = 'H=2 selected'
     # output_rewards.write(method_name + '\n')
-    # output_rewards.write(str(ei) + '\n')
-
-    h = 2
-    h2_selected = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
-                                          total_budget=total_budget,
-                                          save_folder=save_folder + "h{}_b{}_s{}_selected/".format(h, batch_size,
-                                                                                                   num_samples),
-                                          num_samples=num_samples,
-                                          anytime_num_iterations=anytime_num_iterations)
-    method_name = 'H=2 selected'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(h2_selected) + '\n')
-
-    m.SelectMacroActions(actions_filename=None, ma_treshold=None)
-
-    h2_all = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
-                                     total_budget=total_budget,
-                                     save_folder=save_folder + "h{}_b{}_s{}_all/".format(h, batch_size,
-                                                                                         num_samples),
-                                     num_samples=num_samples,
-                                     anytime_num_iterations=anytime_num_iterations)
-    method_name = 'H=2 all'
-    output_rewards.write(method_name + '\n')
-    output_rewards.write(str(h2_all) + '\n')
+    # output_rewards.write(str(h2_selected) + '\n')
+    #
+    # m.SelectMacroActions(actions_filename=None, ma_treshold=None)
+    #
+    # h2_all = testWithFixedParameters(model=m, method=Methods.Anytime, horizon=h,
+    #                                  total_budget=total_budget,
+    #                                  save_folder=save_folder + "h{}_b{}_s{}_all/".format(h, batch_size,
+    #                                                                                      num_samples),
+    #                                  num_samples=num_samples,
+    #                                  anytime_num_iterations=anytime_num_iterations)
+    # method_name = 'H=2 all'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(h2_all) + '\n')
 
     output_rewards.close()
 
@@ -418,15 +418,97 @@ def TestScenario_h3_simulated(my_save_folder_root, seed, total_budget,
     output_rewards = open(filename_rewards, append_write)
     time_file = open(time_filename, append_write_time)
 
-    h = 3
+    # start = time.time()
+    #
+    # h = 1
+    # num_samples = 50
+    # h_1 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+    #                                   total_budget=total_budget,
+    #                                   save_folder=save_folder + "h{}_b{}_s{}/".
+    #                               format(h, batch_size, num_samples),
+    #                                   num_samples=50)
+    # end = time.time()
+    #
+    # diff = end - start
+    # time_file.write("h1 {}\n".format(diff))
+    # method_name = 'H=1 samples '
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(h_1) + '\n')
+
+    # num_samples = 50
+    # start = time.time()
+    # lp = testWithFixedParameters(model=m, method=Methods.LP, horizon=1,
+    #                              total_budget=total_budget,
+    #                              save_folder=save_folder + "lp/",
+    #                              num_samples=num_samples)
+    # method_name = 'LP'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(lp) + '\n')
+    # end = time.time()
+    # diff = end - start
+    # time_file.write("{} {}\n".format(method_name, diff))
+    #
+    # start = time.time()
+    # qEI = testWithFixedParameters(model=m, method=Methods.qEI, horizon=1,
+    #                               total_budget=total_budget,
+    #                               save_folder=save_folder + "qEI/",
+    #                               num_samples=num_samples)
+    # method_name = 'myqEI'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(qEI) + '\n')
+    # end = time.time()
+    # diff = end - start
+    # time_file.write("{} {}\n".format(method_name, diff))
+    #
+    # start = time.time()
+    # PE = testWithFixedParameters(model=m, method=Methods.BucbPE, horizon=1,
+    #                              total_budget=total_budget,
+    #                              save_folder=save_folder + "pe/",
+    #                              num_samples=num_samples)
+    # method_name = 'PE'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(PE) + '\n')
+    # end = time.time()
+    # diff = end - start
+    # time_file.write("{} {}\n".format(method_name, diff))
+    #
+    # start = time.time()
+    # bucb = testWithFixedParameters(model=m, method=Methods.BUCB, horizon=1,
+    #                                total_budget=total_budget,
+    #                                save_folder=save_folder + "bucb/",
+    #                                num_samples=num_samples)
+    #
+    # method_name = 'BUCB'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(bucb) + '\n')
+    # end = time.time()
+    # diff = end - start
+    # time_file.write("{} {}\n".format(method_name, diff))
+    #
+    # start = time.time()
+    # mle_h = 4
+    # mle_4 = testWithFixedParameters(model=m, method=Methods.MLE, horizon=mle_h,
+    #                                 total_budget=total_budget,
+    #                                 save_folder=save_folder + "mle_h" + str(mle_h) + "/",
+    #                                 num_samples=num_samples)
+    # method_name = 'MLEH=4'
+    # output_rewards.write(method_name + '\n')
+    # output_rewards.write(str(mle_4) + '\n')
+    # end = time.time()
+    # diff = end - start
+    # time_file.write("{} {}\n".format(method_name, diff))
+
+    h = 4
     # iteration_list = [50, 300, 1000]
-    samples = [5, 10, 20, 30, 50, 70, 100, 150]
+    samples = [5, 10, 20, 30, 50, 70, 100]
+    samples = [5, 10, 20, 30, 50, 70]
+    # samples = [100]
     # iteration_list = [1500]
     # iteration_list = [1, 2,10]
     for n_samples in samples:
         start = time.time()
 
-        h_3 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
+        h_4 = testWithFixedParameters(model=m, method=Methods.Exact, horizon=h,
                                       total_budget=total_budget,
                                       save_folder=save_folder + "h{}_b{}_s{}/".format(h, batch_size, n_samples),
                                       num_samples=n_samples)
@@ -434,12 +516,13 @@ def TestScenario_h3_simulated(my_save_folder_root, seed, total_budget,
 
         diff = end - start
         time_file.write("{} {}\n".format(n_samples, diff))
-        method_name = 'H=3 samples {}'.format(n_samples)
+        method_name = 'H=4 samples {}'.format(n_samples)
         output_rewards.write(method_name + '\n')
-        output_rewards.write(str(h_3) + '\n')
+        output_rewards.write(str(h_4) + '\n')
 
     output_rewards.close()
     time_file.close()
+
 
 def TestScenario_h2_robot(my_save_folder_root, seed, total_budget,
                            num_samples, batch_size, time_slot, dataset_type, dataset_mode, ma_treshold):

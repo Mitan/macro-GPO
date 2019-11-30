@@ -21,7 +21,7 @@ def CalculateMetrics(metric_type,
 
     methods = ['h2_b{}_s{}_i{}'.format(batch_size, num_samples,i) for i in iters]
 
-    method_names = [r'A-$\epsilon$-M-GPO  $H = 2$ ${}$ iter.'.format(i) for i in iters]
+    method_names = [r'Anytime $\epsilon$-M-GPO  $H = 2$ ${}$ iter.'.format(i) for i in iters]
 
     # cut = 6
     # methods = methods[:cut]

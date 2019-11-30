@@ -9,14 +9,14 @@ class RoadDatasetPlotParamStorer:
         if plotting_type == PlottingEnum.AverageTotalReward:
             self.y_label_caption = "Avg. normalized output measurements observed by AV"
             self.y_ticks_range = np.arange(-0.3, 0.3, 0.1)
-            self.y_lim_range = [-0.31, 0.28]
+            self.y_lim_range = [0.03, 0.35]
             self.legend_loc = 4
             self.legend_size = 15
 
         elif plotting_type == PlottingEnum.SimpleRegret:
             self.y_label_caption = "Simple regret"
             self.y_ticks_range = np.arange(1.5, 4, 0.4)
-            self.y_lim_range = [1.45, 3.7]
+            self.y_lim_range = [1.45, 3.2]
             self.legend_loc = 1
             self.legend_size = 16
 

@@ -16,15 +16,23 @@ def CalculateMetrics(metric_type,
                      root_path,
                      param_storer_string):
     total_budget = 20
-    h = 3
+    h = 4
     batch_size = 4
     # iteration_list = [50, 300, 1000]
     samples = [5, 10, 20, 30, 50, 70, 100, 150]
     samples = [5, 30,100 ]
+    samples = [5,  30, 50]
 
-    methods = ['h3_b{}_s{}'.format(batch_size, s) for s in samples]
+    methods = ['h{}_b{}_s{}'.format(h, batch_size, s) for s in samples]
 
-    method_names = [r'$\epsilon$-M-GPO  $H = 3$ ${}$ samples.'.format(s) for s in samples]
+    method_names = [r'$\epsilon$-M-GPO  $H = {}$ $N = {}$'.format(h, s) for s in samples]
+
+    # methods = methods + ['mle_h4', 'pe', 'bucb', 'qEI', 'lp', 'h1_b4_s50']
+    #
+    # method_names = method_names +  [r'Nonmyopic GP-UCB $H = 4$',
+    #                     'GP-UCB-PE', 'GP-BUCB',
+    #                     r'$q$-EI', 'BBO-LP',     'DB-GP-UCB']
+
 
     # cut = -1
     # methods = methods[:cut]
@@ -80,6 +88,7 @@ if __name__ == "__main__":
     batch_size = 4
 
     root_path = '../../tests/simulated_h3_b4/'
+    root_path = '../../tests/simulated_h4/'
     # seeds = list(set(range(66, 101, 7)) - set([19]))
     seeds =range(66, 101, 7) + range(67, 101, 7) + range(68, 101, 7)
     seeds =range(66, 101)

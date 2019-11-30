@@ -87,7 +87,9 @@ class DatasetGenerator:
             print "Generating start location and macro-actions"
         else:
             m.LoadStartLocation(location_filename)
-            m.LoadSelectedMacroactions(actions_filename=actions_filename)
+            # for ei
+            m.SelectMacroActions(actions_filename=None, ma_treshold=None)
+            # m.LoadSelectedMacroactions(actions_filename=actions_filename)
             print "Loading start location and macro-actions"
         return m
 

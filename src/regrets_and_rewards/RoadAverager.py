@@ -140,18 +140,31 @@ def CalculateMetricsFull(metric_type,
     batch_size = 5
     total_budget = 20
 
-    seeds = range(0, 35)
+    seeds = list(set(range(0, 398)) -
+                 set(range(27,40) + range(58, 60) + [69] + range(71,80) + range(90,100) + range(111,120)
+      + range(208, 220) + range(235, 240) + range(241, 260)
+    + range(267, 280) + range(293, 300)
+                     ))
+    print len(seeds)
 
     root_path = '../../releaseTests/road/tests2full-r/'
+    root_path = '../../tests/road_h2_b5_s300/'
 
-    methods = ['anytime_h4', 'anytime_h2_full', 'anytime_h2', 'ei']
+    # methods = ['anytime_h4', 'anytime_h2_full', 'anytime_h2', 'ei']
+    #
+    # method_names = [r'Anytime $\epsilon$-M-GPO  $H = 4$  ($20$)',
+    #                          r'Anytime $\epsilon$-M-GPO  $H = 2$ (all)',
+    #                          r'Anytime $\epsilon$-M-GPO  $H = 2$  ($20$)',
+    #                          'EI (all)']
 
-    method_names = [r'Anytime $\epsilon$-M-GPO  $H = 4$  ($20$)',
+    methods = ['h2_b5_s300_all', 'h2_b5_s300_selected', 'ei']
+
+    method_names = [
                              r'Anytime $\epsilon$-M-GPO  $H = 2$ (all)',
                              r'Anytime $\epsilon$-M-GPO  $H = 2$  ($20$)',
                              'EI (all)']
 
-    output_file = '../../result_graphs/eps/road/' + filename
+    output_file = root_path + filename
 
     result_calculator = ResultCalculator(dataset_type=DatasetEnum.Road,
                                          root_path=root_path,
@@ -306,10 +319,10 @@ def GetRoadBeta3Regrets():
 
 
 if __name__ == "__main__":
-    GetRoadTotalRewards()
-    GetRoadTotalRegrets()
-    beta2 = GetRoadBeta2Rewards()
-    beta3 = GetRoadBeta3Rewards()
+    # GetRoadTotalRewards()
+    # GetRoadTotalRegrets()
+    # beta2 = GetRoadBeta2Rewards()
+    # beta3 = GetRoadBeta3Rewards()
 
     regrets_h2 = GetRoadTotalRegrets_H2Full()
     rewards_h2 = GetRoad_H2Full_TotalRewards()
