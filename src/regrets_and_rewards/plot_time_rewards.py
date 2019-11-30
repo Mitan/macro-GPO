@@ -12,13 +12,14 @@ import matplotlib.lines as mlines
 
 rc('font', **{'family': 'serif', 'serif': ['Times']})
 rc('text', usetex=True)
+mpl.rcParams['legend.numpoints'] = 1
 
 
 def plot_graph(data, root_path, output_file_name):
     color_sequence = ['#e41a1c', '#f781bf', 'blue', '#377eb8', '#4daf4a', '#984ea3',
                       '#ff7f00', 'black', '#a65628', ]
 
-    markers = ["o", "v", "^", "s", "*", "1", "2", "x", "|"]
+    markers = ["v", "^", "o","s", "*", "1", "2", "x", "|"]
 
     axes = plt.axes()
     # axes.margins(x=0.035)
@@ -57,7 +58,7 @@ def plot_graph(data, root_path, output_file_name):
                               marker=markers[marker_index],
                               markerfacecolor=color,
                               markeredgewidth=3, markeredgecolor=color,
-                              markersize=10, label=v[0])
+                              markersize=10, label=v[0], linestyle="None")
 
         handles.append(patch)
 
