@@ -20,7 +20,7 @@ def hack_script(start):
     my_save_folder_root = "./tests/boha_400_b{}_s{}/".format(batch_size, num_samples)
     my_save_folder_root = "./tests/road_h2_b5_s{}/".format(num_samples)
 
-    end = start + 50
+    end = start + 25
     assert start < end
 
     for seed in range(start, end):

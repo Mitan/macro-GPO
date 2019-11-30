@@ -27,9 +27,9 @@ def plot_graph(data, root_path, output_file_name):
     plt.xscale("log")
 
     plt.xlabel("Avg. time per stage (seconds)", fontsize=20)
-    plt.ylabel("Simple regret after 20 observations", fontsize=20)
+    plt.ylabel("Avg. normalized output measurements after 20 observations", fontsize=13)
 
-    axes.set_ylim((1.15, 1.62))
+    axes.set_ylim((0.05, 0.58))
 
     # axes.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
 
@@ -44,7 +44,7 @@ def plot_graph(data, root_path, output_file_name):
 
         marker_index = i
         color = color_sequence[0] if i in range(3) else color_sequence[i]
-        point, = plt.plot(v[1][0], v[1][2], color=color,
+        point, = plt.plot(v[1][0], v[1][1], color=color,
                  marker=markers[marker_index],
                  markersize=15,
                  markeredgewidth=5,
@@ -61,7 +61,7 @@ def plot_graph(data, root_path, output_file_name):
 
         handles.append(patch)
 
-    plt.legend(handles=handles, loc=1, prop={'size': 12})
+    plt.legend(handles=handles, loc=4, prop={'size': 12})
     # plt.legend(handles, names, loc=1, prop={'size': 12})
     # plt.legend(handles, names, loc=1, prop={'size': 12})
 
@@ -97,7 +97,7 @@ def draw_lines(data, axes):
     v3 = data[2][1]
 
     x = [v1[0], v2[0], v3[0]]
-    index = 2
+    index = 1
     y = [v1[index], v2[index], v3[index]]
     line = Line2D(x, y, color='red', linewidth=2.0)
     axes.add_line(line)
@@ -116,4 +116,4 @@ if __name__ == "__main__":
 
     plot_graph(data=data,
                root_path=root_path,
-               output_file_name='regrets_time.eps')
+               output_file_name='rewards_time.eps')

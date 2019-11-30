@@ -10,7 +10,7 @@ def hack_script(start):
 
     total_budget = 20
 
-    my_save_folder_root = "./tests/simulated_h4/"
+    my_save_folder_root = "./tests/simulated_h4_1/"
 
     end = start + 1
     assert start < end

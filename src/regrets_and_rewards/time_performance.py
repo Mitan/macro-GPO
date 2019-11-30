@@ -6,7 +6,7 @@ def simulated():
     batch_size = 4
 
     root_path = '../../tests/simulated_h3_b4/'
-    root_path = '../../tests/simulated_h4/'
+    root_path = '../../tests/simulated_h4_1/'
 
     seeds = range(66, 101)
     rewards = GetSimulatedTotalRewards(root_path=root_path,
@@ -19,7 +19,14 @@ def simulated():
                                        filename='sim_i_simple_regrets.eps',
                                        )
 
-    out = get_simulated_times()
+    iters = [5, 30, 50]
+    iters = [25]
+    names = map(str, iters)
+    method_names = [r'$\epsilon$-M-GPO  $H = 4$ $N = {}$'.format(s) for s in iters]
+
+    out = get_simulated_times(root_path=root_path,
+                                   names=names,
+                                   method_names=method_names)
     for k in out.keys():
         for i in range(len(rewards)):
             if rewards[i][0] == k:

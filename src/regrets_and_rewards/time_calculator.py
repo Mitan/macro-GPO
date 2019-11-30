@@ -1,5 +1,4 @@
 
-
 def get_all_dicts(seeds, root_folder):
     results = {}
     for seed in seeds:
@@ -30,7 +29,7 @@ def get_and_write_results(iters, method_names, seeds, results, out_file, num_sta
         for seed in seeds:
             sum+= results[seed][iters[i]]
         av_sum = sum / (len_seeds * num_stages)
-        out_file.write("{}  per stage is {} \n".format(iter, av_sum))
+        out_file.write("{}  per stage is {} \n".format(method_names[i], av_sum))
         out_dict[method_names[i]] = [av_sum]
     return out_dict
 
@@ -52,23 +51,15 @@ def get_anytime_times():
                           num_stages=num_stages)
 
 
-def get_simulated_times():
-    root_path = '../../tests/simulated_h3_b4/'
-    out_file = open(root_path + 'av_times.txt', 'w')
+def get_simulated_times(root_path, names, method_names):
 
     num_stages = 5
     seeds = list(set(range(66, 101)) - set([]))
 
+
+    out_file = open(root_path + 'av_times.txt', 'w')
     results = get_all_dicts(root_folder=root_path, seeds=seeds)
 
-    iters =  [5, 30,100]
-    names = map(str, iters) + ['MLEH=4','PE', 'BUCB',  'myqEI', 'LP', 'h1']
-
-    method_names = [r'$\epsilon$-M-GPO  $H = 3$ $N = {}$'.format(s) for s in iters]
-
-    method_names = method_names + [r'Nonmyopic GP-UCB $H = 4$',
-                                   'GP-UCB-PE', 'GP-BUCB',
-                                   r'$q$-EI', 'BBO-LP', 'DB-GP-UCB']
     return get_and_write_results(iters=names,
                           method_names=method_names,
                           seeds=seeds,
@@ -79,6 +70,20 @@ def get_simulated_times():
 
 if __name__ == "__main__":
     # get_anytime_times()
-    out = get_simulated_times()
-    for k in out.keys():
-        print k, out[k]
+    # root_path = '../../tests/simulated_h3_b4/'
+    # names = ['MLEH=4', 'PE', 'BUCB', 'myqEI', 'LP', 'h1']
+    # method_names = [r'Nonmyopic GP-UCB $H = 4$',
+    #                 'GP-UCB-PE', 'GP-BUCB',
+    #                 r'$q$-EI', 'BBO-LP', 'DB-GP-UCB']
+
+
+    root_path = '../../tests/simulated_h4_1/'
+    iters = [20, 25, 30]
+    names = map(str, iters)
+    method_names = [r'$\epsilon$-M-GPO  $H = 4$ $N = {}$'.format(s) for s in iters]
+
+    h_values = get_simulated_times(root_path=root_path,
+                                   names=names,
+                                   method_names=method_names)
+    for k in h_values.keys():
+        print k, h_values[k]

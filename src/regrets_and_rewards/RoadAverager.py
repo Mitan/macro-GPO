@@ -143,7 +143,9 @@ def CalculateMetricsFull(metric_type,
     seeds = list(set(range(0, 398)) -
                  set(range(27,40) + range(58, 60) + [69] + range(71,80) + range(90,100) + range(111,120)
       + range(208, 220) + range(235, 240) + range(241, 260)
-    + range(267, 280) + range(293, 300)
+    + range(267, 280) + range(293, 300) +
+                     range(332, 334) + range(369, 370) + range(377, 378) + range(389, 390)
+                     + range(396, 398)
                      ))
     print len(seeds)
 
@@ -163,6 +165,8 @@ def CalculateMetricsFull(metric_type,
                              r'Anytime $\epsilon$-M-GPO  $H = 2$ (all)',
                              r'Anytime $\epsilon$-M-GPO  $H = 2$  ($20$)',
                              'EI (all)']
+    methods = methods[1:]
+    method_names = method_names[1:]
 
     output_file = root_path + filename
 
@@ -185,12 +189,12 @@ def CalculateMetricsFull(metric_type,
     for result in results:
         print result[0], round(result[1][-1], 4), '+-', round(result[2][-1], 4)
 
-    sigma = math.sqrt(0.7486)
-    h4 = results[0]
-    h2_all = results[1]
-    h2 = results[2]
-    print "H4 -  H2 all %f sigma " % round(abs((h4[1][-1] - h2_all[1][-1])) / sigma, 4)
-    print "H2 all  -  H2 %f sigma" % round(abs((h2_all[1][-1] - h2[1][-1])) / sigma, 4)
+    # sigma = math.sqrt(0.7486)
+    # h4 = results[0]
+    # h2_all = results[1]
+    # h2 = results[2]
+    # print "H4 -  H2 all %f sigma " % round(abs((h4[1][-1] - h2_all[1][-1])) / sigma, 4)
+    # print "H2 all  -  H2 %f sigma" % round(abs((h2_all[1][-1] - h2[1][-1])) / sigma, 4)
     return results
 
 

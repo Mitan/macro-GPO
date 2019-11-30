@@ -501,7 +501,7 @@ def TestScenario_h3_simulated(my_save_folder_root, seed, total_budget,
     h = 4
     # iteration_list = [50, 300, 1000]
     samples = [5, 10, 20, 30, 50, 70, 100]
-    samples = [5, 10, 20, 30, 50, 70]
+    samples = [20, 25, 30]
     # samples = [100]
     # iteration_list = [1500]
     # iteration_list = [1, 2,10]

@@ -22,6 +22,7 @@ def CalculateMetrics(metric_type,
     samples = [5, 10, 20, 30, 50, 70, 100, 150]
     samples = [5, 30,100 ]
     samples = [5,  30, 50]
+    samples = [20, 25, 30]
 
     methods = ['h{}_b{}_s{}'.format(h, batch_size, s) for s in samples]
 
@@ -89,6 +90,7 @@ if __name__ == "__main__":
 
     root_path = '../../tests/simulated_h3_b4/'
     root_path = '../../tests/simulated_h4/'
+    root_path = '../../tests/simulated_h4_1/'
     # seeds = list(set(range(66, 101, 7)) - set([19]))
     seeds =range(66, 101, 7) + range(67, 101, 7) + range(68, 101, 7)
     seeds =range(66, 101)
