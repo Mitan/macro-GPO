@@ -10,24 +10,28 @@ def CalculateMetrics(metric_type,
                      plotting_type,
                      filename,
                      plot_bars,
+                     batch_size=4,
+                     seeds= range(66,316),
                      methods=None,
-                     method_names=None):
-    batch_size = 4
+                     method_names=None,
+                    ):
+    # batch_size = 4
     total_budget = 20
 
     # seeds = range(66, 66 + 107)
-    seeds = list(set(range(66, 66 + 109)) - set([116, 152, 154]))
-    seeds = range(66,316)
+    # seeds = list(set(range(66, 66 + 109)) - set([116, 152, 154]))
+    # seeds = range(66,316)
 
     print(len(seeds))
     root_path = '../../tests/sim-fixed-temp/'
+    root_path = '../../releaseTests/paper/simulated/rewards/'
     if not methods:
         methods = ['h4', 'h3', 'h2', 'h1', 'mle_h4', 'pe', 'bucb', 'qEI', 'lp_1']
 
     if not method_names:
-        method_names = [r'$\epsilon$-M-GPO  $H = 4$',
-                        r'$\epsilon$-M-GPO  $H = 3$',
-                        r'$\epsilon$-M-GPO  $H = 2$',
+        method_names = [r'$\epsilon$-M-BO  $H = 4$',
+                        r'$\epsilon$-M-BO  $H = 3$',
+                        r'$\epsilon$-M-BO  $H = 2$',
                         'DB-GP-UCB',
                         r'Nonmyopic GP-UCB $H = 4$', # r'MLE $H = 4$',
                         'GP-UCB-PE', 'GP-BUCB',
@@ -67,6 +71,7 @@ def CalculateMetricsBeta(h, metric_type, filename, plot_bars, plotting_type):
 
     # root_path = '../../tests/beta%d_t/' % h
     root_path = '../../tests/beta%d/' % h
+    root_path = '../../releaseTests/paper/simulated/beta%d/' % h
 
     beta_list = [0.0, 0.05, 0.15, 0.3, 0.5, 1.0, 2.0, 5.0]
     # beta_list = [0.0, 0.05, 0.1]
@@ -146,46 +151,37 @@ def SimpleRegretBeta3():
 
 def GetSimulatedTotalRewardsRollout():
     methods = ['h4_b1_20', 'rollout_h4_gamma1_ei_mod']
-    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', 'Rollout-$4$-$10$']
+    method_names = [r'$\epsilon$-Macro-BO  $H = 4$', 'Rollout-$4$-$10$']
+    seeds = list(set(range(66, 66 + 109)) - set([116, 152, 154]))
     return CalculateMetrics(metric_type=MetricsEnum.AverageTotalReward,
                             plotting_type=PlottingEnum.AverageTotalReward,
                             filename='simulated_total_rewards_rollout.eps',
                             plot_bars=True,
+                            seeds=seeds,
+                            batch_size=1,
                             methods=methods,
                             method_names=method_names)
 
 
 def GetSimulatedTotalRegretsRollout():
     methods = ['h4_b1_20', 'rollout_h4_gamma1_ei_mod']
-    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', 'Rollout-$4$-$10$']
+    method_names = [r'$\epsilon$-Macro-BO  $H = 4$', 'Rollout-$4$-$10$']
+    seeds = list(set(range(66, 66 + 109)) - set([116, 152, 154]))
     return CalculateMetrics(metric_type=MetricsEnum.SimpleRegret,
                             plotting_type=PlottingEnum.SimpleRegret,
                             filename='simulated_simple_regrets_rollout.eps',
                             plot_bars=True,
                             methods=methods,
+                            batch_size=1,
+                            seeds=seeds,
                             method_names=method_names)
 
 
 if __name__ == "__main__":
-    """
-    rewards = GetSimulatedTotalRewards()
-    regrets = GetSimulatedTotalRegrets()
-    print
-    get_rewards_regrets_latex(rewards, regrets)
-    
-    beta2 = AverageRewardsBeta2()
-    beta3 = AverageRewardsBeta3()
-    print
-    print
-    get_rewards_regrets_latex(beta2, beta3, process_beta=True)
-   
-    GetSimulatedTotalRewardsRollout()
-    GetSimulatedTotalRegretsRollout()
-    
-    AverageRewardsBeta2()
-    AverageRewardsBeta3()
-    """
-    rewards = GetSimulatedTotalRewards()
-    regrets = GetSimulatedTotalRegrets()
+
+    # rewards = GetSimulatedTotalRewards()
+    # regrets = GetSimulatedTotalRegrets()
     # AverageRewardsBeta2()
     # AverageRewardsBeta3()
+    # GetSimulatedTotalRegretsRollout()
+    GetSimulatedTotalRewardsRollout()
