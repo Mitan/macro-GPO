@@ -18,6 +18,7 @@ def CalculateMetrics(metric_type,
     seeds = range(0, 35)
 
     root_path = '../../releaseTests/updated_release/road/b5-18-log/'
+    root_path = '../../releaseTests/paper/road/rewards/'
 
     methods = ['anytime_h4',
                'anytime_h3',
@@ -25,9 +26,9 @@ def CalculateMetrics(metric_type,
                'h1',
                'mle_h4', 'new_ixed_pe', 'bucb', 'my_qEI', 'my_lp']
 
-    method_names = [r'Anytime $\epsilon$-M-GPO  $H = 4$',
-                    r'Anytime $\epsilon$-M-GPO  $H = 3$',
-                    r'Anytime $\epsilon$-M-GPO  $H = 2$',
+    method_names = [r'Anytime $\epsilon$-M-BO  $H = 4$',
+                    r'Anytime $\epsilon$-M-BO  $H = 3$',
+                    r'Anytime $\epsilon$-M-BO  $H = 2$',
                     'DB-GP-UCB',
                     r'Nonmyopic GP-UCB $H = 4$', 'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
 
@@ -119,7 +120,7 @@ def GetRoadBeta2Rewards():
     return CalculateMetricsBeta(h=2,
                                 metric_type=MetricsEnum.AverageTotalReward,
                                 plotting_type=PlottingEnum.AverageRewardBeta,
-                                input_folder='../../releaseTests/updated_release/road/new_new_new_beta2_c/',
+                                input_folder='../../releaseTests/paper/road/beta2/',
                                 filename='road_beta2_rewards.eps',
                                 plot_bars=False)
 
@@ -128,7 +129,7 @@ def GetRoadBeta3Rewards():
     return CalculateMetricsBeta(h=3,
                                 metric_type=MetricsEnum.AverageTotalReward,
                                 plotting_type=PlottingEnum.AverageRewardBeta,
-                                input_folder='../../releaseTests/updated_release/road/new_beta3_c/',
+                                input_folder='../../releaseTests/paper/road/beta3/',
                                 filename='road_beta3_rewards.eps',
                                 plot_bars=False)
 
@@ -140,33 +141,35 @@ def CalculateMetricsFull(metric_type,
     batch_size = 5
     total_budget = 20
 
-    seeds = list(set(range(0, 398)) -
-                 set(range(27,40) + range(58, 60) + [69] + range(71,80) + range(90,100) + range(111,120)
-      + range(208, 220) + range(235, 240) + range(241, 260)
-    + range(267, 280) + range(293, 300) +
-                     range(332, 334) + range(369, 370) + range(377, 378) + range(389, 390)
-                     + range(396, 398)
-                     ))
+    # seeds = list(set(range(0, 398)) -
+    #              set(range(27,40) + range(58, 60) + [69] + range(71,80) + range(90,100) + range(111,120)
+    #   + range(208, 220) + range(235, 240) + range(241, 260)
+    # + range(267, 280) + range(293, 300) +
+    #                  range(332, 334) + range(369, 370) + range(377, 378) + range(389, 390)
+    #                  + range(396, 398)
+    #                  ))
+    seeds = range(35)
     print len(seeds)
 
     root_path = '../../releaseTests/road/tests2full-r/'
-    root_path = '../../tests/road_h2_b5_s300/'
+    root_path = '../../releaseTests/paper/road/tests2full/'
+    # root_path = '../../tests/road_h2_b5_s300/'
 
-    # methods = ['anytime_h4', 'anytime_h2_full', 'anytime_h2', 'ei']
+    methods = ['anytime_h4', 'anytime_h2_full', 'anytime_h2', 'ei']
+
+    method_names = [r'Anytime $\epsilon$-M-BO  $H = 4$  ($20$)',
+                             r'Anytime $\epsilon$-M-BO  $H = 2$ (all)',
+                             r'Anytime $\epsilon$-M-BO  $H = 2$  ($20$)',
+                             'EI (all)']
+
+    # methods = ['h2_b5_s300_all', 'h2_b5_s300_selected', 'ei']
     #
-    # method_names = [r'Anytime $\epsilon$-M-GPO  $H = 4$  ($20$)',
+    # method_names = [
     #                          r'Anytime $\epsilon$-M-GPO  $H = 2$ (all)',
     #                          r'Anytime $\epsilon$-M-GPO  $H = 2$  ($20$)',
     #                          'EI (all)']
-
-    methods = ['h2_b5_s300_all', 'h2_b5_s300_selected', 'ei']
-
-    method_names = [
-                             r'Anytime $\epsilon$-M-GPO  $H = 2$ (all)',
-                             r'Anytime $\epsilon$-M-GPO  $H = 2$  ($20$)',
-                             'EI (all)']
-    methods = methods[1:]
-    method_names = method_names[1:]
+    # methods = methods[1:]
+    # method_names = method_names[1:]
 
     output_file = root_path + filename
 
@@ -212,122 +215,12 @@ def GetRoadTotalRegrets_H2Full():
                                 plot_bars=False)
 
 
-def GetRoadBeta2Regrets():
-    """
-    seeds = range(35)
-    root_path = '../../releaseTests/road/beta2/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    batch_size = 5
-
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds)
-    """
-    seeds = range(35)
-    batch_size = 5
-    """
-    root_path = '../../road_tests/beta2/'
-    beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
-    str_beta = map(str, beta_list)
-    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
-
-    root_path = '../../releaseTests/road/beta2/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
-    """
-    """
-    root_path = '../../road_tests/new_new_new_beta2/'
-    root_path = '../../temp/'
-    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
-    beta_list = [0.25]
-    str_beta = map(str, beta_list)
-    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names =  ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
-    """
-    """
-    root_path = '../../road_tests/new_new_new_beta2/'
-    # root_path = '../../temp/'
-    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
-    str_beta = map(str, beta_list)
-    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
-    """
-    """
-    seed = range(42)
-    root_path = '../../new_road_tests/beta2/'
-    beta_list = [0.0, 0.1, 0.25, 0.5, 1.0, 2.0,  5.0]
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names =   map(lambda x: 'beta = ' + str(2* float(x)), str_beta)
-    """
-    root_path = '../../releaseTests/updated_release/road/beta2r/'
-    root_path = '../../road_tests/new_new_new_beta2/'
-    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
-    str_beta = map(str, beta_list)
-    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
-    output_file = '../../result_graphs/eps/road/road_beta2_regrets.eps'
-    """
-    seed = range(42)
-    root_path = '../../new_road_tests/beta2/'
-    beta_list = [0.0, 0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
-    """
-    output_file = '../../result_graphs/eps/road/t_road_beta2_regrets.eps'
-
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename=output_file, plottingType=MetricsEnum.SimpleRegret)
-
-
-def GetRoadBeta3Regrets():
-    seeds = range(35)
-    batch_size = 5
-    """
-    root_path = '../../road_tests/beta3/'
-    beta_list = [0.05, 0.1, 0.5, 1.0, 5.0]
-    str_beta = map(str, beta_list)
-    methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
-
-    root_path = '../../releaseTests/road/beta3/'
-    beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
-    """
-    root_path = '../../road_tests/new_beta3/'
-    beta_list = [0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
-    str_beta = map(str, beta_list)
-    methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
-
-    output_file = '../../result_graphs/eps/road/road_beta3_regrets.eps'
-
-    seed = range(42)
-    root_path = '../../new_road_tests/beta3n/'
-    beta_list = [0.0, 0.1, 0.25, 0.5, 1.0, 2.0, 5.0]
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
-
-    output_file = '../../result_graphs/eps/road/t_road_beta3_regrets.eps'
-    RoadRegrets(batch_size, root_path, methods, method_names, seeds,
-                output_filename=output_file, plottingType=MetricsEnum.SimpleRegret)
-
-
 if __name__ == "__main__":
     # GetRoadTotalRewards()
     # GetRoadTotalRegrets()
-    # beta2 = GetRoadBeta2Rewards()
-    # beta3 = GetRoadBeta3Rewards()
-
-    regrets_h2 = GetRoadTotalRegrets_H2Full()
-    rewards_h2 = GetRoad_H2Full_TotalRewards()
+    beta2 = GetRoadBeta2Rewards()
+    beta3 = GetRoadBeta3Rewards()
+    #
+    # regrets_h2 = GetRoadTotalRegrets_H2Full()
+    # rewards_h2 = GetRoad_H2Full_TotalRewards()
 
