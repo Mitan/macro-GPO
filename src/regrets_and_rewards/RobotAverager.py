@@ -20,6 +20,7 @@ def CalculateMetrics(metric_type,
     dataset_type = DatasetEnum.Robot
 
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
+    root_path = '../../releaseTests/paper/robot/all_tests_release/'
 
     methods = ['new_anytime_h4_300',
                'anytime_h3',
@@ -28,9 +29,9 @@ def CalculateMetrics(metric_type,
                'mle_h4',
                'pe', 'bucb', 'my_qEI', 'lp']
 
-    method_names = [r'Anytime $\epsilon$-M-GPO  $H = 4$',
-                    r'Anytime $\epsilon$-M-GPO  $H = 3$',
-                    r'Anytime $\epsilon$-M-GPO  $H = 2$',
+    method_names = [r'Anytime $\epsilon$-M-BO  $H = 4$',
+                    r'Anytime $\epsilon$-M-BO  $H = 3$',
+                    r'Anytime $\epsilon$-M-BO  $H = 2$',
                     'DB-GP-UCB',
                     r'Nonmyopic GP-UCB $H = 4$',
                     'GP-UCB-PE', 'GP-BUCB', r'$q$-EI', 'BBO-LP']
@@ -129,7 +130,7 @@ def GetRobotBeta2Rewards():
     return CalculateMetricsBeta(h=2,
                                 metric_type=MetricsEnum.AverageTotalReward,
                                 plotting_type=PlottingEnum.AverageRewardBeta,
-                                input_folder='../../tests/tests_old/noise_robot_tests/release/beta2_release/',
+                                input_folder='../../releaseTests/paper/robot/beta2/',
                                 filename='robot_beta2_rewards.eps',
                                 plot_bars=False)
 
@@ -138,7 +139,7 @@ def GetRobotBeta3Rewards():
     return CalculateMetricsBeta(h=3,
                                 metric_type=MetricsEnum.AverageTotalReward,
                                 plotting_type=PlottingEnum.AverageRewardBeta,
-                                input_folder='../../tests/tests_old/noise_robot_tests/release/beta3_release-r/',
+                                input_folder='../../releaseTests/paper/robot/beta3/',
                                 filename='robot_beta3_rewards.eps',
                                 plot_bars=False)
 
@@ -163,13 +164,14 @@ def CalculateMetricsFull(metric_type,
 
     methods = ['new_anytime_h4_300', 'anytime_h2_full', 'anytime_h2', 'ei']
 
-    method_names = [r'Anytime $\epsilon$-M-GPO  $H = 4$  ($20$)',
-                    r'Anytime $\epsilon$-M-GPO  $H = 2$ (all)',
-                    r'Anytime $\epsilon$-M-GPO  $H = 2$  ($20$)',
+    method_names = [r'Anytime $\epsilon$-M-BO  $H = 4$  ($20$)',
+                    r'Anytime $\epsilon$-M-BO  $H = 2$ (all)',
+                    r'Anytime $\epsilon$-M-BO  $H = 2$  ($20$)',
                     'EI (all)']
 
     # root_path = '../../noise_robot_tests/release/all_tests_release/'
     root_path = '../../releaseTests/updated_release/robot/all_tests_release/'
+    root_path = '../../releaseTests/paper/robot/all_tests_release/'
 
     output_file = '../../result_graphs/eps/robot/' + filename
 
@@ -208,79 +210,15 @@ def GetRobotTotalRegrets_H2Full():
                                 plot_bars=False)
 
 
-def GetRobotTotalRegrets_beta2():
-    seeds = range(35)
-    batch_size = 5
-    """
-    time_slot = 16
-    root_path = '../../noise_robot_tests/beta2_fixed_exp/'
-    root_path = '../../noise_robot_tests/beta2/'
-    root_path = '../../noise_robot_tests/beta222/'
-    # root_path = '../../noise_robot_tests/beta2_fixed/'
-    # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
-    beta_list = [0.0, 0.05, 0.1, 1.0, 2.0, 5.0]
-    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
-
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
-    """
-    beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
-    root_path = '../../noise_robot_tests/release/beta2_release-r/'
-    str_beta = map(str, beta_list)
-    methods = ['anytime_h2'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
-
-    output_file = '../../result_graphs/eps/robot/unfixed_robot_beta2_simple_regrets.eps'
-
-    ProcessRegrets(batch_size, root_path, methods, method_names, seeds,
-                   output_filename=output_file, plottingType=MetricsEnum.SimpleRegret)
-
-
-def GetRobotTotalRegrets_beta3():
-    seeds = range(35)
-    batch_size = 5
-    """
-    time_slot = 16
-    root_path = '../../noise_robot_tests/beta3_fixed_exp/'
-    root_path = '../../noise_robot_tests/beta3/'
-    root_path = '../../noise_robot_tests/beta33/'
-    root_path = '../../noise_robot_tests/beta3_release/'
-    # beta_list = [0.0, 0.05, 0.1, 0.5, 1.0, 5.0]
-    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
-    beta_list = [0.0, 0.05, 0.1, 1.0, 2.0, 5.0]
-    beta_list = [0.0, 0.5, 1.0, 2.0, 5.0]
-
-    root_path = '../../noise_robot_tests/temp/'
-    beta_list = [0.0]
-
-    str_beta = map(str, beta_list)
-    methods = map(lambda x: 'beta' + x, str_beta)
-    method_names = map(lambda x: 'beta = ' + x, str_beta)
-    """
-    root_path = '../../noise_robot_tests/release/beta3_release-r/'
-    beta_list = [0.5, 1.0, 1.5, 2.0, 5.0]
-
-    str_beta = map(str, beta_list)
-    methods = ['anytime_h3'] + map(lambda x: 'beta' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + x, str_beta)
-    method_names = ['beta = 0.0'] + map(lambda x: 'beta = ' + str(2 * float(x)), str_beta)
-
-    output_file = '../../result_graphs/eps/robot/unfixed_robot_beta3_simple_regrets.eps'
-    # output_file = '../../result_graphs/eps/robot_beta3_simple_regrets.eps'
-
-    ProcessRegrets(batch_size, root_path, methods, method_names, seeds,
-                   output_filename=output_file, plottingType=MetricsEnum.SimpleRegret)
 
 
 if __name__ == "__main__":
 
-    regrets_h2 = GetRobotTotalRegrets_H2Full()
-    rewards_h2 = GetRobot_H2Full_TotalRewards()
-    
-    regrets = GetRobotTotalRegrets()
-    rewards = GetRobotTotalRewards()
+    # regrets_h2 = GetRobotTotalRegrets_H2Full()
+    # rewards_h2 = GetRobot_H2Full_TotalRewards()
+    #
+    # regrets = GetRobotTotalRegrets()
+    # rewards = GetRobotTotalRewards()
+
     beta2 = GetRobotBeta2Rewards()
     beta3 = GetRobotBeta3Rewards()
