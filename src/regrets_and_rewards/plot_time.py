@@ -62,7 +62,7 @@ def plot_graph(data, root_path, output_file_name):
 
         handles.append(patch)
 
-    plt.legend(handles=handles, loc=1, prop={'size': 12})
+    plt.legend(handles=handles, loc=1, prop={'size': 14})
     # plt.legend(handles, names, loc=1, prop={'size': 12})
     # plt.legend(handles, names, loc=1, prop={'size': 12})
 

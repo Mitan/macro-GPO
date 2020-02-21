@@ -71,7 +71,7 @@ class ResultGraphPlotter:
         plt.yticks(self.param_storer.y_ticks_range)
         axes.set_ylim(self.param_storer.y_lim_range)
 
-        tick_size = 25
+        tick_size = 12
         for tick in axes.xaxis.get_major_ticks():
             tick.label.set_fontsize(tick_size)
         for tick in axes.yaxis.get_major_ticks():

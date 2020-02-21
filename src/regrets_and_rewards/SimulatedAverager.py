@@ -152,11 +152,12 @@ def SimpleRegretBeta3():
 def GetSimulatedTotalRewardsRollout():
     methods = ['h4_b1_20', 'rollout_h4_gamma1_ei_mod']
     method_names = [r'$\epsilon$-Macro-BO  $H = 4$', 'Rollout-$4$-$10$']
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', 'Rollout-$4$-$10$']
     seeds = list(set(range(66, 66 + 109)) - set([116, 152, 154]))
     return CalculateMetrics(metric_type=MetricsEnum.AverageTotalReward,
                             plotting_type=PlottingEnum.AverageTotalRewardRollout,
                             filename='simulated_total_rewards_rollout.eps',
-                            plot_bars=True,
+                            plot_bars=False,
                             seeds=seeds,
                             batch_size=1,
                             methods=methods,
@@ -166,11 +167,12 @@ def GetSimulatedTotalRewardsRollout():
 def GetSimulatedTotalRegretsRollout():
     methods = ['h4_b1_20', 'rollout_h4_gamma1_ei_mod']
     method_names = [r'$\epsilon$-Macro-BO  $H = 4$', 'Rollout-$4$-$10$']
+    method_names = [r'$\epsilon$-Macro-GPO  $H = 4$', 'Rollout-$4$-$10$']
     seeds = list(set(range(66, 66 + 109)) - set([116, 152, 154]))
     return CalculateMetrics(metric_type=MetricsEnum.SimpleRegret,
                             plotting_type=PlottingEnum.SimpleRegretRollout,
                             filename='simulated_simple_regrets_rollout.eps',
-                            plot_bars=True,
+                            plot_bars=False,
                             methods=methods,
                             batch_size=1,
                             seeds=seeds,
